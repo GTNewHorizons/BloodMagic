@@ -119,8 +119,8 @@ public class AlchemicalWizardry
     public static String[] netherStarMeteorArray;
     public static int netherStarMeteorRadius;
     //add new meteor
-    public static String[] netherWartMeteorArray;
-    public static int netherWartMeteorRadius;
+    public static String[] BPMeteorArray;
+    public static int BPMeteorRadius;
 
     public static String[] allowedCrushedOresArray;
 
@@ -897,7 +897,7 @@ public class AlchemicalWizardry
         MeteorRegistry.registerMeteorParadigm(ironBlockStack, ironBlockMeteorArray, ironBlockMeteorRadius);
         MeteorRegistry.registerMeteorParadigm(new ItemStack(Items.nether_star), netherStarMeteorArray, netherStarMeteorRadius);
         //add new meteor
-        MeteorRegistry.registerMeteorParadigm(new ItemStack(Items.nether_wart), netherWartMeteorArray, netherWartMeteorRadius);
+        MeteorRegistry.registerMeteorParadigm(new ItemStack(dreamcraft.tile.BlackPlutonium, 1, 388), BPMeteorArray, BPMeteorRadius);
 
         ItemStack stickStack = new ItemStack(Items.stick, 1, craftingConstant);
 

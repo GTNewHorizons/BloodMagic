@@ -112,8 +112,8 @@ public class BloodMagicConfiguration
 		AlchemicalWizardry.netherStarMeteorArray = config.get("meteor", "netherStarMeteor", new String[]{"oreDiamond", "150", "oreEmerald", "100", "oreQuartz", "250", "oreSunstone", "5", "oreMoonstone", "50", "oreIridium", "5", "oreCertusQuartz", "150"}).getStringList();
 		AlchemicalWizardry.netherStarMeteorRadius = config.get("meteor", "netherStarMeteorRadius", 3).getInt();
 		//add new meteor
-		AlchemicalWizardry.netherWartMeteorArray = config.get("meteor", "netherWartMeteor", new String[]{"oreDiamond", "1000"}).getStringList();
-		AlchemicalWizardry.netherWartMeteorRadius = config.get("meteor", "netherWartMeteorRadius", 5).getInt();
+		AlchemicalWizardry.BPMeteorArray = config.get("meteor", "BPMeteor", new String[]{"oreBlackPlutonium", "1000"}).getStringList();
+		AlchemicalWizardry.BPMeteorRadius = config.get("meteor", "BPMeteorRadius", 3).getInt();
 
 		AlchemicalWizardry.allowedCrushedOresArray = config.get("oreCrushing", "allowedOres", new String[]{"iron", "gold", "copper", "tin", "lead", "silver", "osmium"}).getStringList();
 
