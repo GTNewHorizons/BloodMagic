@@ -77,6 +77,7 @@ import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregtech.api.util.GT_ModHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -897,8 +898,19 @@ public class AlchemicalWizardry
         MeteorRegistry.registerMeteorParadigm(ironBlockStack, ironBlockMeteorArray, ironBlockMeteorRadius);
         MeteorRegistry.registerMeteorParadigm(new ItemStack(Items.nether_star), netherStarMeteorArray, netherStarMeteorRadius);
         //add new meteor
-        MeteorRegistry.registerMeteorParadigm(new ItemStack(dreamcraft.tile.BlackPlutonium, 1, 388), BPMeteorArray, BPMeteorRadius);
-
+        //MeteorRegistry.registerMeteorParadigm(new ItemStack(dreamcraft.tile.BlackPlutonium, 1, 388), BPMeteorArray, BPMeteorRadius);
+        //ItemStack diamondStack = new ItemStack(Items.diamond, 1, craftingConstant);
+        //ItemStack itemGoggles = ItemApi.getItem("itemGoggles", 0);
+        //Item itemThaumChest = GameRegistry.findItem("Thaumcraft", "ItemChestplateThaumium");
+        //ItemStack BPBlock = ItemApi.getItem("tile.BlackPlutonium", 0);
+        //ItemStack BPBlock = GameRegistry.findItem("dreamcraft", "tile.BlackPlutonium");
+        //ItemStack BPBlock = new ItemStack(dreamcraft.tile.BlackPlutonium, 1, 0);
+        //ItemStack BPBlock = GameRegistry.findItemStack("dreamcraft", "tile.BlackPlutonium", 1); 	This
+        //MeteorRegistry.registerMeteorParadigm(BPBlock, BPMeteorArray, BPMeteorRadius);			and this work
+        ItemStack BPBlock = GT_ModHandler.getModItem("gregtech", "gt.blockores", 1, 6); //lithium ore
+        MeteorRegistry.registerMeteorParadigm(BPBlock, BPMeteorArray, BPMeteorRadius);
+        
+        //6
         ItemStack stickStack = new ItemStack(Items.stick, 1, craftingConstant);
 
         //Register spell component recipes
