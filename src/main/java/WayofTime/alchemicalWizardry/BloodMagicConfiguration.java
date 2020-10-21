@@ -102,18 +102,23 @@ public class BloodMagicConfiguration
 		AlchemicalWizardry.customPotionAmphibianID = config.get("Potion ID", "Amphibian", 116).getInt();
 
 		MeteorParadigm.maxChance = config.get("meteor", "maxChance", 1000).getInt();
-		AlchemicalWizardry.doMeteorsDestroyBlocks = config.get("meteor", "doMeteorsDestroyBlocks", true).getBoolean(true);
-		AlchemicalWizardry.diamondMeteorArray = config.get("meteor", "diamondMeteor", new String[]{"oreDiamond", "100", "oreEmerald", "75", "oreCinnabar", "200", "oreAmber", "200"}).getStringList();
-		AlchemicalWizardry.diamondMeteorRadius = config.get("meteor", "diamondMeteorRadius", 5).getInt();
-		AlchemicalWizardry.stoneMeteorArray = config.get("meteor", "stoneBlockMeteor", new String[]{"oreCoal", "150", "oreApatite", "50", "oreIron", "50"}).getStringList();
-		AlchemicalWizardry.stoneMeteorRadius = config.get("meteor", "stoneMeteorRadius", 16).getInt();
-		AlchemicalWizardry.ironBlockMeteorArray = config.get("meteor", "ironBlockMeteor", new String[]{"oreIron", "400", "oreGold", "30", "oreCopper", "200", "oreTin", "140", "oreSilver", "70", "oreLead", "80", "oreLapis", "60", "oreRedstone", "100"}).getStringList();
-		AlchemicalWizardry.ironBlockMeteorRadius = config.get("meteor", "ironBlockMeteorRadius", 7).getInt();
-		AlchemicalWizardry.netherStarMeteorArray = config.get("meteor", "netherStarMeteor", new String[]{"oreDiamond", "150", "oreEmerald", "100", "oreQuartz", "250", "oreSunstone", "5", "oreMoonstone", "50", "oreIridium", "5", "oreCertusQuartz", "150"}).getStringList();
-		AlchemicalWizardry.netherStarMeteorRadius = config.get("meteor", "netherStarMeteorRadius", 3).getInt();
+		AlchemicalWizardry.doMeteorsDestroyBlocks = config.get("meteor", "doMeteorsDestroyBlocks", false).getBoolean(true);
+		AlchemicalWizardry.Meteor00Array = config.get("meteor", "Meteor00", new String[]{"oreDiamond", "1000"}).getStringList();
+		AlchemicalWizardry.Meteor00Radius = config.get("meteor", "Meteor00Radius", 5).getInt();
+		AlchemicalWizardry.Meteor00Cost = config.get("meteor", "Meteor00Cost", 5000).getInt();
+		AlchemicalWizardry.Meteor01Array = config.get("meteor", "Meteor01", new String[]{"oreCoal", "1000"}).getStringList();
+		AlchemicalWizardry.Meteor01Radius = config.get("meteor", "Meteor01Radius", 5).getInt();
+		AlchemicalWizardry.Meteor01Cost = config.get("meteor", "Meteor01Cost", 10000).getInt();
+		AlchemicalWizardry.Meteor02Array = config.get("meteor", "Meteor02", new String[]{"oreIron", "1000"}).getStringList();
+		AlchemicalWizardry.Meteor02Radius = config.get("meteor", "Meteor02Radius", 5).getInt();
+		AlchemicalWizardry.Meteor02Cost = config.get("meteor", "Meteor02Cost", 30000).getInt();
+		AlchemicalWizardry.Meteor03Array = config.get("meteor", "Meteor03", new String[]{"oreEmerald", "1000"}).getStringList();
+		AlchemicalWizardry.Meteor03Radius = config.get("meteor", "Meteor03Radius", 5).getInt();
+		AlchemicalWizardry.Meteor03Cost = config.get("meteor", "Meteor03Cost", 50000).getInt();
 		//add new meteor
-		AlchemicalWizardry.BPMeteorArray = config.get("meteor", "BPMeteor", new String[]{"oreBlackPlutonium", "1000"}).getStringList();
-		AlchemicalWizardry.BPMeteorRadius = config.get("meteor", "BPMeteorRadius", 3).getInt();
+		AlchemicalWizardry.Meteor04Array = config.get("meteor", "Meteor04", new String[]{"oreLithium", "1000"}).getStringList();
+		AlchemicalWizardry.Meteor04Radius = config.get("meteor", "Meteor04Radius", 5).getInt();
+		AlchemicalWizardry.Meteor04Cost = config.get("meteor", "Meteor04Cost", 70000).getInt();
 
 		AlchemicalWizardry.allowedCrushedOresArray = config.get("oreCrushing", "allowedOres", new String[]{"iron", "gold", "copper", "tin", "lead", "silver", "osmium"}).getStringList();
 

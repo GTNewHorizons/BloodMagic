@@ -21,7 +21,9 @@ import java.util.List;
 
 public class RitualEffectSummonMeteor extends RitualEffect
 {
-    @Override
+	private static int meteorID;
+
+	@Override
     public void performEffect(IMasterRitualStone ritualStone)
     {
         String owner = ritualStone.getOwner();
@@ -36,32 +38,33 @@ public class RitualEffectSummonMeteor extends RitualEffect
         {
             ritualStone.setCooldown(0);
         }
+  
+        List<EntityItem> entities = world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(x, y + 1, z, x + 1, y + 2, z + 1));
 
-        if (currentEssence < this.getCostPerRefresh())
+        if (entities == null)
         {
-            EntityPlayer entityOwner = SpellHelper.getPlayerForUsername(owner);
+            return;
+        }
 
-            if (entityOwner == null)
-            {
-                return;
-            }
-
-            entityOwner.addPotionEffect(new PotionEffect(Potion.confusion.id, 80));
-        } else
+        for (EntityItem entityItem : entities)
         {
-            List<EntityItem> entities = world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(x, y + 1, z, x + 1, y + 2, z + 1));
-
-            if (entities == null)
+            if (entityItem != null && MeteorRegistry.isValidParadigmItem(entityItem.getEntityItem()))
             {
-                return;
-            }
-
-            for (EntityItem entityItem : entities)
-            {
-                if (entityItem != null && MeteorRegistry.isValidParadigmItem(entityItem.getEntityItem()))
+                meteorID = MeteorRegistry.getParadigmIDForItem(entityItem.getEntityItem());
+                if (currentEssence < this.getCostPerRefresh())
                 {
-                    int meteorID = MeteorRegistry.getParadigmIDForItem(entityItem.getEntityItem());
-                    EntityMeteor meteor = new EntityMeteor(world, x + 0.5f, 257, z + 0.5f, meteorID);
+                    EntityPlayer entityOwner = SpellHelper.getPlayerForUsername(owner);
+
+                    if (entityOwner == null)
+                    {
+                        return;
+                    }
+
+                    entityOwner.addPotionEffect(new PotionEffect(Potion.confusion.id, 80));
+                }
+                else
+                {
+                	EntityMeteor meteor = new EntityMeteor(world, x + 0.5f, 257, z + 0.5f, meteorID);
                     meteor.motionY = -1.0f;
 
                     if (this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, 1000, true))
@@ -88,20 +91,42 @@ public class RitualEffectSummonMeteor extends RitualEffect
                     entityItem.setDead();
                     world.spawnEntityInWorld(meteor);
                     ritualStone.setActive(false);
+                    SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
                     break;
                 }
             }
-
-            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
         }
-    }
-
-    @Override
+	}
+   
+	@Override
     public int getCostPerRefresh()
-    {
-        return AlchemicalWizardry.ritualCostFallingTower[1];
+    {	
+		if (meteorID == 0 )//Meteor00
+    	{
+    		return AlchemicalWizardry.Meteor00Cost;
+       	}
+    	else if (meteorID == 1 )//Meteor01
+    	{
+    		return AlchemicalWizardry.Meteor01Cost;
+    	}
+    	else if (meteorID == 2 )//Meteor02
+    	{
+    		return AlchemicalWizardry.Meteor02Cost;
+    	}
+    	else if (meteorID == 3 )//Meteor03
+    	{
+    		return AlchemicalWizardry.Meteor03Cost;
+    	}
+    	else if (meteorID == 4 )//Meteor04
+    	{
+    		return AlchemicalWizardry.Meteor04Cost;
+    	}
+    	else //fail, or initial right click. Can't fix :( But default can be set to 0
+    	{	//otherwise you pay 1M(or what's in the config) LP for activating MRS, then again for the specific meteor
+    		return AlchemicalWizardry.ritualCostFallingTower[1];
+    	}
     }
-
+    
     @Override
     public List<RitualComponent> getRitualComponentList()
     {

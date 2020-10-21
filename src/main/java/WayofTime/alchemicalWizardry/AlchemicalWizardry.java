@@ -111,18 +111,23 @@ public class AlchemicalWizardry
 	public static boolean parseTextFiles = false;
 
     public static boolean doMeteorsDestroyBlocks = true;
-    public static String[] diamondMeteorArray;
-    public static int diamondMeteorRadius;
-    public static String[] stoneMeteorArray;
-    public static int stoneMeteorRadius;
-    public static String[] ironBlockMeteorArray;
-    public static int ironBlockMeteorRadius;
-    public static String[] netherStarMeteorArray;
-    public static int netherStarMeteorRadius;
+    public static String[] Meteor00Array;
+    public static int Meteor00Radius;
+    public static int Meteor00Cost;
+    public static String[] Meteor01Array;
+    public static int Meteor01Radius;
+    public static int Meteor01Cost;
+    public static String[] Meteor02Array;
+    public static int Meteor02Radius;
+    public static int Meteor02Cost;
+    public static String[] Meteor03Array;
+    public static int Meteor03Radius;
+    public static int Meteor03Cost;
     //add new meteor
-    public static String[] BPMeteorArray;
-    public static int BPMeteorRadius;
-
+    public static String[] Meteor04Array;
+    public static int Meteor04Radius;
+    public static int Meteor04Cost;
+    
     public static String[] allowedCrushedOresArray;
 
     public static Potion customPotionDrowning;
@@ -893,24 +898,17 @@ public class AlchemicalWizardry
 
         //Ore Dictionary Registration
         OreDictionary.registerOre("oreCoal", Blocks.coal_ore);
-        MeteorRegistry.registerMeteorParadigm(diamondStack, diamondMeteorArray, diamondMeteorRadius);
-        MeteorRegistry.registerMeteorParadigm(stoneStack, stoneMeteorArray, stoneMeteorRadius);
-        MeteorRegistry.registerMeteorParadigm(ironBlockStack, ironBlockMeteorArray, ironBlockMeteorRadius);
-        MeteorRegistry.registerMeteorParadigm(new ItemStack(Items.nether_star), netherStarMeteorArray, netherStarMeteorRadius);
+        MeteorRegistry.registerMeteorParadigm(diamondStack, Meteor00Array, Meteor00Radius);
+        MeteorRegistry.registerMeteorParadigm(stoneStack, Meteor01Array, Meteor01Radius);
+        MeteorRegistry.registerMeteorParadigm(ironBlockStack, Meteor02Array, Meteor02Radius);
+        MeteorRegistry.registerMeteorParadigm(new ItemStack(Items.nether_star), Meteor03Array, Meteor03Radius);
         //add new meteor
-        //MeteorRegistry.registerMeteorParadigm(new ItemStack(dreamcraft.tile.BlackPlutonium, 1, 388), BPMeteorArray, BPMeteorRadius);
-        //ItemStack diamondStack = new ItemStack(Items.diamond, 1, craftingConstant);
-        //ItemStack itemGoggles = ItemApi.getItem("itemGoggles", 0);
-        //Item itemThaumChest = GameRegistry.findItem("Thaumcraft", "ItemChestplateThaumium");
-        //ItemStack BPBlock = ItemApi.getItem("tile.BlackPlutonium", 0);
-        //ItemStack BPBlock = GameRegistry.findItem("dreamcraft", "tile.BlackPlutonium");
-        //ItemStack BPBlock = new ItemStack(dreamcraft.tile.BlackPlutonium, 1, 0);
-        //ItemStack BPBlock = GameRegistry.findItemStack("dreamcraft", "tile.BlackPlutonium", 1); 	This
-        //MeteorRegistry.registerMeteorParadigm(BPBlock, BPMeteorArray, BPMeteorRadius);			and this work
-        ItemStack BPBlock = GT_ModHandler.getModItem("gregtech", "gt.blockores", 1, 6); //lithium ore
-        MeteorRegistry.registerMeteorParadigm(BPBlock, BPMeteorArray, BPMeteorRadius);
+        //ItemStack BPBlock = GameRegistry.findItemStack("dreamcraft", "tile.BlackPlutonium", 1); 	//Use Black Plutonium block as catalyst to summon
+        //MeteorRegistry.registerMeteorParadigm(BPBlock, BPMeteorArray, BPMeteorRadius);			//continued
         
-        //6
+        ItemStack BPBlock = GT_ModHandler.getModItem("gregtech", "gt.blockores", 1, 6); 			//Use Lithium Ore as catalyst to summon
+        MeteorRegistry.registerMeteorParadigm(BPBlock, Meteor04Array, Meteor04Radius);				//catalysts are paradigms in this version of BM     
+        
         ItemStack stickStack = new ItemStack(Items.stick, 1, craftingConstant);
 
         //Register spell component recipes
