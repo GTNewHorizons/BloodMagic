@@ -29,6 +29,7 @@ import WayofTime.alchemicalWizardry.api.sacrifice.PlayerSacrificeHandler;
 import WayofTime.alchemicalWizardry.api.soulNetwork.ComplexNetworkHandler;
 import WayofTime.alchemicalWizardry.api.spell.*;
 import WayofTime.alchemicalWizardry.api.summoningRegistry.SummoningRegistry;
+import WayofTime.alchemicalWizardry.api.util.BMModHandler;
 import WayofTime.alchemicalWizardry.common.*;
 import WayofTime.alchemicalWizardry.common.achievements.ModAchievements;
 import WayofTime.alchemicalWizardry.common.alchemy.CombinedPotionRegistry;
@@ -77,7 +78,7 @@ import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import gregtech.api.util.GT_ModHandler;
+//import gregtech.api.util.GT_ModHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -906,7 +907,7 @@ public class AlchemicalWizardry
         //ItemStack BPBlock = GameRegistry.findItemStack("dreamcraft", "tile.BlackPlutonium", 1); 	//Use Black Plutonium block as catalyst to summon
         //MeteorRegistry.registerMeteorParadigm(BPBlock, BPMeteorArray, BPMeteorRadius);			//continued
         
-        ItemStack BPBlock = GT_ModHandler.getModItem("gregtech", "gt.blockores", 1, 6); 			//Use Lithium Ore as catalyst to summon
+        ItemStack BPBlock = BMModHandler.getModItem("gregtech", "gt.blockores", 1, 6); 			//Use Lithium Ore as catalyst to summon
         MeteorRegistry.registerMeteorParadigm(BPBlock, Meteor04Array, Meteor04Radius);				//catalysts are paradigms in this version of BM     
         
         ItemStack stickStack = new ItemStack(Items.stick, 1, craftingConstant);
