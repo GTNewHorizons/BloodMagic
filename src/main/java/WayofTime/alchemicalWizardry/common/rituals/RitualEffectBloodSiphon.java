@@ -28,8 +28,8 @@ public class RitualEffectBloodSiphon extends RitualEffect {
     public void performEffect(IMasterRitualStone ritualStone)
     {
         String owner = ritualStone.getOwner();
-
         int currentEssence = SoulNetworkHandler.getCurrentEssence(owner);
+        
         World world = ritualStone.getWorld();
         int x = ritualStone.getXCoord();
         int y = ritualStone.getYCoord();
@@ -47,7 +47,7 @@ public class RitualEffectBloodSiphon extends RitualEffect {
         {
             for (int j = -5; j <= 5; j++)
             {
-                for (int k = -13; k <= 13; k++)
+                for (int k = -13; k <= 13; k++)//height checking is +6 because it's height is higher than normal
                 {
                     if (world.getTileEntity(x + i, y + k, z + j) instanceof IBloodAltar)
                     {

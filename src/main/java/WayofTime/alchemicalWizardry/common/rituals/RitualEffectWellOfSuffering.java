@@ -16,8 +16,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-public class RitualEffectWellOfSuffering extends RitualEffect
-{
+public class RitualEffectWellOfSuffering extends RitualEffect {
     public static final int timeDelay = 25;
     public static final int amount = AlchemicalWizardry.lpPerSacrificeWellOfSuffering;
 
@@ -28,9 +27,9 @@ public class RitualEffectWellOfSuffering extends RitualEffect
     @Override
     public void performEffect(IMasterRitualStone ritualStone)
     {
-        String owner = ritualStone.getOwner();
-
+    	String owner = ritualStone.getOwner();
         int currentEssence = SoulNetworkHandler.getCurrentEssence(owner);
+        
         World world = ritualStone.getWorld();
         int x = ritualStone.getXCoord();
         int y = ritualStone.getYCoord();
@@ -89,6 +88,7 @@ public class RitualEffectWellOfSuffering extends RitualEffect
 
                 hasOffensa = hasOffensa && this.canDrainReagent(ritualStone, ReagentRegistry.offensaReagent, offensaDrain, true);
 
+                
                 if (livingEntity.attackEntityFrom(DamageSource.outOfWorld, hasOffensa ? 2 : 1))
                 {
                 	hasTennebrae = hasTennebrae && this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, true);
@@ -97,6 +97,7 @@ public class RitualEffectWellOfSuffering extends RitualEffect
                     entityCount++;
                     if (entityCount <= AlchemicalWizardry.maxEntitiesCounted) {//prevent more than <config entry> entities from being counted
                     	tileAltar.sacrificialDaggerCall(this.amount * (hasTennebrae ? 2 : 1) * (hasOffensa ? 2 : 1), true);
+                    	
                     }
                 }
             }
@@ -161,6 +162,6 @@ public class RitualEffectWellOfSuffering extends RitualEffect
         wellOfSufferingRitual.add(new RitualComponent(0, 1, 4, RitualComponent.AIR));
         wellOfSufferingRitual.add(new RitualComponent(-4, 1, 0, RitualComponent.AIR));
         wellOfSufferingRitual.add(new RitualComponent(0, 1, -4, RitualComponent.AIR));
-        return wellOfSufferingRitual;
-    }
+		return wellOfSufferingRitual;
+	}
 }
