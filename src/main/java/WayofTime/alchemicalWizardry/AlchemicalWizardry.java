@@ -193,6 +193,7 @@ public class AlchemicalWizardry
     public static boolean ritualDisabledCrafting;
     public static boolean ritualDisabledPhantomHands;
     public static boolean ritualDisabledSphereIsland;
+    public static boolean ritualDisabledBloodSiphon;
 
     public static boolean ritualWeakDisabledNight;
     public static boolean ritualWeakDisabledResistance;
@@ -281,6 +282,7 @@ public class AlchemicalWizardry
     public static int[] ritualCostCrafting;
     public static int[] ritualCostPhantomHands;
     public static int[] ritualCostSphereIsland;
+    public static int[] ritualCostBloodSiphon;
 
     public static int ritualWeakCostNight;
     public static int ritualWeakCostResistance;
@@ -313,6 +315,7 @@ public class AlchemicalWizardry
     public static int lpPerSelfSacrificeFeatheredKnife = 100;
     public static int lpPerSacrificeBase = 500;
     public static int lpPerSacrificeWellOfSuffering = 10;
+    public static int lpPerSacrificeBloodSiphon = 500;
     public static double lpPerSacrificeIncense = 100.0D;
     public static HashMap<Class<?>, Integer> lpPerSactificeCustom;
 
@@ -1432,13 +1435,11 @@ public class AlchemicalWizardry
         Rituals.registerRitual("AW031Convocation",isDemonRitualCreativeOnly ? 10 : 2, AlchemicalWizardry.ritualCostConvocation[0], new RitualEffectDemonPortal(), "Convocation of the Damned", new AlchemyCircleRenderer(new ResourceLocation("alchemicalwizardry:textures/models/TransCircleDemon.png"), 220, 22, 22, 255, 0, 0.501, 0.501, 0, 5, false));
         Rituals.registerRitual("AW032Symmetry", 2, AlchemicalWizardry.ritualCostSymmetry[0], new RitualEffectOmegaTest(), "Symmetry of the Omega");
         Rituals.registerRitual("AW033Stalling", 2, AlchemicalWizardry.ritualCostStalling[0], new RitualEffectOmegaStalling(), "Duet of the Fused Souls");
-
         Rituals.registerRitual("AW034Crafting", 1, AlchemicalWizardry.ritualCostCrafting[0], new RitualEffectCrafting(), "Rhythm of the Beating Anvil");
-
         Rituals.registerRitual("AW035PhantomHands", 1, AlchemicalWizardry.ritualCostPhantomHands[0], new RitualEffectItemRouting(), "Orchestra of the Phantom Hands");
-
         Rituals.registerRitual("AW036SphereIsland", 2, AlchemicalWizardry.ritualCostSphereIsland[0], new RitualEffectSphereCreator(), "Blood of the New Moon");
         //Rituals.registerRitual(1,100,new RitualEffectApiaryOverclock(),"Apiary Overclock"));
+        Rituals.registerRitual("AW037BloodSiphon", 2, AlchemicalWizardry.ritualCostBloodSiphon[0], new RitualEffectBloodSiphon(), "Blood Siphon", new AlchemyCircleRenderer(new ResourceLocation("alchemicalwizardry:textures/models/AlchemyArrays/WellOfSufferingArray.png"), 0, 0, 0, 255, 0, 0.501, 0.8, 0, 2.5, true));
     }
 
     public static void initBindingRecipes()
