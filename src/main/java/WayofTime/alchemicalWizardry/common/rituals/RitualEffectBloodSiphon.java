@@ -94,7 +94,7 @@ public class RitualEffectBloodSiphon extends RitualEffect {
 
 
                     entityCount++;
-                    if (entityCount <= 20) {//prevent more than <config entry> entities from being counted
+                    if (entityCount <= AlchemicalWizardry.maxEntitiesCounted) {//prevent more than <config entry> entities from being counted
                     	tileAltar.sacrificialDaggerCall(this.amount * (hasTennebrae ? 2 : 1) * (hasOffensa ? 2 : 1), true);
                     }
                 }
