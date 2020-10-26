@@ -18,271 +18,253 @@ import net.minecraft.world.World;
 
 public class RitualEffectBloodSiphon extends RitualEffect {
 	public static final int timeDelay = 25;
-    public static final int amount = AlchemicalWizardry.lpPerSacrificeBloodSiphon;
+	public static final int amount = AlchemicalWizardry.lpPerSacrificeBloodSiphon;
 
-    private static final int tennebraeDrain = 5;
-    private static final int potentiaDrain = 10;
-    private static final int offensaDrain = 3;
+	private static final int tennebraeDrain = 5;
+	private static final int potentiaDrain = 10;
+	private static final int offensaDrain = 3;
 
-    @Override
-    public void performEffect(IMasterRitualStone ritualStone)
-    {
-        String owner = ritualStone.getOwner();
-        int currentEssence = SoulNetworkHandler.getCurrentEssence(owner);
-        
-        World world = ritualStone.getWorld();
-        int x = ritualStone.getXCoord();
-        int y = ritualStone.getYCoord();
-        int z = ritualStone.getZCoord();
+	@Override
+	public void performEffect(IMasterRitualStone ritualStone) {
+		String owner = ritualStone.getOwner();
+		int currentEssence = SoulNetworkHandler.getCurrentEssence(owner);
 
-        if (world.getWorldTime() % this.timeDelay != 0)
-        {
-            return;
-        }
+		World world = ritualStone.getWorld();
+		int x = ritualStone.getXCoord();
+		int y = ritualStone.getYCoord();
+		int z = ritualStone.getZCoord();
 
-        IBloodAltar tileAltar = null;
-        boolean testFlag = false;
+		if (world.getWorldTime() % this.timeDelay != 0) {
+			return;
+		}
 
-        for (int i = -5; i <= 5; i++)
-        {
-            for (int j = -5; j <= 5; j++)
-            {
-                for (int k = -13; k <= 13; k++)//height checking is +6 because it's height is higher than normal
-                {
-                    if (world.getTileEntity(x + i, y + k, z + j) instanceof IBloodAltar)
-                    {
-                        tileAltar = (IBloodAltar) world.getTileEntity(x + i, y + k, z + j);
-                        testFlag = true;
-                    }
-                }
-            }
-        }
+		IBloodAltar tileAltar = null;
+		boolean testFlag = false;
 
-        if (!testFlag)
-        {
-            return;
-        }
+		for (int i = -5; i <= 5; i++) {
+			for (int j = -5; j <= 5; j++) {
+				for (int k = -13; k <= 13; k++)// height checking is +6 because it's height is higher than normal
+				{
+					if (world.getTileEntity(x + i, y + k, z + j) instanceof IBloodAltar) {
+						tileAltar = (IBloodAltar) world.getTileEntity(x + i, y + k, z + j);
+						testFlag = true;
+					}
+				}
+			}
+		}
 
-        boolean hasPotentia = this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, false);
+		if (!testFlag) {
+			return;
+		}
 
-        int d0 = 10;
-        int vertRange = hasPotentia ? 20 : 10;
-        AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox((double) x, (double) y, (double) z, (double) (x + 1), (double) (y + 1), (double) (z + 1)).expand(d0, vertRange, d0);
-        List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
+		boolean hasPotentia = this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, false);
 
-        int entityCount = 0;
-        boolean hasTennebrae = this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, false);
-        boolean hasOffensa = this.canDrainReagent(ritualStone, ReagentRegistry.offensaReagent, offensaDrain, false);
+		int d0 = 10;
+		int vertRange = hasPotentia ? 20 : 10;
+		AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox((double) x, (double) y, (double) z, (double) (x + 1), (double) (y + 1), (double) (z + 1)).expand(d0, vertRange, d0);
+		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
-        if (currentEssence < this.getCostPerRefresh() * list.size())
-        {
-            SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else
-        {
-            for (EntityLivingBase livingEntity : list)
-            {
-                if (!livingEntity.isEntityAlive() || livingEntity instanceof EntityPlayer || AlchemicalWizardry.wellBlacklist.contains(livingEntity.getClass()))
-                {
-                    continue;
-                }
+		int entityCount = 0;
+		boolean hasTennebrae = this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, false);
+		boolean hasOffensa = this.canDrainReagent(ritualStone, ReagentRegistry.offensaReagent, offensaDrain, false);
 
-                hasOffensa = hasOffensa && this.canDrainReagent(ritualStone, ReagentRegistry.offensaReagent, offensaDrain, true);
+		if (currentEssence < this.getCostPerRefresh() * list.size()) {
+			SoulNetworkHandler.causeNauseaToPlayer(owner);
+		} else {
+			for (EntityLivingBase livingEntity : list) {
+				if (!livingEntity.isEntityAlive() || livingEntity instanceof EntityPlayer || AlchemicalWizardry.wellBlacklist.contains(livingEntity.getClass())) {
+					continue;
+				}
 
-                if (livingEntity.attackEntityFrom(DamageSource.outOfWorld, hasOffensa ? 2 : 1))
-                {
-                	hasTennebrae = hasTennebrae && this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, true);
+				hasOffensa = hasOffensa && this.canDrainReagent(ritualStone, ReagentRegistry.offensaReagent, offensaDrain, true);
 
+				if (livingEntity.attackEntityFrom(DamageSource.outOfWorld, hasOffensa ? 2 : 1)) {
+					hasTennebrae = hasTennebrae && this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, true);
+					entityCount++;
+					if (entityCount <= AlchemicalWizardry.maxEntitiesCounted) {// prevent more than <config entry> entities from being counted
+						tileAltar.sacrificialDaggerCall(this.amount * (hasTennebrae ? 2 : 1) * (hasOffensa ? 2 : 1), true);
+					}
+				}
+			}
 
-                    entityCount++;
-                    if (entityCount <= AlchemicalWizardry.maxEntitiesCounted) {//prevent more than <config entry> entities from being counted
-                    	tileAltar.sacrificialDaggerCall(this.amount * (hasTennebrae ? 2 : 1) * (hasOffensa ? 2 : 1), true);
-                    }
-                }
-            }
-            
-            if (entityCount <= AlchemicalWizardry.maxEntitiesCounted) {
-            	SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
-            }
-            else if (entityCount > AlchemicalWizardry.maxEntitiesCounted) {//if more than <config entry> entities, only pay for <config entry> to be injured
-            	SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * 20);
-            }
+			if (entityCount <= AlchemicalWizardry.maxEntitiesCounted) {
+				SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
+			} else if (entityCount > AlchemicalWizardry.maxEntitiesCounted) {// if more than <config entry> entities, only pay for <config entry> to be injured
+				SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * 20);
+			}
 
-            if(hasPotentia)
-            {
-            	this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, true);
-            }
-        }
-    }
+			if (hasPotentia) {
+				this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, true);
+			}
+		}
+	}
 
-    @Override
-    public int getCostPerRefresh()
-    {
-        return AlchemicalWizardry.ritualCostBloodSiphon[1];
-    }
+	@Override
+	public int getCostPerRefresh() {
+		return AlchemicalWizardry.ritualCostBloodSiphon[1];
+	}
 
-    @Override
-    public List<RitualComponent> getRitualComponentList()
-    {
-        ArrayList<RitualComponent> bloodSiphonRitual = new ArrayList();
-        //fire
-        bloodSiphonRitual.add(new RitualComponent(-1, 0, 0, RitualComponent.FIRE));
-        
-        bloodSiphonRitual.add(new RitualComponent(-2, 1, 1, RitualComponent.FIRE));
-        bloodSiphonRitual.add(new RitualComponent(-2, 1, -1, RitualComponent.FIRE));
-        bloodSiphonRitual.add(new RitualComponent(-2, -1, 1, RitualComponent.FIRE));
-        bloodSiphonRitual.add(new RitualComponent(-2, -1, -1, RitualComponent.FIRE));
-        
-        bloodSiphonRitual.add(new RitualComponent(-3, 2, 0, RitualComponent.FIRE));
-        bloodSiphonRitual.add(new RitualComponent(-3, -2, 0, RitualComponent.FIRE));
-        
-        bloodSiphonRitual.add(new RitualComponent(-4, 3, 1, RitualComponent.FIRE));
-        bloodSiphonRitual.add(new RitualComponent(-4, 4, 0, RitualComponent.FIRE));
-        bloodSiphonRitual.add(new RitualComponent(-4, 3, -1, RitualComponent.FIRE));
-        
-        bloodSiphonRitual.add(new RitualComponent(-4, -3, 1, RitualComponent.FIRE));
-        bloodSiphonRitual.add(new RitualComponent(-4, -4, 0, RitualComponent.FIRE));
-        bloodSiphonRitual.add(new RitualComponent(-4, -3, -1, RitualComponent.FIRE));
-        
-        //water
-        bloodSiphonRitual.add(new RitualComponent(1, 0, 0, RitualComponent.WATER));
-        
-        bloodSiphonRitual.add(new RitualComponent(2, 1, 1, RitualComponent.WATER));
-        bloodSiphonRitual.add(new RitualComponent(2, 1, -1, RitualComponent.WATER));
-        bloodSiphonRitual.add(new RitualComponent(2, -1, 1, RitualComponent.WATER));
-        bloodSiphonRitual.add(new RitualComponent(2, -1, -1, RitualComponent.WATER));
-        
-        bloodSiphonRitual.add(new RitualComponent(3, 2, 0, RitualComponent.WATER));
-        bloodSiphonRitual.add(new RitualComponent(3, -2, 0, RitualComponent.WATER));
-        
-        bloodSiphonRitual.add(new RitualComponent(4, 3, 1, RitualComponent.WATER));
-        bloodSiphonRitual.add(new RitualComponent(4, 4, 0, RitualComponent.WATER));
-        bloodSiphonRitual.add(new RitualComponent(4, 3, -1, RitualComponent.WATER));
-        
-        bloodSiphonRitual.add(new RitualComponent(4, -3, 1, RitualComponent.WATER));
-        bloodSiphonRitual.add(new RitualComponent(4, -4, 0, RitualComponent.WATER));
-        bloodSiphonRitual.add(new RitualComponent(4, -3, -1, RitualComponent.WATER));
+	@Override
+	public List<RitualComponent> getRitualComponentList() {
+		ArrayList<RitualComponent> bloodSiphonRitual = new ArrayList();
+		// fire
+		bloodSiphonRitual.add(new RitualComponent(-1, 0, 0, RitualComponent.FIRE));
 
-        //Air
-        bloodSiphonRitual.add(new RitualComponent(0, 0, -1, RitualComponent.AIR));
-        
-        bloodSiphonRitual.add(new RitualComponent(1, 1, -2, RitualComponent.AIR));
-        bloodSiphonRitual.add(new RitualComponent(-1, 1, -2, RitualComponent.AIR));
-        bloodSiphonRitual.add(new RitualComponent(1, -1, -2, RitualComponent.AIR));
-        bloodSiphonRitual.add(new RitualComponent(-1, -1, -2, RitualComponent.AIR));
-        
-        bloodSiphonRitual.add(new RitualComponent(0, 2, -3, RitualComponent.AIR));
-        bloodSiphonRitual.add(new RitualComponent(0, -2, -3, RitualComponent.AIR));
-        
-        bloodSiphonRitual.add(new RitualComponent(1, 3, -4, RitualComponent.AIR));
-        bloodSiphonRitual.add(new RitualComponent(0, 4, -4, RitualComponent.AIR));
-        bloodSiphonRitual.add(new RitualComponent(-1, 3, -4, RitualComponent.AIR));
-        
-        bloodSiphonRitual.add(new RitualComponent(1, -3, -4, RitualComponent.AIR));
-        bloodSiphonRitual.add(new RitualComponent(0, -4, -4, RitualComponent.AIR));
-        bloodSiphonRitual.add(new RitualComponent(-1, -3, -4, RitualComponent.AIR));
-        
-        //earth
-        bloodSiphonRitual.add(new RitualComponent(0, 0, 1, RitualComponent.EARTH));
-        
-        bloodSiphonRitual.add(new RitualComponent(1, 1, 2, RitualComponent.EARTH));
-        bloodSiphonRitual.add(new RitualComponent(-1, 1, 2, RitualComponent.EARTH));
-        bloodSiphonRitual.add(new RitualComponent(1, -1, 2, RitualComponent.EARTH));
-        bloodSiphonRitual.add(new RitualComponent(-1, -1, 2, RitualComponent.EARTH));
-        
-        bloodSiphonRitual.add(new RitualComponent(0, 2, 3, RitualComponent.EARTH));
-        bloodSiphonRitual.add(new RitualComponent(0, -2, 3, RitualComponent.EARTH));
-        
-        bloodSiphonRitual.add(new RitualComponent(1, 3, 4, RitualComponent.EARTH));
-        bloodSiphonRitual.add(new RitualComponent(0, 4, 4, RitualComponent.EARTH));
-        bloodSiphonRitual.add(new RitualComponent(-1, 3, 4, RitualComponent.EARTH));
-        
-        bloodSiphonRitual.add(new RitualComponent(1, -3, 4, RitualComponent.EARTH));
-        bloodSiphonRitual.add(new RitualComponent(0, -4, 4, RitualComponent.EARTH));
-        bloodSiphonRitual.add(new RitualComponent(-1, -3, 4, RitualComponent.EARTH)); 
-        
-        //dusk
-        bloodSiphonRitual.add(new RitualComponent(3, -2, -2, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(2, -2, -3, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(-2, 1, 1, RitualComponent.FIRE));
+		bloodSiphonRitual.add(new RitualComponent(-2, 1, -1, RitualComponent.FIRE));
+		bloodSiphonRitual.add(new RitualComponent(-2, -1, 1, RitualComponent.FIRE));
+		bloodSiphonRitual.add(new RitualComponent(-2, -1, -1, RitualComponent.FIRE));
 
-        bloodSiphonRitual.add(new RitualComponent(4, -3, -3, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(3, -3, -4, RitualComponent.DUSK));
-        
-        bloodSiphonRitual.add(new RitualComponent(4, -4, -2, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(2, -4, -4, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(4, -4, -4, RitualComponent.DUSK));
-      
-        bloodSiphonRitual.add(new RitualComponent(-3, -2, -2, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(-2, -2, -3, RitualComponent.DUSK));
-        
-        bloodSiphonRitual.add(new RitualComponent(-4, -3, -3, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(-3, -3, -4, RitualComponent.DUSK));
-        
-        bloodSiphonRitual.add(new RitualComponent(-4, -4, -2, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(-2, -4, -4, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(-4, -4, -4, RitualComponent.DUSK));
-     
-        bloodSiphonRitual.add(new RitualComponent(-3, -2, 2, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(-2, -2, 3, RitualComponent.DUSK));
-        
-        bloodSiphonRitual.add(new RitualComponent(-4, -3, 3, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(-3, -3, 4, RitualComponent.DUSK));
-        
-        bloodSiphonRitual.add(new RitualComponent(-4, -4, 2, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(-2, -4, 4, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(-4, -4, 4, RitualComponent.DUSK));
-       
-        bloodSiphonRitual.add(new RitualComponent(3, -2, 2, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(2, -2, 3, RitualComponent.DUSK));
-        
-        bloodSiphonRitual.add(new RitualComponent(4, -3, 3, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(3, -3, 4, RitualComponent.DUSK));
-        
-        bloodSiphonRitual.add(new RitualComponent(4, -4, 2, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(2, -4, 4, RitualComponent.DUSK));
-        bloodSiphonRitual.add(new RitualComponent(4, -4, 4, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(-3, 2, 0, RitualComponent.FIRE));
+		bloodSiphonRitual.add(new RitualComponent(-3, -2, 0, RitualComponent.FIRE));
 
-        
-        //dawn
-        bloodSiphonRitual.add(new RitualComponent(3, 2, -2, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(2, 2, -3, RitualComponent.DAWN));
-        
-        bloodSiphonRitual.add(new RitualComponent(4, 3, -3, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(3, 3, -4, RitualComponent.DAWN));
-        
-        bloodSiphonRitual.add(new RitualComponent(4, 4, -2, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(2, 4, -4, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(4, 4, -4, RitualComponent.DAWN));
-       
-        bloodSiphonRitual.add(new RitualComponent(-3, 2, -2, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(-2, 2, -3, RitualComponent.DAWN));
-        
-        bloodSiphonRitual.add(new RitualComponent(-4, 3, -3, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(-3, 3, -4, RitualComponent.DAWN));
-        
-        bloodSiphonRitual.add(new RitualComponent(-4, 4, -2, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(-2, 4, -4, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(-4, 4, -4, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(-4, 3, 1, RitualComponent.FIRE));
+		bloodSiphonRitual.add(new RitualComponent(-4, 4, 0, RitualComponent.FIRE));
+		bloodSiphonRitual.add(new RitualComponent(-4, 3, -1, RitualComponent.FIRE));
 
-        bloodSiphonRitual.add(new RitualComponent(-3, 2, 2, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(-2, 2, 3, RitualComponent.DAWN));
-        
-        bloodSiphonRitual.add(new RitualComponent(-4, 3, 3, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(-3, 3, 4, RitualComponent.DAWN));
-        
-        bloodSiphonRitual.add(new RitualComponent(-4, 4, 2, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(-2, 4, 4, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(-4, 4, 4, RitualComponent.DAWN));
-        
-        bloodSiphonRitual.add(new RitualComponent(3, 2, 2, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(2, 2, 3, RitualComponent.DAWN));
-        
-        bloodSiphonRitual.add(new RitualComponent(4, 3, 3, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(3, 3, 4, RitualComponent.DAWN));
-        
-        bloodSiphonRitual.add(new RitualComponent(4, 4, 2, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(2, 4, 4, RitualComponent.DAWN));
-        bloodSiphonRitual.add(new RitualComponent(4, 4, 4, RitualComponent.DAWN));
-        return bloodSiphonRitual;
-    }
+		bloodSiphonRitual.add(new RitualComponent(-4, -3, 1, RitualComponent.FIRE));
+		bloodSiphonRitual.add(new RitualComponent(-4, -4, 0, RitualComponent.FIRE));
+		bloodSiphonRitual.add(new RitualComponent(-4, -3, -1, RitualComponent.FIRE));
+
+		// water
+		bloodSiphonRitual.add(new RitualComponent(1, 0, 0, RitualComponent.WATER));
+
+		bloodSiphonRitual.add(new RitualComponent(2, 1, 1, RitualComponent.WATER));
+		bloodSiphonRitual.add(new RitualComponent(2, 1, -1, RitualComponent.WATER));
+		bloodSiphonRitual.add(new RitualComponent(2, -1, 1, RitualComponent.WATER));
+		bloodSiphonRitual.add(new RitualComponent(2, -1, -1, RitualComponent.WATER));
+
+		bloodSiphonRitual.add(new RitualComponent(3, 2, 0, RitualComponent.WATER));
+		bloodSiphonRitual.add(new RitualComponent(3, -2, 0, RitualComponent.WATER));
+
+		bloodSiphonRitual.add(new RitualComponent(4, 3, 1, RitualComponent.WATER));
+		bloodSiphonRitual.add(new RitualComponent(4, 4, 0, RitualComponent.WATER));
+		bloodSiphonRitual.add(new RitualComponent(4, 3, -1, RitualComponent.WATER));
+
+		bloodSiphonRitual.add(new RitualComponent(4, -3, 1, RitualComponent.WATER));
+		bloodSiphonRitual.add(new RitualComponent(4, -4, 0, RitualComponent.WATER));
+		bloodSiphonRitual.add(new RitualComponent(4, -3, -1, RitualComponent.WATER));
+
+		// Air
+		bloodSiphonRitual.add(new RitualComponent(0, 0, -1, RitualComponent.AIR));
+
+		bloodSiphonRitual.add(new RitualComponent(1, 1, -2, RitualComponent.AIR));
+		bloodSiphonRitual.add(new RitualComponent(-1, 1, -2, RitualComponent.AIR));
+		bloodSiphonRitual.add(new RitualComponent(1, -1, -2, RitualComponent.AIR));
+		bloodSiphonRitual.add(new RitualComponent(-1, -1, -2, RitualComponent.AIR));
+
+		bloodSiphonRitual.add(new RitualComponent(0, 2, -3, RitualComponent.AIR));
+		bloodSiphonRitual.add(new RitualComponent(0, -2, -3, RitualComponent.AIR));
+
+		bloodSiphonRitual.add(new RitualComponent(1, 3, -4, RitualComponent.AIR));
+		bloodSiphonRitual.add(new RitualComponent(0, 4, -4, RitualComponent.AIR));
+		bloodSiphonRitual.add(new RitualComponent(-1, 3, -4, RitualComponent.AIR));
+
+		bloodSiphonRitual.add(new RitualComponent(1, -3, -4, RitualComponent.AIR));
+		bloodSiphonRitual.add(new RitualComponent(0, -4, -4, RitualComponent.AIR));
+		bloodSiphonRitual.add(new RitualComponent(-1, -3, -4, RitualComponent.AIR));
+
+		// earth
+		bloodSiphonRitual.add(new RitualComponent(0, 0, 1, RitualComponent.EARTH));
+
+		bloodSiphonRitual.add(new RitualComponent(1, 1, 2, RitualComponent.EARTH));
+		bloodSiphonRitual.add(new RitualComponent(-1, 1, 2, RitualComponent.EARTH));
+		bloodSiphonRitual.add(new RitualComponent(1, -1, 2, RitualComponent.EARTH));
+		bloodSiphonRitual.add(new RitualComponent(-1, -1, 2, RitualComponent.EARTH));
+
+		bloodSiphonRitual.add(new RitualComponent(0, 2, 3, RitualComponent.EARTH));
+		bloodSiphonRitual.add(new RitualComponent(0, -2, 3, RitualComponent.EARTH));
+
+		bloodSiphonRitual.add(new RitualComponent(1, 3, 4, RitualComponent.EARTH));
+		bloodSiphonRitual.add(new RitualComponent(0, 4, 4, RitualComponent.EARTH));
+		bloodSiphonRitual.add(new RitualComponent(-1, 3, 4, RitualComponent.EARTH));
+
+		bloodSiphonRitual.add(new RitualComponent(1, -3, 4, RitualComponent.EARTH));
+		bloodSiphonRitual.add(new RitualComponent(0, -4, 4, RitualComponent.EARTH));
+		bloodSiphonRitual.add(new RitualComponent(-1, -3, 4, RitualComponent.EARTH));
+
+		// dusk
+		bloodSiphonRitual.add(new RitualComponent(3, -2, -2, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(2, -2, -3, RitualComponent.DUSK));
+
+		bloodSiphonRitual.add(new RitualComponent(4, -3, -3, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(3, -3, -4, RitualComponent.DUSK));
+
+		bloodSiphonRitual.add(new RitualComponent(4, -4, -2, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(2, -4, -4, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(4, -4, -4, RitualComponent.DUSK));
+
+		bloodSiphonRitual.add(new RitualComponent(-3, -2, -2, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(-2, -2, -3, RitualComponent.DUSK));
+
+		bloodSiphonRitual.add(new RitualComponent(-4, -3, -3, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(-3, -3, -4, RitualComponent.DUSK));
+
+		bloodSiphonRitual.add(new RitualComponent(-4, -4, -2, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(-2, -4, -4, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(-4, -4, -4, RitualComponent.DUSK));
+
+		bloodSiphonRitual.add(new RitualComponent(-3, -2, 2, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(-2, -2, 3, RitualComponent.DUSK));
+
+		bloodSiphonRitual.add(new RitualComponent(-4, -3, 3, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(-3, -3, 4, RitualComponent.DUSK));
+
+		bloodSiphonRitual.add(new RitualComponent(-4, -4, 2, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(-2, -4, 4, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(-4, -4, 4, RitualComponent.DUSK));
+
+		bloodSiphonRitual.add(new RitualComponent(3, -2, 2, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(2, -2, 3, RitualComponent.DUSK));
+
+		bloodSiphonRitual.add(new RitualComponent(4, -3, 3, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(3, -3, 4, RitualComponent.DUSK));
+
+		bloodSiphonRitual.add(new RitualComponent(4, -4, 2, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(2, -4, 4, RitualComponent.DUSK));
+		bloodSiphonRitual.add(new RitualComponent(4, -4, 4, RitualComponent.DUSK));
+
+		// dawn
+		bloodSiphonRitual.add(new RitualComponent(3, 2, -2, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(2, 2, -3, RitualComponent.DAWN));
+
+		bloodSiphonRitual.add(new RitualComponent(4, 3, -3, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(3, 3, -4, RitualComponent.DAWN));
+
+		bloodSiphonRitual.add(new RitualComponent(4, 4, -2, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(2, 4, -4, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(4, 4, -4, RitualComponent.DAWN));
+
+		bloodSiphonRitual.add(new RitualComponent(-3, 2, -2, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(-2, 2, -3, RitualComponent.DAWN));
+
+		bloodSiphonRitual.add(new RitualComponent(-4, 3, -3, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(-3, 3, -4, RitualComponent.DAWN));
+
+		bloodSiphonRitual.add(new RitualComponent(-4, 4, -2, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(-2, 4, -4, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(-4, 4, -4, RitualComponent.DAWN));
+
+		bloodSiphonRitual.add(new RitualComponent(-3, 2, 2, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(-2, 2, 3, RitualComponent.DAWN));
+
+		bloodSiphonRitual.add(new RitualComponent(-4, 3, 3, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(-3, 3, 4, RitualComponent.DAWN));
+
+		bloodSiphonRitual.add(new RitualComponent(-4, 4, 2, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(-2, 4, 4, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(-4, 4, 4, RitualComponent.DAWN));
+
+		bloodSiphonRitual.add(new RitualComponent(3, 2, 2, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(2, 2, 3, RitualComponent.DAWN));
+
+		bloodSiphonRitual.add(new RitualComponent(4, 3, 3, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(3, 3, 4, RitualComponent.DAWN));
+
+		bloodSiphonRitual.add(new RitualComponent(4, 4, 2, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(2, 4, 4, RitualComponent.DAWN));
+		bloodSiphonRitual.add(new RitualComponent(4, 4, 4, RitualComponent.DAWN));
+		return bloodSiphonRitual;
+	}
 
 }
