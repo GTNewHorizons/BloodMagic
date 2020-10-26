@@ -194,6 +194,7 @@ public class AlchemicalWizardry
     public static boolean ritualDisabledPhantomHands;
     public static boolean ritualDisabledSphereIsland;
     public static boolean ritualDisabledBloodSiphon;
+    public static boolean ritualDisabledSuddenEnd;
 
     public static boolean ritualWeakDisabledNight;
     public static boolean ritualWeakDisabledResistance;
@@ -283,6 +284,7 @@ public class AlchemicalWizardry
     public static int[] ritualCostPhantomHands;
     public static int[] ritualCostSphereIsland;
     public static int[] ritualCostBloodSiphon;
+    public static int[] ritualCostSuddenEnd;
 
     public static int ritualWeakCostNight;
     public static int ritualWeakCostResistance;
@@ -316,7 +318,9 @@ public class AlchemicalWizardry
     public static int lpPerSacrificeBase = 500;
     public static int lpPerSacrificeWellOfSuffering = 10;
     public static int lpPerSacrificeBloodSiphon = 500;
+    public static int lpPerSacrificeSuddenEnd= 10000;
     public static double lpPerSacrificeIncense = 100.0D;
+    public static int maxEntitiesCounted = 20;
     public static HashMap<Class<?>, Integer> lpPerSactificeCustom;
 
     public static int energyBlastDamage = 12;
@@ -473,7 +477,7 @@ public class AlchemicalWizardry
         ComplexNetworkHandler.load();
 
         MinecraftForge.EVENT_BUS.register(new LifeBucketHandler());
-        BloodMagicConfiguration.init(new File(event.getModConfigurationDirectory(), "AWWayofTime.cfg"));
+        BloodMagicConfiguration.init(new File(event.getModConfigurationDirectory(), "Blood Magic.cfg"));
 
         //Custom config stuff goes here
         Potion[] potionTypes;
@@ -1440,6 +1444,7 @@ public class AlchemicalWizardry
         Rituals.registerRitual("AW036SphereIsland", 2, AlchemicalWizardry.ritualCostSphereIsland[0], new RitualEffectSphereCreator(), "Blood of the New Moon");
         //Rituals.registerRitual(1,100,new RitualEffectApiaryOverclock(),"Apiary Overclock"));
         Rituals.registerRitual("AW037BloodSiphon", 2, AlchemicalWizardry.ritualCostBloodSiphon[0], new RitualEffectBloodSiphon(), "Blood Siphon", new AlchemyCircleRenderer(new ResourceLocation("alchemicalwizardry:textures/models/AlchemyArrays/WellOfSufferingArray.png"), 0, 0, 0, 255, 0, 0.501, 0.8, 0, 2.5, true));
+        Rituals.registerRitual("AW038SuddenEnd", 2, AlchemicalWizardry.ritualCostSuddenEnd[0], new RitualEffectSuddenEnd(), "Sudden End", new AlchemyCircleRenderer(new ResourceLocation("alchemicalwizardry:textures/models/AlchemyArrays/WellOfSufferingArray.png"), 0, 0, 0, 255, 0, 0.501, 0.8, 0, 2.5, true));
     }
 
     public static void initBindingRecipes()

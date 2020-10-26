@@ -159,6 +159,7 @@ public class BloodMagicConfiguration
 		AlchemicalWizardry.ritualDisabledPhantomHands = config.get("Ritual Blacklist", "Orchestra of the Phantom Hands", false).getBoolean(false);
 		AlchemicalWizardry.ritualDisabledSphereIsland = config.get("Ritual Blacklist", "Birth of the Bastion", false).getBoolean(false);
 		AlchemicalWizardry.ritualDisabledBloodSiphon = config.get("Ritual Blacklist", "Blood Siphon", false).getBoolean(false);
+		AlchemicalWizardry.ritualDisabledSuddenEnd= config.get("Ritual Blacklist", "Sudden End", false).getBoolean(false);
 
 		AlchemicalWizardry.ritualWeakDisabledNight = config.get("Ritual Blacklist.Weak", "Night", false).getBoolean(false);
 		AlchemicalWizardry.ritualWeakDisabledResistance = config.get("Ritual Blacklist.Weak", "Resistance", false).getBoolean(false);
@@ -278,6 +279,7 @@ public class BloodMagicConfiguration
 		AlchemicalWizardry.ritualCostPhantomHands = config.get(lpCosts, "Orchestra of the Phantom Hands", new int[]{10000, 0}).getIntList();
 		AlchemicalWizardry.ritualCostSphereIsland = config.get(lpCosts, "Blood of the New Moon", new int[]{10000, 0}).getIntList();
 		AlchemicalWizardry.ritualCostBloodSiphon = config.get(lpCosts, "Blood Siphon", new int[]{50000000, 100}).getIntList();
+		AlchemicalWizardry.ritualCostSuddenEnd = config.get(lpCosts, "Sudden End", new int[]{300000000, 1000}).getIntList();
 
 		AlchemicalWizardry.ritualWeakCostNight = config.get(lpCosts, "[Weak Ritual] Night", 5000).getInt();
 		AlchemicalWizardry.ritualWeakCostResistance = config.get(lpCosts, "[Weak Ritual] Resistance", 5000).getInt();
@@ -290,7 +292,9 @@ public class BloodMagicConfiguration
 		AlchemicalWizardry.lpPerSacrificeBase = config.get("sacrifice", "LP per sacrifice", AlchemicalWizardry.lpPerSacrificeBase).getInt(AlchemicalWizardry.lpPerSacrificeBase);
 		AlchemicalWizardry.lpPerSacrificeWellOfSuffering = config.get("sacrifice", "LP per sacrifice with Well of Suffering ritual", AlchemicalWizardry.lpPerSacrificeWellOfSuffering).getInt(AlchemicalWizardry.lpPerSacrificeWellOfSuffering);
 		AlchemicalWizardry.lpPerSacrificeBloodSiphon = config.get("sacrifice", "LP per sacrifice with Blood Siphon ritual", AlchemicalWizardry.lpPerSacrificeBloodSiphon).getInt(AlchemicalWizardry.lpPerSacrificeBloodSiphon);
+		AlchemicalWizardry.lpPerSacrificeSuddenEnd = config.get("sacrifice", "LP per sacrifice with Sudden End ritual", AlchemicalWizardry.lpPerSacrificeSuddenEnd).getInt(AlchemicalWizardry.lpPerSacrificeSuddenEnd);
 		AlchemicalWizardry.lpPerSacrificeIncense = config.get("sacrifice", "LP per (self-)sacrifice with incense", AlchemicalWizardry.lpPerSacrificeIncense).getDouble(AlchemicalWizardry.lpPerSacrificeIncense);
+		AlchemicalWizardry.maxEntitiesCounted = config.get("sacrifice", "Maximum number of entities that can be in the WoS or BS", AlchemicalWizardry.maxEntitiesCounted).getInt(AlchemicalWizardry.maxEntitiesCounted);
 
 		AlchemicalWizardry.energyBlastDamage = config.get("energy items", "Energy Blast damage", AlchemicalWizardry.energyBlastDamage).getInt(AlchemicalWizardry.energyBlastDamage);
 		AlchemicalWizardry.energyBlastLPPerShot = config.get("energy items", "Energy Blast LP per shot", AlchemicalWizardry.energyBlastLPPerShot).getInt(AlchemicalWizardry.energyBlastLPPerShot);
@@ -522,6 +526,7 @@ public class BloodMagicConfiguration
 		if (AlchemicalWizardry.ritualDisabledPhantomHands) r("AW035PhantomHands");
 		if (AlchemicalWizardry.ritualDisabledSphereIsland) r("AW036SphereIsland");
 		if (AlchemicalWizardry.ritualDisabledBloodSiphon) r("AW037BloodSiphon");
+		if (AlchemicalWizardry.ritualDisabledSuddenEnd) r("AW038SuddenEnd");
 	}
 
 	private static void r(String ritualID)

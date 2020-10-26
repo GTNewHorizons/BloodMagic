@@ -95,11 +95,18 @@ public class RitualEffectWellOfSuffering extends RitualEffect
 
 
                     entityCount++;
-                    tileAltar.sacrificialDaggerCall(this.amount * (hasTennebrae ? 2 : 1) * (hasOffensa ? 2 : 1), true);
+                    if (entityCount <= 20) {//prevent more than <config entry> entities from being counted
+                    	tileAltar.sacrificialDaggerCall(this.amount * (hasTennebrae ? 2 : 1) * (hasOffensa ? 2 : 1), true);
+                    }
                 }
             }
 
-            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
+            if (entityCount <= AlchemicalWizardry.maxEntitiesCounted) {
+            	SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
+            }
+            else if (entityCount > AlchemicalWizardry.maxEntitiesCounted) {//if more than <config entry> entities, only pay for <config entry> to be injured
+            	SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * 20);
+            }
 
             if(hasPotentia)
             {
