@@ -81,8 +81,11 @@ public class RitualEffectBloodSiphon extends RitualEffect {
 				if (livingEntity.attackEntityFrom(DamageSource.outOfWorld, hasOffensa ? 2 : 1)) {
 					hasTennebrae = hasTennebrae && this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, true);
 					entityCount++;
-					if (entityCount <= AlchemicalWizardry.maxEntitiesCounted) {// prevent more than <config entry> entities from being counted
+					if (entityCount <= AlchemicalWizardry.maxEntitiesCounted) {
 						tileAltar.sacrificialDaggerCall(this.amount * (hasTennebrae ? 2 : 1) * (hasOffensa ? 2 : 1), true);
+					}
+					else {// prevent more than <config entry> entities from being counted
+						tileAltar.sacrificialDaggerCall(AlchemicalWizardry.maxEntitiesCounted * (hasTennebrae ? 2 : 1) * (hasOffensa ? 2 : 1), true);
 					}
 				}
 			}
