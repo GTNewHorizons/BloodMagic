@@ -27,6 +27,18 @@ public class BloodRune extends Block
     private IIcon betterCapacityRuneIcon;
     @SideOnly(Side.CLIENT)
     private IIcon accelerationRuneIcon;
+    @SideOnly(Side.CLIENT)
+    private IIcon superSpeedRuneIcon;
+    @SideOnly(Side.CLIENT)
+    private IIcon ultraSpeedRuneIcon;
+    @SideOnly(Side.CLIENT)
+    private IIcon superSacrificeRuneIcon;
+    @SideOnly(Side.CLIENT)
+    private IIcon ultraSacrificeRuneIcon;
+    @SideOnly(Side.CLIENT)
+    private IIcon superDislocationRuneIcon;
+    @SideOnly(Side.CLIENT)
+    private IIcon ultraDislocationRuneIcon;
 
     public BloodRune()
     {
@@ -47,6 +59,12 @@ public class BloodRune extends Block
         this.orbCapacityRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:OrbCapacityRune");
         this.betterCapacityRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:BetterCapacityRune");
         this.accelerationRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:AccelerationRune");
+        this.superSpeedRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:SuperSpeedRune");//These need new icons
+        this.ultraSpeedRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:UltraSpeedRune");//I just copied the existing ones
+        this.superSacrificeRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:SuperSacrificeRune");//for now
+        this.ultraSacrificeRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:UltraSacrificeRune");
+        this.superDislocationRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:SuperDislocationRune");
+        this.ultraDislocationRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:UltraDislocationRune");
     }
 
     public int getRuneEffect(int metaData)
@@ -70,6 +88,24 @@ public class BloodRune extends Block
                 
             case 5: //Acceleration rune
             	return 9;
+            	
+            case 6: //Super speed rune
+            	return 10;
+            	
+            case 7: //Ultra speed rune
+            	return 11;
+            	
+            case 8: //Super sacrifice rune
+            	return 12;
+            	
+            case 9: //Ultra sacrifice rune
+            	return 13;
+            	
+            case 10: //Super filling/emptying rune
+            	return 14;
+            	
+            case 11: //Ultra filling/emptying rune
+            	return 15;
         }
 
         return 0;
@@ -90,6 +126,12 @@ public class BloodRune extends Block
             par3List.add(new ItemStack(par1, 1, 3));
             par3List.add(new ItemStack(par1, 1, 4));
             par3List.add(new ItemStack(par1, 1, 5));
+            par3List.add(new ItemStack(par1, 1, 6));
+            par3List.add(new ItemStack(par1, 1, 7));
+            par3List.add(new ItemStack(par1, 1, 8));
+            par3List.add(new ItemStack(par1, 1, 9));
+            par3List.add(new ItemStack(par1, 1, 10));
+            par3List.add(new ItemStack(par1, 1, 11));
         } else
         {
             super.getSubBlocks(par1, par2CreativeTabs, par3List);
@@ -119,6 +161,25 @@ public class BloodRune extends Block
 
             case 5:
             	return this.accelerationRuneIcon;
+
+            case 6:
+            	return this.superSpeedRuneIcon;
+            	
+            case 7:
+            	return this.ultraSpeedRuneIcon;
+            	
+            case 8:
+            	return this.superSacrificeRuneIcon;
+            	
+            case 9:
+            	return this.ultraSacrificeRuneIcon;
+            	
+            case 10:
+            	return this.superDislocationRuneIcon;
+            	
+            case 11:
+            	return this.ultraDislocationRuneIcon;
+            	
             default:
                 return blockIcon;
         }

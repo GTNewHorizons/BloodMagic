@@ -158,6 +158,30 @@ public class UpgradedAltars
                     case 9:
                         upgrades.addAccelerationUpgrade();
                         break;
+                        
+                    case 10:
+                        upgrades.addSuperSpeedUpgrade();
+                        break;
+                        
+                    case 11:
+                        upgrades.addUltraSpeedUpgrade();
+                        break;
+                        
+                    case 12:
+                        upgrades.addSuperSacrificeUpgrade();
+                        break;
+                        
+                    case 13:
+                        upgrades.addUltraSacrificeUpgrade();
+                        break;
+                        
+                    case 14:
+                        upgrades.addSuperDisplacementUpgrade();
+                        break;
+                        
+                    case 15:
+                        upgrades.addUltraDisplacementUpgrade();
+                        break;
                 }
             }
         }
