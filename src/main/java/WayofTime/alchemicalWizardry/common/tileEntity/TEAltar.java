@@ -783,31 +783,31 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         {
             upgradeLevel = 1;
             isUpgraded = false;
-            this.consumptionMultiplier = 0;
-            this.efficiencyMultiplier = 1;
+            this.consumptionMultiplier = 0;//crafting speed and orb filling speed
+            this.efficiencyMultiplier = 1;//speed it loses blood in a recipe if you run out
             this.sacrificeEfficiencyMultiplier = 0;
             this.selfSacrificeEfficiencyMultiplier = 0;
-            this.capacityMultiplier = 1;
+            this.capacityMultiplier = 1;//affects both main tank and I/O buffers
             this.orbCapacityMultiplier = 1;
             this.dislocationMultiplier = 1;
             this.upgradeLevel = upgradeState;
             this.accelerationUpgrades = 0;
             return;
         }
-
+   
         this.isUpgraded = checkUpgrade;
         this.upgradeLevel = upgradeState;
-        this.consumptionMultiplier = (float) (0.20 * upgrades.getSpeedUpgrades());
-        this.efficiencyMultiplier = (float) Math.pow(0.85, upgrades.getSpeedUpgrades());
-        this.sacrificeEfficiencyMultiplier = (float) (0.10 * upgrades.getSacrificeUpgrades());
+        this.consumptionMultiplier = (float) (0.20 * upgrades.getSpeedUpgrades() + 2.0 * upgrades.getSuperSpeedUpgrades() + 20.0 * upgrades.getUltraSpeedUpgrades());
+        this.efficiencyMultiplier = (float) (Math.pow(0.85, upgrades.getSpeedUpgrades()) * Math.pow(1.0, upgrades.getSuperSpeedUpgrades()) * Math.pow(1.2, upgrades.getUltraSpeedUpgrades()));
+        this.sacrificeEfficiencyMultiplier = (float) (0.10 * upgrades.getSacrificeUpgrades() + 1.0 * upgrades.getSuperSacrificeUpgrades() + 5.0 * upgrades.getUltraSacrificeUpgrades());
         this.selfSacrificeEfficiencyMultiplier = (float) (0.10 * upgrades.getSelfSacrificeUpgrades());
         this.capacityMultiplier = (float) ((1 * Math.pow(1.10, upgrades.getBetterCapacitiveUpgrades()) + 0.20 * upgrades.getAltarCapacitiveUpgrades()));
-        this.dislocationMultiplier = (float) (Math.pow(1.2, upgrades.getDisplacementUpgrades()));
+        this.dislocationMultiplier = (float) (Math.pow(1.2, upgrades.getDisplacementUpgrades()) * Math.pow(1.7, upgrades.getSuperDisplacementUpgrades()) * Math.pow(2.5, upgrades.getUltraDisplacementUpgrades()));
         this.orbCapacityMultiplier = (float) (1 + 0.02 * upgrades.getOrbCapacitiveUpgrades());
         this.capacity = (int) (FluidContainerRegistry.BUCKET_VOLUME * 10 * capacityMultiplier);
         this.bufferCapacity = (int) (FluidContainerRegistry.BUCKET_VOLUME * 1 * capacityMultiplier);
-        this.accelerationUpgrades = upgrades.getAccelerationUpgrades();
-
+        this.accelerationUpgrades = upgrades.getAccelerationUpgrades();       
+        
         if (this.fluid.amount > this.capacity)
         {
             this.fluid.amount = this.capacity;
@@ -948,6 +948,19 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         player.addChatMessage(new ChatComponentTranslation(String.format("message.altar.currentessence"), this.fluid.amount));
         player.addChatMessage(new ChatComponentTranslation(String.format("message.altar.inputtank"), this.fluidInput.amount));
         player.addChatMessage(new ChatComponentTranslation(String.format("message.altar.outputtank"), this.fluidOutput.amount));
+        
+        if (getStackInSlot(0) == null) {//Add notes about altar upgrade stats since the BA simulator isn't going to help with all the new runes. And debugging, lots of debugging
+        	player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("message.altar.speed") + " " + (1 + this.consumptionMultiplier)));
+        	player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("message.altar.efficiency") + " " + this.efficiencyMultiplier));
+        	player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("message.altar.sacrifice") + " " + (1 + this.sacrificeEfficiencyMultiplier)));
+          	player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("message.altar.selfsacrifice") + " " + (1 + this.selfSacrificeEfficiencyMultiplier)));
+        	player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("message.altar.io") + " " + ((int) (20 * this.dislocationMultiplier)) + "L"));
+        	player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("message.altar.acceleration") + " " + Math.max(20 - this.accelerationUpgrades, 1)));
+        	player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("message.altar.totalio") + " " + (int) (((20 * this.dislocationMultiplier) / (Math.max(20 - this.accelerationUpgrades, 1))) * 20 ) + " LP/s"));
+        	player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("message.altar.capacity") + " " + this.capacity + "L"));
+        	player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("message.altar.buffercapacity") + " " + this.bufferCapacity + "L"));
+        	player.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("message.altar.orbcapacity") + " " + this.orbCapacityMultiplier));        	
+        }
     }
 
 	@Override

@@ -60,7 +60,7 @@ public class RitualEffectBloodSiphon extends RitualEffect {
 		boolean hasPotentia = this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, false);
 
 		int d0 = 10;
-		int vertRange = hasPotentia ? 20 : 10;
+		int vertRange = hasPotentia ? 20 : 16;
 		AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox((double) x, (double) y, (double) z, (double) (x + 1), (double) (y + 1), (double) (z + 1)).expand(d0, vertRange, d0);
 		List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
