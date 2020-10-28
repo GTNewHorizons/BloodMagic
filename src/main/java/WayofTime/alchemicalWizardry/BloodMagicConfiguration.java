@@ -350,7 +350,7 @@ public class BloodMagicConfiguration
 
 	public static void finishLoading()
 	{
-		AlchemicalWizardry.secondTierRunes = BloodMagicConfiguration.getAltarRunesForTier("secondTier", new BlockStack[] {
+		AlchemicalWizardry.secondTierRunes = BloodMagicConfiguration.getAltarRunesForTier("2ndTier", new BlockStack[] {
 			new BlockStack(ModBlocks.bloodRune, 0),
 			new BlockStack(ModBlocks.speedRune, 0),
 			new BlockStack(ModBlocks.efficiencyRune, 0),
@@ -362,7 +362,7 @@ public class BloodMagicConfiguration
 			new BlockStack(ModBlocks.bloodRune, 4),
 			new BlockStack(ModBlocks.bloodRune, 5)			
 		});
-		AlchemicalWizardry.thirdTierRunes = BloodMagicConfiguration.getAltarRunesForTier("thirdTier", new BlockStack[] {
+		AlchemicalWizardry.thirdTierRunes = BloodMagicConfiguration.getAltarRunesForTier("3rdTier", new BlockStack[] {
 			new BlockStack(ModBlocks.bloodRune, 0),
 			new BlockStack(ModBlocks.speedRune, 0),
 			new BlockStack(ModBlocks.efficiencyRune, 0),
@@ -374,7 +374,7 @@ public class BloodMagicConfiguration
 			new BlockStack(ModBlocks.bloodRune, 4),
 			new BlockStack(ModBlocks.bloodRune, 5)
 		});
-		AlchemicalWizardry.fourthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("fourthTier", new BlockStack[] {
+		AlchemicalWizardry.fourthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("4thTier", new BlockStack[] {
 			new BlockStack(ModBlocks.bloodRune, 0),
 			new BlockStack(ModBlocks.speedRune, 0),
 			new BlockStack(ModBlocks.efficiencyRune, 0),
@@ -386,7 +386,19 @@ public class BloodMagicConfiguration
 			new BlockStack(ModBlocks.bloodRune, 4),
 			new BlockStack(ModBlocks.bloodRune, 5)
 		});
-		AlchemicalWizardry.fifthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("fifthTier", new BlockStack[] {
+		AlchemicalWizardry.fifthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("5thTier", new BlockStack[] {
+			new BlockStack(ModBlocks.bloodRune, 0),
+			new BlockStack(ModBlocks.speedRune, 0),
+			new BlockStack(ModBlocks.efficiencyRune, 0),
+			new BlockStack(ModBlocks.runeOfSacrifice, 0),
+			new BlockStack(ModBlocks.runeOfSelfSacrifice, 0),
+			new BlockStack(ModBlocks.bloodRune, 1),
+			new BlockStack(ModBlocks.bloodRune, 2),
+			new BlockStack(ModBlocks.bloodRune, 3),
+			new BlockStack(ModBlocks.bloodRune, 4),
+			new BlockStack(ModBlocks.bloodRune, 5)
+		});
+		AlchemicalWizardry.sixthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("6thTier", new BlockStack[] {
 			new BlockStack(ModBlocks.bloodRune, 0),
 			new BlockStack(ModBlocks.speedRune, 0),
 			new BlockStack(ModBlocks.efficiencyRune, 0),
@@ -398,34 +410,73 @@ public class BloodMagicConfiguration
 			new BlockStack(ModBlocks.bloodRune, 4),
 			new BlockStack(ModBlocks.bloodRune, 5),
 			new BlockStack(ModBlocks.bloodRune, 6),//super runes from this tier on
-			new BlockStack(ModBlocks.bloodRune, 8),
+			new BlockStack(ModBlocks.bloodRune, 8),				
 			new BlockStack(ModBlocks.bloodRune, 10)
-			
 		});
-		AlchemicalWizardry.sixthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("sixthTier", new BlockStack[] {
-			new BlockStack(ModBlocks.bloodRune, 0),
-			new BlockStack(ModBlocks.speedRune, 0),
-			new BlockStack(ModBlocks.efficiencyRune, 0),
-			new BlockStack(ModBlocks.runeOfSacrifice, 0),
-			new BlockStack(ModBlocks.runeOfSelfSacrifice, 0),
-			new BlockStack(ModBlocks.bloodRune, 1),
-			new BlockStack(ModBlocks.bloodRune, 2),
-			new BlockStack(ModBlocks.bloodRune, 3),
-			new BlockStack(ModBlocks.bloodRune, 4),
-			new BlockStack(ModBlocks.bloodRune, 5),
-			new BlockStack(ModBlocks.bloodRune, 6),//super runes from this tier on
-			new BlockStack(ModBlocks.bloodRune, 7),//change later when more tiers added
-			new BlockStack(ModBlocks.bloodRune, 8),
-			new BlockStack(ModBlocks.bloodRune, 9),
-			new BlockStack(ModBlocks.bloodRune, 10),
-			new BlockStack(ModBlocks.bloodRune, 11)
-		});
+		AlchemicalWizardry.seventhTierRunes = BloodMagicConfiguration.getAltarRunesForTier("7thTier", new BlockStack[] {
+				new BlockStack(ModBlocks.bloodRune, 0),
+				new BlockStack(ModBlocks.speedRune, 0),
+				new BlockStack(ModBlocks.efficiencyRune, 0),
+				new BlockStack(ModBlocks.runeOfSacrifice, 0),
+				new BlockStack(ModBlocks.runeOfSelfSacrifice, 0),
+				new BlockStack(ModBlocks.bloodRune, 1),
+				new BlockStack(ModBlocks.bloodRune, 2),
+				new BlockStack(ModBlocks.bloodRune, 3),
+				new BlockStack(ModBlocks.bloodRune, 4),
+				new BlockStack(ModBlocks.bloodRune, 5),
+				new BlockStack(ModBlocks.bloodRune, 6),		
+				new BlockStack(ModBlocks.bloodRune, 8),				
+				new BlockStack(ModBlocks.bloodRune, 10)
+				
+			});
+		AlchemicalWizardry.eighthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("8thTier", new BlockStack[] {
+				new BlockStack(ModBlocks.bloodRune, 0),
+				new BlockStack(ModBlocks.speedRune, 0),
+				new BlockStack(ModBlocks.efficiencyRune, 0),
+				new BlockStack(ModBlocks.runeOfSacrifice, 0),
+				new BlockStack(ModBlocks.runeOfSelfSacrifice, 0),
+				new BlockStack(ModBlocks.bloodRune, 1),
+				new BlockStack(ModBlocks.bloodRune, 2),
+				new BlockStack(ModBlocks.bloodRune, 3),
+				new BlockStack(ModBlocks.bloodRune, 4),
+				new BlockStack(ModBlocks.bloodRune, 5),
+				new BlockStack(ModBlocks.bloodRune, 6),
+				new BlockStack(ModBlocks.bloodRune, 7),//ultra runes from this tier on
+				new BlockStack(ModBlocks.bloodRune, 8),
+				new BlockStack(ModBlocks.bloodRune, 9),
+				new BlockStack(ModBlocks.bloodRune, 10),
+				new BlockStack(ModBlocks.bloodRune, 11)
+			});
+		AlchemicalWizardry.ninthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("9thTier", new BlockStack[] {
+				new BlockStack(ModBlocks.bloodRune, 0),
+				new BlockStack(ModBlocks.speedRune, 0),
+				new BlockStack(ModBlocks.efficiencyRune, 0),
+				new BlockStack(ModBlocks.runeOfSacrifice, 0),
+				new BlockStack(ModBlocks.runeOfSelfSacrifice, 0),
+				new BlockStack(ModBlocks.bloodRune, 1),
+				new BlockStack(ModBlocks.bloodRune, 2),
+				new BlockStack(ModBlocks.bloodRune, 3),
+				new BlockStack(ModBlocks.bloodRune, 4),
+				new BlockStack(ModBlocks.bloodRune, 5),
+				new BlockStack(ModBlocks.bloodRune, 6),
+				new BlockStack(ModBlocks.bloodRune, 7),
+				new BlockStack(ModBlocks.bloodRune, 8),
+				new BlockStack(ModBlocks.bloodRune, 9),
+				new BlockStack(ModBlocks.bloodRune, 10),
+				new BlockStack(ModBlocks.bloodRune, 11)
+			});
 		AlchemicalWizardry.specialAltarBlock = getAltarRunesForTier("specialBlocks", new BlockStack[] {
 			new BlockStack(Blocks.stonebrick, 0),
 			new BlockStack(Blocks.glowstone, 0),
 			new BlockStack(Blocks.stonebrick, 0),
 			new BlockStack(ModBlocks.largeBloodStoneBrick, 0),
 			new BlockStack(Blocks.beacon, 0),
+			new BlockStack(Blocks.stonebrick, 0),
+			new BlockStack(ModBlocks.blockCrystal, 0),
+			new BlockStack(Blocks.stonebrick, 0),
+			new BlockStack(ModBlocks.blockCrystal, 0),
+			new BlockStack(Blocks.stonebrick, 0),
+			new BlockStack(ModBlocks.blockCrystal, 0),
 			new BlockStack(Blocks.stonebrick, 0),
 			new BlockStack(ModBlocks.blockCrystal, 0)
 		});

@@ -305,12 +305,15 @@ public class AlchemicalWizardry
     public static boolean causeHungerChatMessage = true;
     public static boolean disableBoundToolsRightClick;
 
-    public static BlockStack[] secondTierRunes = new BlockStack[10];
-    public static BlockStack[] thirdTierRunes = new BlockStack[10];
-    public static BlockStack[] fourthTierRunes = new BlockStack[10];
-    public static BlockStack[] fifthTierRunes = new BlockStack[10];
-    public static BlockStack[] sixthTierRunes = new BlockStack[10];
-    public static BlockStack[] specialAltarBlock = new BlockStack[7];
+    public static BlockStack[] secondTierRunes = new BlockStack[10];//Did I need to make these higher?
+    public static BlockStack[] thirdTierRunes = new BlockStack[10];//To account for the new runes?
+    public static BlockStack[] fourthTierRunes = new BlockStack[10];//But it works anyway?
+    public static BlockStack[] fifthTierRunes = new BlockStack[10];//Also, why x+1? Do they not count 0?
+    public static BlockStack[] sixthTierRunes = new BlockStack[13];//Or maybe all the metadat different ones count as the same?
+    public static BlockStack[] seventhTierRunes = new BlockStack[13];//But then there'd still be 5 types
+    public static BlockStack[] eighthTierRunes = new BlockStack[16];
+    public static BlockStack[] ninthTierRunes = new BlockStack[16];
+    public static BlockStack[] specialAltarBlock = new BlockStack[13];
 
     public static int lpPerSelfSacrifice = 200;
     public static int lpPerSelfSacrificeSoulFray = 20;

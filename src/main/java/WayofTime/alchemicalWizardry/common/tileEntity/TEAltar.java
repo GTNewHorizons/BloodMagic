@@ -934,7 +934,7 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
     {
         player.addChatMessage(new ChatComponentTranslation(String.format("message.altar.currentessence"), this.fluid.amount));
         player.addChatMessage(new ChatComponentTranslation(String.format("message.altar.currenttier"), UpgradedAltars.isAltarValid(worldObj, xCoord, yCoord, zCoord)));
-        player.addChatMessage(new ChatComponentTranslation(String.format("message.altar.capacity"), this.getCapacity()));
+        player.addChatMessage(new ChatComponentTranslation(String.format("message.altar.capacity"), this.getCapacity()));//doesn't work anymore? Why?
     }
 
     public void sendMoreChatInfoToPlayer(EntityPlayer player)

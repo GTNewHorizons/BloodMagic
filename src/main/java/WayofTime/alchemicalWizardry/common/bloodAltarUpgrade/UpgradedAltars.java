@@ -17,7 +17,10 @@ public class UpgradedAltars
     public static List<AltarComponent> fourthTierAltar = new ArrayList<AltarComponent>();
     public static List<AltarComponent> fifthTierAltar = new ArrayList<AltarComponent>();
     public static List<AltarComponent> sixthTierAltar = new ArrayList<AltarComponent>();
-    public static int highestAltar = 6;
+    public static List<AltarComponent> seventhTierAltar = new ArrayList<AltarComponent>();
+    public static List<AltarComponent> eighthTierAltar = new ArrayList<AltarComponent>();
+    public static List<AltarComponent> ninthTierAltar = new ArrayList<AltarComponent>();
+    public static int highestAltar = 9;
 
     public static int isAltarValid(World world, int x, int y, int z)
     {
@@ -67,11 +70,17 @@ public class UpgradedAltars
                 return AlchemicalWizardry.fifthTierRunes;
             case 6:
                 return AlchemicalWizardry.sixthTierRunes;
+            case 7:
+                return AlchemicalWizardry.seventhTierRunes;
+            case 8:
+                return AlchemicalWizardry.eighthTierRunes;
+            case 9:
+                return AlchemicalWizardry.ninthTierRunes;
             default:
                 return null;
         }
     }
-    private static boolean checkAltarComponent(AltarComponent altarComponent, IBlockAccess world, int x, int y, int z, int altarTier)
+    private static boolean checkAltarComponent(AltarComponent altarComponent, IBlockAccess world, int x, int y, int z, int altarTier)//ugh
     {
         Block block = world.getBlock(x + altarComponent.getX(), y + altarComponent.getY(), z + altarComponent.getZ());
         int metadata = world.getBlockMetadata(x + altarComponent.getX(), y + altarComponent.getY(), z + altarComponent.getZ());
@@ -281,6 +290,183 @@ public class UpgradedAltars
             sixthTierAltar.add(new AltarComponent(i, -5, 11, AlchemicalWizardry.sixthTierRunes[0].getBlock(), AlchemicalWizardry.sixthTierRunes[0].getMeta(), true, true));
             sixthTierAltar.add(new AltarComponent(i, -5, -11, AlchemicalWizardry.sixthTierRunes[0].getBlock(), AlchemicalWizardry.sixthTierRunes[0].getMeta(), true, true));
         }
+        
+        //new
+        seventhTierAltar.addAll(sixthTierAltar);
+        for (int i = -5; i <= 4; i++)
+        {
+        	seventhTierAltar.add(new AltarComponent(15, i, 15, AlchemicalWizardry.specialAltarBlock[7].getBlock(), AlchemicalWizardry.specialAltarBlock[7].getMeta(), false, false));
+        	seventhTierAltar.add(new AltarComponent(-15, i, -15, AlchemicalWizardry.specialAltarBlock[7].getBlock(), AlchemicalWizardry.specialAltarBlock[7].getMeta(), false, false));
+        	seventhTierAltar.add(new AltarComponent(15, i, -15, AlchemicalWizardry.specialAltarBlock[7].getBlock(), AlchemicalWizardry.specialAltarBlock[7].getMeta(), false, false));
+        	seventhTierAltar.add(new AltarComponent(-15, i, 15, AlchemicalWizardry.specialAltarBlock[7].getBlock(), AlchemicalWizardry.specialAltarBlock[7].getMeta(), false, false));
+        }
+        seventhTierAltar.add(new AltarComponent(15, 5, 15, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-15, 5, -15, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(15, 5, -15, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-15, 5, 15, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        //bases for 7th
+        seventhTierAltar.add(new AltarComponent(-16, -6, -14, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-16, -6, -15, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-16, -6, -16, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-15, -6, -14, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-15, -6, -15, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-15, -6, -16, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-14, -6, -14, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-14, -6, -15, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-14, -6, -16, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        
+        seventhTierAltar.add(new AltarComponent(16, -6, -14, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(16, -6, -15, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(16, -6, -16, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(15, -6, -14, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(15, -6, -15, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(15, -6, -16, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(14, -6, -14, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(14, -6, -15, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(14, -6, -16, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        
+        seventhTierAltar.add(new AltarComponent(-16, -6, 14, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-16, -6, 15, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-16, -6, 16, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-15, -6, 14, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-15, -6, 15, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-15, -6, 16, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-14, -6, 14, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-14, -6, 15, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(-14, -6, 16, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        
+        seventhTierAltar.add(new AltarComponent(16, -6, 14, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(16, -6, 15, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(16, -6, 16, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(15, -6, 14, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(15, -6, 15, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(15, -6, 16, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(14, -6, 14, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(14, -6, 15, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        seventhTierAltar.add(new AltarComponent(14, -6, 16, AlchemicalWizardry.specialAltarBlock[6].getBlock(), AlchemicalWizardry.specialAltarBlock[6].getMeta(), false, false));
+        for (int i = -12; i <= 12; i++)
+        {
+        	seventhTierAltar.add(new AltarComponent(15, -6, i, AlchemicalWizardry.seventhTierRunes[0].getBlock(), AlchemicalWizardry.seventhTierRunes[0].getMeta(), true, true));
+        	seventhTierAltar.add(new AltarComponent(-15, -6, i, AlchemicalWizardry.seventhTierRunes[0].getBlock(), AlchemicalWizardry.seventhTierRunes[0].getMeta(), true, true));
+        	seventhTierAltar.add(new AltarComponent(i, -6, 15, AlchemicalWizardry.seventhTierRunes[0].getBlock(), AlchemicalWizardry.seventhTierRunes[0].getMeta(), true, true));
+        	seventhTierAltar.add(new AltarComponent(i, -6, -15, AlchemicalWizardry.seventhTierRunes[0].getBlock(), AlchemicalWizardry.seventhTierRunes[0].getMeta(), true, true));
+        }
+        
+        eighthTierAltar.addAll(seventhTierAltar);
+        for (int i = -6; i <= 6; i++)
+        {
+        	eighthTierAltar.add(new AltarComponent(19, i, 19, AlchemicalWizardry.specialAltarBlock[9].getBlock(), AlchemicalWizardry.specialAltarBlock[9].getMeta(), false, false));
+        	eighthTierAltar.add(new AltarComponent(-19, i, -19, AlchemicalWizardry.specialAltarBlock[9].getBlock(), AlchemicalWizardry.specialAltarBlock[9].getMeta(), false, false));
+        	eighthTierAltar.add(new AltarComponent(19, i, -19, AlchemicalWizardry.specialAltarBlock[9].getBlock(), AlchemicalWizardry.specialAltarBlock[9].getMeta(), false, false));
+        	eighthTierAltar.add(new AltarComponent(-19, i, 19, AlchemicalWizardry.specialAltarBlock[9].getBlock(), AlchemicalWizardry.specialAltarBlock[9].getMeta(), false, false));
+        }
+        eighthTierAltar.add(new AltarComponent(19, 7, 19, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-19, 7, -19, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(19, 7, -19, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-19, 7, 19, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        //bases for 8th
+        eighthTierAltar.add(new AltarComponent(-18, -7, -18, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-18, -7, -19, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-18, -7, -20, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-19, -7, -18, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-19, -7, -19, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-19, -7, -20, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-20, -7, -18, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-20, -7, -19, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-20, -7, -20, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        
+        eighthTierAltar.add(new AltarComponent(18, -7, -18, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(18, -7, -19, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(18, -7, -20, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(19, -7, -18, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(19, -7, -19, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(19, -7, -20, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(20, -7, -18, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(20, -7, -19, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(20, -7, -20, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        
+        eighthTierAltar.add(new AltarComponent(-18, -7, 18, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-18, -7, 19, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-18, -7, 20, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-19, -7, 18, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-19, -7, 19, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-19, -7, 20, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-20, -7, 18, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-20, -7, 19, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(-20, -7, 20, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        
+        eighthTierAltar.add(new AltarComponent(18, -7, 18, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(18, -7, 19, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(18, -7, 20, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(19, -7, 18, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(19, -7, 19, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(19, -7, 20, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(20, -7, 18, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(20, -7, 19, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        eighthTierAltar.add(new AltarComponent(20, -7, 20, AlchemicalWizardry.specialAltarBlock[8].getBlock(), AlchemicalWizardry.specialAltarBlock[8].getMeta(), false, false));
+        
+        for (int i = -16; i <= 16; i++)
+        {
+        	eighthTierAltar.add(new AltarComponent(19, -7, i, AlchemicalWizardry.eighthTierRunes[0].getBlock(), AlchemicalWizardry.eighthTierRunes[0].getMeta(), true, true));
+        	eighthTierAltar.add(new AltarComponent(-19, -7, i, AlchemicalWizardry.eighthTierRunes[0].getBlock(), AlchemicalWizardry.eighthTierRunes[0].getMeta(), true, true));
+        	eighthTierAltar.add(new AltarComponent(i, -7, 19, AlchemicalWizardry.eighthTierRunes[0].getBlock(), AlchemicalWizardry.eighthTierRunes[0].getMeta(), true, true));
+        	eighthTierAltar.add(new AltarComponent(i, -7, -19, AlchemicalWizardry.eighthTierRunes[0].getBlock(), AlchemicalWizardry.eighthTierRunes[0].getMeta(), true, true));
+        }
+        
+        ninthTierAltar.addAll(eighthTierAltar);
+        for (int i = -6; i <= 9; i++)
+        {
+        	ninthTierAltar.add(new AltarComponent(24, i, 24, AlchemicalWizardry.specialAltarBlock[11].getBlock(), AlchemicalWizardry.specialAltarBlock[11].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(-24, i, -24, AlchemicalWizardry.specialAltarBlock[11].getBlock(), AlchemicalWizardry.specialAltarBlock[11].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(24, i, -24, AlchemicalWizardry.specialAltarBlock[11].getBlock(), AlchemicalWizardry.specialAltarBlock[11].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(-24, i, 24, AlchemicalWizardry.specialAltarBlock[11].getBlock(), AlchemicalWizardry.specialAltarBlock[11].getMeta(), false, false));
+        }
+        ninthTierAltar.add(new AltarComponent(24, 10, 24, AlchemicalWizardry.specialAltarBlock[12].getBlock(), AlchemicalWizardry.specialAltarBlock[12].getMeta(), false, false));
+        ninthTierAltar.add(new AltarComponent(-24, 10, -24, AlchemicalWizardry.specialAltarBlock[12].getBlock(), AlchemicalWizardry.specialAltarBlock[12].getMeta(), false, false));
+        ninthTierAltar.add(new AltarComponent(24, 10, -24, AlchemicalWizardry.specialAltarBlock[12].getBlock(), AlchemicalWizardry.specialAltarBlock[12].getMeta(), false, false));
+        ninthTierAltar.add(new AltarComponent(-24, 10, 24, AlchemicalWizardry.specialAltarBlock[12].getBlock(), AlchemicalWizardry.specialAltarBlock[12].getMeta(), false, false));
+        //bases for 9th
+        ninthTierAltar.add(new AltarComponent(23, -7, 24, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        ninthTierAltar.add(new AltarComponent(25, -7, 24, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        ninthTierAltar.add(new AltarComponent(24, -7, 24, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        ninthTierAltar.add(new AltarComponent(24, -7, 23, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        ninthTierAltar.add(new AltarComponent(24, -7, 25, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        for (int i = 22; i <= 26; i++) {
+        	ninthTierAltar.add(new AltarComponent(i, -8, 23, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, 24, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, 25, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, -23, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, -24, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, -25, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        }
+        for (int i = 23; i <= 25; i++) {
+        	ninthTierAltar.add(new AltarComponent(i, -8, 22, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, 26, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, -22, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, -26, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        }
+        for (int i = -26; i <= -22; i++) {
+        	ninthTierAltar.add(new AltarComponent(i, -8, 23, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, 24, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, 25, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, -23, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, -24, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, -25, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        }
+        for (int i = -25; i <= -23; i++) {
+        	ninthTierAltar.add(new AltarComponent(i, -8, 22, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, 26, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, -22, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        	ninthTierAltar.add(new AltarComponent(i, -8, -26, AlchemicalWizardry.specialAltarBlock[10].getBlock(), AlchemicalWizardry.specialAltarBlock[10].getMeta(), false, false));
+        }
+        
+        for (int i = -20; i <= 20; i++)
+        {
+        	ninthTierAltar.add(new AltarComponent(24, -8, i, AlchemicalWizardry.ninthTierRunes[0].getBlock(), AlchemicalWizardry.ninthTierRunes[0].getMeta(), true, true));
+        	ninthTierAltar.add(new AltarComponent(-24, -8, i, AlchemicalWizardry.ninthTierRunes[0].getBlock(), AlchemicalWizardry.ninthTierRunes[0].getMeta(), true, true));
+        	ninthTierAltar.add(new AltarComponent(i, -8, 24, AlchemicalWizardry.ninthTierRunes[0].getBlock(), AlchemicalWizardry.ninthTierRunes[0].getMeta(), true, true));
+        	ninthTierAltar.add(new AltarComponent(i, -8, -24, AlchemicalWizardry.ninthTierRunes[0].getBlock(), AlchemicalWizardry.ninthTierRunes[0].getMeta(), true, true));
+        }      
     }
 
     public static List<AltarComponent> getAltarUpgradeListForTier(int tier)
@@ -301,6 +487,15 @@ public class UpgradedAltars
 
             case 6:
             	return sixthTierAltar;
+            	
+            case 7:
+            	return seventhTierAltar;
+            	
+            case 8:
+            	return eighthTierAltar;
+            	
+            case 9:
+            	return ninthTierAltar;
         }
 
         return null;
