@@ -9,18 +9,18 @@ import java.util.List;
 
 public class MeteorRegistry
 {
-    public static List<MeteorParadigm> paradigmList = new ArrayList();
+    public static List<MeteorParadigm> paradigmList = new ArrayList<>();
 
     public static void registerMeteorParadigm(MeteorParadigm paradigm)
     {
         paradigmList.add(paradigm);
     }
 
-    public static void registerMeteorParadigm(ItemStack stack, String[] oreList, int radius)
+    public static void registerMeteorParadigm(ItemStack stack, String[] oreList, int radius, int cost)
     {
         if (stack != null && oreList != null)
         {
-            MeteorParadigm meteor = new MeteorParadigm(stack, radius);
+            MeteorParadigm meteor = new MeteorParadigm(stack, radius, cost);
             meteor.parseStringArray(oreList);
             paradigmList.add(meteor);
         }
