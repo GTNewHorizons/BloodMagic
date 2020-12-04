@@ -32,67 +32,52 @@ public class RitualEffectSummonMeteor extends RitualEffect
         int y = ritualStone.getYCoord();
         int z = ritualStone.getZCoord();
 
-        if (ritualStone.getCooldown() > 0)
-        {
+        if (ritualStone.getCooldown() > 0) {
             ritualStone.setCooldown(0);
         }
 
-        if (currentEssence < this.getCostPerRefresh())
-        {
-            EntityPlayer entityOwner = SpellHelper.getPlayerForUsername(owner);
+        List<EntityItem> entities = world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(x, y + 1, z, x + 1, y + 2, z + 1));
 
-            if (entityOwner == null)
-            {
-                return;
-            }
+        if (entities == null)
+            return;
 
-            entityOwner.addPotionEffect(new PotionEffect(Potion.confusion.id, 80));
-        } else
-        {
-            List<EntityItem> entities = world.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(x, y + 1, z, x + 1, y + 2, z + 1));
+        for (EntityItem entityItem : entities) {
+            if (entityItem != null && MeteorRegistry.isValidParadigmItem(entityItem.getEntityItem())) {
+                int meteorID = MeteorRegistry.getParadigmIDForItem(entityItem.getEntityItem());
+                int cost = MeteorRegistry.paradigmList.get(meteorID).cost;
 
-            if (entities == null)
-            {
-                return;
-            }
-
-            for (EntityItem entityItem : entities)
-            {
-                if (entityItem != null && MeteorRegistry.isValidParadigmItem(entityItem.getEntityItem()))
-                {
-                    int meteorID = MeteorRegistry.getParadigmIDForItem(entityItem.getEntityItem());
-                    EntityMeteor meteor = new EntityMeteor(world, x + 0.5f, 257, z + 0.5f, meteorID);
-                    meteor.motionY = -1.0f;
-
-                    if (this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, 1000, true))
-                    {
-                        meteor.hasTerrae = true;
-                    }
-                    if (this.canDrainReagent(ritualStone, ReagentRegistry.orbisTerraeReagent, 1000, true))
-                    {
-                        meteor.hasOrbisTerrae = true;
-                    }
-                    if (this.canDrainReagent(ritualStone, ReagentRegistry.crystallosReagent, 1000, true))
-                    {
-                        meteor.hasCrystallos = true;
-                    }
-                    if (this.canDrainReagent(ritualStone, ReagentRegistry.incendiumReagent, 1000, true))
-                    {
-                        meteor.hasIncendium = true;
-                    }
-                    if (this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, 1000, true))
-                    {
-                        meteor.hasTennebrae = true;
-                    }
-
-                    entityItem.setDead();
-                    world.spawnEntityInWorld(meteor);
-                    ritualStone.setActive(false);
-                    break;
+                if (currentEssence < cost) {
+                    EntityPlayer entityOwner = SpellHelper.getPlayerForUsername(owner);
+                    if (entityOwner != null)
+                        entityOwner.addPotionEffect(new PotionEffect(Potion.confusion.id, 80));
+                    return;
                 }
-            }
 
-            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
+                EntityMeteor meteor = new EntityMeteor(world, x + 0.5f, 257, z + 0.5f, meteorID);
+                meteor.motionY = -1.0f;
+
+                if (this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, 1000, true)) {
+                    meteor.hasTerrae = true;
+                }
+                if (this.canDrainReagent(ritualStone, ReagentRegistry.orbisTerraeReagent, 1000, true)) {
+                    meteor.hasOrbisTerrae = true;
+                }
+                if (this.canDrainReagent(ritualStone, ReagentRegistry.crystallosReagent, 1000, true)) {
+                    meteor.hasCrystallos = true;
+                }
+                if (this.canDrainReagent(ritualStone, ReagentRegistry.incendiumReagent, 1000, true)) {
+                    meteor.hasIncendium = true;
+                }
+                if (this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, 1000, true)) {
+                    meteor.hasTennebrae = true;
+                }
+
+                entityItem.setDead();
+                world.spawnEntityInWorld(meteor);
+                ritualStone.setActive(false);
+                SoulNetworkHandler.syphonFromNetwork(owner, cost);
+                break;
+            }
         }
     }
 

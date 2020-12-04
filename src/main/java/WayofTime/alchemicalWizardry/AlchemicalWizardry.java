@@ -13,6 +13,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import WayofTime.alchemicalWizardry.api.BlockStack;
+import WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor;
 import WayofTime.alchemicalWizardry.api.alchemy.AlchemicalPotionCreationHandler;
 import WayofTime.alchemicalWizardry.api.alchemy.AlchemyRecipeRegistry;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentRegistry;
@@ -65,7 +66,6 @@ import WayofTime.alchemicalWizardry.common.spell.complex.effect.cse.ice.*;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.cse.wind.*;
 import WayofTime.alchemicalWizardry.common.spell.simple.*;
 import WayofTime.alchemicalWizardry.common.summoning.SummoningHelperAW;
-import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorRegistry;
 import WayofTime.alchemicalWizardry.common.thread.CommandDownloadGAPI;
 import WayofTime.alchemicalWizardry.common.tileEntity.*;
 import WayofTime.alchemicalWizardry.common.tileEntity.gui.GuiHandler;
@@ -110,15 +110,6 @@ public class AlchemicalWizardry
 	public static boolean parseTextFiles = false;
 
     public static boolean doMeteorsDestroyBlocks = true;
-    public static String[] diamondMeteorArray;
-    public static int diamondMeteorRadius;
-    public static String[] stoneMeteorArray;
-    public static int stoneMeteorRadius;
-    public static String[] ironBlockMeteorArray;
-    public static int ironBlockMeteorRadius;
-    public static String[] netherStarMeteorArray;
-    public static int netherStarMeteorRadius;
-
     public static String[] allowedCrushedOresArray;
 
     public static Potion customPotionDrowning;
@@ -899,10 +890,6 @@ public class AlchemicalWizardry
 
         //Ore Dictionary Registration
         OreDictionary.registerOre("oreCoal", Blocks.coal_ore);
-        MeteorRegistry.registerMeteorParadigm(diamondStack, diamondMeteorArray, diamondMeteorRadius);
-        MeteorRegistry.registerMeteorParadigm(stoneStack, stoneMeteorArray, stoneMeteorRadius);
-        MeteorRegistry.registerMeteorParadigm(ironBlockStack, ironBlockMeteorArray, ironBlockMeteorRadius);
-        MeteorRegistry.registerMeteorParadigm(new ItemStack(Items.nether_star), netherStarMeteorArray, netherStarMeteorRadius);
 
         ItemStack stickStack = new ItemStack(Items.stick, 1, craftingConstant);
 
@@ -1201,6 +1188,7 @@ public class AlchemicalWizardry
         BloodMagicConfiguration.loadCustomLPValues();
 
 	    DemonVillageLootRegistry.init();
+        Meteor.loadConfig();
 
         this.initCompressionHandlers();
 

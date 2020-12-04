@@ -12,17 +12,19 @@ import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 
 public class MeteorParadigm
 {
-    public List<MeteorParadigmComponent> componentList = new ArrayList();
+    public List<MeteorParadigmComponent> componentList = new ArrayList<>();
     public ItemStack focusStack;
     public int radius;
+    public int cost;
     public static int maxChance = 1000;
 
     public static Random rand = new Random();
 
-    public MeteorParadigm(ItemStack focusStack, int radius)
+    public MeteorParadigm(ItemStack focusStack, int radius, int cost)
     {
         this.focusStack = focusStack;
         this.radius = radius;
+        this.cost = cost;
     }
 
     public void parseStringArray(String[] oreArray)

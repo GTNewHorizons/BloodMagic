@@ -23,13 +23,25 @@ public class FallingTower
     @ZenMethod
     public static void addFocus(IItemStack stack, int radius, String[] components)
     {
-        MineTweakerAPI.apply(new Add(toStack(stack),radius, components));
+        MineTweakerAPI.apply(new Add(toStack(stack),radius,10000, components));
     }
 
     @ZenMethod
     public static void addFocus(IItemStack stack, int radius, String components)
     {
-        MineTweakerAPI.apply(new Add(toStack(stack),radius, components.split("\\s*,\\s*")));
+        MineTweakerAPI.apply(new Add(toStack(stack), radius, 10000, components.split("\\s*,\\s*")));
+    }
+
+    @ZenMethod
+    public static void addFocus(IItemStack stack, int radius, int cost, String[] components)
+    {
+        MineTweakerAPI.apply(new Add(toStack(stack), radius, cost, components));
+    }
+
+    @ZenMethod
+    public static void addFocus(IItemStack stack, int radius, int cost, String components)
+    {
+        MineTweakerAPI.apply(new Add(toStack(stack),radius, cost, components.split("\\s*,\\s*")));
     }
 
     @ZenMethod
@@ -41,9 +53,9 @@ public class FallingTower
     {
         private MeteorParadigm paradigm;
 
-        public Add(ItemStack stack, int radius, String[] components)
+        public Add(ItemStack stack, int radius, int cost, String[] components)
         {
-            paradigm = new MeteorParadigm(stack,radius);
+            paradigm = new MeteorParadigm(stack, radius, cost);
             paradigm.parseStringArray(components);
         }
 
