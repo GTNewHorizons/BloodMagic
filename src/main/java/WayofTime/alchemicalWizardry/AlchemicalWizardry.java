@@ -1367,12 +1367,15 @@ public class AlchemicalWizardry
         AltarRecipeRegistry.registerAltarRecipe(new ItemStack(ModItems.archmageBloodOrb), new ItemStack(ModItems.demonBloodShard), 5, 75000, 50, 100, false);
         AltarRecipeRegistry.registerAltarRecipe(new ItemStack(ModItems.transcendentBloodOrb), new ItemStack(ModBlocks.blockCrystal), 6, 200000, 100, 200, false);
 
-        AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.weakBloodOrb), 1, 2);
+        AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.weakBloodOrb), 1, 2);//Determines orb fill speed
         AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.apprenticeBloodOrb), 2, 5);
         AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.magicianBloodOrb), 3, 15);
         AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.masterBloodOrb), 4, 25);
         AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.archmageBloodOrb), 5, 50);
         AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.transcendentBloodOrb), 6, 100);
+        AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.eldritchBloodOrb), 7, 400);
+        AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.technoBloodOrb), 8, 1600);
+        AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.armokBloodOrb), 9, 5000);
 
         AltarRecipeRegistry.registerAltarRecipe(new ItemStack(ModItems.telepositionFocus), new ItemStack(Items.ender_pearl), 4, 2000, 10, 10, false);
         AltarRecipeRegistry.registerAltarRecipe(new ItemStack(ModItems.enhancedTelepositionFocus), new ItemStack(ModItems.telepositionFocus), 4, 10000, 25, 15, false);

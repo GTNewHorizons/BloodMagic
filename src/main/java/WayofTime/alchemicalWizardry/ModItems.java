@@ -207,6 +207,10 @@ public class ModItems
 
     public static Item ritualDismantler;
 
+    public static Item eldritchBloodOrb;
+    public static Item technoBloodOrb;
+    public static Item armokBloodOrb;
+    
     public static void init()
     {
         weakBloodOrb = new EnergyBattery(5000).setUnlocalizedName("weakBloodOrb");
@@ -341,6 +345,10 @@ public class ModItems
         itemIncense = new ItemIncense().setUnlocalizedName("bloodMagicIncenseItem");
 
         ritualDismantler = new ItemRitualDismantler().setUnlocalizedName("ritualDismantler");
+        
+        eldritchBloodOrb = new EldritchBloodOrb(90000000).setUnlocalizedName("eldritchBloodOrb");
+        technoBloodOrb = new TechnoBloodOrb(300000000).setUnlocalizedName("technoBloodOrb");
+        armokBloodOrb = new ArmokBloodOrb(1000000000).setUnlocalizedName("armokBloodOrb");
     }
 
     public static void registerItems()
@@ -478,5 +486,9 @@ public class ModItems
 
         GameRegistry.registerItem(ModItems.itemIncense, "bloodMagicIncenseItem");
         GameRegistry.registerItem(ModItems.ritualDismantler, "ritualDismantler");
+        
+        GameRegistry.registerItem(ModItems.eldritchBloodOrb, "eldritchBloodOrb");
+        GameRegistry.registerItem(ModItems.technoBloodOrb, "technoBloodOrb");
+        GameRegistry.registerItem(ModItems.armokBloodOrb, "armokBloodOrb");
     }
 }
