@@ -387,7 +387,10 @@ public class BloodMagicConfiguration
 			new BlockStack(ModBlocks.bloodRune, 2),
 			new BlockStack(ModBlocks.bloodRune, 3),
 			new BlockStack(ModBlocks.bloodRune, 4),
-			new BlockStack(ModBlocks.bloodRune, 5)
+			new BlockStack(ModBlocks.bloodRune, 5),
+			new BlockStack(ModBlocks.bloodRune, 6),//super runes from this tier on
+			new BlockStack(ModBlocks.bloodRune, 8),				
+			new BlockStack(ModBlocks.bloodRune, 10)
 		});
 		AlchemicalWizardry.sixthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("6thTier", new BlockStack[] {
 			new BlockStack(ModBlocks.bloodRune, 0),
@@ -400,7 +403,7 @@ public class BloodMagicConfiguration
 			new BlockStack(ModBlocks.bloodRune, 3),
 			new BlockStack(ModBlocks.bloodRune, 4),
 			new BlockStack(ModBlocks.bloodRune, 5),
-			new BlockStack(ModBlocks.bloodRune, 6),//super runes from this tier on
+			new BlockStack(ModBlocks.bloodRune, 6),
 			new BlockStack(ModBlocks.bloodRune, 8),				
 			new BlockStack(ModBlocks.bloodRune, 10)
 		});
@@ -432,11 +435,8 @@ public class BloodMagicConfiguration
 				new BlockStack(ModBlocks.bloodRune, 4),
 				new BlockStack(ModBlocks.bloodRune, 5),
 				new BlockStack(ModBlocks.bloodRune, 6),
-				new BlockStack(ModBlocks.bloodRune, 7),//ultra runes from this tier on
 				new BlockStack(ModBlocks.bloodRune, 8),
-				new BlockStack(ModBlocks.bloodRune, 9),
-				new BlockStack(ModBlocks.bloodRune, 10),
-				new BlockStack(ModBlocks.bloodRune, 11)
+				new BlockStack(ModBlocks.bloodRune, 10)
 			});
 		AlchemicalWizardry.ninthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("9thTier", new BlockStack[] {
 				new BlockStack(ModBlocks.bloodRune, 0),
@@ -450,7 +450,7 @@ public class BloodMagicConfiguration
 				new BlockStack(ModBlocks.bloodRune, 4),
 				new BlockStack(ModBlocks.bloodRune, 5),
 				new BlockStack(ModBlocks.bloodRune, 6),
-				new BlockStack(ModBlocks.bloodRune, 7),
+				new BlockStack(ModBlocks.bloodRune, 7),//ultra runes available
 				new BlockStack(ModBlocks.bloodRune, 8),
 				new BlockStack(ModBlocks.bloodRune, 9),
 				new BlockStack(ModBlocks.bloodRune, 10),
