@@ -87,6 +87,7 @@ public class ModItems
     public static Item earthScribeTool;
     public static Item airScribeTool;
     public static Item dawnScribeTool;
+    public static Item bloodScribeTool;
     public static Item activationCrystal;
     public static Item boundPickaxe;
     public static Item boundAxe;
@@ -313,6 +314,7 @@ public class ModItems
         itemDestinationClearer = new ItemDestinationClearer().setUnlocalizedName("destinationClearer");
 
         dawnScribeTool = new DawnScribeTool().setUnlocalizedName("dawnScribeTool");
+        bloodScribeTool = new BloodScribeTool().setUnlocalizedName("bloodScribeTool");
 
         itemBloodPack = new ItemBloodLetterPack().setUnlocalizedName("itemBloodPack");
         itemHarvestSigil = new SigilHarvest().setUnlocalizedName("itemHarvestSigil");
@@ -455,6 +457,7 @@ public class ModItems
         GameRegistry.registerItem(ModItems.baseAlchemyItems, "bloodMagicBaseAlchemyItems");
 
         GameRegistry.registerItem(ModItems.dawnScribeTool, "dawnScribeTool");
+        GameRegistry.registerItem(ModItems.bloodScribeTool, "bloodScribeTool");
 
         GameRegistry.registerItem(ModItems.itemBloodPack, "itemBloodPack");
         GameRegistry.registerItem(ModItems.itemHarvestSigil, "itemHarvestSigil");

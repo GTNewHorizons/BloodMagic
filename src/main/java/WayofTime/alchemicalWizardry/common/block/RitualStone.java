@@ -30,6 +30,8 @@ public class RitualStone extends Block implements IRitualStone
     private IIcon duskStoneIcon;
     @SideOnly(Side.CLIENT)
     private IIcon dawnStoneIcon;
+    @SideOnly(Side.CLIENT)
+    private IIcon bloodStoneIcon;
 
     public RitualStone()
     {
@@ -51,6 +53,7 @@ public class RitualStone extends Block implements IRitualStone
         this.airStoneIcon = iconRegister.registerIcon("AlchemicalWizardry:AirRitualStone");
         this.duskStoneIcon = iconRegister.registerIcon("AlchemicalWizardry:DuskRitualStone");
         this.dawnStoneIcon = iconRegister.registerIcon("AlchemicalWizardry:LightRitualStone");
+        this.bloodStoneIcon = iconRegister.registerIcon("AlchemicalWizardry:BloodRitualStone");
     }
 
     @Override
@@ -120,6 +123,9 @@ public class RitualStone extends Block implements IRitualStone
             case 6:
             	return dawnStoneIcon;
 
+            case 7:
+            	return bloodStoneIcon;
+            	
             default:
                 return blankIcon;
         }

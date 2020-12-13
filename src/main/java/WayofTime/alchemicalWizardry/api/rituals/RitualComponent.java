@@ -13,6 +13,7 @@ public class RitualComponent
     public static final int AIR = 4;
     public static final int DUSK = 5;
     public static final int DAWN = 6;
+    public static final int BLOOD = 7;
 
     public RitualComponent(int x, int y, int z, int stoneType)
     {
