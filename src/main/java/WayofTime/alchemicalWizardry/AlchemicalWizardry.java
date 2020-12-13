@@ -605,6 +605,8 @@ public class AlchemicalWizardry
         ((ItemRitualDiviner) duskRitualDivinerStack.getItem()).setMaxRuneDisplacement(duskRitualDivinerStack, 1);
         ItemStack dawnRitualDivinerStack = new ItemStack(ModItems.itemRitualDiviner);
         ((ItemRitualDiviner) dawnRitualDivinerStack.getItem()).setMaxRuneDisplacement(dawnRitualDivinerStack, 2);
+        ItemStack bloodRitualDivinerStack = new ItemStack(ModItems.itemRitualDiviner);
+        ((ItemRitualDiviner) bloodRitualDivinerStack.getItem()).setMaxRuneDisplacement(bloodRitualDivinerStack, 3);
         waterSigilStackCrafted.setItemDamage(waterSigilStackCrafted.getMaxDamage());
         lavaSigilStackCrafted.setItemDamage(lavaSigilStackCrafted.getMaxDamage());
         voidSigilStackCrafted.setItemDamage(voidSigilStackCrafted.getMaxDamage());
