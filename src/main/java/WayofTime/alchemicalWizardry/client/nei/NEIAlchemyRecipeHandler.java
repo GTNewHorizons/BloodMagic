@@ -1,6 +1,6 @@
 package WayofTime.alchemicalWizardry.client.nei;
 
-import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.bloodOrbs;
+import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.getBloodOrbs;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
             this.output = new PositionedStack(recipe.getResult(), 76, 25);
             this.lp = recipe.getAmountNeeded() * 100;
             this.orbs = new ArrayList<BloodOrbs>();
-            for (Item orb : bloodOrbs) {
+            for (Item orb : getBloodOrbs()) {
                 if (((IBloodOrb) orb).getOrbLevel() >= recipe.getOrbLevel()) {
                     orbs.add(new BloodOrbs(new ItemStack(orb)));
                 }
@@ -79,29 +79,6 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
             if (orbs == null || orbs.size() <= 0) return null;
             return orbs.get((cycleticks / 48) % orbs.size()).stack;
         }
-    }
-
-    @Override
-    public TemplateRecipeHandler newInstance() {
-        // We need to populate available blood orbs,
-        //   but don't try to do it more than once
-        if (bloodOrbs.isEmpty()) {
-            for (ItemStack item : ItemList.items) {
-                if (item != null && item.getItem() instanceof IBloodOrb) {
-                    bloodOrbs.add(item.getItem());
-                }
-            }
-            if (bloodOrbs.isEmpty()) {
-                // If there is NEI no cache - go to item registry
-                for (Object anItemRegistry : Item.itemRegistry) {
-                    Item item = (Item) anItemRegistry;
-                    if (item != null && item instanceof IBloodOrb) {
-                        bloodOrbs.add(item);
-                    }
-                }
-            }
-        }
-        return super.newInstance();
     }
 
     @Override

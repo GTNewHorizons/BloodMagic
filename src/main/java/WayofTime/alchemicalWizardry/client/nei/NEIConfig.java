@@ -2,13 +2,42 @@ package WayofTime.alchemicalWizardry.client.nei;
 
 import java.util.ArrayList;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
+import codechicken.nei.ItemList;
 import net.minecraft.item.Item;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import net.minecraft.item.ItemStack;
 
-public class NEIConfig implements IConfigureNEI {	
-	public static ArrayList<Item> bloodOrbs = new ArrayList<Item>();
-	
+public class NEIConfig implements IConfigureNEI {
+	private static ArrayList<Item> bloodOrbs = null;
+
+	public static ArrayList<Item> getBloodOrbs() {
+		if (bloodOrbs == null) {
+			synchronized (NEIConfig.class) {
+				if (bloodOrbs == null) {
+					ArrayList<Item> bloodOrbsTemp = new ArrayList<>();
+					for (ItemStack item : ItemList.items) {
+						if (item != null && item.getItem() instanceof IBloodOrb) {
+							bloodOrbsTemp.add(item.getItem());
+						}
+					}
+					if (bloodOrbsTemp.isEmpty()) {
+						// If there is NEI no cache - go to item registry
+						for (Object anItemRegistry : Item.itemRegistry) {
+							Item item = (Item) anItemRegistry;
+							if (item instanceof IBloodOrb) {
+								bloodOrbsTemp.add(item);
+							}
+						}
+					}
+					bloodOrbs = bloodOrbsTemp;
+				}
+			}
+		}
+		return bloodOrbs;
+	}
+
 	@Override
 	public void loadConfig() {
 		API.registerRecipeHandler(new NEIAlchemyRecipeHandler());

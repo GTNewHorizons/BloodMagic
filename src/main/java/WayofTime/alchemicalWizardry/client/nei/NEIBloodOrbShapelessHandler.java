@@ -34,8 +34,8 @@ public class NEIBloodOrbShapelessHandler extends ShapelessRecipeHandler {
 					stack.setMaxSize(1);
 					ingredients.add(stack);
 				} else if (o instanceof Integer) {
-					ArrayList<ItemStack> orbs = new ArrayList();
-					for (Item item : NEIConfig.bloodOrbs) {
+					ArrayList<ItemStack> orbs = new ArrayList<>();
+					for (Item item : NEIConfig.getBloodOrbs()) {
 						if (((IBloodOrb) item).getOrbLevel() >= (Integer) o) {
 							orbs.add(new ItemStack(item));
 						}
