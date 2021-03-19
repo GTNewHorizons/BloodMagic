@@ -16,26 +16,30 @@ public class NEIConfig implements IConfigureNEI {
 		if (bloodOrbs == null) {
 			synchronized (NEIConfig.class) {
 				if (bloodOrbs == null) {
-					ArrayList<Item> bloodOrbsTemp = new ArrayList<>();
-					for (ItemStack item : ItemList.items) {
-						if (item != null && item.getItem() instanceof IBloodOrb) {
-							bloodOrbsTemp.add(item.getItem());
-						}
-					}
-					if (bloodOrbsTemp.isEmpty()) {
-						// If there is NEI no cache - go to item registry
-						for (Object anItemRegistry : Item.itemRegistry) {
-							Item item = (Item) anItemRegistry;
-							if (item instanceof IBloodOrb) {
-								bloodOrbsTemp.add(item);
-							}
-						}
-					}
-					bloodOrbs = bloodOrbsTemp;
+					bloodOrbs = collectAllBloodOrbs();
 				}
 			}
 		}
 		return bloodOrbs;
+	}
+
+	private static ArrayList<Item> collectAllBloodOrbs() {
+		ArrayList<Item> bloodOrbsTemp = new ArrayList<>();
+		for (ItemStack item : ItemList.items) {
+			if (item != null && item.getItem() instanceof IBloodOrb) {
+				bloodOrbsTemp.add(item.getItem());
+			}
+		}
+		if (bloodOrbsTemp.isEmpty()) {
+			// If there is NEI no cache - go to item registry
+			for (Object anItemRegistry : Item.itemRegistry) {
+				Item item = (Item) anItemRegistry;
+				if (item instanceof IBloodOrb) {
+					bloodOrbsTemp.add(item);
+				}
+			}
+		}
+		return bloodOrbsTemp;
 	}
 
 	@Override
