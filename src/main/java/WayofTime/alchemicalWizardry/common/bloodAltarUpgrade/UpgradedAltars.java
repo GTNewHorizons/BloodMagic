@@ -80,7 +80,7 @@ public class UpgradedAltars
                 return null;
         }
     }
-    private static boolean checkAltarComponent(AltarComponent altarComponent, IBlockAccess world, int x, int y, int z, int altarTier)//ugh
+    private static boolean checkAltarComponent(AltarComponent altarComponent, IBlockAccess world, int x, int y, int z, int altarTier)
     {
         Block block = world.getBlock(x + altarComponent.getX(), y + altarComponent.getY(), z + altarComponent.getZ());
         int metadata = world.getBlockMetadata(x + altarComponent.getX(), y + altarComponent.getY(), z + altarComponent.getZ());

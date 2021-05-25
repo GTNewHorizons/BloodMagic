@@ -251,7 +251,7 @@ public class BloodMagicConfiguration
 		AlchemicalWizardry.ritualCostFeatheredEarth = config.get(lpCosts, "Ritual of the Feathered Earth", new int[]{100000, 0}).getIntList();
 		AlchemicalWizardry.ritualCostGaia = config.get(lpCosts, "Gaia's Transformation", new int[]{1000000, 0}).getIntList();
 		AlchemicalWizardry.ritualCostCondor = config.get(lpCosts, "Reverence of the Condor", new int[]{1000000, 0}).getIntList();
-		AlchemicalWizardry.ritualCostFallingTower = config.get(lpCosts, "Mark of the Falling Tower", new int[]{1000000, 0}).getIntList();
+		AlchemicalWizardry.ritualCostFallingTower = config.get(lpCosts, "Mark of the Falling Tower", new int[]{10000, 0}).getIntList();
 		AlchemicalWizardry.ritualCostBalladOfAlchemy = config.get(lpCosts, "Ballad of Alchemy", new int[]{20000, 10}).getIntList();
 		AlchemicalWizardry.ritualCostExpulsion = config.get(lpCosts, "Aura of Expulsion", new int[]{1000000, 1000}).getIntList();
 		AlchemicalWizardry.ritualCostSuppression = config.get(lpCosts, "Dome of Suppression", new int[]{10000, 2}).getIntList();
@@ -387,7 +387,10 @@ public class BloodMagicConfiguration
 			new BlockStack(ModBlocks.bloodRune, 2),
 			new BlockStack(ModBlocks.bloodRune, 3),
 			new BlockStack(ModBlocks.bloodRune, 4),
-			new BlockStack(ModBlocks.bloodRune, 5)
+			new BlockStack(ModBlocks.bloodRune, 5),
+			new BlockStack(ModBlocks.bloodRune, 6),//super runes from this tier on
+			new BlockStack(ModBlocks.bloodRune, 8),				
+			new BlockStack(ModBlocks.bloodRune, 10)
 		});
 		AlchemicalWizardry.sixthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("6thTier", new BlockStack[] {
 			new BlockStack(ModBlocks.bloodRune, 0),
@@ -400,7 +403,7 @@ public class BloodMagicConfiguration
 			new BlockStack(ModBlocks.bloodRune, 3),
 			new BlockStack(ModBlocks.bloodRune, 4),
 			new BlockStack(ModBlocks.bloodRune, 5),
-			new BlockStack(ModBlocks.bloodRune, 6),//super runes from this tier on
+			new BlockStack(ModBlocks.bloodRune, 6),
 			new BlockStack(ModBlocks.bloodRune, 8),				
 			new BlockStack(ModBlocks.bloodRune, 10)
 		});
@@ -432,11 +435,8 @@ public class BloodMagicConfiguration
 				new BlockStack(ModBlocks.bloodRune, 4),
 				new BlockStack(ModBlocks.bloodRune, 5),
 				new BlockStack(ModBlocks.bloodRune, 6),
-				new BlockStack(ModBlocks.bloodRune, 7),//ultra runes from this tier on
 				new BlockStack(ModBlocks.bloodRune, 8),
-				new BlockStack(ModBlocks.bloodRune, 9),
-				new BlockStack(ModBlocks.bloodRune, 10),
-				new BlockStack(ModBlocks.bloodRune, 11)
+				new BlockStack(ModBlocks.bloodRune, 10)
 			});
 		AlchemicalWizardry.ninthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("9thTier", new BlockStack[] {
 				new BlockStack(ModBlocks.bloodRune, 0),
@@ -450,7 +450,7 @@ public class BloodMagicConfiguration
 				new BlockStack(ModBlocks.bloodRune, 4),
 				new BlockStack(ModBlocks.bloodRune, 5),
 				new BlockStack(ModBlocks.bloodRune, 6),
-				new BlockStack(ModBlocks.bloodRune, 7),
+				new BlockStack(ModBlocks.bloodRune, 7),//ultra runes available
 				new BlockStack(ModBlocks.bloodRune, 8),
 				new BlockStack(ModBlocks.bloodRune, 9),
 				new BlockStack(ModBlocks.bloodRune, 10),

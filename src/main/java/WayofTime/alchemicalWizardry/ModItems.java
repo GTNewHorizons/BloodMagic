@@ -87,6 +87,7 @@ public class ModItems
     public static Item earthScribeTool;
     public static Item airScribeTool;
     public static Item dawnScribeTool;
+    public static Item bloodScribeTool;
     public static Item activationCrystal;
     public static Item boundPickaxe;
     public static Item boundAxe;
@@ -207,6 +208,10 @@ public class ModItems
 
     public static Item ritualDismantler;
 
+    public static Item eldritchBloodOrb;
+    public static Item technoBloodOrb;
+    public static Item armokBloodOrb;
+    
     public static void init()
     {
         weakBloodOrb = new EnergyBattery(5000).setUnlocalizedName("weakBloodOrb");
@@ -309,6 +314,7 @@ public class ModItems
         itemDestinationClearer = new ItemDestinationClearer().setUnlocalizedName("destinationClearer");
 
         dawnScribeTool = new DawnScribeTool().setUnlocalizedName("dawnScribeTool");
+        bloodScribeTool = new BloodScribeTool().setUnlocalizedName("bloodScribeTool");
 
         itemBloodPack = new ItemBloodLetterPack().setUnlocalizedName("itemBloodPack");
         itemHarvestSigil = new SigilHarvest().setUnlocalizedName("itemHarvestSigil");
@@ -341,6 +347,10 @@ public class ModItems
         itemIncense = new ItemIncense().setUnlocalizedName("bloodMagicIncenseItem");
 
         ritualDismantler = new ItemRitualDismantler().setUnlocalizedName("ritualDismantler");
+        
+        eldritchBloodOrb = new EldritchBloodOrb(90000000).setUnlocalizedName("eldritchBloodOrb");
+        technoBloodOrb = new TechnoBloodOrb(300000000).setUnlocalizedName("technoBloodOrb");
+        armokBloodOrb = new ArmokBloodOrb(1000000000).setUnlocalizedName("armokBloodOrb");
     }
 
     public static void registerItems()
@@ -447,6 +457,7 @@ public class ModItems
         GameRegistry.registerItem(ModItems.baseAlchemyItems, "bloodMagicBaseAlchemyItems");
 
         GameRegistry.registerItem(ModItems.dawnScribeTool, "dawnScribeTool");
+        GameRegistry.registerItem(ModItems.bloodScribeTool, "bloodScribeTool");
 
         GameRegistry.registerItem(ModItems.itemBloodPack, "itemBloodPack");
         GameRegistry.registerItem(ModItems.itemHarvestSigil, "itemHarvestSigil");
@@ -478,5 +489,9 @@ public class ModItems
 
         GameRegistry.registerItem(ModItems.itemIncense, "bloodMagicIncenseItem");
         GameRegistry.registerItem(ModItems.ritualDismantler, "ritualDismantler");
+        
+        GameRegistry.registerItem(ModItems.eldritchBloodOrb, "eldritchBloodOrb");
+        GameRegistry.registerItem(ModItems.technoBloodOrb, "technoBloodOrb");
+        GameRegistry.registerItem(ModItems.armokBloodOrb, "armokBloodOrb");
     }
 }

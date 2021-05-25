@@ -61,9 +61,12 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner
         if (this.getMaxRuneDisplacement(stack) == 1)
         {
             par3List.add(StatCollector.translateToLocal("tooltip.ritualdiviner.canplace"));
-        }else if (this.getMaxRuneDisplacement(stack) >= 2)
+        }else if (this.getMaxRuneDisplacement(stack) == 2)
         {
             par3List.add(StatCollector.translateToLocal("tooltip.ritualdiviner.canplacedawn"));
+        }else if (this.getMaxRuneDisplacement(stack) >= 3)
+        {
+            par3List.add(StatCollector.translateToLocal("tooltip.ritualdiviner.canplaceblood"));
 
         }else
         {
@@ -95,6 +98,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner
                 int earthStones = 0;
                 int duskStones = 0;
                 int dawnStones = 0;
+                int bloodStones = 0;
 
                 for (RitualComponent rc : ritualList)
                 {
@@ -127,10 +131,14 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner
                         case RitualComponent.DAWN:
                         	dawnStones++;
                         	break;
+                        	
+                        case RitualComponent.BLOOD:
+                        	bloodStones++;
+                        	break;
                     }
                 }
 
-                int totalStones = blankStones + airStones + waterStones + fireStones + earthStones + duskStones + dawnStones;
+                int totalStones = blankStones + airStones + waterStones + fireStones + earthStones + duskStones + dawnStones + bloodStones;
 
                 par3List.add(EnumChatFormatting.WHITE + StatCollector.translateToLocal("tooltip.ritualdiviner.blankstones") + " " + blankStones);
                 par3List.add(EnumChatFormatting.AQUA + StatCollector.translateToLocal("tooltip.ritualdiviner.airstones") + " " + airStones);
@@ -139,6 +147,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner
                 par3List.add(EnumChatFormatting.DARK_GREEN + StatCollector.translateToLocal("tooltip.ritualdiviner.earthstones") + " " + earthStones);
                 par3List.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("tooltip.ritualdiviner.duskstones") + " " + duskStones);
                 par3List.add(EnumChatFormatting.GOLD + StatCollector.translateToLocal("tooltip.ritualdiviner.dawnstones") + " " + dawnStones);
+                par3List.add(EnumChatFormatting.DARK_RED + StatCollector.translateToLocal("tooltip.ritualdiviner.bloodstones") + " " + bloodStones);
                 par3List.add(EnumChatFormatting.UNDERLINE + StatCollector.translateToLocal("tooltip.ritualdiviner.totalStones") + " " + totalStones);
             }
         }else
@@ -464,6 +473,10 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner
         ItemStack dawnRitualDivinerStack = new ItemStack(id);
         this.setMaxRuneDisplacement(dawnRitualDivinerStack, 2);
         list.add(dawnRitualDivinerStack);
+        
+        ItemStack bloodRitualDivinerStack = new ItemStack(id);
+        this.setMaxRuneDisplacement(bloodRitualDivinerStack, 3);
+        list.add(bloodRitualDivinerStack);
     }
     
     @Override

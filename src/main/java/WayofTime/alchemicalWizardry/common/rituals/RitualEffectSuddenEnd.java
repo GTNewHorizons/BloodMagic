@@ -396,14 +396,14 @@ public class RitualEffectSuddenEnd extends RitualEffect {
 		suddenEndRitual.add(new RitualComponent(-2, -2, 7, RitualComponent.DUSK));
 		suddenEndRitual.add(new RitualComponent(-3, -1, 7, RitualComponent.DUSK));
 
-		suddenEndRitual.add(new RitualComponent(2, 1, 4, RitualComponent.DUSK));
-		suddenEndRitual.add(new RitualComponent(1, 2, 4, RitualComponent.DUSK));
-		suddenEndRitual.add(new RitualComponent(2, -1, 4, RitualComponent.DUSK));
-		suddenEndRitual.add(new RitualComponent(1, -2, 4, RitualComponent.DUSK));
-		suddenEndRitual.add(new RitualComponent(-2, 1, 4, RitualComponent.DUSK));
-		suddenEndRitual.add(new RitualComponent(-1, 2, 4, RitualComponent.DUSK));
-		suddenEndRitual.add(new RitualComponent(-2, -1, 4, RitualComponent.DUSK));
-		suddenEndRitual.add(new RitualComponent(-1, -2, 4, RitualComponent.DUSK));
+		suddenEndRitual.add(new RitualComponent(2, 1, -4, RitualComponent.DUSK));
+		suddenEndRitual.add(new RitualComponent(1, 2, -4, RitualComponent.DUSK));
+		suddenEndRitual.add(new RitualComponent(2, -1, -4, RitualComponent.DUSK));
+		suddenEndRitual.add(new RitualComponent(1, -2, -4, RitualComponent.DUSK));
+		suddenEndRitual.add(new RitualComponent(-2, 1, -4, RitualComponent.DUSK));
+		suddenEndRitual.add(new RitualComponent(-1, 2, -4, RitualComponent.DUSK));
+		suddenEndRitual.add(new RitualComponent(-2, -1, -4, RitualComponent.DUSK));
+		suddenEndRitual.add(new RitualComponent(-1, -2, -4, RitualComponent.DUSK));
 
 		suddenEndRitual.add(new RitualComponent(1, 3, -7, RitualComponent.DUSK));
 		suddenEndRitual.add(new RitualComponent(2, 2, -7, RitualComponent.DUSK));
@@ -418,70 +418,70 @@ public class RitualEffectSuddenEnd extends RitualEffect {
 		suddenEndRitual.add(new RitualComponent(-2, -2, -7, RitualComponent.DUSK));
 		suddenEndRitual.add(new RitualComponent(-3, -1, -7, RitualComponent.DUSK));
 
-		// blank temp
-		suddenEndRitual.add(new RitualComponent(11, 4, 4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(11, 3, 4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(11, 4, 3, RitualComponent.BLANK));
+		// blood
+		suddenEndRitual.add(new RitualComponent(11, 4, 4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(11, 3, 4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(11, 4, 3, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(11, -4, 4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(11, -3, 4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(11, -4, 3, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(11, -4, 4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(11, -3, 4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(11, -4, 3, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(11, 4, -4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(11, 3, -4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(11, 4, -3, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(11, 4, -4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(11, 3, -4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(11, 4, -3, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(11, -4, -4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(11, -3, -4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(11, -4, -3, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(11, -4, -4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(11, -3, -4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(11, -4, -3, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(-11, 4, 4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-11, 3, 4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-11, 4, 3, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(-11, 4, 4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-11, 3, 4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-11, 4, 3, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(-11, -4, 4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-11, -3, 4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-11, -4, 3, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(-11, -4, 4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-11, -3, 4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-11, -4, 3, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(-11, 4, -4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-11, 3, -4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-11, 4, -3, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(-11, 4, -4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-11, 3, -4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-11, 4, -3, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(-11, -4, -4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-11, -3, -4, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-11, -4, -3, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(-11, -4, -4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-11, -3, -4, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-11, -4, -3, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(4, 4, 11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(4, 3, 11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(3, 4, 11, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(4, 4, 11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(4, 3, 11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(3, 4, 11, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(4, -4, 11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(4, -3, 11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(4, -4, 11, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(4, -4, 11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(4, -3, 11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(3, -4, 11, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(4, 4, 11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(4, 3, 11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(3, 4, 11, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(-4, 4, 11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-4, 3, 11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-3, 4, 11, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(4, -4, 11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(4, -3, 11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(3, -4, 11, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(-4, -4, 11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-4, -3, 11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-3, -4, 11, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(-4, 4, -11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-4, 3, -11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-3, 4, -11, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(4, 4, -11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(4, 3, -11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(3, 4, -11, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(-4, -4, -11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-4, -3, -11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-4, -4, -11, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(4, -4, -11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(4, -3, -11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(3, -4, -11, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(-4, 4, -11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-4, 3, -11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-3, 4, -11, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(-4, 4, -11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-4, 3, -11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-3, 4, -11, RitualComponent.BLOOD));
 
-		suddenEndRitual.add(new RitualComponent(-4, -4, -11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-4, -3, -11, RitualComponent.BLANK));
-		suddenEndRitual.add(new RitualComponent(-3, -4, -11, RitualComponent.BLANK));
+		suddenEndRitual.add(new RitualComponent(-4, -4, -11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-4, -3, -11, RitualComponent.BLOOD));
+		suddenEndRitual.add(new RitualComponent(-3, -4, -11, RitualComponent.BLOOD));
 		return suddenEndRitual;
 	}
 
