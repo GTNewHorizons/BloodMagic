@@ -146,10 +146,11 @@ public class TETeleposer extends TEInventory
                         {
                             entityCount = 0;
                         }
-
-                        SoulNetworkHandler.syphonFromNetwork(focus, damage * transportCount + damage * entityCount);
-                        //Teleport
-
+			
+                        //Teleport with minimum cost of 2000 LP.
+			int cost = Math.max(damage * transportCount + damage * entityCount, 2000);
+			SoulNetworkHandler.syphonFromNetwork(focus, cost);
+			
                         if (worldF.equals(worldObj))
                         {
                             iterator1 = list1.iterator();
