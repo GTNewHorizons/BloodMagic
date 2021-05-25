@@ -1,25 +1,23 @@
 package WayofTime.alchemicalWizardry.client.nei;
 
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import WayofTime.alchemicalWizardry.api.items.ShapedBloodOrbRecipe;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
 import codechicken.nei.ItemList;
+import codechicken.nei.NEIServerUtils;
+import codechicken.nei.PositionedStack;
+import codechicken.nei.recipe.ShapedRecipeHandler;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.StatCollector;
-import WayofTime.alchemicalWizardry.api.items.ShapedBloodOrbRecipe;
-import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
-import codechicken.nei.NEIServerUtils;
-import codechicken.nei.PositionedStack;
-import codechicken.nei.recipe.ShapedRecipeHandler;
 
-import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.bloodOrbs;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.getBloodOrbs;
 
 /**
  * NEI Blood Orb Shaped Recipe Handler by joshie *
@@ -43,8 +41,8 @@ public class NEIBloodOrbShapedHandler extends ShapedRecipeHandler {
 						stack.setMaxSize(1);
 						ingredients.add(stack);
 					} else if (o instanceof Integer) {
-						ArrayList<ItemStack> orbs = new ArrayList();
-						for (Item item : bloodOrbs) {
+						ArrayList<ItemStack> orbs = new ArrayList<>();
+						for (Item item : getBloodOrbs()) {
 							if (((IBloodOrb) item).getOrbLevel() >= (Integer) o) {
 								orbs.add(new ItemStack(item));
 							}
@@ -144,27 +142,4 @@ public class NEIBloodOrbShapedHandler extends ShapedRecipeHandler {
 		return StatCollector.translateToLocal("bm.string.crafting.orb.shaped");
 
 	}
-    @Override
-    public TemplateRecipeHandler newInstance() {
-        // We need to populate available blood orbs,
-        //   but don't try to do it more than once
-	    if (bloodOrbs.isEmpty()) {
-            for (ItemStack item : ItemList.items) {
-                if (item != null && item.getItem() instanceof IBloodOrb) {
-                    bloodOrbs.add(item.getItem());
-                }
-            }
-            if (bloodOrbs.isEmpty()) {
-                // If there is NEI no cache - go to item registry
-                for (Object anItemRegistry : Item.itemRegistry) {
-                    Item item = (Item) anItemRegistry;
-                    if (item != null && item instanceof IBloodOrb) {
-                        bloodOrbs.add(item);
-                    }
-                }
-            }
-        }
-        return super.newInstance();
-	}
-
 }

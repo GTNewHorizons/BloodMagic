@@ -4,6 +4,7 @@ import static WayofTime.alchemicalWizardry.common.tweaker.MTHelper.toObjects;
 import static WayofTime.alchemicalWizardry.common.tweaker.MTHelper.toShapedObjects;
 import static WayofTime.alchemicalWizardry.common.tweaker.MTHelper.toStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import WayofTime.alchemicalWizardry.api.items.ShapelessBloodOrbRecipe;
@@ -24,16 +25,30 @@ import WayofTime.alchemicalWizardry.api.items.ShapedBloodOrbRecipe;
 @ZenClass("mods.bloodmagic.BloodOrb")
 public class BloodOrb 
 {
+    public static List<IUndoableAction> lateAdditions = new ArrayList<>();
+    public static List<IUndoableAction> lateRemovals = new ArrayList<>();
+    
+    public static void applyAdditionsAndRemovals() {
+        for (IUndoableAction toRemove : lateRemovals) {
+            MineTweakerAPI.apply(toRemove);
+        }
+        for (IUndoableAction toAdd : lateAdditions) {
+            MineTweakerAPI.apply(toAdd);
+        }
+        
+        lateAdditions.clear();
+    }
+    
     @ZenMethod
     public static void addShaped(IItemStack output, IIngredient[][] ingredients) 
     {
-        MineTweakerAPI.apply(new Add(false, toStack(output), toShapedObjects(ingredients)));
+        lateAdditions.add(new Add(false, toStack(output), toShapedObjects(ingredients)));
     }
 
     @ZenMethod
     public static void addShapeless(IItemStack output, IIngredient[] ingredients) 
     {
-        MineTweakerAPI.apply(new Add(true, toStack(output), toObjects(ingredients)));
+        lateAdditions.add((new Add(true, toStack(output), toObjects(ingredients))));
     }
 
     private static class Add implements IUndoableAction {
@@ -89,7 +104,7 @@ public class BloodOrb
 
     @ZenMethod
     public static void removeRecipe(IItemStack output) {
-        MineTweakerAPI.apply(new Remove(toStack(output)));
+        lateRemovals.add(new Remove(toStack(output)));
     }
 
     private static class Remove implements IUndoableAction {
@@ -111,7 +126,6 @@ public class BloodOrb
                     break;
                 }
             }
-            
             CraftingManager.getInstance().getRecipeList().remove(iRecipe);
         }
 
