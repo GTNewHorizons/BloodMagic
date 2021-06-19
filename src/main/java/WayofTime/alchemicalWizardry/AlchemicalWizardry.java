@@ -184,6 +184,8 @@ public class AlchemicalWizardry
     public static boolean ritualDisabledCrafting;
     public static boolean ritualDisabledPhantomHands;
     public static boolean ritualDisabledSphereIsland;
+    public static boolean ritualDisabledBloodSiphon;
+    public static boolean ritualDisabledSuddenEnd;
 
     public static boolean ritualWeakDisabledNight;
     public static boolean ritualWeakDisabledResistance;
@@ -272,6 +274,8 @@ public class AlchemicalWizardry
     public static int[] ritualCostCrafting;
     public static int[] ritualCostPhantomHands;
     public static int[] ritualCostSphereIsland;
+    public static int[] ritualCostBloodSiphon;
+    public static int[] ritualCostSuddenEnd;
 
     public static int ritualWeakCostNight;
     public static int ritualWeakCostResistance;
@@ -292,19 +296,25 @@ public class AlchemicalWizardry
     public static boolean causeHungerChatMessage = true;
     public static boolean disableBoundToolsRightClick;
 
-    public static BlockStack[] secondTierRunes = new BlockStack[10];
-    public static BlockStack[] thirdTierRunes = new BlockStack[10];
-    public static BlockStack[] fourthTierRunes = new BlockStack[10];
-    public static BlockStack[] fifthTierRunes = new BlockStack[10];
-    public static BlockStack[] sixthTierRunes = new BlockStack[10];
-    public static BlockStack[] specialAltarBlock = new BlockStack[7];
+    public static BlockStack[] secondTierRunes = new BlockStack[10];//Did I need to make these higher?
+    public static BlockStack[] thirdTierRunes = new BlockStack[10];//To account for the new runes?
+    public static BlockStack[] fourthTierRunes = new BlockStack[10];//But it works anyway?
+    public static BlockStack[] fifthTierRunes = new BlockStack[10];//Also, why x+1? Do they not count 0?
+    public static BlockStack[] sixthTierRunes = new BlockStack[13];//Or maybe all the metadat different ones count as the same?
+    public static BlockStack[] seventhTierRunes = new BlockStack[13];//But then there'd still be 5 types
+    public static BlockStack[] eighthTierRunes = new BlockStack[16];
+    public static BlockStack[] ninthTierRunes = new BlockStack[16];
+    public static BlockStack[] specialAltarBlock = new BlockStack[13];
 
     public static int lpPerSelfSacrifice = 200;
     public static int lpPerSelfSacrificeSoulFray = 20;
     public static int lpPerSelfSacrificeFeatheredKnife = 100;
     public static int lpPerSacrificeBase = 500;
     public static int lpPerSacrificeWellOfSuffering = 10;
+    public static int lpPerSacrificeBloodSiphon = 500;
+    public static int lpPerSacrificeSuddenEnd= 10000;
     public static double lpPerSacrificeIncense = 100.0D;
+    public static int maxEntitiesCounted = 20;
     public static HashMap<Class<?>, Integer> lpPerSactificeCustom;
 
     public static int energyBlastDamage = 12;
@@ -461,7 +471,7 @@ public class AlchemicalWizardry
         ComplexNetworkHandler.load();
 
         MinecraftForge.EVENT_BUS.register(new LifeBucketHandler());
-        BloodMagicConfiguration.init(new File(event.getModConfigurationDirectory(), "AWWayofTime.cfg"));
+        BloodMagicConfiguration.init(new File(event.getModConfigurationDirectory(), "Blood Magic.cfg"));
 
         //Custom config stuff goes here
         Potion[] potionTypes;
@@ -595,6 +605,8 @@ public class AlchemicalWizardry
         ((ItemRitualDiviner) duskRitualDivinerStack.getItem()).setMaxRuneDisplacement(duskRitualDivinerStack, 1);
         ItemStack dawnRitualDivinerStack = new ItemStack(ModItems.itemRitualDiviner);
         ((ItemRitualDiviner) dawnRitualDivinerStack.getItem()).setMaxRuneDisplacement(dawnRitualDivinerStack, 2);
+        ItemStack bloodRitualDivinerStack = new ItemStack(ModItems.itemRitualDiviner);
+        ((ItemRitualDiviner) bloodRitualDivinerStack.getItem()).setMaxRuneDisplacement(bloodRitualDivinerStack, 3);
         waterSigilStackCrafted.setItemDamage(waterSigilStackCrafted.getMaxDamage());
         lavaSigilStackCrafted.setItemDamage(lavaSigilStackCrafted.getMaxDamage());
         voidSigilStackCrafted.setItemDamage(voidSigilStackCrafted.getMaxDamage());
@@ -1357,12 +1369,15 @@ public class AlchemicalWizardry
         AltarRecipeRegistry.registerAltarRecipe(new ItemStack(ModItems.archmageBloodOrb), new ItemStack(ModItems.demonBloodShard), 5, 75000, 50, 100, false);
         AltarRecipeRegistry.registerAltarRecipe(new ItemStack(ModItems.transcendentBloodOrb), new ItemStack(ModBlocks.blockCrystal), 6, 200000, 100, 200, false);
 
-        AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.weakBloodOrb), 1, 2);
+        AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.weakBloodOrb), 1, 2);//Determines orb fill speed
         AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.apprenticeBloodOrb), 2, 5);
         AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.magicianBloodOrb), 3, 15);
         AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.masterBloodOrb), 4, 25);
         AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.archmageBloodOrb), 5, 50);
         AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.transcendentBloodOrb), 6, 100);
+        AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.eldritchBloodOrb), 7, 400);
+        AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.technoBloodOrb), 8, 1600);
+        AltarRecipeRegistry.registerAltarOrbRecipe(new ItemStack(ModItems.armokBloodOrb), 9, 5000);
 
         AltarRecipeRegistry.registerAltarRecipe(new ItemStack(ModItems.telepositionFocus), new ItemStack(Items.ender_pearl), 4, 2000, 10, 10, false);
         AltarRecipeRegistry.registerAltarRecipe(new ItemStack(ModItems.enhancedTelepositionFocus), new ItemStack(ModItems.telepositionFocus), 4, 10000, 25, 15, false);
@@ -1420,13 +1435,12 @@ public class AlchemicalWizardry
         Rituals.registerRitual("AW031Convocation",isDemonRitualCreativeOnly ? 10 : 2, AlchemicalWizardry.ritualCostConvocation[0], new RitualEffectDemonPortal(), "Convocation of the Damned", new AlchemyCircleRenderer(new ResourceLocation("alchemicalwizardry:textures/models/TransCircleDemon.png"), 220, 22, 22, 255, 0, 0.501, 0.501, 0, 5, false));
         Rituals.registerRitual("AW032Symmetry", 2, AlchemicalWizardry.ritualCostSymmetry[0], new RitualEffectOmegaTest(), "Symmetry of the Omega");
         Rituals.registerRitual("AW033Stalling", 2, AlchemicalWizardry.ritualCostStalling[0], new RitualEffectOmegaStalling(), "Duet of the Fused Souls");
-
         Rituals.registerRitual("AW034Crafting", 1, AlchemicalWizardry.ritualCostCrafting[0], new RitualEffectCrafting(), "Rhythm of the Beating Anvil");
-
         Rituals.registerRitual("AW035PhantomHands", 1, AlchemicalWizardry.ritualCostPhantomHands[0], new RitualEffectItemRouting(), "Orchestra of the Phantom Hands");
-
         Rituals.registerRitual("AW036SphereIsland", 2, AlchemicalWizardry.ritualCostSphereIsland[0], new RitualEffectSphereCreator(), "Blood of the New Moon");
         //Rituals.registerRitual(1,100,new RitualEffectApiaryOverclock(),"Apiary Overclock"));
+        Rituals.registerRitual("AW037BloodSiphon", 2, AlchemicalWizardry.ritualCostBloodSiphon[0], new RitualEffectBloodSiphon(), "Blood Siphon", new AlchemyCircleRenderer(new ResourceLocation("alchemicalwizardry:textures/models/AlchemyArrays/WellOfSufferingArray.png"), 0, 0, 0, 255, 0, 0.501, 0.8, 0, 2.5, true));
+        Rituals.registerRitual("AW038SuddenEnd", 2, AlchemicalWizardry.ritualCostSuddenEnd[0], new RitualEffectSuddenEnd(), "Sudden End", new AlchemyCircleRenderer(new ResourceLocation("alchemicalwizardry:textures/models/AlchemyArrays/WellOfSufferingArray.png"), 0, 0, 0, 255, 0, 0.501, 0.8, 0, 2.5, true));
     }
 
     public static void initBindingRecipes()

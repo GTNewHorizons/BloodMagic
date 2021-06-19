@@ -92,6 +92,12 @@ public class SoulNetworkHandler
     		return 10000000;
     	case 6:
     		return 30000000;
+    	case 7:
+    		return 90000000;
+    	case 8:
+    		return 300000000;
+    	case 9:
+    		return 1000000000;
     	default: 
     		return 1;
     	}

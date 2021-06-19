@@ -46,7 +46,31 @@ public class ItemBloodRuneBlock extends ItemBlock
             case 5:
             	name = "acceleration";
             	break;
-
+            	
+            case 6:
+            	name = "superSpeedRune";
+            	break;
+            	
+            case 7:
+            	name = "ultraSpeedRune";
+            	break;
+            	
+            case 8:
+            	name = "superSacrificeRune";
+            	break;
+            	
+            case 9:
+            	name = "ultraSacrificeRune";
+            	break;
+            	
+            case 10:
+            	name = "superDislocationRune";
+            	break;
+            	
+            case 11:
+            	name = "ultraDislocationRune";
+            	break;
+	     	
             default:
                 name = "broken";
         }

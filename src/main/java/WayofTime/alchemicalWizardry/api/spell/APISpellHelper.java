@@ -215,6 +215,12 @@ public class APISpellHelper
 			return new ItemStack(ModItems.archmageBloodOrb);
 		case 6:
 			return new ItemStack(ModItems.transcendentBloodOrb);
+		case 7:
+			return new ItemStack(ModItems.eldritchBloodOrb);
+		case 8:
+			return new ItemStack(ModItems.technoBloodOrb);
+		case 9:
+			return new ItemStack(ModItems.armokBloodOrb);
 		default:
 			return new ItemStack(Blocks.fire);
 		}	

@@ -149,6 +149,8 @@ public class BloodMagicConfiguration
 		AlchemicalWizardry.ritualDisabledCrafting = config.get("Ritual Blacklist", "Rhythm of the Beating Anvil", false).getBoolean(false);
 		AlchemicalWizardry.ritualDisabledPhantomHands = config.get("Ritual Blacklist", "Orchestra of the Phantom Hands", false).getBoolean(false);
 		AlchemicalWizardry.ritualDisabledSphereIsland = config.get("Ritual Blacklist", "Birth of the Bastion", false).getBoolean(false);
+		AlchemicalWizardry.ritualDisabledBloodSiphon = config.get("Ritual Blacklist", "Blood Siphon", false).getBoolean(false);
+		AlchemicalWizardry.ritualDisabledSuddenEnd= config.get("Ritual Blacklist", "Sudden End", false).getBoolean(false);
 
 		AlchemicalWizardry.ritualWeakDisabledNight = config.get("Ritual Blacklist.Weak", "Night", false).getBoolean(false);
 		AlchemicalWizardry.ritualWeakDisabledResistance = config.get("Ritual Blacklist.Weak", "Resistance", false).getBoolean(false);
@@ -249,7 +251,7 @@ public class BloodMagicConfiguration
 		AlchemicalWizardry.ritualCostFeatheredEarth = config.get(lpCosts, "Ritual of the Feathered Earth", new int[]{100000, 0}).getIntList();
 		AlchemicalWizardry.ritualCostGaia = config.get(lpCosts, "Gaia's Transformation", new int[]{1000000, 0}).getIntList();
 		AlchemicalWizardry.ritualCostCondor = config.get(lpCosts, "Reverence of the Condor", new int[]{1000000, 0}).getIntList();
-		AlchemicalWizardry.ritualCostFallingTower = config.get(lpCosts, "Mark of the Falling Tower", new int[]{1000000, 0}).getIntList();
+		AlchemicalWizardry.ritualCostFallingTower = config.get(lpCosts, "Mark of the Falling Tower", new int[]{10000, 0}).getIntList();
 		AlchemicalWizardry.ritualCostBalladOfAlchemy = config.get(lpCosts, "Ballad of Alchemy", new int[]{20000, 10}).getIntList();
 		AlchemicalWizardry.ritualCostExpulsion = config.get(lpCosts, "Aura of Expulsion", new int[]{1000000, 1000}).getIntList();
 		AlchemicalWizardry.ritualCostSuppression = config.get(lpCosts, "Dome of Suppression", new int[]{10000, 2}).getIntList();
@@ -267,6 +269,8 @@ public class BloodMagicConfiguration
 		AlchemicalWizardry.ritualCostCrafting = config.get(lpCosts, "Rhythm of the Beating Anvil", new int[]{15000, 10}).getIntList();
 		AlchemicalWizardry.ritualCostPhantomHands = config.get(lpCosts, "Orchestra of the Phantom Hands", new int[]{10000, 0}).getIntList();
 		AlchemicalWizardry.ritualCostSphereIsland = config.get(lpCosts, "Blood of the New Moon", new int[]{10000, 0}).getIntList();
+		AlchemicalWizardry.ritualCostBloodSiphon = config.get(lpCosts, "Blood Siphon", new int[]{50000000, 100}).getIntList();
+		AlchemicalWizardry.ritualCostSuddenEnd = config.get(lpCosts, "Sudden End", new int[]{300000000, 1000}).getIntList();
 
 		AlchemicalWizardry.ritualWeakCostNight = config.get(lpCosts, "[Weak Ritual] Night", 5000).getInt();
 		AlchemicalWizardry.ritualWeakCostResistance = config.get(lpCosts, "[Weak Ritual] Resistance", 5000).getInt();
@@ -278,7 +282,10 @@ public class BloodMagicConfiguration
 		AlchemicalWizardry.lpPerSelfSacrificeFeatheredKnife = config.get("sacrifice", "LP per self-sacrifice with Ritual of Feathered Knife", AlchemicalWizardry.lpPerSelfSacrificeFeatheredKnife).getInt(AlchemicalWizardry.lpPerSelfSacrificeFeatheredKnife);
 		AlchemicalWizardry.lpPerSacrificeBase = config.get("sacrifice", "LP per sacrifice", AlchemicalWizardry.lpPerSacrificeBase).getInt(AlchemicalWizardry.lpPerSacrificeBase);
 		AlchemicalWizardry.lpPerSacrificeWellOfSuffering = config.get("sacrifice", "LP per sacrifice with Well of Suffering ritual", AlchemicalWizardry.lpPerSacrificeWellOfSuffering).getInt(AlchemicalWizardry.lpPerSacrificeWellOfSuffering);
+		AlchemicalWizardry.lpPerSacrificeBloodSiphon = config.get("sacrifice", "LP per sacrifice with Blood Siphon ritual", AlchemicalWizardry.lpPerSacrificeBloodSiphon).getInt(AlchemicalWizardry.lpPerSacrificeBloodSiphon);
+		AlchemicalWizardry.lpPerSacrificeSuddenEnd = config.get("sacrifice", "LP per sacrifice with Sudden End ritual", AlchemicalWizardry.lpPerSacrificeSuddenEnd).getInt(AlchemicalWizardry.lpPerSacrificeSuddenEnd);
 		AlchemicalWizardry.lpPerSacrificeIncense = config.get("sacrifice", "LP per (self-)sacrifice with incense", AlchemicalWizardry.lpPerSacrificeIncense).getDouble(AlchemicalWizardry.lpPerSacrificeIncense);
+		AlchemicalWizardry.maxEntitiesCounted = config.get("sacrifice", "Maximum number of entities that can be in the WoS or BS", AlchemicalWizardry.maxEntitiesCounted).getInt(AlchemicalWizardry.maxEntitiesCounted);
 
 		AlchemicalWizardry.energyBlastDamage = config.get("energy items", "Energy Blast damage", AlchemicalWizardry.energyBlastDamage).getInt(AlchemicalWizardry.energyBlastDamage);
 		AlchemicalWizardry.energyBlastLPPerShot = config.get("energy items", "Energy Blast LP per shot", AlchemicalWizardry.energyBlastLPPerShot).getInt(AlchemicalWizardry.energyBlastLPPerShot);
@@ -334,7 +341,19 @@ public class BloodMagicConfiguration
 
 	public static void finishLoading()
 	{
-		AlchemicalWizardry.secondTierRunes = BloodMagicConfiguration.getAltarRunesForTier("secondTier", new BlockStack[] {
+		AlchemicalWizardry.secondTierRunes = BloodMagicConfiguration.getAltarRunesForTier("2ndTier", new BlockStack[] {
+			new BlockStack(ModBlocks.bloodRune, 0),
+			new BlockStack(ModBlocks.speedRune, 0),
+			new BlockStack(ModBlocks.efficiencyRune, 0),
+			new BlockStack(ModBlocks.runeOfSacrifice, 0),
+			new BlockStack(ModBlocks.runeOfSelfSacrifice, 0),
+			new BlockStack(ModBlocks.bloodRune, 1),
+			new BlockStack(ModBlocks.bloodRune, 2),
+			new BlockStack(ModBlocks.bloodRune, 3),
+			new BlockStack(ModBlocks.bloodRune, 4),
+			new BlockStack(ModBlocks.bloodRune, 5)			
+		});
+		AlchemicalWizardry.thirdTierRunes = BloodMagicConfiguration.getAltarRunesForTier("3rdTier", new BlockStack[] {
 			new BlockStack(ModBlocks.bloodRune, 0),
 			new BlockStack(ModBlocks.speedRune, 0),
 			new BlockStack(ModBlocks.efficiencyRune, 0),
@@ -346,7 +365,7 @@ public class BloodMagicConfiguration
 			new BlockStack(ModBlocks.bloodRune, 4),
 			new BlockStack(ModBlocks.bloodRune, 5)
 		});
-		AlchemicalWizardry.thirdTierRunes = BloodMagicConfiguration.getAltarRunesForTier("thirdTier", new BlockStack[] {
+		AlchemicalWizardry.fourthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("4thTier", new BlockStack[] {
 			new BlockStack(ModBlocks.bloodRune, 0),
 			new BlockStack(ModBlocks.speedRune, 0),
 			new BlockStack(ModBlocks.efficiencyRune, 0),
@@ -358,7 +377,7 @@ public class BloodMagicConfiguration
 			new BlockStack(ModBlocks.bloodRune, 4),
 			new BlockStack(ModBlocks.bloodRune, 5)
 		});
-		AlchemicalWizardry.fourthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("fourthTier", new BlockStack[] {
+		AlchemicalWizardry.fifthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("5thTier", new BlockStack[] {
 			new BlockStack(ModBlocks.bloodRune, 0),
 			new BlockStack(ModBlocks.speedRune, 0),
 			new BlockStack(ModBlocks.efficiencyRune, 0),
@@ -368,9 +387,12 @@ public class BloodMagicConfiguration
 			new BlockStack(ModBlocks.bloodRune, 2),
 			new BlockStack(ModBlocks.bloodRune, 3),
 			new BlockStack(ModBlocks.bloodRune, 4),
-			new BlockStack(ModBlocks.bloodRune, 5)
+			new BlockStack(ModBlocks.bloodRune, 5),
+			new BlockStack(ModBlocks.bloodRune, 6),//super runes from this tier on
+			new BlockStack(ModBlocks.bloodRune, 8),				
+			new BlockStack(ModBlocks.bloodRune, 10)
 		});
-		AlchemicalWizardry.fifthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("fifthTier", new BlockStack[] {
+		AlchemicalWizardry.sixthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("6thTier", new BlockStack[] {
 			new BlockStack(ModBlocks.bloodRune, 0),
 			new BlockStack(ModBlocks.speedRune, 0),
 			new BlockStack(ModBlocks.efficiencyRune, 0),
@@ -380,26 +402,72 @@ public class BloodMagicConfiguration
 			new BlockStack(ModBlocks.bloodRune, 2),
 			new BlockStack(ModBlocks.bloodRune, 3),
 			new BlockStack(ModBlocks.bloodRune, 4),
-			new BlockStack(ModBlocks.bloodRune, 5)
+			new BlockStack(ModBlocks.bloodRune, 5),
+			new BlockStack(ModBlocks.bloodRune, 6),
+			new BlockStack(ModBlocks.bloodRune, 8),				
+			new BlockStack(ModBlocks.bloodRune, 10)
 		});
-		AlchemicalWizardry.sixthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("sixthTier", new BlockStack[] {
-			new BlockStack(ModBlocks.bloodRune, 0),
-			new BlockStack(ModBlocks.speedRune, 0),
-			new BlockStack(ModBlocks.efficiencyRune, 0),
-			new BlockStack(ModBlocks.runeOfSacrifice, 0),
-			new BlockStack(ModBlocks.runeOfSelfSacrifice, 0),
-			new BlockStack(ModBlocks.bloodRune, 1),
-			new BlockStack(ModBlocks.bloodRune, 2),
-			new BlockStack(ModBlocks.bloodRune, 3),
-			new BlockStack(ModBlocks.bloodRune, 4),
-			new BlockStack(ModBlocks.bloodRune, 5)
-		});
+		AlchemicalWizardry.seventhTierRunes = BloodMagicConfiguration.getAltarRunesForTier("7thTier", new BlockStack[] {
+				new BlockStack(ModBlocks.bloodRune, 0),
+				new BlockStack(ModBlocks.speedRune, 0),
+				new BlockStack(ModBlocks.efficiencyRune, 0),
+				new BlockStack(ModBlocks.runeOfSacrifice, 0),
+				new BlockStack(ModBlocks.runeOfSelfSacrifice, 0),
+				new BlockStack(ModBlocks.bloodRune, 1),
+				new BlockStack(ModBlocks.bloodRune, 2),
+				new BlockStack(ModBlocks.bloodRune, 3),
+				new BlockStack(ModBlocks.bloodRune, 4),
+				new BlockStack(ModBlocks.bloodRune, 5),
+				new BlockStack(ModBlocks.bloodRune, 6),		
+				new BlockStack(ModBlocks.bloodRune, 8),				
+				new BlockStack(ModBlocks.bloodRune, 10)
+				
+			});
+		AlchemicalWizardry.eighthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("8thTier", new BlockStack[] {
+				new BlockStack(ModBlocks.bloodRune, 0),
+				new BlockStack(ModBlocks.speedRune, 0),
+				new BlockStack(ModBlocks.efficiencyRune, 0),
+				new BlockStack(ModBlocks.runeOfSacrifice, 0),
+				new BlockStack(ModBlocks.runeOfSelfSacrifice, 0),
+				new BlockStack(ModBlocks.bloodRune, 1),
+				new BlockStack(ModBlocks.bloodRune, 2),
+				new BlockStack(ModBlocks.bloodRune, 3),
+				new BlockStack(ModBlocks.bloodRune, 4),
+				new BlockStack(ModBlocks.bloodRune, 5),
+				new BlockStack(ModBlocks.bloodRune, 6),
+				new BlockStack(ModBlocks.bloodRune, 8),
+				new BlockStack(ModBlocks.bloodRune, 10)
+			});
+		AlchemicalWizardry.ninthTierRunes = BloodMagicConfiguration.getAltarRunesForTier("9thTier", new BlockStack[] {
+				new BlockStack(ModBlocks.bloodRune, 0),
+				new BlockStack(ModBlocks.speedRune, 0),
+				new BlockStack(ModBlocks.efficiencyRune, 0),
+				new BlockStack(ModBlocks.runeOfSacrifice, 0),
+				new BlockStack(ModBlocks.runeOfSelfSacrifice, 0),
+				new BlockStack(ModBlocks.bloodRune, 1),
+				new BlockStack(ModBlocks.bloodRune, 2),
+				new BlockStack(ModBlocks.bloodRune, 3),
+				new BlockStack(ModBlocks.bloodRune, 4),
+				new BlockStack(ModBlocks.bloodRune, 5),
+				new BlockStack(ModBlocks.bloodRune, 6),
+				new BlockStack(ModBlocks.bloodRune, 7),//ultra runes available
+				new BlockStack(ModBlocks.bloodRune, 8),
+				new BlockStack(ModBlocks.bloodRune, 9),
+				new BlockStack(ModBlocks.bloodRune, 10),
+				new BlockStack(ModBlocks.bloodRune, 11)
+			});
 		AlchemicalWizardry.specialAltarBlock = getAltarRunesForTier("specialBlocks", new BlockStack[] {
 			new BlockStack(Blocks.stonebrick, 0),
 			new BlockStack(Blocks.glowstone, 0),
 			new BlockStack(Blocks.stonebrick, 0),
 			new BlockStack(ModBlocks.largeBloodStoneBrick, 0),
 			new BlockStack(Blocks.beacon, 0),
+			new BlockStack(Blocks.stonebrick, 0),
+			new BlockStack(ModBlocks.blockCrystal, 0),
+			new BlockStack(Blocks.stonebrick, 0),
+			new BlockStack(ModBlocks.blockCrystal, 0),
+			new BlockStack(Blocks.stonebrick, 0),
+			new BlockStack(ModBlocks.blockCrystal, 0),
 			new BlockStack(Blocks.stonebrick, 0),
 			new BlockStack(ModBlocks.blockCrystal, 0)
 		});
@@ -509,6 +577,8 @@ public class BloodMagicConfiguration
 		if (AlchemicalWizardry.ritualDisabledCrafting) r("AW034Crafting");
 		if (AlchemicalWizardry.ritualDisabledPhantomHands) r("AW035PhantomHands");
 		if (AlchemicalWizardry.ritualDisabledSphereIsland) r("AW036SphereIsland");
+		if (AlchemicalWizardry.ritualDisabledBloodSiphon) r("AW037BloodSiphon");
+		if (AlchemicalWizardry.ritualDisabledSuddenEnd) r("AW038SuddenEnd");
 	}
 
 	private static void r(String ritualID)
