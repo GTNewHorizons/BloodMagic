@@ -1,11 +1,12 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "https://maven.minecraftforge.net/" }
         maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url = "https://jitpack.io/" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'com.github.GTNewHorizons:ForgeGradle:1.2.4'
 		classpath 'org.ajoberstar:gradle-git:0.10.1'
     }
 }
@@ -33,32 +34,27 @@ if (new File(projectDir, '.git').exists()) {
 
 repositories {
     maven {
-        name 'CB Maven FS'
-        url "http://chickenbones.net/maven/"
-    }
-    maven {
         name 'DVS1 Maven FS'
-        url 'http://dvs1.progwml6.com/files/maven'
+        url 'https://dvs1.progwml6.com/files/maven'
     }
     maven {
         name 'tterrag Repo'
-        url 'http://maven.tterrag.com/'
+        url 'https://maven.tterrag.com/'
     }
 	maven {
 		name = "gt"
 		url = "http://downloads.gtnewhorizons.com/Mods_for_Jenkins/"
 	}
-	
+	maven {
+        url "https://jitpack.io"
+    }
 }
 
 dependencies {
-    compile "codechicken:CodeChickenLib:" + config.mc_version + "-" + config.cclib_version + ":dev"
-    compile "codechicken:CodeChickenCore:" + config.mc_version + "-" + config.ccc_version + ":dev"
-    compile "codechicken:NotEnoughItems:" + config.mc_version + "-" + config.nei_version + ":dev"
+    implementation "com.github.GTNewHorizons:NotEnoughItems:master-SNAPSHOT:dev"
+    implementation "com.github.GTNewHorizons:ForgeMultipart:master-SNAPSHOT:dev"
     compile fileTree(dir: 'libs', include: 'CraftTweaker-Dev-1.7.10-3.2.2-GTNH.4-legacy.jar')
     compile fileTree(dir: 'libs', include: 'Guide-API-1.7.10-1.0.1-20-deobf.jar')
-    compile "codechicken:ForgeMultipart:1.7.10-1.1.0.314:dev"
-//	compile "guideapi:Guide-API:" + config.mc_version + "-" + config.guideapi_version + ":deobf"
     compile "team.chisel:Chisel:" + config.chisel_version + ":api"
 }
 
