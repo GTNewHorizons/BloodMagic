@@ -66,7 +66,6 @@ import WayofTime.alchemicalWizardry.common.spell.complex.effect.cse.ice.*;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.cse.wind.*;
 import WayofTime.alchemicalWizardry.common.spell.simple.*;
 import WayofTime.alchemicalWizardry.common.summoning.SummoningHelperAW;
-import WayofTime.alchemicalWizardry.common.thread.CommandDownloadGAPI;
 import WayofTime.alchemicalWizardry.common.tileEntity.*;
 import WayofTime.alchemicalWizardry.common.tileEntity.gui.GuiHandler;
 import WayofTime.alchemicalWizardry.common.tweaker.MineTweakerIntegration;
@@ -1824,7 +1823,6 @@ public class AlchemicalWizardry
 //        event.registerServerCommand(new CommandBind());
 //        event.registerServerCommand(new CommandUnbind());
 //        event.registerServerCommand(new CommandSN());
-        event.registerServerCommand(new CommandDownloadGAPI());
         event.registerServerCommand(new CommandBloodMagic());
     }
 }
