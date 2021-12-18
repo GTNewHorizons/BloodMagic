@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items.forestry;
 
 import java.util.List;
 
+import forestry.api.apiculture.*;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -11,13 +12,11 @@ import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import forestry.api.apiculture.IBee;
-import forestry.api.apiculture.IBeeGenome;
-import forestry.api.apiculture.IBeeHousing;
-import forestry.api.apiculture.IHiveFrame;
 
 public class ItemBloodFrame extends EnergyItems implements IHiveFrame
 {
+    private final IBeeModifier beeModifier = new BloodFrameBeeModifier();
+
     public ItemBloodFrame()
     {
         super();
@@ -25,6 +24,59 @@ public class ItemBloodFrame extends EnergyItems implements IHiveFrame
         this.setMaxDamage(10);
         setEnergyUsed(1000);
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
+    }
+
+    private static class BloodFrameBeeModifier implements IBeeModifier {
+
+        @Override
+        public float getMutationModifier(IBeeGenome genome, IBeeGenome mate, float currentModifier) {
+            return 1;
+        }
+
+        @Override
+        public float getLifespanModifier(IBeeGenome genome, IBeeGenome mate, float currentModifier) {
+            return 0.0001f;
+        }
+
+        @Override
+        public float getProductionModifier(IBeeGenome genome, float currentModifier) {
+            return 0;
+        }
+
+        @Override
+        public float getFloweringModifier(IBeeGenome genome, float currentModifier) {
+            return 1;
+        }
+
+        @Override
+        public float getGeneticDecay(IBeeGenome genome, float currentModifier) {
+            return 1;
+        }
+
+        @Override
+        public boolean isSealed() {
+            return false;
+        }
+
+        @Override
+        public boolean isSelfLighted() {
+            return false;
+        }
+
+        @Override
+        public boolean isSunlightSimulated() {
+            return false;
+        }
+
+        @Override
+        public boolean isHellish() {
+            return false;
+        }
+
+        @Override
+        public float getTerritoryModifier(IBeeGenome genome, float currentModifier) {
+            return 1;
+        }
     }
 
     @Override
@@ -61,85 +113,23 @@ public class ItemBloodFrame extends EnergyItems implements IHiveFrame
         return par1ItemStack;
     }
 
-     @Override public float getTerritoryModifier(IBeeGenome genome, float currentModifier)
-     {
-     // TODO Auto-generated method stub
-     return 1;
-     }
+    @Override
+    public ItemStack frameUsed(IBeeHousing housing, ItemStack frame, IBee queen, int wear) {
+        // TODO Auto-generated method stub
+        if (EnergyItems.canSyphonInContainer(frame, getEnergyUsed() * wear)) {
+            EnergyItems.syphonWhileInContainer(frame, getEnergyUsed() * wear);
+            return frame;
+        } else {
+            frame.setItemDamage(frame.getItemDamage() + wear);
+            if (frame.getItemDamage() >= frame.getMaxDamage()) {
+                return null;
+            }
+            return frame;
+        }
+    }
 
-     @Override public float getMutationModifier(IBeeGenome genome, IBeeGenome mate, float currentModifier)
-     {
-     // TODO Auto-generated method stub
-     return 1;
-     }
-
-     @Override public float getLifespanModifier(IBeeGenome genome, IBeeGenome mate, float currentModifier)
-     {
-     // TODO Auto-generated method stub
-     return 0.0001f;
-     }
-
-     @Override public float getProductionModifier(IBeeGenome genome, float currentModifier)
-     {
-     // TODO Auto-generated method stub
-     return 0;
-     }
-
-     @Override public float getFloweringModifier(IBeeGenome genome, float currentModifier)
-     {
-     // TODO Auto-generated method stub
-     return 1;
-     }
-
-     @Override public float getGeneticDecay(IBeeGenome genome, float currentModifier)
-     {
-     // TODO Auto-generated method stub
-     return 1;
-     }
-
-     @Override public boolean isSealed()
-     {
-     // TODO Auto-generated method stub
-     return false;
-     }
-
-     @Override public boolean isSelfLighted()
-     {
-     // TODO Auto-generated method stub
-     return false;
-     }
-
-     @Override public boolean isSunlightSimulated()
-     {
-     // TODO Auto-generated method stub
-     return false;
-     }
-
-     @Override public boolean isHellish()
-     {
-     // TODO Auto-generated method stub
-     return false;
-     }
-
-     @Override public ItemStack frameUsed(IBeeHousing housing, ItemStack frame, IBee queen, int wear)
-     {
-     // TODO Auto-generated method stub
-     if(EnergyItems.canSyphonInContainer(frame, getEnergyUsed()*wear))
-     {
-     EnergyItems.syphonWhileInContainer(frame, getEnergyUsed()*wear);
-     return frame;
-     }else
-     {
-     frame.setItemDamage(frame.getItemDamage() + wear);
-     if(frame.getItemDamage()>=frame.getMaxDamage())
-     {
-     return null;
-     }
-     return frame;
-     }
-
-     }
-
-     
-
+    @Override
+    public IBeeModifier getBeeModifier() {
+        return beeModifier;
+    }
 }
