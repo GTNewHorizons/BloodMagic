@@ -84,7 +84,6 @@ import WayofTime.alchemicalWizardry.common.renderer.model.ModelWingedFireDemon;
 import WayofTime.alchemicalWizardry.common.renderer.projectile.RenderEnergyBazookaMainProjectile;
 import WayofTime.alchemicalWizardry.common.renderer.projectile.RenderEnergyBlastProjectile;
 import WayofTime.alchemicalWizardry.common.renderer.projectile.RenderMeteor;
-import WayofTime.alchemicalWizardry.common.thread.GAPIChecker;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEAlchemicCalcinator;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEAltar;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEBellJar;
@@ -196,6 +195,5 @@ public class ClientProxy extends CommonProxy
         MinecraftForge.EVENT_BUS.register(ob);
         KeyBindings.init();
         MinecraftForge.EVENT_BUS.register(new ScrollHelper());
-        new GAPIChecker().init();
     }
 }

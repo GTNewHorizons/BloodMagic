@@ -1,10 +1,10 @@
 [
 {
-  "modid": "AWWayofTime",
-  "name": "Blood Magic: Alchemical Wizardry",
+  "modid": "${modId}",
+  "name": "${modName}",
   "description": "Rituals, spells, and more!",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
+  "version": "${modVersion}",
+  "mcversion": "${minecraftVersion}",
   "url": "http://www.minecraftforum.net/topic/1899223-",
   "updateUrl": "",
   "authorList": ["WayofTime"],
