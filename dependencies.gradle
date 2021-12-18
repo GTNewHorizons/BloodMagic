@@ -1,7 +1,6 @@
 // Add your dependencies here
 
 dependencies {
-
     compileOnly("com.github.GTNewHorizons:Botania:master-SNAPSHOT:api") {
         transitive = false
     }
@@ -15,6 +14,9 @@ dependencies {
         transitive = false
     }
     compileOnly("com.github.GTNewHorizons:Chisel:master-SNAPSHOT:dev") {  // TODO: change to api
+        transitive = false
+    }
+    compileOnly("com.github.GTNewHorizons:ZenScript:CraftTweaker-SNAPSHOT") {
         transitive = false
     }
     compileOnly("com.github.GTNewHorizons:CraftTweaker:update-build-script-SNAPSHOT:dev") { // TODO: change to master
