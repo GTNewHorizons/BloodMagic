@@ -13,13 +13,13 @@ dependencies {
     compileOnly("com.github.GTNewHorizons:NotEnoughItems:master-SNAPSHOT:dev") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:Chisel:master-SNAPSHOT:dev") {  // TODO: change to api
+    compileOnly("com.github.GTNewHorizons:Chisel:master-SNAPSHOT:api") {
         transitive = false
     }
     compileOnly("com.github.GTNewHorizons:ZenScript:master-SNAPSHOT") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:CraftTweaker:update-build-script-SNAPSHOT:dev") { // TODO: change to master
+    compileOnly("com.github.GTNewHorizons:CraftTweaker:master-SNAPSHOT:dev") {
         transitive = false
     }
 
