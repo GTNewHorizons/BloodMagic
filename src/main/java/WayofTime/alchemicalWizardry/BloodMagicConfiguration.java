@@ -249,7 +249,7 @@ public class BloodMagicConfiguration
 		AlchemicalWizardry.ritualCostFeatheredEarth = config.get(lpCosts, "Ritual of the Feathered Earth", new int[]{100000, 0}).getIntList();
 		AlchemicalWizardry.ritualCostGaia = config.get(lpCosts, "Gaia's Transformation", new int[]{1000000, 0}).getIntList();
 		AlchemicalWizardry.ritualCostCondor = config.get(lpCosts, "Reverence of the Condor", new int[]{1000000, 0}).getIntList();
-		AlchemicalWizardry.ritualCostFallingTower = config.get(lpCosts, "Mark of the Falling Tower", new int[]{1000000, 0}).getIntList();
+		AlchemicalWizardry.ritualCostFallingTower = config.get(lpCosts, "Mark of the Falling Tower", new int[]{10000, 0}).getIntList();
 		AlchemicalWizardry.ritualCostBalladOfAlchemy = config.get(lpCosts, "Ballad of Alchemy", new int[]{20000, 10}).getIntList();
 		AlchemicalWizardry.ritualCostExpulsion = config.get(lpCosts, "Aura of Expulsion", new int[]{1000000, 1000}).getIntList();
 		AlchemicalWizardry.ritualCostSuppression = config.get(lpCosts, "Dome of Suppression", new int[]{10000, 2}).getIntList();
