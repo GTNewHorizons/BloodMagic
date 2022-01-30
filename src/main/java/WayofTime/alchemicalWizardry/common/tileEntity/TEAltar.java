@@ -797,13 +797,13 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
 
         this.isUpgraded = checkUpgrade;
         this.upgradeLevel = upgradeState;
-        this.consumptionMultiplier = (float) (0.20 * upgrades.getSpeedUpgrades());
+        this.consumptionMultiplier = (float) (0.25 * upgrades.getSpeedUpgrades());
         this.efficiencyMultiplier = (float) Math.pow(0.85, upgrades.getSpeedUpgrades());
-        this.sacrificeEfficiencyMultiplier = (float) (0.10 * upgrades.getSacrificeUpgrades());
-        this.selfSacrificeEfficiencyMultiplier = (float) (0.10 * upgrades.getSelfSacrificeUpgrades());
-        this.capacityMultiplier = (float) ((1 * Math.pow(1.10, upgrades.getBetterCapacitiveUpgrades()) + 0.20 * upgrades.getAltarCapacitiveUpgrades()));
-        this.dislocationMultiplier = (float) (Math.pow(1.2, upgrades.getDisplacementUpgrades()));
-        this.orbCapacityMultiplier = (float) (1 + 0.02 * upgrades.getOrbCapacitiveUpgrades());
+        this.sacrificeEfficiencyMultiplier = (float) (0.12 * upgrades.getSacrificeUpgrades());
+        this.selfSacrificeEfficiencyMultiplier = (float) (0.12 * upgrades.getSelfSacrificeUpgrades());
+        this.capacityMultiplier = (float) ((1 * Math.pow(1.25, upgrades.getBetterCapacitiveUpgrades()) + 0.40 * upgrades.getAltarCapacitiveUpgrades()));
+        this.dislocationMultiplier = (float) (Math.pow(1.5, upgrades.getDisplacementUpgrades()));
+        this.orbCapacityMultiplier = (float) (1 + 0.05 * upgrades.getOrbCapacitiveUpgrades());
         this.capacity = (int) (FluidContainerRegistry.BUCKET_VOLUME * 10 * capacityMultiplier);
         this.bufferCapacity = (int) (FluidContainerRegistry.BUCKET_VOLUME * 1 * capacityMultiplier);
         this.accelerationUpgrades = upgrades.getAccelerationUpgrades();
