@@ -16,9 +16,6 @@ dependencies {
     compileOnly("com.github.GTNewHorizons:Chisel:2.10.6-GTNH:api") {
         transitive = false
     }
-    compileOnly("com.github.GTNewHorizons:ZenScript:master-SNAPSHOT") {
-        transitive = false
-    }
     compileOnly("com.github.GTNewHorizons:CraftTweaker:1.7.10-3.2.3:dev") {
         transitive = false
     }
