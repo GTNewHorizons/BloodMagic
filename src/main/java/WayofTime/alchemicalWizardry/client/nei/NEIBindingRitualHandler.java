@@ -65,7 +65,7 @@ public class NEIBindingRitualHandler extends TemplateRecipeHandler
     {
         for (BindingRecipe recipe: BindingRegistry.bindingRecipes)
         {
-            if (NEIServerUtils.areStacksSameTypeCrafting(recipe.outputItem, result))
+            if (NEIServerUtils.areStacksSameTypeCraftingWithNBT(recipe.outputItem, result))
             {
                 if (recipe != null && recipe.outputItem != null)
                 {
@@ -80,7 +80,7 @@ public class NEIBindingRitualHandler extends TemplateRecipeHandler
     {
         for (BindingRecipe recipe: BindingRegistry.bindingRecipes)
         {
-            if (NEIServerUtils.areStacksSameTypeCrafting(recipe.requiredItem, ingredient))
+            if (NEIServerUtils.areStacksSameTypeCraftingWithNBT(recipe.requiredItem, ingredient))
             {
                 if (recipe != null && recipe.outputItem != null)
                 {

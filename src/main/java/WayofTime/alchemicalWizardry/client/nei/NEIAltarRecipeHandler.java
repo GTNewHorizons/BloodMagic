@@ -66,7 +66,7 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
 	@Override
 	public void loadCraftingRecipes(ItemStack result) {
 		for(AltarRecipe recipe: AltarRecipeRegistry.altarRecipes) {
-			if(NEIServerUtils.areStacksSameTypeCrafting(recipe.result, result)) {
+			if(NEIServerUtils.areStacksSameTypeCraftingWithNBT(recipe.result, result)) {
 				if(recipe != null && recipe.result != null) arecipes.add(new CachedAltarRecipe(recipe));
 			}
 		}
@@ -75,7 +75,7 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
 	@Override
     public void loadUsageRecipes(ItemStack ingredient)  {
 		for(AltarRecipe recipe: AltarRecipeRegistry.altarRecipes) {
-			if(NEIServerUtils.areStacksSameTypeCrafting(recipe.requiredItem, ingredient)) {
+			if(NEIServerUtils.areStacksSameTypeCraftingWithNBT(recipe.requiredItem, ingredient)) {
 				if(recipe != null && recipe.result != null) arecipes.add(new CachedAltarRecipe(recipe));
 			}
 		}
