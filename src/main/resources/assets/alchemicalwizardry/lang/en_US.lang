@@ -260,6 +260,10 @@ text.recipe.altar=Blood Altar
 text.recipe.altar.tier=Tier: %s
 text.recipe.altar.bloodRequired=LP: %s
 text.recipe.shapedOrb=Shaped Orb Recipe
+nei.recipe.meteor.category=Meteor Ritual
+nei.recipe.meteor.cost=Cost: %s LP
+nei.recipe.meteor.radius=Radius: %s
+nei.recipe.meteor.chance=Chance: %s%%
 
 #Entities
 entity.AWWayofTime.EarthElemental.name=Earth Elemental

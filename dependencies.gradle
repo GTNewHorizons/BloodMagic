@@ -10,6 +10,7 @@ dependencies {
     compileOnly("com.github.GTNewHorizons:ForgeMultipart:1.2.7:dev") {
         transitive = false
     }
+    compile("com.github.GTNewHorizons:CodeChickenLib:1.1.5.1:dev")
     compileOnly("com.github.GTNewHorizons:NotEnoughItems:2.1.22-GTNH:dev") {
         transitive = false
     }

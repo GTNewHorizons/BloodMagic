@@ -13,6 +13,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import WayofTime.alchemicalWizardry.api.BlockStack;
+import WayofTime.alchemicalWizardry.client.nei.IMCForNEI;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor;
 import WayofTime.alchemicalWizardry.api.alchemy.AlchemicalPotionCreationHandler;
 import WayofTime.alchemicalWizardry.api.alchemy.AlchemyRecipeRegistry;
@@ -1050,6 +1051,10 @@ public class AlchemicalWizardry
 
         ItemIncense.registerIncenseRecipes();
         GameRegistry.addRecipe(new ItemStack(ModBlocks.blockCrucible), "i i", "sis", " S ", 's', new ItemStack(Blocks.stone_slab), 'i', ironIngotStack, 'S', stoneStack);
+
+        if (Loader.isModLoaded("NotEnoughItems")) {
+            IMCForNEI.IMCSender();
+        }
     }
 
     @EventHandler
