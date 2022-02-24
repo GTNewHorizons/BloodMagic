@@ -18,7 +18,9 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     public class CachedMeteorRecipe extends CachedRecipe {
@@ -89,7 +91,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     @Override
     public void loadCraftingRecipes(String outputId, Object... results) {
         if (outputId.equals(getOverlayIdentifier()) && getClass() == NEIMeteorRecipeHandler.class) {
-            for (MeteorParadigm meteor : MeteorRegistry.paradigmList) {
+            for (MeteorParadigm meteor : getSortedMeteors()) {
                 arecipes.add(new CachedMeteorRecipe(meteor));
             }
         } else {
@@ -99,7 +101,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
 
     @Override
     public void loadCraftingRecipes(ItemStack result) {
-        for (MeteorParadigm meteor : MeteorRegistry.paradigmList) {
+        for (MeteorParadigm meteor : getSortedMeteors()) {
             if (meteor.componentList.stream().anyMatch(m -> NEIServerUtils.areStacksSameTypeCrafting(result, m.getValidBlockParadigm()))) {
                 arecipes.add(new CachedMeteorRecipe(meteor));
             }
@@ -108,7 +110,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
 
     @Override
     public void loadUsageRecipes(ItemStack ingredient) {
-        for (MeteorParadigm meteor : MeteorRegistry.paradigmList) {
+        for (MeteorParadigm meteor : getSortedMeteors()) {
             if (NEIServerUtils.areStacksSameTypeCrafting(ingredient, meteor.focusStack)) {
                 arecipes.add(new CachedMeteorRecipe(meteor));
             }
@@ -160,6 +162,13 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     @Override
     public String getRecipeName() {
         return I18n.format("nei.recipe.meteor.category");
+    }
+
+    private List<MeteorParadigm> getSortedMeteors() {
+        return MeteorRegistry.paradigmList
+            .stream()
+            .sorted(Comparator.comparing(m -> m.cost))
+            .collect(Collectors.toList());
     }
 
     private String getFormattedChance(int chance) {
