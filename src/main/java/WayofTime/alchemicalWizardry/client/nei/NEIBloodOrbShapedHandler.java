@@ -83,7 +83,7 @@ public class NEIBloodOrbShapedHandler extends ShapedRecipeHandler {
 		for (IRecipe irecipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
 			if (irecipe instanceof ShapedBloodOrbRecipe) {
 				CachedBloodOrbRecipe recipe = forgeShapedRecipe((ShapedBloodOrbRecipe) irecipe);
-				if (recipe == null || !NEIServerUtils.areStacksSameTypeCrafting(recipe.result.item, result))
+				if (recipe == null || !NEIServerUtils.areStacksSameTypeCraftingWithNBT(recipe.result.item, result))
 					continue;
 
 				recipe.computeVisuals();

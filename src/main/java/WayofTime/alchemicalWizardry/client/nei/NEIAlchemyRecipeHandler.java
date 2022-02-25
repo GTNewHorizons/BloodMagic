@@ -111,7 +111,7 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
     public void loadCraftingRecipes(ItemStack result) {
         for (AlchemyRecipe recipe : AlchemyRecipeRegistry.recipes) {
             if (recipe == null) continue;
-            if (NEIServerUtils.areStacksSameTypeCrafting(result, recipe.getResult())) {
+            if (NEIServerUtils.areStacksSameTypeCraftingWithNBT(result, recipe.getResult())) {
                 arecipes.add(new CachedAlchemyRecipe(recipe));
             }
         }
@@ -131,7 +131,7 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
                 if (recipe == null) continue;
                 ItemStack[] stacks = recipe.getRecipe();
                 for (ItemStack stack : stacks) {
-                    if (NEIServerUtils.areStacksSameTypeCrafting(stack, ingredient)) {
+                    if (NEIServerUtils.areStacksSameTypeCraftingWithNBT(stack, ingredient)) {
                         arecipes.add(new CachedAlchemyRecipe(recipe));
                         break;
                     }

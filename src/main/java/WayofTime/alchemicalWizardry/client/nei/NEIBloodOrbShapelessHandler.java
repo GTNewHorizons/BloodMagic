@@ -77,7 +77,7 @@ public class NEIBloodOrbShapelessHandler extends ShapelessRecipeHandler {
     public void loadCraftingRecipes(ItemStack result) {
         List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
         for (IRecipe irecipe : allrecipes) {
-            if (NEIServerUtils.areStacksSameTypeCrafting(irecipe.getRecipeOutput(), result)) {
+            if (NEIServerUtils.areStacksSameTypeCraftingWithNBT(irecipe.getRecipeOutput(), result)) {
             	CachedBloodOrbRecipe recipe = null;
                 if (irecipe instanceof ShapelessBloodOrbRecipe)
                     recipe = forgeShapelessRecipe((ShapelessBloodOrbRecipe) irecipe);

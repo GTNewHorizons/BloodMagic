@@ -11,7 +11,8 @@ dependencies {
         transitive = false
     }
     compile("com.github.GTNewHorizons:CodeChickenLib:1.1.5.1:dev")
-    compileOnly("com.github.GTNewHorizons:NotEnoughItems:2.1.22-GTNH:dev") {
+    
+    compileOnly("com.github.GTNewHorizons:NotEnoughItems:2.2.7-GTNH:dev") {
         transitive = false
     }
     compileOnly("com.github.GTNewHorizons:Chisel:2.10.6-GTNH:api") {
