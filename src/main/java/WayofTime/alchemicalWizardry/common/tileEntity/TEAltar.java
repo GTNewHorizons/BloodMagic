@@ -801,7 +801,7 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         this.efficiencyMultiplier = (float) Math.pow(0.80, upgrades.getSpeedUpgrades());
         this.sacrificeEfficiencyMultiplier = (float) (0.12 * upgrades.getSacrificeUpgrades());
         this.selfSacrificeEfficiencyMultiplier = (float) (0.12 * upgrades.getSelfSacrificeUpgrades());
-        this.capacityMultiplier = (float) ((1 * Math.pow(1.22, upgrades.getBetterCapacitiveUpgrades()) + 0.35 * upgrades.getAltarCapacitiveUpgrades()));
+        this.capacityMultiplier = (float) ((1 * Math.pow(1.14, upgrades.getBetterCapacitiveUpgrades()) + 0.35 * upgrades.getAltarCapacitiveUpgrades()));
         this.dislocationMultiplier = (float) (Math.pow(1.5, upgrades.getDisplacementUpgrades()));
         this.orbCapacityMultiplier = (float) (1 + 0.04 * upgrades.getOrbCapacitiveUpgrades());
         this.capacity = (int) (FluidContainerRegistry.BUCKET_VOLUME * 10 * capacityMultiplier);
