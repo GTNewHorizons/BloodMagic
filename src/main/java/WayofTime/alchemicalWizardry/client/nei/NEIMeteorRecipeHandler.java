@@ -36,6 +36,16 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
             this.input.add(new PositionedStack(meteor.focusStack, 74, 4));
             int row = 0;
             int col = 0;
+            
+            float totalMeteorWeight = 0.0f;
+            for (MeteorParadigmComponent component : meteor.componentList) {
+                ItemStack stack = component.getValidBlockParadigm();
+                if (stack == null) {
+                	continue;
+                }
+                totalMeteorWeight += component.getChance();
+            }
+            
             for (MeteorParadigmComponent component : meteor.componentList) {
                 ItemStack stack = component.getValidBlockParadigm();
                 List<String> tooltips = new ArrayList<>();
@@ -43,7 +53,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
                     stack = new ItemStack(Blocks.fire);
                     tooltips.add(String.format("no entries found for oredict \"%s\"", component.getOreDictName()));
                 }
-                tooltips.add(I18n.format("nei.recipe.meteor.chance", getFormattedChance(component.getChance())));
+                tooltips.add(I18n.format("nei.recipe.meteor.chance", getFormattedChance(component.getChance() / totalMeteorWeight)));
                 this.outputs.add(new TooltipStack(stack, 3 + 18 * col, 37 + 18 * row, tooltips));
                 col++;
                 if (col > 8) {
@@ -171,9 +181,9 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
             .collect(Collectors.toList());
     }
 
-    private String getFormattedChance(int chance) {
-        float percentage = (float) chance / 10;
-        boolean isInteger = Float.compare(percentage, (float) (chance / 10)) == 0;
+    private String getFormattedChance(float chance) {
+    	float percentage = chance * 100.0f;
+        boolean isInteger = percentage - (int) percentage <= 0.01;
         if (isInteger) return String.format("%,d", (int) percentage);
         else return String.format("%,.1f", percentage);
     }
