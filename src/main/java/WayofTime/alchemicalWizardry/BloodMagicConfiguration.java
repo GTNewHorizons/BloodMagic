@@ -101,7 +101,6 @@ public class BloodMagicConfiguration
 		AlchemicalWizardry.customPotionDemonCloakID = config.get("Potion ID", "DemonCloak", 115).getInt();
 		AlchemicalWizardry.customPotionAmphibianID = config.get("Potion ID", "Amphibian", 116).getInt();
 
-		MeteorParadigm.maxChance = config.get("meteor", "maxChance", 1000).getInt();
 		AlchemicalWizardry.doMeteorsDestroyBlocks = config.get("meteor", "doMeteorsDestroyBlocks", true).getBoolean(true);
 		AlchemicalWizardry.allowedCrushedOresArray = config.get("oreCrushing", "allowedOres", new String[]{"iron", "gold", "copper", "tin", "lead", "silver", "osmium"}).getStringList();
 
