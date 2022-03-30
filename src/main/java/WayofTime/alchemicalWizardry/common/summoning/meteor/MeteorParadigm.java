@@ -76,6 +76,8 @@ public class MeteorParadigm
 
         float totalChance = iceChance + soulChance + obsidChance;
 
+        int randNum = world.rand.nextInt(totalMeteorWeight);
+        
         for (int i = -newRadius; i <= newRadius; i++)
         {
             for (int j = -newRadius; j <= newRadius; j++)
@@ -92,7 +94,7 @@ public class MeteorParadigm
                         continue;
                     }
 
-                    int randNum = world.rand.nextInt(chance);
+                    int randNum = world.rand.nextInt(totalMeteorWeight);
                     boolean hasPlacedBlock = false;
 
                     for (MeteorParadigmComponent mpc : componentList)
