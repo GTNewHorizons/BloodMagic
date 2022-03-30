@@ -61,11 +61,11 @@ public class MeteorParadigm
         if (hasOrbisTerrae)
         {
             newRadius += 2;
-            chance += 200;
+            chance += 0;
         } else if (hasTerrae)
         {
             newRadius += 1;
-            chance += 100;
+            chance += 0;
         }
 
         world.createExplosion(null, x, y, z, newRadius * 4, AlchemicalWizardry.doMeteorsDestroyBlocks);
