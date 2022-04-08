@@ -37,14 +37,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
             int row = 0;
             int col = 0;
             
-            float totalMeteorWeight = 0.0f;
-            for (MeteorParadigmComponent component : meteor.componentList) {
-                ItemStack stack = component.getValidBlockParadigm();
-                if (stack == null) {
-                	continue;
-                }
-                totalMeteorWeight += component.getChance();
-            }
+            float totalMeteorWeight = meteor.getTotalMeteorWeight();
             
             for (MeteorParadigmComponent component : meteor.componentList) {
                 ItemStack stack = component.getValidBlockParadigm();
