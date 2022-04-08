@@ -36,6 +36,21 @@ public class MeteorParadigm
             componentList.add(mpc);
         }
     }
+    
+    public int getTotalMeteorWeight()
+    {
+    	int totalMeteorWeight = 0;
+    	for (MeteorParadigmComponent mpc : componentList)
+        {
+            if (mpc == null || !mpc.isValidBlockParadigm())
+            {
+                continue;
+            }
+
+            totalMeteorWeight += mpc.getChance();
+        }
+    	return totalMeteorWeight;
+    }
 
     public void createMeteorImpact(World world, int x, int y, int z, boolean[] flags)
     {
@@ -72,16 +87,7 @@ public class MeteorParadigm
 
         float totalChance = iceChance + soulChance + obsidChance;
         
-        int totalMeteorWeight = 0;
-        for (MeteorParadigmComponent mpc : componentList)
-        {
-            if (mpc == null || !mpc.isValidBlockParadigm())
-            {
-                continue;
-            }
-
-            totalMeteorWeight += mpc.getChance();
-        }
+        int totalMeteorWeight = getTotalMeteorWeight();
 
         for (int i = -newRadius; i <= newRadius; i++)
         {
