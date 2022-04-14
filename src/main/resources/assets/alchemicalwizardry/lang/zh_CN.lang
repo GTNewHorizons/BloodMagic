@@ -1,4 +1,4 @@
-﻿#Block Localization
+#Block Localization
 tile.bloodAltar.name=血之祭坛
 tile.bloodRune.blank.name=气血符文
 tile.bloodRune.fill.name=增容符文
@@ -260,6 +260,10 @@ text.recipe.altar=血之祭坛
 text.recipe.altar.tier=层数: %s
 text.recipe.altar.bloodRequired=LP: %s
 text.recipe.shapedOrb=合适宝珠合成
+nei.recipe.meteor.category=陨星仪式
+nei.recipe.meteor.cost=消耗: %s LP
+nei.recipe.meteor.radius=半径: %s
+nei.recipe.meteor.chance=几率: %s%%
 
 #Entities
 entity.AWWayofTime.EarthElemental.name=土之元素精灵
@@ -439,7 +443,7 @@ tooltip.sacrificialdagger.desc2=只是刺一下手指
 tooltip.sacrificialdagger.desc3=你就能获得力量...
 tooltip.sanguinearmor.desc1=一双充满力量的护目镜
 tooltip.sanguinearmor.desc2=灌入被禁止的力量的长袍
-tooltip.sanguinearmor.visdisc=灵气减免:
+tooltip.sanguinearmor.visdisc=魔力减免:
 tooltip.scribetool.desc=书写是在墙壁上的...
 tooltip.seersigil.desc=看到更多总会有所不足
 tooltip.sigilofelementalaffinity.desc1=在火中呼吸的鱼
@@ -565,3 +569,4 @@ bm.versioning.error=下载mod时出错!
 bm.versioning.downloadedAlready=你已经拥有最新版本，重新加载游戏以进行更新! 
 bm.versioning.downloadingAlready=正在下载! 耐心点! 
 bm.versioning.disabled=此功能已禁用.
+
