@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -158,7 +159,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner
             {
                 return super.getItemStackDisplayName(stack);
             }
-            return "Ritual: " + Rituals.getNameOfRitual(ritualID);
+            return I18n.format("bm.string.ritualDiviner", Rituals.getLocalizedNameOfRitual(ritualID));
         } else
         {
             return super.getItemStackDisplayName(stack);
@@ -412,7 +413,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner
 
         if (world.isRemote)
         {
-            IChatComponent chatmessagecomponent = new ChatComponentText(StatCollector.translateToLocal("message.ritual.currentritual") + " " + Rituals.getNameOfRitual(this.getCurrentRitual(stack)));
+            IChatComponent chatmessagecomponent = new ChatComponentText(StatCollector.translateToLocal("message.ritual.currentritual") + " " + Rituals.getLocalizedNameOfRitual(this.getCurrentRitual(stack)));
             player.addChatComponentMessage(chatmessagecomponent);
         }
     }

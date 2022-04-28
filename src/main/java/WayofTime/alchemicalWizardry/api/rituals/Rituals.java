@@ -8,6 +8,7 @@ import java.util.Map;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import WayofTime.alchemicalWizardry.api.event.RitualRunEvent;
@@ -17,6 +18,7 @@ import cpw.mods.fml.common.eventhandler.Event;
 
 public class Rituals
 {
+    public final String key;
 	public final int crystalLevel;
     public final int actCost;
     public final RitualEffect effect;
@@ -27,8 +29,9 @@ public class Rituals
     public static Map<String, Rituals> ritualMap = new HashMap();
     public static List<String> keyList = new LinkedList();
 
-    public Rituals(int crystalLevel, int actCost, RitualEffect effect, String name, MRSRenderer renderer)
+    public Rituals(String key, int crystalLevel, int actCost, RitualEffect effect, String name, MRSRenderer renderer)
     {
+        this.key = key;
         this.crystalLevel = crystalLevel;
         this.actCost = actCost;
         this.effect = effect;
@@ -38,9 +41,9 @@ public class Rituals
         this.customRenderer = renderer;
     }
 
-    public Rituals(int crystalLevel, int actCost, RitualEffect effect, String name)
+    public Rituals(String key, int crystalLevel, int actCost, RitualEffect effect, String name)
     {
-        this(crystalLevel, actCost, effect, name, null);
+        this(key, crystalLevel, actCost, effect, name, null);
     }
 
     /**
@@ -60,7 +63,7 @@ public class Rituals
             return false;
         } else
         {
-            Rituals ritual = new Rituals(crystalLevel, actCost, effect, name, renderer);
+            Rituals ritual = new Rituals(key, crystalLevel, actCost, effect, name, renderer);
             ritual.removeRitualFromList();
             ritualMap.put(key, ritual);
             keyList.add(key);
@@ -75,7 +78,7 @@ public class Rituals
             return false;
         } else
         {
-            Rituals ritual = new Rituals(crystalLevel, actCost, effect, name);
+            Rituals ritual = new Rituals(key, crystalLevel, actCost, effect, name);
             ritual.removeRitualFromList();
             ritualMap.put(key, ritual);
             keyList.add(key);
@@ -291,6 +294,11 @@ public class Rituals
     {
         return this.name;
     }
+    
+    public String getRitualLocalizedName()
+    {
+        return StatCollector.translateToLocal("ritual." + this.key + ".name");
+    }
 
     public static String getNameOfRitual(String id)
     {
@@ -300,6 +308,20 @@ public class Rituals
             if (ritual != null)
             {
                 return ritual.getRitualName();
+            }
+        }
+
+        return "";
+    }
+    
+    public static String getLocalizedNameOfRitual(String id)
+    {
+        if (ritualMap.containsKey(id))
+        {
+            Rituals ritual = ritualMap.get(id);
+            if (ritual != null)
+            {
+                return ritual.getRitualLocalizedName();
             }
         }
 
