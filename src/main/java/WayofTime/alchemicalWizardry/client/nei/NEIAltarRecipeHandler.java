@@ -134,19 +134,15 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
 	}
 	
 	@Override
-    public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int id) {
-		currenttip = super.handleTooltip(gui, currenttip, id);
-		Point mouse = getMouse(getGuiWidth(gui), getGuiHeight(gui));
-		CachedAltarRecipe recipe = (CachedAltarRecipe) arecipes.get(id);
-		int yLow = id % 2 == 0 ? 38 : 102;
-		int yHigh = id % 2 == 0 ? 72 : 136;
-		if(mouse.x >= 19 && mouse.x <= 80 && mouse.y >= yLow && mouse.y <= yHigh) {
-			currenttip.add(StatCollector.translateToLocal("bm.string.consume") + ": " + recipe.consumption + "LP/t");
-			currenttip.add(StatCollector.translateToLocal("bm.string.drain") + ": " + recipe.drain + "LP/t");
-        }
-        
-        return currenttip;
-    }
+	public List<String> handleItemTooltip(GuiRecipe gui, ItemStack stack, List<String> currenttip, int recipe) {
+	    super.handleItemTooltip(gui, stack, currenttip, recipe);
+	    CachedAltarRecipe crecipe = (CachedAltarRecipe) arecipes.get(recipe);
+	    if(stack != null && NEIServerUtils.areStacksSameTypeWithNBT(stack, crecipe.input.item)) {
+            currenttip.add(StatCollector.translateToLocal("bm.string.consume") + ": " + crecipe.consumption + "LP/t");
+            currenttip.add(StatCollector.translateToLocal("bm.string.drain") + ": " + crecipe.drain + "LP/t");
+	    }
+	    return currenttip;
+	}
 	
 	@Override
 	public String getOverlayIdentifier() {
