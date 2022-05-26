@@ -1,18 +1,7 @@
 package WayofTime.alchemicalWizardry.client.nei;
 
-import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Rectangle;
-import java.lang.reflect.Field;
 import java.util.List;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
-
-import org.lwjgl.input.Mouse;
 
 import WayofTime.alchemicalWizardry.api.altarRecipeRegistry.AltarRecipe;
 import WayofTime.alchemicalWizardry.api.altarRecipeRegistry.AltarRecipeRegistry;
@@ -20,6 +9,10 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 /**
  * NEI Altar Recipe Handler by joshie *
@@ -81,51 +74,6 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
 		}
     }
 	
-	//Mouse Position helper
-	public Point getMouse(int width, int height) {
-		Point mousepos = getMousePosition();
-		int guiLeft = (width - 176) / 2;
-        int guiTop = (height - 166) / 2;
-        Point relMouse = new Point(mousepos.x - guiLeft, mousepos.y - guiTop);
-        return relMouse;
-	}
-	
-	//width helper, getting width normal way hates me on compile
-	public int getGuiWidth(GuiRecipe gui) {
-		try {
-			Field f = gui.getClass().getField("width");
-			return (Integer) f.get(gui);
-		} catch (NoSuchFieldException e) {
-			try {
-				Field f = gui.getClass().getField("field_146294_l");
-				return (Integer) f.get(gui);
-			} catch (Exception e2) {
-				return 0;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return 0; 
-		}
-	}
-	
-	//height helper, getting height normal way hates me on compile
-	public int getGuiHeight(GuiRecipe gui) {
-		try {
-			Field f = gui.getClass().getField("height");
-			return (Integer) f.get(gui);
-		} catch (NoSuchFieldException e) {
-			try {
-				Field f = gui.getClass().getField("field_146295_m");
-				return (Integer) f.get(gui);
-			} catch (Exception e2) {
-				return 0;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return 0; 
-		}
-	}
-	
 	@Override
 	public void drawExtras(int id) {
 		CachedAltarRecipe recipe = (CachedAltarRecipe) arecipes.get(id);
@@ -163,21 +111,4 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
 	public String getGuiTexture() {
 		return new ResourceLocation("alchemicalwizardry", "gui/nei/altar.png").toString();
 	}
-	
-	public static Point getMousePosition() {
-        Dimension size = displaySize();
-        Dimension res = displayRes();
-        return new Point(Mouse.getX() * size.width / res.width, size.height - Mouse.getY() * size.height / res.height - 1);
-    }
-
-	public static Dimension displaySize() {
-        Minecraft mc = Minecraft.getMinecraft();
-        ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-        return new Dimension(res.getScaledWidth(), res.getScaledHeight());
-    }
-
-    public static Dimension displayRes() {
-        Minecraft mc = Minecraft.getMinecraft();
-        return new Dimension(mc.displayWidth, mc.displayHeight);
-    }
 }

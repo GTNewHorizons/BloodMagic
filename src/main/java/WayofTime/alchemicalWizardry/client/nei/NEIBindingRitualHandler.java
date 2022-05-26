@@ -1,17 +1,14 @@
 package WayofTime.alchemicalWizardry.client.nei;
 
+import java.awt.Rectangle;
+
 import WayofTime.alchemicalWizardry.api.bindingRegistry.BindingRecipe;
 import WayofTime.alchemicalWizardry.api.bindingRegistry.BindingRegistry;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.input.Mouse;
-
-import java.awt.*;
 
 /**
  * Binding Ritual Handler by Arcaratus
@@ -112,25 +109,5 @@ public class NEIBindingRitualHandler extends TemplateRecipeHandler
     public String getGuiTexture()
     {
         return new ResourceLocation("alchemicalwizardry", "gui/nei/bindingRitual.png").toString();
-    }
-
-    public static Point getMousePosition()
-    {
-        Dimension size = displaySize();
-        Dimension res = displayRes();
-        return new Point(Mouse.getX() * size.width / res.width, size.height - Mouse.getY() * size.height / res.height - 1);
-    }
-
-    public static Dimension displaySize()
-    {
-        Minecraft mc = Minecraft.getMinecraft();
-        ScaledResolution res = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-        return new Dimension(res.getScaledWidth(), res.getScaledHeight());
-    }
-
-    public static Dimension displayRes()
-    {
-        Minecraft mc = Minecraft.getMinecraft();
-        return new Dimension(mc.displayWidth, mc.displayHeight);
     }
 }

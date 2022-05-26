@@ -4,16 +4,16 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.StatCollector;
 import WayofTime.alchemicalWizardry.api.items.ShapelessBloodOrbRecipe;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.ShapelessRecipeHandler;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.StatCollector;
 
 /**
  * NEI Blood Orb Shapeless Recipe Handler by joshie *
@@ -54,7 +54,8 @@ public class NEIBloodOrbShapelessHandler extends ShapelessRecipeHandler {
         }
 	}
 	
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     public void loadCraftingRecipes(String outputId, Object... results) {
         if (outputId.equals("crafting") && getClass() == NEIBloodOrbShapelessHandler.class) {
             List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
@@ -73,7 +74,8 @@ public class NEIBloodOrbShapelessHandler extends ShapelessRecipeHandler {
         }
     }
 	
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     public void loadCraftingRecipes(ItemStack result) {
         List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
         for (IRecipe irecipe : allrecipes) {
@@ -90,7 +92,8 @@ public class NEIBloodOrbShapelessHandler extends ShapelessRecipeHandler {
         }
     }
 	
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     public void loadUsageRecipes(ItemStack ingredient) {
         List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
         for (IRecipe irecipe : allrecipes) {

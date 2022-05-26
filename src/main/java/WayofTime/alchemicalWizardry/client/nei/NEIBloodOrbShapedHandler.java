@@ -1,23 +1,21 @@
 package WayofTime.alchemicalWizardry.client.nei;
 
+import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.getBloodOrbs;
+
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.List;
+
 import WayofTime.alchemicalWizardry.api.items.ShapedBloodOrbRecipe;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
-import codechicken.nei.ItemList;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.ShapedRecipeHandler;
-import codechicken.nei.recipe.TemplateRecipeHandler;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.StatCollector;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.getBloodOrbs;
 
 /**
  * NEI Blood Orb Shaped Recipe Handler by joshie *
@@ -60,7 +58,8 @@ public class NEIBloodOrbShapedHandler extends ShapedRecipeHandler {
 		}
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public void loadCraftingRecipes(String outputId, Object... results) {
 		if (outputId.equals("crafting") && getClass() == NEIBloodOrbShapedHandler.class) {
 			for (IRecipe irecipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
@@ -78,7 +77,8 @@ public class NEIBloodOrbShapedHandler extends ShapedRecipeHandler {
 		}
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public void loadCraftingRecipes(ItemStack result) {
 		for (IRecipe irecipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
 			if (irecipe instanceof ShapedBloodOrbRecipe) {
@@ -92,7 +92,8 @@ public class NEIBloodOrbShapedHandler extends ShapedRecipeHandler {
 		}
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	public void loadUsageRecipes(ItemStack ingredient) {
 		for (IRecipe irecipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
 			CachedShapedRecipe recipe = null;
