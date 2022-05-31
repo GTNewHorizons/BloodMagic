@@ -135,15 +135,15 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
         CachedMeteorRecipe meteorRecipe = (CachedMeteorRecipe) this.arecipes.get(recipe);
         int cost = meteorRecipe.getCost();
         int radius = meteorRecipe.getRadius();
-        Minecraft.getMinecraft().fontRenderer.drawString(I18n.format("nei.recipe.meteor.cost", String.format("%,d", cost)), 2, 96, 0x000000);
-        Minecraft.getMinecraft().fontRenderer.drawString(I18n.format("nei.recipe.meteor.radius", radius), 2, 107, 0x000000);
+        Minecraft.getMinecraft().fontRenderer.drawString(I18n.format("nei.recipe.meteor.cost", String.format("%,d", cost)), 2, 168, 0x000000);
+        Minecraft.getMinecraft().fontRenderer.drawString(I18n.format("nei.recipe.meteor.radius", radius), 2, 179, 0x000000);
     }
 
     @Override
     public void drawBackground(int recipe) {
         GL11.glColor4f(1, 1, 1, 1);
         GuiDraw.changeTexture(getGuiTexture());
-        GuiDraw.drawTexturedModalRect(0, 0, 5, 11, 172, 130);
+        GuiDraw.drawTexturedModalRect(0, 0, 5, 11, 172, 202);
     }
 
     @Override
