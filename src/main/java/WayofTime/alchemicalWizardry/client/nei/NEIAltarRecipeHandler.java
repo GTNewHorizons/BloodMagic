@@ -1,10 +1,12 @@
 package WayofTime.alchemicalWizardry.client.nei;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
 import WayofTime.alchemicalWizardry.api.altarRecipeRegistry.AltarRecipe;
 import WayofTime.alchemicalWizardry.api.altarRecipeRegistry.AltarRecipeRegistry;
+import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
@@ -82,12 +84,16 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
 	}
 	
 	@Override
-	public List<String> handleItemTooltip(GuiRecipe gui, ItemStack stack, List<String> currenttip, int recipe) {
-	    super.handleItemTooltip(gui, stack, currenttip, recipe);
-	    CachedAltarRecipe crecipe = (CachedAltarRecipe) arecipes.get(recipe);
-	    if(stack != null && NEIServerUtils.areStacksSameTypeWithNBT(stack, crecipe.input.item)) {
-            currenttip.add(StatCollector.translateToLocal("bm.string.consume") + ": " + crecipe.consumption + "LP/t");
-            currenttip.add(StatCollector.translateToLocal("bm.string.drain") + ": " + crecipe.drain + "LP/t");
+	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int id) {
+	    super.handleTooltip(gui, currenttip, id);
+	    Point mouse = GuiDraw.getMousePosition();
+	    Point root = gui.getRecipePosition(id);
+	    int offsetX = gui.guiLeft + root.x;
+	    int offsetY = gui.guiTop + root.y;
+	    if(mouse.x >= 14 + offsetX && mouse.x <= 75 + offsetX && mouse.y >= 22 + offsetY && mouse.y <= 56 + offsetY) {
+	        CachedAltarRecipe recipe = (CachedAltarRecipe) arecipes.get(id);
+            currenttip.add(StatCollector.translateToLocal("bm.string.consume") + ": " + recipe.consumption + "LP/t");
+            currenttip.add(StatCollector.translateToLocal("bm.string.drain") + ": " + recipe.drain + "LP/t");
 	    }
 	    return currenttip;
 	}
