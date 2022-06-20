@@ -15,6 +15,7 @@ import WayofTime.alchemicalWizardry.common.AlchemicalWizardryEventHooks;
 import WayofTime.alchemicalWizardry.common.demonVillage.DemonVillagePath;
 import WayofTime.alchemicalWizardry.common.demonVillage.tileEntity.TEDemonPortal;
 import WayofTime.alchemicalWizardry.common.items.armour.BoundArmour;
+import WayofTime.alchemicalWizardry.common.rituals.RitualEffectDemonPortal;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorParadigm;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -202,7 +203,7 @@ public class BloodMagicConfiguration
 		TEDemonPortal.demonLimit = config.get(tempDemonConfigs, "demonHoardLimit", 100).getInt();
 
 		AlchemicalWizardry.isDemonRitualCreativeOnly = config.get(tempDemonConfigs, "IsDemonRitualCreativeOnly", false).getBoolean();
-
+		RitualEffectDemonPortal.dimensionBlacklist = config.get(tempDemonConfigs, "dimension blacklist for the demon portal activation", new int[]{0}).getIntList();
 		BoundArmour.tryComplexRendering = config.get("WimpySettings", "UseFancyBoundArmour", true).getBoolean(true);
 
 //		ItemIncense.itemDuration = config.get("TestIncenseSettings", "ItemDuration", 100).getInt();

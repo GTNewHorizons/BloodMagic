@@ -30,7 +30,7 @@ public class RitualEffectDemonPortal extends RitualEffect
 	public static final int drainRate = 50;	
 	public static final Reagent[] reagents = new Reagent[]{ReagentRegistry.aetherReagent, ReagentRegistry.aquasalusReagent, ReagentRegistry.terraeReagent, ReagentRegistry.incendiumReagent, ReagentRegistry.sanctusReagent, ReagentRegistry.tenebraeReagent, ReagentRegistry.magicalesReagent, ReagentRegistry.potentiaReagent};
 	public static final Int3[] jarLocations = new Int3[]{new Int3(4, 5, 4), new Int3(-4, 5, 4), new Int3(4, 5, -4), new Int3(-4, 5, -4), new Int3(0, 5, 6), new Int3(0, 5, -6), new Int3(6, 5, 0), new Int3(-6, 5, 0)};
-	
+	public static int[] dimensionBlacklist = new int[]{0};
     @Override
     public void performEffect(IMasterRitualStone ritualStone)
     {
@@ -123,6 +123,10 @@ public class RitualEffectDemonPortal extends RitualEffect
     @Override
     public boolean startRitual(IMasterRitualStone ritualStone, EntityPlayer player)
     {
+        for (int dim: dimensionBlacklist){
+            if (player.dimension == dim) return false;
+        }
+
     	if(!checkJars(ritualStone))
     	{
     		player.addChatMessage(new ChatComponentTranslation("message.ritualdemonportal.missingjar"));
