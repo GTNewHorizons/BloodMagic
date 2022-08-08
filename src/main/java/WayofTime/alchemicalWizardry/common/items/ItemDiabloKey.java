@@ -50,7 +50,7 @@ public class ItemDiabloKey extends EnergyItems
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {
         World world = par3EntityPlayer.worldObj;
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer instanceof FakePlayer || par3EntityPlayer instanceof EntityPlayerMP)
+        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer instanceof FakePlayer)
         {
             return par1ItemStack;
         }
