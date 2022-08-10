@@ -64,7 +64,7 @@ public class ItemDiabloKey extends EnergyItems
             SpellHelper.sendIndexedParticleToAllAround(world, posX, posY, posZ, 20, world.provider.dimensionId, 4, posX, posY, posZ);
         }
 
-        if (!par3EntityPlayer.worldObj.isRemote && !(par3EntityPlayer.getClass().equals(EntityPlayerMP.class)))
+        if (par3EntityPlayer.worldObj.isRemote)
         {
             return par1ItemStack;
         }
@@ -103,6 +103,7 @@ public class ItemDiabloKey extends EnergyItems
                 EnergyItems.checkAndSetItemOwner(itemStack, ownerName);
             }
         }
+        par3EntityPlayer.inventoryContainer.detectAndSendChanges();
 
         return par1ItemStack;
     }
