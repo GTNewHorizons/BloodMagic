@@ -404,6 +404,7 @@ public class AlchemicalWizardry
 	public static String entityMinorDemonGruntGuardianEarthID = "AW024";
 
 	public static boolean isDemonRitualCreativeOnly = false;
+    public static int[] demonRitualDimensionBlacklist = new int[]{0};
 
     public static Fluid lifeEssenceFluid;
 
