@@ -84,7 +84,7 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
 	}
 	
 	@Override
-	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int id) {
+	public List<String> handleTooltip(GuiRecipe<?> gui, List<String> currenttip, int id) {
 	    super.handleTooltip(gui, currenttip, id);
 	    Point mouse = GuiDraw.getMousePosition();
 	    Point root = gui.getRecipePosition(id);

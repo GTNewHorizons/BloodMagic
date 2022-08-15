@@ -6,7 +6,7 @@ dependencies {
         transitive = false
     }
     
-    compileOnly("com.github.GTNewHorizons:Botania:master-SNAPSHOT:api") {
+    compileOnly("com.github.GTNewHorizons:Botania:1.9.5-GTNH:api") {
         transitive = false
     }
     compileOnly("com.github.GTNewHorizons:ForestryMC:4.4.4:api") {
@@ -17,14 +17,14 @@ dependencies {
     }
     compile("com.github.GTNewHorizons:CodeChickenLib:1.1.5.1:dev")
     
-    compileOnly("com.github.GTNewHorizons:NotEnoughItems:2.2.7-GTNH:dev") {
+    compileOnly("com.github.GTNewHorizons:NotEnoughItems:2.2.20-GTNH:dev") {
         transitive = false
     }
     compileOnly("com.github.GTNewHorizons:Chisel:2.10.6-GTNH:api") {
         transitive = false
     }
     
-    compileOnly("com.github.GTNewHorizons:ZenScript:master-SNAPSHOT") {
+    compileOnly("com.github.GTNewHorizons:ZenScript:1.0.0-GTNH") {
         transitive = false
     }
     compileOnly("com.github.GTNewHorizons:CraftTweaker:3.2.6:dev") {

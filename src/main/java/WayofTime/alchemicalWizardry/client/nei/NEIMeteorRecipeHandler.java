@@ -16,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,33 +26,41 @@ import java.util.stream.Collectors;
 public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     public class CachedMeteorRecipe extends CachedRecipe {
 
-        private final List<MeteorParadigmComponent> components;
         private final List<PositionedStack> input = new ArrayList<>();
         private final List<PositionedStack> outputs = new ArrayList<>();
         private final int cost;
         private final int radius;
+        private Point focus;
 
-        public CachedMeteorRecipe(MeteorParadigm meteor) {
-            this.components = meteor.componentList;
+        public CachedMeteorRecipe(MeteorParadigm meteor, ItemStack focusStack) {
             this.input.add(new PositionedStack(meteor.focusStack, 74, 4));
             int row = 0;
             int col = 0;
             
             float totalMeteorWeight = meteor.getTotalMeteorWeight();
-            
-            for (MeteorParadigmComponent component : meteor.componentList) {
+            List<MeteorParadigmComponent> sortedComponents = new ArrayList<>(meteor.componentList);
+            sortedComponents.sort(Comparator.comparingInt(c -> -c.chance));
+
+            for (MeteorParadigmComponent component : sortedComponents) {
                 ItemStack stack = component.getValidBlockParadigm();
+                int xPos = 3 + 18 * col;
+                int yPos = 37 + 18 * row;
+
                 List<String> tooltips = new ArrayList<>();
                 if (stack == null) {
                     stack = new ItemStack(Blocks.fire);
                     tooltips.add(String.format("no entries found for oredict \"%s\"", component.getOreDictName()));
                 }
                 tooltips.add(I18n.format("nei.recipe.meteor.chance", getFormattedChance(component.getChance() / totalMeteorWeight)));
-                this.outputs.add(new TooltipStack(stack, 3 + 18 * col, 37 + 18 * row, tooltips));
+                this.outputs.add(new TooltipStack(stack, xPos, yPos, tooltips));
                 col++;
                 if (col > 8) {
                     col = 0;
                     row++;
+                }
+
+                if (focusStack != null && matchItem(focusStack, stack)) {
+                    this.focus = new Point(xPos - 1, yPos - 1);
                 }
             }
             this.radius = meteor.radius;
@@ -73,10 +82,6 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
             return this.outputs;
         }
 
-        public List<MeteorParadigmComponent> getComponents() {
-            return components;
-        }
-
         public int getCost() {
             return cost;
         }
@@ -95,7 +100,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     public void loadCraftingRecipes(String outputId, Object... results) {
         if (outputId.equals(getOverlayIdentifier()) && getClass() == NEIMeteorRecipeHandler.class) {
             for (MeteorParadigm meteor : getSortedMeteors()) {
-                arecipes.add(new CachedMeteorRecipe(meteor));
+                arecipes.add(new CachedMeteorRecipe(meteor, null));
             }
         } else {
             super.loadCraftingRecipes(outputId, results);
@@ -105,8 +110,8 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     @Override
     public void loadCraftingRecipes(ItemStack result) {
         for (MeteorParadigm meteor : getSortedMeteors()) {
-            if (meteor.componentList.stream().anyMatch(m -> NEIServerUtils.areStacksSameTypeCrafting(result, m.getValidBlockParadigm()))) {
-                arecipes.add(new CachedMeteorRecipe(meteor));
+            if (meteor.componentList.stream().anyMatch(m -> matchItem(result, m.getValidBlockParadigm()))) {
+                arecipes.add(new CachedMeteorRecipe(meteor, result));
             }
         }
     }
@@ -114,10 +119,22 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     @Override
     public void loadUsageRecipes(ItemStack ingredient) {
         for (MeteorParadigm meteor : getSortedMeteors()) {
-            if (NEIServerUtils.areStacksSameTypeCrafting(ingredient, meteor.focusStack)) {
-                arecipes.add(new CachedMeteorRecipe(meteor));
+            if (matchItem(ingredient, meteor.focusStack)) {
+                arecipes.add(new CachedMeteorRecipe(meteor, null));
             }
         }
+    }
+
+    private boolean matchItem(ItemStack compared, ItemStack compareTo) {
+        if (NEIServerUtils.areStacksSameTypeCrafting(compared, compareTo)) {
+            return true;
+        }
+        // ignore ore variants (like basalt ore)
+        if (compared.getUnlocalizedName().startsWith("gt.blockores")
+            && compareTo.getUnlocalizedName().startsWith("gt.blockores")) {
+            return compared.getItemDamage() % 1000 == compareTo.getItemDamage() % 1000;
+        }
+        return false;
     }
 
     @Override
@@ -140,14 +157,20 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     }
 
     @Override
-    public void drawBackground(int recipe) {
+    public void drawBackground(int recipeIndex) {
         GL11.glColor4f(1, 1, 1, 1);
         GuiDraw.changeTexture(getGuiTexture());
-        GuiDraw.drawTexturedModalRect(0, 0, 5, 11, 172, 202);
+        GuiDraw.drawTexturedModalRect(0, 0, 5, 11, 166, 202);
+
+        CachedMeteorRecipe recipe = (CachedMeteorRecipe) this.arecipes.get(recipeIndex);
+        Point focus = recipe.focus;
+        if (focus != null) {
+            GuiDraw.drawTexturedModalRect(focus.x, focus.y, 172, 0, 18, 18);
+        }
     }
 
     @Override
-    public List<String> handleItemTooltip(GuiRecipe gui, ItemStack stack, List<String> currenttip, int recipe) {
+    public List<String> handleItemTooltip(GuiRecipe<?> gui, ItemStack stack, List<String> currenttip, int recipe) {
         CachedMeteorRecipe meteorRecipe = (CachedMeteorRecipe) this.arecipes.get(recipe);
         for (PositionedStack pStack : meteorRecipe.outputs) {
             if (!gui.isMouseOver(pStack, recipe)) continue;
@@ -174,10 +197,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
             .collect(Collectors.toList());
     }
 
-    private String getFormattedChance(float chance) {
-    	float percentage = chance * 100.0f;
-        boolean isInteger = percentage - (int) percentage <= 0.01;
-        if (isInteger) return String.format("%,d", (int) percentage);
-        else return String.format("%,.1f", percentage);
+    private String getFormattedChance(double chance) {
+        return new DecimalFormat("0.##").format(chance * 100);
     }
 }
