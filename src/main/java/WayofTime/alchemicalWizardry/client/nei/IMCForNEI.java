@@ -5,18 +5,31 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class IMCForNEI {
     public static void IMCSender() {
-        setNBTAndSend("WayofTime.alchemicalWizardry.client.nei.NEIMeteorRecipeHandler", "AWWayofTime:masterStone", 130);
+        sendHandler("alchemicalwizardry.meteor", "AWWayofTime:masterStone", 130);
+        sendCatalyst("alchemicalwizardry.meteor", "AWWayofTime:masterStone");
     }
 
-    private static void setNBTAndSend(String handlerName, String aBlock, int height) {
+    private static void sendHandler(String handlerName, String stack, int height) {
         NBTTagCompound NBT = new NBTTagCompound();
         NBT.setString("handler", handlerName);
         NBT.setString("modName", "Blood Magic");
         NBT.setString("modId", "AWWayofTime");
         NBT.setBoolean("modRequired", true);
-        NBT.setString("itemName", aBlock);
+        NBT.setString("itemName", stack);
         NBT.setInteger("handlerHeight", height);
         NBT.setInteger("maxRecipesPerPage", 1);
         FMLInterModComms.sendMessage("NotEnoughItems", "registerHandlerInfo", NBT);
+    }
+
+    private static void sendCatalyst(String handlerName, String stack, int priority) {
+        NBTTagCompound aNBT = new NBTTagCompound();
+        aNBT.setString("handlerID", handlerName);
+        aNBT.setString("itemName", stack);
+        aNBT.setInteger("priority", priority);
+        FMLInterModComms.sendMessage("NotEnoughItems", "registerCatalystInfo", aNBT);
+    }
+
+    private static void sendCatalyst(String handlerName, String stack) {
+        sendCatalyst(handlerName, stack, 0);
     }
 }
