@@ -51,8 +51,11 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
                     stack = new ItemStack(Blocks.fire);
                     tooltips.add(String.format("no entries found for oredict \"%s\"", component.getOreDictName()));
                 }
-                tooltips.add(I18n.format("nei.recipe.meteor.chance", getFormattedChance(component.getChance() / totalMeteorWeight)));
+                float chance = component.getChance() / totalMeteorWeight;
+                tooltips.add(I18n.format("nei.recipe.meteor.chance", getFormattedChance(chance)));
+                tooltips.add(I18n.format("nei.recipe.meteor.amount", getEstimatedAmount(chance, meteor.radius)));
                 this.outputs.add(new TooltipStack(stack, xPos, yPos, tooltips));
+
                 col++;
                 if (col > 8) {
                     col = 0;
@@ -197,7 +200,11 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
             .collect(Collectors.toList());
     }
 
-    private String getFormattedChance(double chance) {
+    private String getFormattedChance(float chance) {
         return new DecimalFormat("0.##").format(chance * 100);
+    }
+
+    private int getEstimatedAmount(float chance, int radius) {
+        return (int) Math.ceil(3f / 4 * Math.PI * Math.pow(radius, 3) * chance);
     }
 }
