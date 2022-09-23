@@ -398,12 +398,6 @@ public class BloodMagicConfiguration {
         AlchemicalWizardry.lpPerSelfSacrifice = config
                 .get("sacrifice", "LP per self-sacrifice", AlchemicalWizardry.lpPerSelfSacrifice)
                 .getInt(AlchemicalWizardry.lpPerSelfSacrifice);
-        AlchemicalWizardry.lpPerSelfSacrificeSoulFray = config
-                .get(
-                        "sacrifice",
-                        "LP per self-sacrifice (when Soul Fray potion is active)",
-                        AlchemicalWizardry.lpPerSelfSacrificeSoulFray)
-                .getInt(AlchemicalWizardry.lpPerSelfSacrificeSoulFray);
         AlchemicalWizardry.lpPerSelfSacrificeFeatheredKnife = config
                 .get(
                         "sacrifice",
