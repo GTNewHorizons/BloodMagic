@@ -129,6 +129,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     }
 
     private boolean matchItem(ItemStack compared, ItemStack compareTo) {
+        if (compared == null || compareTo == null) return false;
         if (NEIServerUtils.areStacksSameTypeCrafting(compared, compareTo)) {
             return true;
         }
