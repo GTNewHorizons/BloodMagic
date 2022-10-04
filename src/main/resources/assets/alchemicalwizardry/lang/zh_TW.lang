@@ -284,7 +284,7 @@ entity.AWWayofTime.MinorDemonGrunt.name=格倫魔
 
 #Commands
 commands.soulnetwork.usage=/soulnetwork <玩家>
-commands.bind.usage=/bind <玩家>
+commands.bind.usage=/bloodmagic bind [true|false] <玩家>
 commands.bind.success=物品成功綁定!
 commands.bind.failed.noPlayer=沒有指定玩家
 commands.bind.failed.alreadyBound=物品已經被綁定; 使用 /unbind 來解除綁定

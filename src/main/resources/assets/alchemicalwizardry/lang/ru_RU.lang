@@ -277,7 +277,7 @@ entity.AWWayofTime.MinorDemonGrunt.name=Демон Грунт
 
 #Commands
 commands.soulnetwork.usage=/soulnetwork <игрок>
-commands.bind.usage=/bind <игрок>
+commands.bind.usage=/bloodmagic bind [true|false] <игрок>
 commands.bind.success=Предмет успешно привязан!
 commands.bind.failed.noPlayer=Игрок не выбран
 commands.bind.failed.alreadyBound=Предмет уже привязан; используйте /unbind для отвязки
