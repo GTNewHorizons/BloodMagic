@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -159,7 +158,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner
             {
                 return super.getItemStackDisplayName(stack);
             }
-            return I18n.format("bm.string.ritualDiviner", Rituals.getLocalizedNameOfRitual(ritualID));
+            return StatCollector.translateToLocalFormatted("bm.string.ritualDiviner", Rituals.getLocalizedNameOfRitual(ritualID));
         } else
         {
             return super.getItemStackDisplayName(stack);
