@@ -206,6 +206,6 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     }
 
     private int getEstimatedAmount(float chance, int radius) {
-        return (int) Math.ceil(3f / 4 * Math.PI * Math.pow(radius, 3) * chance);
+        return (int) Math.ceil(4f / 3 * Math.PI * Math.pow(radius, 3) * chance);
     }
 }
