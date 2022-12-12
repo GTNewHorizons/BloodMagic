@@ -96,11 +96,12 @@ public class SoulNetworkHandler {
     }
 
     public static int syphonFromNetwork(String ownerName, int damageToBeDone) {
-        if (MinecraftServer.getServer() == null) {
+        MinecraftServer mcServer = MinecraftServer.getServer();
+        if (mcServer == null || mcServer.worldServers.length == 0) {
             return 0;
         }
 
-        World world = MinecraftServer.getServer().worldServers[0];
+        World world = mcServer.worldServers[0];
         LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, ownerName);
 
         if (data == null) {
