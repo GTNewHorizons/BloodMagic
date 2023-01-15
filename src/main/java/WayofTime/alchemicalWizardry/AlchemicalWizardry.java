@@ -107,7 +107,7 @@ import thaumcraft.api.aspects.AspectList;
         modid = "AWWayofTime",
         name = "AlchemicalWizardry",
         version = "GRADLETOKEN_VERSION",
-        dependencies = "required-after:CodeChickenLib@[1.1.5.7,);" + "after:NotEnoughItems@[2.3.20-GTNH,);",
+        dependencies = "after:CodeChickenLib@[1.1.5.7,);" + "after:NotEnoughItems@[2.3.20-GTNH,)",
         guiFactory = "WayofTime.alchemicalWizardry.client.gui.ConfigGuiFactory")
 public class AlchemicalWizardry {
     public static boolean parseTextFiles = false;
