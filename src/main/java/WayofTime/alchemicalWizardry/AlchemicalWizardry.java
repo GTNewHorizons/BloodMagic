@@ -463,24 +463,25 @@ public class AlchemicalWizardry {
         BloodMagicConfiguration.init(new File(event.getModConfigurationDirectory(), "AWWayofTime.cfg"));
 
         // Custom config stuff goes here
-        Potion[] potionTypes;
 
-        for (Field f : Potion.class.getDeclaredFields()) {
-            f.setAccessible(true);
+        if (Potion.potionTypes.length < 256) {
+            for (Field f : Potion.class.getDeclaredFields()) {
+                f.setAccessible(true);
 
-            try {
-                if (f.getName().equals("potionTypes") || f.getName().equals("field_76425_a")) {
-                    Field modfield = Field.class.getDeclaredField("modifiers");
-                    modfield.setAccessible(true);
-                    modfield.setInt(f, f.getModifiers() & ~Modifier.FINAL);
-                    potionTypes = (Potion[]) f.get(null);
-                    final Potion[] newPotionTypes = new Potion[256];
-                    System.arraycopy(potionTypes, 0, newPotionTypes, 0, potionTypes.length);
-                    f.set(null, newPotionTypes);
+                try {
+                    if (f.getName().equals("potionTypes") || f.getName().equals("field_76425_a")) {
+                        Field modfield = Field.class.getDeclaredField("modifiers");
+                        modfield.setAccessible(true);
+                        modfield.setInt(f, f.getModifiers() & ~Modifier.FINAL);
+                        final Potion[] oldPotionTypes = Potion.potionTypes;
+                        final Potion[] newPotionTypes = new Potion[256];
+                        System.arraycopy(oldPotionTypes, 0, newPotionTypes, 0, oldPotionTypes.length);
+                        f.set(null, newPotionTypes);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Severe error, please report this to the mod author:");
+                    System.err.println(e);
                 }
-            } catch (Exception e) {
-                System.err.println("Severe error, please report this to the mod author:");
-                System.err.println(e);
             }
         }
         AlchemicalWizardry.lifeEssenceFluid = new LifeEssence("LifeEssence");
