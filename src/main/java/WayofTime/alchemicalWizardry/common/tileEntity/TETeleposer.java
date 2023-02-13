@@ -3,11 +3,16 @@ package WayofTime.alchemicalWizardry.common.tileEntity;
 import java.util.Iterator;
 import java.util.List;
 
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
@@ -17,8 +22,10 @@ import WayofTime.alchemicalWizardry.common.block.BlockTeleposer;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 import WayofTime.alchemicalWizardry.common.items.TelepositionFocus;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
+import WayofTime.alchemicalWizardry.compat.BloodMagicWailaPlugin;
+import WayofTime.alchemicalWizardry.compat.IBloodMagicWailaProvider;
 
-public class TETeleposer extends TEInventory {
+public class TETeleposer extends TEInventory implements IBloodMagicWailaProvider {
 
     public static final int sizeInv = 1;
 
@@ -277,4 +284,18 @@ public class TETeleposer extends TEInventory {
     public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
         return itemstack.getItem() instanceof TelepositionFocus;
     }
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
+            IWailaConfigHandler config) {
+        if (!config.getConfig(BloodMagicWailaPlugin.WAILA_CONFIG_TELEPOSER)) return;
+        final ItemStack contained = getStackInSlot(0);
+        if (contained != null) {
+            currenttip.add(contained.getDisplayName());
+        }
+    }
+
+    @Override
+    public void getWailaNBTData(final EntityPlayerMP player, final TileEntity tile, final NBTTagCompound tag,
+            final World world, int x, int y, int z) {}
 }

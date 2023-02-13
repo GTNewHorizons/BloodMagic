@@ -1,9 +1,14 @@
 package WayofTime.alchemicalWizardry.common.tileEntity;
 
+import java.text.NumberFormat;
 import java.util.List;
+
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,6 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -34,8 +40,10 @@ import WayofTime.alchemicalWizardry.common.NewPacketHandler;
 import WayofTime.alchemicalWizardry.common.bloodAltarUpgrade.AltarUpgradeComponent;
 import WayofTime.alchemicalWizardry.common.bloodAltarUpgrade.UpgradedAltars;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
+import WayofTime.alchemicalWizardry.compat.BloodMagicWailaPlugin;
+import WayofTime.alchemicalWizardry.compat.IBloodMagicWailaProvider;
 
-public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, IBloodAltar {
+public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, IBloodAltar, IBloodMagicWailaProvider {
 
     public static final int sizeInv = 1;
 
@@ -941,4 +949,61 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
             this.cooldownAfterCrafting = amount;
         }
     }
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
+            IWailaConfigHandler config) {
+        if (!accessor.getNBTData().hasKey("altar") || !config.getConfig(BloodMagicWailaPlugin.WAILA_CONFIG_ALTAR))
+            return;
+
+        final NBTTagCompound altarData = accessor.getNBTData().getCompoundTag("altar");
+        final NumberFormat numberFormat = NumberFormat.getIntegerInstance();
+
+        if (altarData.hasKey("stored")) {
+            currenttip.add(
+                    StatCollector.translateToLocal("tooltip.waila.currentFluid")
+                            + numberFormat.format(altarData.getInteger("stored")));
+        } else {
+            currenttip.add(StatCollector.translateToLocal("tooltip.waila.noFluid"));
+        }
+
+        currenttip.add(
+                StatCollector.translateToLocal("tooltip.waila.altarCapacity")
+                        + numberFormat.format(altarData.getInteger("capacity")));
+        currenttip.add(StatCollector.translateToLocal("tooltip.waila.tier") + altarData.getInteger("tier"));
+
+        if (altarData.hasKey("progress")) {
+            currenttip.add(
+                    StatCollector.translateToLocal("tooltip.waila.altarProgress") + altarData.getInteger("progress")
+                            + "%");
+            currenttip.add(StatCollector.translateToLocal("tooltip.waila.crafting") + altarData.getString("crafting"));
+        }
+
+    }
+
+    @Override
+    public void getWailaNBTData(final EntityPlayerMP player, final TileEntity tile, final NBTTagCompound tag,
+            final World world, int x, int y, int z) {
+        NBTTagCompound altarData = new NBTTagCompound();
+        altarData.setInteger("tier", this.getTier());
+        altarData.setInteger("capacity", this.getCapacity());
+        final int blood = this.getCurrentBlood();
+        if (blood > 0) altarData.setInteger("stored", blood);
+
+        if (this.getStackInSlot(0) != null && progress > 0) {
+            altarData.setInteger(
+                    "progress",
+                    (int) (((double) this.getProgress() / (double) this.liquidRequired * 100)
+                            / this.getStackInSlot(0).stackSize));
+
+            ItemStack result = AltarRecipeRegistry.getItemForItemAndTier(this.getStackInSlot(0), this.upgradeLevel);
+            if (result != null) {
+                altarData.setString("crafting", result.getDisplayName());
+            }
+
+        }
+        tag.setTag("altar", altarData);
+
+    }
+
 }

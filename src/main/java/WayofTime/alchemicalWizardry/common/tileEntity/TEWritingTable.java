@@ -1,10 +1,19 @@
 package WayofTime.alchemicalWizardry.common.tileEntity;
 
+import java.util.List;
+
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -22,8 +31,10 @@ import WayofTime.alchemicalWizardry.common.alchemy.CombinedPotionRegistry;
 import WayofTime.alchemicalWizardry.common.alchemy.ICombinationalCatalyst;
 import WayofTime.alchemicalWizardry.common.items.potion.AlchemyFlask;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
+import WayofTime.alchemicalWizardry.compat.BloodMagicWailaPlugin;
+import WayofTime.alchemicalWizardry.compat.IBloodMagicWailaProvider;
 
-public class TEWritingTable extends TEInventory implements ISidedInventory {
+public class TEWritingTable extends TEInventory implements ISidedInventory, IBloodMagicWailaProvider {
 
     public static final int sizeInv = 7;
 
@@ -715,4 +726,30 @@ public class TEWritingTable extends TEInventory implements ISidedInventory {
     public boolean canExtractItem(int slot, ItemStack stack, int side) {
         return slot == 6;
     }
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
+            IWailaConfigHandler config) {
+        if (!config.getConfig(BloodMagicWailaPlugin.WAILA_CHEMISTRY_SET)) return;
+        final NBTTagCompound tag = accessor.getNBTData();
+        final int curProgress = tag.getInteger("progress");
+        if (curProgress > 0) {
+            currenttip.add(StatCollector.translateToLocal("tooltip.waila.altarProgress") + curProgress + "%");
+        }
+        if (tag.hasKey("crafting")) {
+            currenttip.add(StatCollector.translateToLocal("tooltip.waila.crafting") + tag.getString("crafting"));
+        }
+
+    }
+
+    @Override
+    public void getWailaNBTData(final EntityPlayerMP player, final TileEntity tile, final NBTTagCompound tag,
+            final World world, int x, int y, int z) {
+        tag.setInteger("progress", progress);
+        final ItemStack result = getResultingItemStack();
+        if (result != null) {
+            tag.setString("crafting", result.getDisplayName());
+        }
+    }
+
 }
