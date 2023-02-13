@@ -1,14 +1,11 @@
 package WayofTime.alchemicalWizardry.common.tileEntity;
 
-import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
-import WayofTime.alchemicalWizardry.common.NewPacketHandler;
-import WayofTime.alchemicalWizardry.common.block.BlockTeleposer;
-import WayofTime.alchemicalWizardry.common.items.EnergyItems;
-import WayofTime.alchemicalWizardry.common.items.TelepositionFocus;
-import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
-import WayofTime.alchemicalWizardry.compat.IBloodMagicWailaProvider;
+import java.util.Iterator;
+import java.util.List;
+
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -19,8 +16,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import java.util.Iterator;
-import java.util.List;
+import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
+import WayofTime.alchemicalWizardry.common.NewPacketHandler;
+import WayofTime.alchemicalWizardry.common.block.BlockTeleposer;
+import WayofTime.alchemicalWizardry.common.items.EnergyItems;
+import WayofTime.alchemicalWizardry.common.items.TelepositionFocus;
+import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
+import WayofTime.alchemicalWizardry.compat.IBloodMagicWailaProvider;
 
 public class TETeleposer extends TEInventory implements IBloodMagicWailaProvider {
 
@@ -284,17 +286,14 @@ public class TETeleposer extends TEInventory implements IBloodMagicWailaProvider
 
     @Override
     public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
-                             IWailaConfigHandler config) 
-    {
+            IWailaConfigHandler config) {
         final ItemStack contained = getStackInSlot(0);
         if (contained != null) {
             currenttip.add(contained.getDisplayName());
         }
     }
-    
+
     @Override
     public void getWailaNBTData(final EntityPlayerMP player, final TileEntity tile, final NBTTagCompound tag,
-                                final World world, int x, int y, int z) 
-    {
-    }
+            final World world, int x, int y, int z) {}
 }

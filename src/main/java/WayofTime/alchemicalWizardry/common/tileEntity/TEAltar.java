@@ -1,18 +1,11 @@
 package WayofTime.alchemicalWizardry.common.tileEntity;
 
-import WayofTime.alchemicalWizardry.AlchemicalWizardry;
-import WayofTime.alchemicalWizardry.api.altarRecipeRegistry.AltarRecipe;
-import WayofTime.alchemicalWizardry.api.altarRecipeRegistry.AltarRecipeRegistry;
-import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
-import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
-import WayofTime.alchemicalWizardry.api.tile.IBloodAltar;
-import WayofTime.alchemicalWizardry.common.NewPacketHandler;
-import WayofTime.alchemicalWizardry.common.bloodAltarUpgrade.AltarUpgradeComponent;
-import WayofTime.alchemicalWizardry.common.bloodAltarUpgrade.UpgradedAltars;
-import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
-import WayofTime.alchemicalWizardry.compat.IBloodMagicWailaProvider;
+import java.text.NumberFormat;
+import java.util.List;
+
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -37,8 +30,17 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 
-import java.text.NumberFormat;
-import java.util.List;
+import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.api.altarRecipeRegistry.AltarRecipe;
+import WayofTime.alchemicalWizardry.api.altarRecipeRegistry.AltarRecipeRegistry;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
+import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
+import WayofTime.alchemicalWizardry.api.tile.IBloodAltar;
+import WayofTime.alchemicalWizardry.common.NewPacketHandler;
+import WayofTime.alchemicalWizardry.common.bloodAltarUpgrade.AltarUpgradeComponent;
+import WayofTime.alchemicalWizardry.common.bloodAltarUpgrade.UpgradedAltars;
+import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
+import WayofTime.alchemicalWizardry.compat.IBloodMagicWailaProvider;
 
 public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, IBloodAltar, IBloodMagicWailaProvider {
 
@@ -951,19 +953,21 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
     public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
             IWailaConfigHandler config) {
         if (!accessor.getNBTData().hasKey("altar")) return;
-        
+
         final NBTTagCompound altarData = accessor.getNBTData().getCompoundTag("altar");
         final NumberFormat numberFormat = NumberFormat.getIntegerInstance();
-        
+
         if (altarData.hasKey("stored")) {
-            currenttip
-                    .add(StatCollector.translateToLocal("tooltip.waila.currentFluid") + numberFormat.format(altarData.getInteger("stored")));
+            currenttip.add(
+                    StatCollector.translateToLocal("tooltip.waila.currentFluid")
+                            + numberFormat.format(altarData.getInteger("stored")));
         } else {
             currenttip.add(StatCollector.translateToLocal("tooltip.waila.noFluid"));
         }
 
-        currenttip
-                .add(StatCollector.translateToLocal("tooltip.waila.altarCapacity") +  numberFormat.format(altarData.getInteger("capacity")));
+        currenttip.add(
+                StatCollector.translateToLocal("tooltip.waila.altarCapacity")
+                        + numberFormat.format(altarData.getInteger("capacity")));
         currenttip.add(StatCollector.translateToLocal("tooltip.waila.tier") + altarData.getInteger("tier"));
 
         if (altarData.hasKey("progress")) {
