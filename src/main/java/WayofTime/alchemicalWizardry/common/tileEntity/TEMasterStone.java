@@ -1,24 +1,5 @@
 package WayofTime.alchemicalWizardry.common.tileEntity;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import WayofTime.alchemicalWizardry.api.Int3;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentContainer;
@@ -32,9 +13,33 @@ import WayofTime.alchemicalWizardry.api.rituals.RitualBreakMethod;
 import WayofTime.alchemicalWizardry.api.rituals.Rituals;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
+import WayofTime.alchemicalWizardry.compat.IBloodMagicWailaProvider;
 import cpw.mods.fml.common.eventhandler.Event;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class TEMasterStone extends TileEntity implements IMasterRitualStone {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBloodMagicWailaProvider {
 
     private String currentRitualString;
     private boolean isActive;
@@ -637,5 +642,36 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone {
     @Override
     public void setLocalStorage(LocalRitualStorage storage) {
         this.storage = storage;
+    }
+
+
+    @Override
+    public void getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
+                             IWailaConfigHandler config)
+    {
+        final NBTTagCompound tag = accessor.getNBTData();
+        if(tag.hasKey("owner")) {
+            currenttip.add(StatCollector.translateToLocal("tooltip.waila.owner") + tag.getString("owner"));    
+        }
+        
+        
+        currenttip.add(StatCollector.translateToLocal("tooltip.waila." + (tag.getBoolean("active") ? "active" : "notActive"))); 
+        if(tag.hasKey("currentRitual")) {
+            currenttip.add(StatCollector.translateToLocal("tooltip.waila.ritualString") + tag.getString("currentRitual")); 
+        }
+
+    }
+
+    @Override
+    public void getWailaNBTData(final EntityPlayerMP player, final TileEntity tile, final NBTTagCompound tag,
+                                final World world, int x, int y, int z)
+    {
+        if(!getOwner().isEmpty()) {
+            tag.setString("owner", getOwner());
+        }
+        if(!getCurrentRitual().isEmpty()) {
+            tag.setString("currentRitual", Rituals.getNameOfRitual(getCurrentRitual()));
+        }
+        tag.setBoolean("active", isActive);
     }
 }
