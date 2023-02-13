@@ -6,11 +6,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import pneumaticCraft.api.PneumaticRegistry;
-import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.common.book.BloodMagicGuide;
 import amerifrance.guideapi.api.GuideRegistry;
-import cpw.mods.fml.common.Optional;
 
 public class MailOrderEntityItem extends EntityItem {
 
@@ -48,32 +45,18 @@ public class MailOrderEntityItem extends EntityItem {
         if (!worldObj.isRemote && this.ticksExisted > 100 && !this.isDead) {
             worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, this.posX, this.posY, this.posZ));
 
-            if (AlchemicalWizardry.isPneumaticCraftLoaded) {
-                this.deliverItemViaDrone(this.posX, this.posY, this.posZ);
-            } else {
-                EntityItem entity = new BookEntityItem(
-                        worldObj,
-                        this.posX,
-                        this.posY,
-                        this.posZ,
-                        GuideRegistry.getItemStackForBook(BloodMagicGuide.bloodMagicGuide));
-                entity.lifespan = 6000;
-                entity.delayBeforeCanPickup = 20;
-                entity.motionY = 1;
-                worldObj.spawnEntityInWorld(entity);
-            }
+            EntityItem entity = new BookEntityItem(
+                    worldObj,
+                    this.posX,
+                    this.posY,
+                    this.posZ,
+                    GuideRegistry.getItemStackForBook(BloodMagicGuide.bloodMagicGuide));
+            entity.lifespan = 6000;
+            entity.delayBeforeCanPickup = 20;
+            entity.motionY = 1;
+            worldObj.spawnEntityInWorld(entity);
 
             this.setDead();
         }
-    }
-
-    @Optional.Method(modid = "PneumaticCraft")
-    public void deliverItemViaDrone(double x, double y, double z) {
-        PneumaticRegistry.getInstance().deliverItemsAmazonStyle(
-                worldObj,
-                (int) x,
-                (int) y,
-                (int) z,
-                GuideRegistry.getItemStackForBook(BloodMagicGuide.bloodMagicGuide));
     }
 }
