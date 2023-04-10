@@ -214,7 +214,6 @@ public class RitualEffectBiomeChanger extends RitualEffect {
             boolean wantsRain = true;
             int biomeID = 1;
             BiomeGenBase[] biomeList = BiomeGenBase.getBiomeGenArray();
-            int iteration = 0;
 
             for (BiomeGenBase biome : biomeList) {
                 if (biome == null) {
@@ -227,15 +226,13 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                 humidity = Math.min(2.0f, Math.max(0.0f, humidity));
 
                 if (Math.abs(rainfall - humidity) < acceptableRange && Math.abs(temperature - temp) < acceptableRange) {
-                    biomeID = iteration;
+                    biomeID = biome.biomeID;
                     if (biomeSkip == 0) {
                         break;
                     } else {
                         biomeSkip--;
                     }
                 }
-
-                iteration++;
             }
 
             // Default to Plains if too much biome skip is used
