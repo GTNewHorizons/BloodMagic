@@ -3285,17 +3285,11 @@ public class AlchemicalWizardry {
             ModItems.itemBloodFrame = new ItemBloodFrame().setUnlocalizedName("bloodFrame");
 
             ItemStack provenFrame = GameRegistry.findItemStack("Forestry", "frameImpregnated", 1);
-
-            if (provenFrame != null) {
-                AltarRecipeRegistry.registerAltarRecipe(
-                        new ItemStack(ModItems.itemBloodFrame),
-                        provenFrame,
-                        3,
-                        30000,
-                        20,
-                        20,
-                        false);
-            }
+            // disabled, blood frame is broken currently
+            /*
+             * if (provenFrame != null) { AltarRecipeRegistry.registerAltarRecipe( new
+             * ItemStack(ModItems.itemBloodFrame), provenFrame, 3, 30000, 20, 20, false); }
+             */
         } else {
             isForestryLoaded = false;
         }
