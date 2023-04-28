@@ -9,12 +9,12 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.ModBlocks;
 import WayofTime.alchemicalWizardry.common.demonVillage.BuildingSchematic;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class TESchematicSaver extends TileEntity {
 

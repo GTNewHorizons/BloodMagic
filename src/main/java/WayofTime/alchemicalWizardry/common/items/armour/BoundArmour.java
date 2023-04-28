@@ -20,9 +20,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraftforge.common.util.Constants;
 
-import thaumcraft.api.IGoggles;
-import thaumcraft.api.IRunicArmor;
-import thaumcraft.api.nodes.IRevealer;
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.ModItems;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.IAlchemyGoggles;
@@ -36,6 +33,9 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import thaumcraft.api.IGoggles;
+import thaumcraft.api.IRunicArmor;
+import thaumcraft.api.nodes.IRevealer;
 
 @Optional.InterfaceList(
         value = { @Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"),

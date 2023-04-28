@@ -3,9 +3,6 @@ package WayofTime.alchemicalWizardry.common.tileEntity;
 import java.text.NumberFormat;
 import java.util.List;
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -42,6 +39,8 @@ import WayofTime.alchemicalWizardry.common.bloodAltarUpgrade.UpgradedAltars;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 import WayofTime.alchemicalWizardry.compat.BloodMagicWailaPlugin;
 import WayofTime.alchemicalWizardry.compat.IBloodMagicWailaProvider;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, IBloodAltar, IBloodMagicWailaProvider {
 

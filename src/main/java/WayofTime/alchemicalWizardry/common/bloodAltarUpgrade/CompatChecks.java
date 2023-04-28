@@ -1,10 +1,10 @@
 package WayofTime.alchemicalWizardry.common.bloodAltarUpgrade;
 
-import WayofTime.alchemicalWizardry.api.BlockStack;
-
 import com.cricketcraft.chisel.api.carving.CarvingUtils;
 import com.cricketcraft.chisel.api.carving.ICarvingGroup;
 import com.google.common.base.Strings;
+
+import WayofTime.alchemicalWizardry.api.BlockStack;
 
 public class CompatChecks {
 

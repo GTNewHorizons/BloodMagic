@@ -4,11 +4,11 @@ import static minetweaker.api.minecraft.MineTweakerMC.getItemStack;
 
 import java.util.ArrayList;
 
+import net.minecraft.item.ItemStack;
+
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.oredict.IOreDictEntry;
-
-import net.minecraft.item.ItemStack;
 
 /**
  * MineTweaker3 Helper by joshie *

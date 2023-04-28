@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -41,6 +38,8 @@ import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 import WayofTime.alchemicalWizardry.compat.BloodMagicWailaPlugin;
 import WayofTime.alchemicalWizardry.compat.IBloodMagicWailaProvider;
 import cpw.mods.fml.common.eventhandler.Event;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBloodMagicWailaProvider {
 

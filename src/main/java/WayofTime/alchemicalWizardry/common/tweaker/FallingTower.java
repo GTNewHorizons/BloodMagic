@@ -4,17 +4,16 @@ import static WayofTime.alchemicalWizardry.common.tweaker.MTHelper.toStack;
 
 import java.util.Iterator;
 
-import minetweaker.IUndoableAction;
-import minetweaker.MineTweakerAPI;
-import minetweaker.api.item.IItemStack;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import stanhebben.zenscript.annotations.ZenClass;
-import stanhebben.zenscript.annotations.ZenMethod;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorParadigm;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorRegistry;
+import minetweaker.IUndoableAction;
+import minetweaker.MineTweakerAPI;
+import minetweaker.api.item.IItemStack;
+import stanhebben.zenscript.annotations.ZenClass;
+import stanhebben.zenscript.annotations.ZenMethod;
 
 /**
  * MineTweaker3 Falling Tower Paradigm Handler by hilburn *

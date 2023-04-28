@@ -2,16 +2,15 @@ package WayofTime.alchemicalWizardry.common.tweaker;
 
 import static WayofTime.alchemicalWizardry.common.tweaker.MTHelper.toStack;
 
+import net.minecraft.item.ItemStack;
+
+import WayofTime.alchemicalWizardry.api.bindingRegistry.BindingRecipe;
+import WayofTime.alchemicalWizardry.api.bindingRegistry.BindingRegistry;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IItemStack;
-
-import net.minecraft.item.ItemStack;
-
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-import WayofTime.alchemicalWizardry.api.bindingRegistry.BindingRecipe;
-import WayofTime.alchemicalWizardry.api.bindingRegistry.BindingRegistry;
 
 /**
  * MineTweaker3 Binding Recipe Handler by joshie *

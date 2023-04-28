@@ -26,6 +26,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.Int3;
 import WayofTime.alchemicalWizardry.common.block.BlockTeleposer;
@@ -39,9 +42,6 @@ import WayofTime.alchemicalWizardry.common.demonVillage.GridSpaceHolder;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.DemonPacketRegistry;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.DemonType;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.IHoardDemon;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class TEDemonPortal extends TileEntity {
 

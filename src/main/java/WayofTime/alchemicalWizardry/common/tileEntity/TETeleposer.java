@@ -3,9 +3,6 @@ package WayofTime.alchemicalWizardry.common.tileEntity;
 import java.util.Iterator;
 import java.util.List;
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -24,6 +21,8 @@ import WayofTime.alchemicalWizardry.common.items.TelepositionFocus;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 import WayofTime.alchemicalWizardry.compat.BloodMagicWailaPlugin;
 import WayofTime.alchemicalWizardry.compat.IBloodMagicWailaProvider;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 
 public class TETeleposer extends TEInventory implements IBloodMagicWailaProvider {
 
