@@ -300,7 +300,7 @@ import thaumcraft.api.aspects.AspectList;
 @Mod(
         modid = "AWWayofTime",
         name = "AlchemicalWizardry",
-        version = "GRADLETOKEN_VERSION",
+        version = Tags.VERSION,
         dependencies = "after:CodeChickenLib@[1.1.5.7,);" + "after:NotEnoughItems@[2.3.20-GTNH,)",
         guiFactory = "WayofTime.alchemicalWizardry.client.gui.ConfigGuiFactory")
 public class AlchemicalWizardry {
