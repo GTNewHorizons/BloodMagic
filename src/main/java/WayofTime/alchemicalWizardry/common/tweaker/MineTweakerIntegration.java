@@ -1,5 +1,6 @@
 package WayofTime.alchemicalWizardry.common.tweaker;
 
+import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.versioning.ArtifactVersion;
 import cpw.mods.fml.common.versioning.InvalidVersionSpecificationException;
@@ -29,6 +30,9 @@ public class MineTweakerIntegration {
         try {
             if (VersionRange.createFromVersionSpec("[3.2.4,)").containsVersion(mtVersion)) {
                 GTNHIntegration.register();
+            } else {
+                AlchemicalWizardry.logger.warn(
+                        "Non-GTNH MineTweaker (CraftTweaker) version detected, late recipe additions and removals won't work correctly");
             }
         } catch (InvalidVersionSpecificationException e) {
             throw new RuntimeException(e);
