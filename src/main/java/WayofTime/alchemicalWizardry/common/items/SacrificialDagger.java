@@ -1,19 +1,21 @@
 package WayofTime.alchemicalWizardry.common.items;
 
 import java.util.List;
+import java.util.Random;
 
+import WayofTime.alchemicalWizardry.api.sacrifice.DamageSourceBloodMagic;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ChatStyle;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -60,35 +62,47 @@ public class SacrificialDagger extends Item {
      * called when the player releases the use item button. Args: itemstack, world, entityplayer, itemInUseCount
      */
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int itemInUseCount)
-    {
+    public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int itemInUseCount) {
         int usageCount = this.getMaxItemUseDuration(stack) - itemInUseCount;
         int hpCount = (int) Math.min(((usageCount * 0.35)), player.getMaxHealth());
 
+        Random rnd = new Random();
+        int shuffle = rnd.nextInt(3);
+
+        if (player instanceof FakePlayer) {
+            return;
+        }
+
+        if(player.isPotionActive(AlchemicalWizardry.customPotionSoulFray)) {
+            if (world.isRemote)
+                player.addChatComponentMessage(new ChatComponentTranslation("message.sacrifice.soulfray" + shuffle).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)));
+            return;
+        }
+
+        if (hpCount < 1) {
+            return;
+        }
+
         if (this.canUseForSacrifice(stack)) {
             PlayerSacrificeHandler.sacrificePlayerHealth(player);
-        } else
-        {
+        } else {
             SacrificeKnifeUsedEvent evt = new SacrificeKnifeUsedEvent(player, true, true, hpCount);
 
             if (MinecraftForge.EVENT_BUS.post(evt)) {
                 return;
             }
 
-            if (hpCount < 1) {
-                return;
-            }
-
-            if (!player.capabilities.isCreativeMode && evt.shouldDrainHealth) {
+            if (evt.shouldDrainHealth && !player.capabilities.isCreativeMode) {
+                if (!world.isRemote && player.getHealth() <= hpCount) {
+                    DamageSourceBloodMagic damageSrc = DamageSourceBloodMagic.INSTANCE;
+                    player.hurtResistantTime = 0;
+                    player.attackEntityFrom(damageSrc, Float.MAX_VALUE);
+                }
                 player.setHealth(player.getHealth() - hpCount);
                 player.addPotionEffect(new PotionEffect(new PotionEffect(AlchemicalWizardry.customPotionSoulFray.id, (1 + hpCount * 10), 0)));
             }
 
             if (!evt.shouldFillAltar) {
-                return;
-            }
-
-            if (player instanceof FakePlayer) {
                 return;
             }
 
@@ -110,10 +124,6 @@ public class SacrificialDagger extends Item {
             }
 
             findAndFillAltar(world, player, (hpCount * AlchemicalWizardry.lpPerSelfSacrifice));
-
-            if (player.getHealth() <= 0.001f) {
-                player.onDeath(DamageSource.generic);
-            }
         }
     }
 
@@ -123,7 +133,7 @@ public class SacrificialDagger extends Item {
     }
 
     /**
-     * returns the action that specifies what animation to play when the items is being used
+     * returns the action that specifies what animation to play when the items are being used
      */
     @Override
     public EnumAction getItemUseAction(ItemStack stack) {
@@ -133,11 +143,7 @@ public class SacrificialDagger extends Item {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
-        if (!player.isPotionActive(AlchemicalWizardry.customPotionSoulFray))
-        {
-            player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
-            return stack;
-        }
+        player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
         return stack;
     }
 

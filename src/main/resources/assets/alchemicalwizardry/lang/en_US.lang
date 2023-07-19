@@ -548,6 +548,9 @@ message.tanksegmenter.nowhas=Tank now has
 message.tanksegmenter.setto=Tank Segmenter now set to:
 message.tanksegmenter.tankssetto=tank(s) set to:
 message.routerfocus.limit=Focus' Item Limit set to:
+message.sacrifice.soulfray0=Consumed by dread, you hesitate...
+message.sacrifice.soulfray1=Your hand falters from cowardice...
+message.sacrifice.soulfray2=You lacked the guts to do it...
 
 #Achievements
 achievement.alchemicalwizardry:firstPrick=Your First Prick!
@@ -625,3 +628,6 @@ option.bm.bloodAltar=Blood Altar
 option.bm.ritualController=Ritual Stones
 option.bm.teleposer=Teleposer
 option.bm.chemistrySet=Alchemical Chemistry Set
+
+# Death messages
+death.attack.bloodMagic=%1$s has been sacrificed in a ritual.
