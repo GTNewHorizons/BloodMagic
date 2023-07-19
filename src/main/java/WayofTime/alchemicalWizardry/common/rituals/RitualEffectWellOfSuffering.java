@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
@@ -24,7 +26,7 @@ public class RitualEffectWellOfSuffering extends RitualEffect {
 
     private static final int tennebraeDrain = 5;
     private static final int potentiaDrain = 10;
-    private static final int offensaDrain = 3;
+    private static final int offensaDrain = 10;
 
     @Override
     public void performEffect(IMasterRitualStone ritualStone) {
@@ -88,12 +90,26 @@ public class RitualEffectWellOfSuffering extends RitualEffect {
                 hasOffensa = hasOffensa
                         && this.canDrainReagent(ritualStone, ReagentRegistry.offensaReagent, offensaDrain, true);
 
-                if (livingEntity.attackEntityFrom(DamageSource.outOfWorld, hasOffensa ? 2 : 1)) {
-                    hasTennebrae = hasTennebrae
-                            && this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, true);
+                int lpValue = entityTypeMultiplier(livingEntity) * this.amount;
 
+                if (hasOffensa) {
+                    livingEntity.setHealth(-1);
+                    livingEntity.onDeath(DamageSource.generic);
+
+                    tileAltar.sacrificialDaggerCall(lpValue * 10, true);
+                }
+
+                hasTennebrae = hasTennebrae
+                        && this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, true);
+
+                //Inflict 1 damage or 5% max health (whichever is largest)
+                float damage = (float) (Math.max(1, livingEntity.getMaxHealth() * 0.05) * (hasTennebrae ? 2 : 1));
+                //Forecast health ratio post damage
+                float missingHealthRatio = 1 - ((livingEntity.getHealth() - damage)/livingEntity.getMaxHealth());
+
+                if (livingEntity.attackEntityFrom(DamageSource.outOfWorld, damage)) {
                     entityCount++;
-                    tileAltar.sacrificialDaggerCall(this.amount * (hasTennebrae ? 2 : 1) * (hasOffensa ? 2 : 1), true);
+                    tileAltar.sacrificialDaggerCall((int) (lpValue * missingHealthRatio * (hasTennebrae ? 2 : 1)), true);
                 }
             }
 
@@ -150,5 +166,14 @@ public class RitualEffectWellOfSuffering extends RitualEffect {
         wellOfSufferingRitual.add(new RitualComponent(-4, 1, 0, RitualComponent.AIR));
         wellOfSufferingRitual.add(new RitualComponent(0, 1, -4, RitualComponent.AIR));
         return wellOfSufferingRitual;
+    }
+
+    public int entityTypeMultiplier(EntityLivingBase entity){
+        if (entity instanceof EntityVillager)
+            return 6;
+        else if (entity instanceof EntityAnimal)
+            return 2;
+
+        return 4; //Generic Monster
     }
 }
