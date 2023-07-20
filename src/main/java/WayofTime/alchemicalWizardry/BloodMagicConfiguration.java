@@ -413,6 +413,24 @@ public class BloodMagicConfiguration {
                         "LP per sacrifice with Well of Suffering ritual",
                         AlchemicalWizardry.lpPerSacrificeWellOfSuffering)
                 .getInt(AlchemicalWizardry.lpPerSacrificeWellOfSuffering);
+        AlchemicalWizardry.VillagerMultiplierSacrificeWellOfSuffering = config
+                .get(
+                        "sacrifice",
+                        "LP multiplier for villagers with Well of Suffering ritual",
+                        AlchemicalWizardry.VillagerMultiplierSacrificeWellOfSuffering)
+                .getInt(AlchemicalWizardry.VillagerMultiplierSacrificeWellOfSuffering);
+        AlchemicalWizardry.MonsterMultiplierSacrificeWellOfSuffering = config
+                .get(
+                        "sacrifice",
+                        "LP multiplier for monsters with Well of Suffering ritual",
+                        AlchemicalWizardry.MonsterMultiplierSacrificeWellOfSuffering)
+                .getInt(AlchemicalWizardry.MonsterMultiplierSacrificeWellOfSuffering);
+        AlchemicalWizardry.AnimalMultiplierSacrificeWellOfSuffering = config
+                .get(
+                        "sacrifice",
+                        "LP multiplier for animals with Well of Suffering ritual",
+                        AlchemicalWizardry.AnimalMultiplierSacrificeWellOfSuffering)
+                .getInt(AlchemicalWizardry.AnimalMultiplierSacrificeWellOfSuffering);
         AlchemicalWizardry.lpPerSacrificeIncense = config
                 .get("sacrifice", "LP per (self-)sacrifice with incense", AlchemicalWizardry.lpPerSacrificeIncense)
                 .getDouble(AlchemicalWizardry.lpPerSacrificeIncense);

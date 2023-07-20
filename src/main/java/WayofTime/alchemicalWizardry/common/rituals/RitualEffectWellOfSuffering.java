@@ -170,9 +170,9 @@ public class RitualEffectWellOfSuffering extends RitualEffect {
     }
 
     public int entityTypeMultiplier(EntityLivingBase entity) {
-        if (entity instanceof EntityVillager) return 6;
-        else if (entity instanceof EntityAnimal) return 2;
+        if (entity instanceof EntityVillager) return AlchemicalWizardry.VillagerMultiplierSacrificeWellOfSuffering;
+        else if (entity instanceof EntityAnimal) return AlchemicalWizardry.AnimalMultiplierSacrificeWellOfSuffering;
 
-        return 4; // Generic Monster
+        return AlchemicalWizardry.MonsterMultiplierSacrificeWellOfSuffering; // Generic Monster
     }
 }
