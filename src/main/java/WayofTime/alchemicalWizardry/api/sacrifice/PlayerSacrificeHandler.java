@@ -51,6 +51,7 @@ public class PlayerSacrificeHandler {
 
             if (health > maxHealth / 10.0) {
                 float sacrificedHealth = health - maxHealth / 10.0f;
+                soulFrayDuration = (int) (10 * sacrificedHealth * (1 - (amount / 4000)));
 
                 if (findAndFillAltar(
                         player.getEntityWorld(),
