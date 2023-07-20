@@ -3,7 +3,6 @@ package WayofTime.alchemicalWizardry.common.items;
 import java.util.List;
 import java.util.Random;
 
-import WayofTime.alchemicalWizardry.api.sacrifice.DamageSourceBloodMagic;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +22,7 @@ import net.minecraftforge.common.util.FakePlayer;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.event.SacrificeKnifeUsedEvent;
+import WayofTime.alchemicalWizardry.api.sacrifice.DamageSourceBloodMagic;
 import WayofTime.alchemicalWizardry.api.sacrifice.PlayerSacrificeHandler;
 import WayofTime.alchemicalWizardry.api.tile.IBloodAltar;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
@@ -73,9 +73,10 @@ public class SacrificialDagger extends Item {
             return;
         }
 
-        if(player.isPotionActive(AlchemicalWizardry.customPotionSoulFray)) {
-            if (world.isRemote)
-                player.addChatComponentMessage(new ChatComponentTranslation("message.sacrifice.soulfray" + shuffle).setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)));
+        if (player.isPotionActive(AlchemicalWizardry.customPotionSoulFray)) {
+            if (world.isRemote) player.addChatComponentMessage(
+                    new ChatComponentTranslation("message.sacrifice.soulfray" + shuffle)
+                            .setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED)));
             return;
         }
 
@@ -99,7 +100,9 @@ public class SacrificialDagger extends Item {
                     player.attackEntityFrom(damageSrc, Float.MAX_VALUE);
                 }
                 player.setHealth(player.getHealth() - hpCount);
-                player.addPotionEffect(new PotionEffect(new PotionEffect(AlchemicalWizardry.customPotionSoulFray.id, (1 + hpCount * 10), 0)));
+                player.addPotionEffect(
+                        new PotionEffect(
+                                new PotionEffect(AlchemicalWizardry.customPotionSoulFray.id, (1 + hpCount * 10), 0)));
             }
 
             if (!evt.shouldFillAltar) {
@@ -109,14 +112,27 @@ public class SacrificialDagger extends Item {
             double posX = player.posX;
             double posY = player.posY;
             double posZ = player.posZ;
-            world.playSoundEffect(((float) posX + 0.5F), (double) ((float) posY + 0.5F), (double) ((float) posZ + 0.5F), "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+            world.playSoundEffect(
+                    ((float) posX + 0.5F),
+                    (double) ((float) posY + 0.5F),
+                    (double) ((float) posZ + 0.5F),
+                    "random.fizz",
+                    0.5F,
+                    2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
             float f = 1.0F;
             float f1 = f * 0.6F + 0.4F;
             float f2 = f * f * 0.7F - 0.5F;
             float f3 = f * f * 0.6F - 0.7F;
 
             for (int l = 0; l < 8; ++l) {
-                world.spawnParticle("reddust", posX + Math.random() - Math.random(), posY + Math.random() - Math.random(), posZ + Math.random() - Math.random(), f1, f2, f3);
+                world.spawnParticle(
+                        "reddust",
+                        posX + Math.random() - Math.random(),
+                        posY + Math.random() - Math.random(),
+                        posZ + Math.random() - Math.random(),
+                        f1,
+                        f2,
+                        f3);
             }
 
             if (!world.isRemote && SpellHelper.isFakePlayer(world, player)) {
@@ -141,8 +157,7 @@ public class SacrificialDagger extends Item {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-    {
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
         return stack;
     }

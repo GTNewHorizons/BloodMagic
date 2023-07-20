@@ -102,14 +102,15 @@ public class RitualEffectWellOfSuffering extends RitualEffect {
                 hasTennebrae = hasTennebrae
                         && this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, true);
 
-                //Inflict 1 damage or 5% max health (whichever is largest)
+                // Inflict 1 damage or 5% max health (whichever is largest)
                 float damage = (float) (Math.max(1, livingEntity.getMaxHealth() * 0.05) * (hasTennebrae ? 2 : 1));
-                //Forecast health ratio post damage
-                float missingHealthRatio = 1 - ((livingEntity.getHealth() - damage)/livingEntity.getMaxHealth());
+                // Forecast health ratio post damage
+                float missingHealthRatio = 1 - ((livingEntity.getHealth() - damage) / livingEntity.getMaxHealth());
 
                 if (livingEntity.attackEntityFrom(DamageSource.outOfWorld, damage)) {
                     entityCount++;
-                    tileAltar.sacrificialDaggerCall((int) (lpValue * missingHealthRatio * (hasTennebrae ? 2 : 1)), true);
+                    tileAltar
+                            .sacrificialDaggerCall((int) (lpValue * missingHealthRatio * (hasTennebrae ? 2 : 1)), true);
                 }
             }
 
@@ -168,12 +169,10 @@ public class RitualEffectWellOfSuffering extends RitualEffect {
         return wellOfSufferingRitual;
     }
 
-    public int entityTypeMultiplier(EntityLivingBase entity){
-        if (entity instanceof EntityVillager)
-            return 6;
-        else if (entity instanceof EntityAnimal)
-            return 2;
+    public int entityTypeMultiplier(EntityLivingBase entity) {
+        if (entity instanceof EntityVillager) return 6;
+        else if (entity instanceof EntityAnimal) return 2;
 
-        return 4; //Generic Monster
+        return 4; // Generic Monster
     }
 }
