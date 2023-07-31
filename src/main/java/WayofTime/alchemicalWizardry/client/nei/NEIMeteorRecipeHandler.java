@@ -182,7 +182,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     public List<String> handleItemTooltip(GuiRecipe<?> gui, ItemStack stack, List<String> currenttip, int recipe) {
         CachedMeteorRecipe meteorRecipe = (CachedMeteorRecipe) this.arecipes.get(recipe);
         for (PositionedStack pStack : meteorRecipe.outputs) {
-            if (!gui.isMouseOver(pStack, recipe)) continue;
+            // if (!gui.isMouseOver(pStack, recipe)) continue; // put it back when NEI is properly patched
             if (!(pStack instanceof TooltipStack)) break;
 
             TooltipStack tStack = (TooltipStack) pStack;
