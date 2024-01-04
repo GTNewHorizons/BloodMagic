@@ -1,8 +1,11 @@
 package WayofTime.alchemicalWizardry.common.rituals;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Queue;
+import java.util.function.BiConsumer;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -77,56 +80,33 @@ public class RitualEffectBiomeChanger extends RitualEffect {
             }
 
             boolList[range][range] = true;
-            boolean isReady = false;
 
-            while (!isReady) {
-                isReady = true;
+            Queue<Integer> BFSqueue = new ArrayDeque<>();
+            BFSqueue.add(x);
+            BFSqueue.add(z);
 
-                for (int i = 0; i < 2 * range + 1; i++) {
-                    for (int j = 0; j < 2 * range + 1; j++) {
-                        if (boolList[i][j]) {
-                            if (i - 1 >= 0 && !boolList[i - 1][j]) {
-                                Block block = world.getBlock(x - range + i - 1, y + 1, z - range + j);
+            while (!BFSqueue.isEmpty()) {
+                Integer curX = BFSqueue.remove();
+                Integer curZ = BFSqueue.remove();
 
-                                if (!ModBlocks.largeBloodStoneBrick.equals(block)
-                                        && !ModBlocks.bloodStoneBrick.equals(block)) {
-                                    boolList[i - 1][j] = true;
-                                    isReady = false;
-                                }
-                            }
+                BiConsumer<Integer, Integer> tryEnqueue = (nextX, nextZ) -> {
+                    if (Math.abs(nextX - x) > range || Math.abs(nextZ - z) > range) return;
+                    if (boolList[nextX - (x - range)][nextZ - (z - range)]) return;
 
-                            if (j - 1 >= 0 && !boolList[i][j - 1]) {
-                                Block block = world.getBlock(x - range + i, y + 1, z - range + j - 1);
+                    Block block = world.getBlock(nextX, y + 1, nextZ);
+                    if (block == null || block.equals(ModBlocks.bloodStoneBrick)
+                            || block.equals(ModBlocks.largeBloodStoneBrick))
+                        return;
 
-                                if (!ModBlocks.largeBloodStoneBrick.equals(block)
-                                        && !ModBlocks.bloodStoneBrick.equals(block)) {
-                                    boolList[i][j - 1] = true;
-                                    isReady = false;
-                                }
-                            }
+                    boolList[nextX - (x - range)][nextZ - (z - range)] = true;
+                    BFSqueue.add(nextX);
+                    BFSqueue.add(nextZ);
+                };
 
-                            if (i + 1 <= 2 * range && !boolList[i + 1][j]) {
-                                Block block = world.getBlock(x - range + i + 1, y + 1, z - range + j);
-
-                                if (!ModBlocks.largeBloodStoneBrick.equals(block)
-                                        && !ModBlocks.bloodStoneBrick.equals(block)) {
-                                    boolList[i + 1][j] = true;
-                                    isReady = false;
-                                }
-                            }
-
-                            if (j + 1 <= 2 * range && !boolList[i][j + 1]) {
-                                Block block = world.getBlock(x - range + i, y + 1, z - range + j + 1);
-
-                                if (!ModBlocks.largeBloodStoneBrick.equals(block)
-                                        && !ModBlocks.bloodStoneBrick.equals(block)) {
-                                    boolList[i][j + 1] = true;
-                                    isReady = false;
-                                }
-                            }
-                        }
-                    }
-                }
+                tryEnqueue.accept(curX + 1, curZ);
+                tryEnqueue.accept(curX, curZ + 1);
+                tryEnqueue.accept(curX - 1, curZ);
+                tryEnqueue.accept(curX, curZ - 1);
             }
 
             float temperature = 0.5f;
