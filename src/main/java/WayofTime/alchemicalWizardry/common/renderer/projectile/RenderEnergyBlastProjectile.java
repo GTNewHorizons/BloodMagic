@@ -9,7 +9,14 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import WayofTime.alchemicalWizardry.common.entity.projectile.*;
+import WayofTime.alchemicalWizardry.common.entity.projectile.ExplosionProjectile;
+import WayofTime.alchemicalWizardry.common.entity.projectile.FireProjectile;
+import WayofTime.alchemicalWizardry.common.entity.projectile.HolyProjectile;
+import WayofTime.alchemicalWizardry.common.entity.projectile.IceProjectile;
+import WayofTime.alchemicalWizardry.common.entity.projectile.LightningBoltProjectile;
+import WayofTime.alchemicalWizardry.common.entity.projectile.MudProjectile;
+import WayofTime.alchemicalWizardry.common.entity.projectile.WaterProjectile;
+import WayofTime.alchemicalWizardry.common.entity.projectile.WindGustProjectile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

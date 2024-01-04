@@ -20,7 +20,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import WayofTime.alchemicalWizardry.api.ColourAndCoords;
 import WayofTime.alchemicalWizardry.api.Int3;
-import WayofTime.alchemicalWizardry.api.alchemy.energy.*;
+import WayofTime.alchemicalWizardry.api.alchemy.energy.IReagentHandler;
+import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
+import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentContainer;
+import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentRegistry;
+import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentStack;
+import WayofTime.alchemicalWizardry.api.alchemy.energy.TileSegmentedReagentHandler;
 import WayofTime.alchemicalWizardry.common.entity.projectile.EntityParticleBeam;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 import cpw.mods.fml.relauncher.Side;
