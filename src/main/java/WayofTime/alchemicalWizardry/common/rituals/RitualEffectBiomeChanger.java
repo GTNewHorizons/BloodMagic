@@ -131,7 +131,7 @@ public class RitualEffectBiomeChanger extends RitualEffect {
 
             float temperature = 0.5f;
             float humidity = 0.5f;
-            float acceptableRange = 0.1f;
+            float acceptableRange = 0.0999f;
             int biomeSkip = 0;
 
             for (int i = -1; i <= 1; i++) {
