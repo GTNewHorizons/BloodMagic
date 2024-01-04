@@ -85,23 +85,23 @@ public class RitualEffectBiomeChanger extends RitualEffect {
             BFSqueue.add(x);
             BFSqueue.add(z);
 
+            BiConsumer<Integer, Integer> tryEnqueue = (nextX, nextZ) -> {
+                if (Math.abs(nextX - x) > range || Math.abs(nextZ - z) > range) return;
+                if (boolList[nextX - (x - range)][nextZ - (z - range)]) return;
+
+                Block block = world.getBlock(nextX, y + 1, nextZ);
+                if (block == null || block.equals(ModBlocks.bloodStoneBrick)
+                        || block.equals(ModBlocks.largeBloodStoneBrick))
+                    return;
+
+                boolList[nextX - (x - range)][nextZ - (z - range)] = true;
+                BFSqueue.add(nextX);
+                BFSqueue.add(nextZ);
+            };
+
             while (!BFSqueue.isEmpty()) {
                 Integer curX = BFSqueue.remove();
                 Integer curZ = BFSqueue.remove();
-
-                BiConsumer<Integer, Integer> tryEnqueue = (nextX, nextZ) -> {
-                    if (Math.abs(nextX - x) > range || Math.abs(nextZ - z) > range) return;
-                    if (boolList[nextX - (x - range)][nextZ - (z - range)]) return;
-
-                    Block block = world.getBlock(nextX, y + 1, nextZ);
-                    if (block == null || block.equals(ModBlocks.bloodStoneBrick)
-                            || block.equals(ModBlocks.largeBloodStoneBrick))
-                        return;
-
-                    boolList[nextX - (x - range)][nextZ - (z - range)] = true;
-                    BFSqueue.add(nextX);
-                    BFSqueue.add(nextZ);
-                };
 
                 tryEnqueue.accept(curX + 1, curZ);
                 tryEnqueue.accept(curX, curZ + 1);
