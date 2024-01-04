@@ -1,6 +1,7 @@
 package WayofTime.alchemicalWizardry.common.rituals;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -24,6 +25,7 @@ import WayofTime.alchemicalWizardry.api.rituals.IMasterRitualStone;
 import WayofTime.alchemicalWizardry.api.rituals.RitualComponent;
 import WayofTime.alchemicalWizardry.api.rituals.RitualEffect;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
+import WayofTime.alchemicalWizardry.common.NewPacketHandler;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEPlinth;
 
@@ -240,25 +242,41 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                 biomeID = 1;
             }
 
-            for (int i = 0; i < 2 * range + 1; i++) {
-                for (int j = 0; j < 2 * range + 1; j++) {
-                    if (boolList[i][j]) {
-                        Chunk chunk = world.getChunkFromBlockCoords(x - range + i, z - range + j);
-                        byte[] byteArray = chunk.getBiomeArray();
-                        int moduX = (x - range + i) % 16;
-                        int moduZ = (z - range + j) % 16;
+            List<Chunk> chunkList = new ArrayList<>();
 
-                        if (moduX < 0) {
-                            moduX = moduX + 16;
+            for (int chunkX = (x - range) >> 4; chunkX <= (x + range) >> 4; ++chunkX) {
+                for (int chunkZ = (z - range) >> 4; chunkZ <= (z + range) >> 4; ++chunkZ) {
+                    chunkList.add(world.getChunkFromChunkCoords(chunkX, chunkZ));
+                }
+            }
+
+            for (Chunk chunk : chunkList) {
+                byte[] byteArray = chunk.getBiomeArray();
+                BitSet mask = new BitSet();
+                boolean changed = false;
+
+                for (int cZ = 0; cZ < 16; ++cZ) {
+                    int offsetZ = (chunk.zPosition << 4 | cZ) - (z - range);
+                    if (0 <= offsetZ && offsetZ < 2 * range + 1) {
+                        for (int cX = 0; cX < 16; ++cX) {
+                            int offsetX = (chunk.xPosition << 4 | cX) - (x - range);
+                            if (0 <= offsetX && offsetX < 2 * range + 1) {
+                                if (boolList[offsetX][offsetZ]) {
+                                    mask.set(cZ << 4 | cX, true);
+                                    byteArray[cZ << 4 | cX] = (byte) biomeID;
+                                    changed = true;
+                                }
+                            }
                         }
-
-                        if (moduZ < 0) {
-                            moduZ = moduZ + 16;
-                        }
-
-                        byteArray[moduZ * 16 + moduX] = (byte) biomeID;
-                        chunk.setBiomeArray(byteArray);
                     }
+                }
+
+                if (changed) {
+                    chunk.setBiomeArray(byteArray);
+                    NewPacketHandler.INSTANCE.sendToDimension(
+                            NewPacketHandler
+                                    .getGaiaBiomeChangePacket(chunk.xPosition, chunk.zPosition, (byte) biomeID, mask),
+                            world.provider.dimensionId);
                 }
             }
 

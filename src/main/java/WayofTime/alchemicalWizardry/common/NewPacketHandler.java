@@ -1,5 +1,6 @@
 package WayofTime.alchemicalWizardry.common;
 
+import java.util.BitSet;
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
@@ -77,6 +79,8 @@ public enum NewPacketHandler {
                 .addAfter(tileAltarCodec, "CurrentReagentBarMessageHandler", new CurrentReagentBarMessageHandler());
         clientChannel.pipeline()
                 .addAfter(tileAltarCodec, "CurrentAddedHPMessageHandler", new CurrentAddedHPMessageHandler());
+        clientChannel.pipeline()
+                .addAfter(tileAltarCodec, "GaiaBiomeChangeHandler", new GaiaBiomeChangeMessageHandler());
     }
 
     @SideOnly(Side.SERVER)
@@ -283,6 +287,23 @@ public enum NewPacketHandler {
         }
     }
 
+    private static class GaiaBiomeChangeMessageHandler extends SimpleChannelInboundHandler<GaiaBiomeChangeMessage> {
+
+        @Override
+        protected void channelRead0(ChannelHandlerContext ctx, GaiaBiomeChangeMessage msg) throws Exception {
+            Chunk chunk = AlchemicalWizardry.proxy.getClientWorld().getChunkFromChunkCoords(msg.chunkX, msg.chunkZ);
+            if (chunk != null) {
+                byte[] biomeArray = chunk.getBiomeArray();
+                for (int i = 0; i < 16 * 16; ++i) {
+                    if (msg.mask.get(i)) {
+                        biomeArray[i] = msg.biome;
+                    }
+                }
+                chunk.setBiomeArray(biomeArray);
+            }
+        }
+    }
+
     public static class BMMessage {
 
         int index;
@@ -417,6 +438,14 @@ public enum NewPacketHandler {
         byte keyPressed;
     }
 
+    public static class GaiaBiomeChangeMessage extends BMMessage {
+
+        int chunkX;
+        int chunkZ;
+        byte biome;
+        BitSet mask;
+    }
+
     private class ClientToServerCodec extends FMLIndexedMessageToMessageCodec<BMMessage> {
 
         public ClientToServerCodec() {}
@@ -458,6 +487,7 @@ public enum NewPacketHandler {
             addDiscriminator(12, CurrentReagentBarMessage.class);
             addDiscriminator(13, CurrentAddedHPMessage.class);
             addDiscriminator(14, KeyboardMessage.class);
+            addDiscriminator(15, GaiaBiomeChangeMessage.class);
         }
 
         @Override
@@ -669,6 +699,16 @@ public enum NewPacketHandler {
 
                     target.writeByte(((KeyboardMessage) msg).keyPressed);
                     break;
+
+                case 15:
+                    target.writeInt(((GaiaBiomeChangeMessage) msg).chunkX);
+                    target.writeInt(((GaiaBiomeChangeMessage) msg).chunkZ);
+                    target.writeByte(((GaiaBiomeChangeMessage) msg).biome);
+                    byte[] arr = ((GaiaBiomeChangeMessage) msg).mask.toByteArray();
+                    target.writeInt(arr.length);
+                    target.writeBytes(arr);
+                    break;
+
             }
         }
 
@@ -894,6 +934,17 @@ public enum NewPacketHandler {
                     System.out.println("Packet recieved: being decoded");
                     ((KeyboardMessage) msg).keyPressed = dat.readByte();
                     break;
+
+                case 15:
+                    ((GaiaBiomeChangeMessage) msg).chunkX = dat.readInt();
+                    ((GaiaBiomeChangeMessage) msg).chunkZ = dat.readInt();
+                    ((GaiaBiomeChangeMessage) msg).biome = dat.readByte();
+
+                    int bufferLength = dat.readInt();
+                    byte[] buffer = new byte[bufferLength];
+                    dat.readBytes(buffer);
+                    ((GaiaBiomeChangeMessage) msg).mask = BitSet.valueOf(buffer);
+                    break;
             }
         }
     }
@@ -1067,6 +1118,17 @@ public enum NewPacketHandler {
         return INSTANCE.channels.get(Side.CLIENT).generatePacketFrom(msg);
     }
 
+    public static Packet getGaiaBiomeChangePacket(int x, int z, byte biome, BitSet mask) {
+        GaiaBiomeChangeMessage msg = new GaiaBiomeChangeMessage();
+        msg.index = 15;
+        msg.chunkX = x;
+        msg.chunkZ = z;
+        msg.biome = biome;
+        msg.mask = mask;
+
+        return INSTANCE.channels.get(Side.SERVER).generatePacketFrom(msg);
+    }
+
     public void sendTo(Packet message, EntityPlayerMP player) {
         this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET)
                 .set(FMLOutboundHandler.OutboundTarget.PLAYER);
@@ -1084,6 +1146,13 @@ public enum NewPacketHandler {
         this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET)
                 .set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
         this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(point);
+        this.channels.get(Side.SERVER).writeAndFlush(message);
+    }
+
+    public void sendToDimension(Packet message, Integer dimensionId) {
+        this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET)
+                .set(FMLOutboundHandler.OutboundTarget.DIMENSION);
+        this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(dimensionId);
         this.channels.get(Side.SERVER).writeAndFlush(message);
     }
 
