@@ -1,5 +1,6 @@
 package WayofTime.alchemicalWizardry.common;
 
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -444,6 +445,8 @@ public enum NewPacketHandler {
         int chunkZ;
         byte biome;
         BitSet mask;
+        // One bit per coordinate in a chunk, 16*16 bits = 32 bytes
+        public static final int maskByteCount = 32;
     }
 
     private class ClientToServerCodec extends FMLIndexedMessageToMessageCodec<BMMessage> {
@@ -704,8 +707,9 @@ public enum NewPacketHandler {
                     target.writeInt(((GaiaBiomeChangeMessage) msg).chunkX);
                     target.writeInt(((GaiaBiomeChangeMessage) msg).chunkZ);
                     target.writeByte(((GaiaBiomeChangeMessage) msg).biome);
-                    byte[] arr = ((GaiaBiomeChangeMessage) msg).mask.toByteArray();
-                    target.writeInt(arr.length);
+                    byte[] arr = Arrays.copyOf(
+                            ((GaiaBiomeChangeMessage) msg).mask.toByteArray(),
+                            GaiaBiomeChangeMessage.maskByteCount);
                     target.writeBytes(arr);
                     break;
 
@@ -940,8 +944,7 @@ public enum NewPacketHandler {
                     ((GaiaBiomeChangeMessage) msg).chunkZ = dat.readInt();
                     ((GaiaBiomeChangeMessage) msg).biome = dat.readByte();
 
-                    int bufferLength = dat.readInt();
-                    byte[] buffer = new byte[bufferLength];
+                    byte[] buffer = new byte[GaiaBiomeChangeMessage.maskByteCount];
                     dat.readBytes(buffer);
                     ((GaiaBiomeChangeMessage) msg).mask = BitSet.valueOf(buffer);
                     break;
