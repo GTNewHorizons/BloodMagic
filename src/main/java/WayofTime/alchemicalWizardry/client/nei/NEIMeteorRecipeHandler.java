@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -43,7 +42,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
 
             float totalMeteorWeight = meteor.getTotalMeteorWeight();
             List<MeteorParadigmComponent> sortedComponents = new ArrayList<>(meteor.componentList);
-            sortedComponents.sort(Comparator.comparingInt(c -> -c.chance));
+            sortedComponents.sort(Comparator.comparingInt(c -> -c.getChance()));
 
             for (MeteorParadigmComponent component : sortedComponents) {
                 ItemStack stack = component.getValidBlockParadigm();
@@ -51,10 +50,6 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
                 int yPos = 37 + 18 * row;
 
                 List<String> tooltips = new ArrayList<>();
-                if (stack == null) {
-                    stack = new ItemStack(Blocks.fire);
-                    tooltips.add(String.format("no entries found for oredict \"%s\"", component.getOreDictName()));
-                }
                 float chance = component.getChance() / totalMeteorWeight;
                 tooltips.add(I18n.format("nei.recipe.meteor.chance", getFormattedChance(chance)));
                 tooltips.add(I18n.format("nei.recipe.meteor.amount", getEstimatedAmount(chance, meteor.radius)));

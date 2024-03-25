@@ -3,15 +3,19 @@ package WayofTime.alchemicalWizardry.common.summoning.meteor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.common.registry.GameRegistry;
 import gregtech.common.blocks.GT_TileEntity_Ores;
 
 public class MeteorParadigm {
@@ -29,22 +33,67 @@ public class MeteorParadigm {
         this.cost = cost;
     }
 
+    // modId:itemName:meta:weight
+    private static final Pattern itemNamePattern = Pattern.compile("(.*):(.*):(\\d+):(\\d+)");
+    // OREDICT:oreDictName:weight
+    private static final Pattern oredictPattern = Pattern.compile("OREDICT:(.*):(\\d+)");
+
     public void parseStringArray(String[] oreArray) {
-        for (int i = 0; i + 1 < oreArray.length; i += 2) {
+        for (int i = 0; i < oreArray.length; ++i) {
             String oreName = oreArray[i];
-            int oreChance = Integer.parseInt(oreArray[i + 1]);
-            MeteorParadigmComponent mpc = new MeteorParadigmComponent(oreName, oreChance);
-            componentList.add(mpc);
+            boolean success = false;
+
+            Matcher matcher = itemNamePattern.matcher(oreName);
+            if (matcher.matches()) {
+                String modID = matcher.group(1);
+                String itemName = matcher.group(2);
+                int meta = Integer.parseInt(matcher.group(3));
+                int weight = Integer.parseInt(matcher.group(4));
+
+                ItemStack stack = GameRegistry.findItemStack(modID, itemName, 1);
+                if (stack != null && stack.getItem() instanceof ItemBlock) {
+                    stack.setItemDamage(meta);
+                    componentList.add(new MeteorParadigmComponent(stack, weight));
+                    success = true;
+                }
+
+            } else if ((matcher = oredictPattern.matcher(oreName)).matches()) {
+                String oreDict = matcher.group(1);
+                int weight = Integer.parseInt(matcher.group(2));
+
+                List<ItemStack> list = OreDictionary.getOres(oreDict);
+                for (ItemStack stack : list) {
+                    if (stack != null && stack.getItem() instanceof ItemBlock) {
+                        componentList.add(new MeteorParadigmComponent(stack, weight));
+                        success = true;
+                        break;
+                    }
+                }
+
+            } else {
+                // Legacy config
+                String oreDict = oreName;
+                int weight = Integer.parseInt(oreArray[++i]);
+
+                List<ItemStack> list = OreDictionary.getOres(oreDict);
+                for (ItemStack stack : list) {
+                    if (stack != null && stack.getItem() instanceof ItemBlock) {
+                        componentList.add(new MeteorParadigmComponent(stack, weight));
+                        success = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!success) {
+                AlchemicalWizardry.logger.warn("Unable to add Meteor Paradigm \"" + oreName + "\"");
+            }
         }
     }
 
     public int getTotalMeteorWeight() {
         int totalMeteorWeight = 0;
         for (MeteorParadigmComponent mpc : componentList) {
-            if (mpc == null || !mpc.isValidBlockParadigm()) {
-                continue;
-            }
-
             totalMeteorWeight += mpc.getChance();
         }
         return totalMeteorWeight;
@@ -99,10 +148,6 @@ public class MeteorParadigm {
                     boolean hasPlacedBlock = false;
 
                     for (MeteorParadigmComponent mpc : componentList) {
-                        if (mpc == null || !mpc.isValidBlockParadigm()) {
-                            continue;
-                        }
-
                         randNum -= mpc.getChance();
 
                         if (randNum < 0) {
