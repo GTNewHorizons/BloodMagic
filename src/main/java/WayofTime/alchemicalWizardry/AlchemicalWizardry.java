@@ -766,6 +766,7 @@ public class AlchemicalWizardry {
         ItemStack bloodRuneCraftedStack = new ItemStack(ModBlocks.bloodRune, 1);
         ItemStack bloodRuneStack = new ItemStack(ModBlocks.bloodRune);
         ItemStack speedRuneStack = new ItemStack(ModBlocks.speedRune);
+        ItemStack accelerationRuneStack = new ItemStack(ModBlocks.bloodRune, 1, 5);
         ItemStack runeOfSacrificeStack = new ItemStack(ModBlocks.runeOfSacrifice);
         ItemStack runeOfSelfSacrificeStack = new ItemStack(ModBlocks.runeOfSelfSacrifice);
         ItemStack miningSigilStackCrafted = new ItemStack(ModItems.sigilOfTheFastMiner);
@@ -2424,6 +2425,21 @@ public class AlchemicalWizardry {
                         demonSlateStack,
                         'o',
                         obsidianStack));
+
+        GameRegistry.addRecipe(
+                new ShapedBloodOrbRecipe(
+                        new ItemStack(ModBlocks.bloodRune, 1, 6),
+                        "eae",
+                        "sos",
+                        "eae",
+                        'e',
+                        etherealSlateStack,
+                        's',
+                        speedRuneStack,
+                        'a',
+                        accelerationRuneStack,
+                        'o',
+                        archmageBloodOrbStack));
 
         AlchemyRecipeRegistry.registerRecipe(
                 crackedRunicPlateStackCrafted,

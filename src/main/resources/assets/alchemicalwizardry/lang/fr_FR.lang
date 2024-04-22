@@ -6,6 +6,7 @@ tile.bloodRune.empty.name=Rune de Dislocation
 tile.bloodRune.test.name=Rune de l’Orbe
 tile.bloodRune.betterCapacity.name=Rune de la Capacité Supérieure
 tile.bloodRune.acceleration.name=Rune d'Accélération
+tile.bloodRune.quickness.name=Rune de Rapidité
 tile.speedRune.name=Rune de Vitesse
 tile.efficiencyRune.name=Rune d’Efficacité
 tile.runeOfSacrifice.name=Rune du Sacrifice
