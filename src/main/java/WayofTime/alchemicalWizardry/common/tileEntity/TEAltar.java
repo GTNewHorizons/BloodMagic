@@ -45,6 +45,8 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, IBloodAltar, IBloodMagicWailaProvider {
 
     public static final int sizeInv = 1;
+    public static final int BASE_RECIPE_DELAY = 100;
+    public static final double CRAFTING_DELAY_RUNE_EFFICIENCY = 0.8D;
 
     private int resultID;
     private int resultDamage;
@@ -70,6 +72,8 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
     protected FluidStack fluidOutput;
     protected FluidStack fluidInput;
     private int progress;
+    private long nextForcedRecipeCheck;
+    private int maxDelayBeforeNextCraft;
 
     private int lockdownDuration;
     private int demonBloodDuration;
@@ -97,6 +101,8 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         progress = 0;
         this.lockdownDuration = 0;
         this.demonBloodDuration = 0;
+        this.nextForcedRecipeCheck = -1;
+        this.maxDelayBeforeNextCraft = BASE_RECIPE_DELAY;
     }
 
     /**
@@ -447,7 +453,9 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
             return;
         }
 
-        if (!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0) {
+        final long totalWorldTime = worldObj.getTotalWorldTime();
+
+        if (totalWorldTime % 20 == 0) {
             {
                 Block block = worldObj.getBlock(xCoord + 1, yCoord, zCoord);
                 block.onNeighborBlockChange(worldObj, xCoord + 1, yCoord, zCoord, block);
@@ -496,7 +504,7 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
             // }
         }
 
-        if (worldObj.getWorldTime() % Math.max(20 - this.accelerationUpgrades, 1) == 0) {
+        if (totalWorldTime % Math.max(20 - this.accelerationUpgrades, 1) == 0) {
             int syphonMax = (int) (20 * this.dislocationMultiplier);
             int fluidInputted = 0;
             int fluidOutputted = 0;
@@ -510,7 +518,7 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
             this.fluid.amount -= fluidOutputted;
         }
 
-        if (worldObj.getWorldTime() % 100 == 0 && (this.isActive || this.cooldownAfterCrafting <= 0)) {
+        if (shouldTryToStartCycle(totalWorldTime) && (this.isActive || this.cooldownAfterCrafting <= 0)) {
             startCycle();
         }
 
@@ -524,8 +532,6 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         if (getStackInSlot(0) == null) {
             return;
         }
-
-        int worldTime = (int) (worldObj.getWorldTime() % 24000);
 
         if (worldObj.isRemote) {
             return;
@@ -545,7 +551,7 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
                 fluid.amount = fluid.amount - liquidDrained;
                 progress += liquidDrained;
 
-                if (worldTime % 4 == 0) {
+                if (totalWorldTime % 4 == 0) {
                     SpellHelper.sendIndexedParticleToAllAround(
                             worldObj,
                             xCoord,
@@ -583,11 +589,14 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
                                 zCoord + 0.5f);
                     }
                     this.isActive = false;
+                    if (this.nextForcedRecipeCheck < 0) {
+                        this.nextForcedRecipeCheck = this.worldObj.getTotalWorldTime() + this.maxDelayBeforeNextCraft;
+                    }
                 }
             } else if (progress > 0) {
                 progress -= (int) (efficiencyMultiplier * drainRate);
 
-                if (worldTime % 2 == 0) {
+                if (totalWorldTime % 2 == 0) {
                     SpellHelper.sendIndexedParticleToAllAround(
                             worldObj,
                             xCoord,
@@ -633,7 +642,7 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
 
                 fluid.amount = fluid.amount - drain;
 
-                if (worldTime % 4 == 0) {
+                if (totalWorldTime % 4 == 0) {
                     SpellHelper.sendIndexedParticleToAllAround(
                             worldObj,
                             xCoord,
@@ -651,6 +660,23 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         if (worldObj != null) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
+    }
+
+    private boolean shouldTryToStartCycle(final long totalWorldTime) {
+        // use total time instead of world time so that we can update even if doDaylightCycle is false
+        if (!this.isActive && this.nextForcedRecipeCheck >= 0) {
+            if (this.nextForcedRecipeCheck <= totalWorldTime) {
+                this.nextForcedRecipeCheck = -1;
+                return true;
+            }
+            return false;
+        }
+        // if the regular recipe check occurs before the forced recipe check we can just un-schedule it.
+        if (totalWorldTime % BASE_RECIPE_DELAY == 0) {
+            this.nextForcedRecipeCheck = -1;
+            return true;
+        }
+        return false;
     }
 
     public void setActive() {
@@ -771,6 +797,7 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
             this.orbCapacityMultiplier = 1;
             this.dislocationMultiplier = 1;
             this.accelerationUpgrades = 0;
+            this.maxDelayBeforeNextCraft = -1;
             return;
         }
 
@@ -788,6 +815,7 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
             this.dislocationMultiplier = 1;
             this.upgradeLevel = upgradeState;
             this.accelerationUpgrades = 0;
+            this.maxDelayBeforeNextCraft = -1;
             return;
         }
 
@@ -804,6 +832,10 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         this.capacity = (int) (FluidContainerRegistry.BUCKET_VOLUME * 10 * capacityMultiplier);
         this.bufferCapacity = (int) (FluidContainerRegistry.BUCKET_VOLUME * 1 * capacityMultiplier);
         this.accelerationUpgrades = upgrades.getAccelerationUpgrades();
+        this.maxDelayBeforeNextCraft = Math.max(
+                1,
+                (int) Math.floor(
+                        BASE_RECIPE_DELAY * Math.pow(CRAFTING_DELAY_RUNE_EFFICIENCY, upgrades.getQuicknessUpgrades())));
 
         if (this.fluid.amount > this.capacity) {
             this.fluid.amount = this.capacity;

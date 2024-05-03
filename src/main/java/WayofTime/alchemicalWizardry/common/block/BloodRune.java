@@ -33,6 +33,9 @@ public class BloodRune extends Block {
     @SideOnly(Side.CLIENT)
     private IIcon accelerationRuneIcon;
 
+    @SideOnly(Side.CLIENT)
+    private IIcon quicknessRuneIcon;
+
     public BloodRune() {
         super(Material.iron);
         this.setBlockName("bloodRune");
@@ -50,6 +53,7 @@ public class BloodRune extends Block {
         this.orbCapacityRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:OrbCapacityRune");
         this.betterCapacityRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:BetterCapacityRune");
         this.accelerationRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:AccelerationRune");
+        this.quicknessRuneIcon = iconRegister.registerIcon("AlchemicalWizardry:QuicknessRune");
     }
 
     public int getRuneEffect(int metaData) {
@@ -71,6 +75,9 @@ public class BloodRune extends Block {
 
             case 5: // Acceleration rune
                 return 9;
+
+            case 6: // Quickness Rune
+                return 10;
         }
 
         return 0;
@@ -89,6 +96,7 @@ public class BloodRune extends Block {
             par3List.add(new ItemStack(par1, 1, 3));
             par3List.add(new ItemStack(par1, 1, 4));
             par3List.add(new ItemStack(par1, 1, 5));
+            par3List.add(new ItemStack(par1, 1, 6));
         } else {
             super.getSubBlocks(par1, par2CreativeTabs, par3List);
         }
@@ -115,6 +123,10 @@ public class BloodRune extends Block {
 
             case 5:
                 return this.accelerationRuneIcon;
+
+            case 6:
+                return this.quicknessRuneIcon;
+
             default:
                 return blockIcon;
         }

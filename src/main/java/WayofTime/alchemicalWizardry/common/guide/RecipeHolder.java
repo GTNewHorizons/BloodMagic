@@ -58,6 +58,7 @@ public class RecipeHolder {
     public static IRecipe keyOfBindingRecipe;
     public static IRecipe energyBazookaRecipe;
     public static IRecipe accelerationRuneRecipe;
+    public static IRecipe quicknessRuneRecipe;
     public static IRecipe harvestSigilRecipe;
     public static IRecipe crystalCluserRecipe;
     public static IRecipe arcanePlinthRecipe;
@@ -152,6 +153,7 @@ public class RecipeHolder {
         harvestSigilRecipe = getRecipeForItemStack(new ItemStack(ModItems.itemHarvestSigil));
         crystalCluserRecipe = getRecipeForItemStack(new ItemStack(ModBlocks.blockCrystal));
         weakRitualStoneRecipe = getRecipeForItemStack(new ItemStack(ModBlocks.imperfectRitualStone));
+        quicknessRuneRecipe = getRecipeForItemStack(new ItemStack(ModBlocks.bloodRune, 1, 6));
 
         arcanePlinthRecipe = getRecipeForItemStack(new ItemStack(ModBlocks.blockPlinth));
         arcanePedestalRecipe = getRecipeForItemStack(new ItemStack(ModBlocks.blockPedestal));

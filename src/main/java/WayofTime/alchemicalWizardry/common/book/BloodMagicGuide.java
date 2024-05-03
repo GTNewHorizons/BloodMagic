@@ -410,6 +410,12 @@ public class BloodMagicGuide {
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.architect.accelerationRune")));
         entries.add(new EntryUniText(accelerationRunePages, "guide.BloodMagic.entryName.architect.accelerationRune"));
 
+        ArrayList<IPage> quicknessRuneRecipe = new ArrayList();
+        demonicOrbPages.add(getOrbPageForRecipe(RecipeHolder.quicknessRuneRecipe));
+        quicknessRuneRecipe.addAll(
+                PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.architect.quicknessRune")));
+        entries.add(new EntryUniText(quicknessRuneRecipe, "guide.BloodMagic.entryName.architect.quicknessRune"));
+
         ArrayList<IPage> harvestPages = new ArrayList();
         demonicOrbPages.add(getOrbPageForRecipe(RecipeHolder.harvestSigilRecipe));
         harvestPages

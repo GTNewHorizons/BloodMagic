@@ -142,6 +142,10 @@ public class UpgradedAltars {
                     case 9:
                         upgrades.addAccelerationUpgrade();
                         break;
+
+                    case 10:
+                        upgrades.addQuicknessUpgrade();
+                        break;
                 }
             }
         }
