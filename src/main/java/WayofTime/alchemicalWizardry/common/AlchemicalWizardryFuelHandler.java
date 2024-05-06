@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import WayofTime.alchemicalWizardry.ModItems;
 import WayofTime.alchemicalWizardry.common.items.LavaCrystal;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IFuelHandler;
 
 public class AlchemicalWizardryFuelHandler implements IFuelHandler {
