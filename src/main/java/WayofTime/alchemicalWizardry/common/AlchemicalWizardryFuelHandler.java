@@ -1,5 +1,6 @@
 package WayofTime.alchemicalWizardry.common;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,11 +36,12 @@ public class AlchemicalWizardryFuelHandler implements IFuelHandler {
                     return 0;
                 }
 
-                if (MinecraftServer.getServer() == null) {
+                MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+                if (mcServer == null) {
                     return 0;
                 }
 
-                if (MinecraftServer.getServer().getConfigurationManager() == null) {
+                if (mcServer.getConfigurationManager() == null) {
                     return 0;
                 }
 

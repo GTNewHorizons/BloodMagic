@@ -1,5 +1,6 @@
 package WayofTime.alchemicalWizardry.api.soulNetwork;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,11 +36,12 @@ public class SoulNetworkHandler {
     }
 
     public static int getCurrentMaxOrb(String ownerName) {
-        if (MinecraftServer.getServer() == null) {
+        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (mcServer == null) {
             return 0;
         }
 
-        World world = MinecraftServer.getServer().worldServers[0];
+        World world = mcServer.worldServers[0];
         LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, ownerName);
 
         if (data == null) {
@@ -51,11 +53,12 @@ public class SoulNetworkHandler {
     }
 
     public static void setMaxOrbToMax(String ownerName, int maxOrb) {
-        if (MinecraftServer.getServer() == null) {
+        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (mcServer == null) {
             return;
         }
 
-        World world = MinecraftServer.getServer().worldServers[0];
+        World world = mcServer.worldServers[0];
         LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, ownerName);
 
         if (data == null) {
@@ -96,7 +99,7 @@ public class SoulNetworkHandler {
     }
 
     public static int syphonFromNetwork(String ownerName, int damageToBeDone) {
-        MinecraftServer mcServer = MinecraftServer.getServer();
+        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (mcServer == null || mcServer.worldServers.length == 0) {
             return 0;
         }
@@ -192,11 +195,12 @@ public class SoulNetworkHandler {
     }
 
     public static boolean canSyphonFromOnlyNetwork(String ownerName, int damageToBeDone) {
-        if (MinecraftServer.getServer() == null) {
+        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (mcServer == null) {
             return false;
         }
 
-        World world = MinecraftServer.getServer().worldServers[0];
+        World world = mcServer.worldServers[0];
         LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, ownerName);
 
         if (data == null) {
@@ -208,11 +212,12 @@ public class SoulNetworkHandler {
     }
 
     public static int getCurrentEssence(String ownerName) {
-        if (MinecraftServer.getServer() == null) {
+        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (mcServer == null) {
             return 0;
         }
 
-        World world = MinecraftServer.getServer().worldServers[0];
+        World world = mcServer.worldServers[0];
         LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, ownerName);
 
         if (data == null) {
@@ -224,11 +229,12 @@ public class SoulNetworkHandler {
     }
 
     public static void setCurrentEssence(String ownerName, int essence) {
-        if (MinecraftServer.getServer() == null) {
+        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (mcServer == null) {
             return;
         }
 
-        World world = MinecraftServer.getServer().worldServers[0];
+        World world = mcServer.worldServers[0];
         LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, ownerName);
 
         if (data == null) {
@@ -255,11 +261,12 @@ public class SoulNetworkHandler {
             return 0;
         }
 
-        if (MinecraftServer.getServer() == null) {
+        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (mcServer == null) {
             return 0;
         }
 
-        World world = MinecraftServer.getServer().worldServers[0];
+        World world = mcServer.worldServers[0];
         LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, event.ownerNetwork);
 
         if (data == null) {
@@ -348,10 +355,11 @@ public class SoulNetworkHandler {
     }
 
     public static EntityPlayer getPlayerForUsername(String str) {
-        if (MinecraftServer.getServer() == null) {
+        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (mcServer == null) {
             return null;
         }
-        return MinecraftServer.getServer().getConfigurationManager().func_152612_a(str);
+        return mcServer.getConfigurationManager().func_152612_a(str);
     }
 
     public static void causeNauseaToPlayer(ItemStack stack) {

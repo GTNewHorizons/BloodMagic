@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items;
 
 import java.util.List;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -72,7 +73,7 @@ public class LavaCrystal extends EnergyItems {
         if (itemStack.getTagCompound() != null && !(itemStack.getTagCompound().getString("ownerName").equals(""))) {
             String ownerName = itemStack.getTagCompound().getString("ownerName");
 
-            if (MinecraftServer.getServer() == null) {
+            if (FMLCommonHandler.instance().getMinecraftServerInstance() == null) {
                 return false;
             }
 
