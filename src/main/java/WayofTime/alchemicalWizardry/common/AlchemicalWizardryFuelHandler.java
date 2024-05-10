@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import WayofTime.alchemicalWizardry.ModItems;
 import WayofTime.alchemicalWizardry.common.items.LavaCrystal;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IFuelHandler;
 
 public class AlchemicalWizardryFuelHandler implements IFuelHandler {
@@ -35,11 +36,12 @@ public class AlchemicalWizardryFuelHandler implements IFuelHandler {
                     return 0;
                 }
 
-                if (MinecraftServer.getServer() == null) {
+                MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+                if (mcServer == null) {
                     return 0;
                 }
 
-                if (MinecraftServer.getServer().getConfigurationManager() == null) {
+                if (mcServer.getConfigurationManager() == null) {
                     return 0;
                 }
 

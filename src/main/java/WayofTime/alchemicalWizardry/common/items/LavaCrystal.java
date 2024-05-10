@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
@@ -13,6 +12,7 @@ import net.minecraftforge.common.DimensionManager;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.soulNetwork.LifeEssenceNetwork;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -72,7 +72,7 @@ public class LavaCrystal extends EnergyItems {
         if (itemStack.getTagCompound() != null && !(itemStack.getTagCompound().getString("ownerName").equals(""))) {
             String ownerName = itemStack.getTagCompound().getString("ownerName");
 
-            if (MinecraftServer.getServer() == null) {
+            if (FMLCommonHandler.instance().getMinecraftServerInstance() == null) {
                 return false;
             }
 
