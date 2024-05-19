@@ -8,9 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -75,7 +75,8 @@ public class TelepositionFocus extends EnergyItems {
     }
 
     public World getWorld(ItemStack itemStack) {
-        return DimensionManager.getWorld(getDimensionID(itemStack));
+        return FMLCommonHandler.instance().getMinecraftServerInstance()
+                .worldServerForDimension(getDimensionID(itemStack));
     }
 
     public int xCoord(ItemStack itemStack) {
