@@ -26,13 +26,13 @@ dependencies {
     api("com.github.GTNewHorizons:waila:1.7.3:dev")
     api("com.github.GTNewHorizons:NotEnoughItems:2.6.0-GTNH:dev")
     
-    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:5.09.46.05:dev") {transitive = false }
+    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:5.09.46.18:dev") {transitive = false }
     
-    compileOnly("com.github.GTNewHorizons:Botania:1.11.0-GTNH:api") {transitive = false }
+    compileOnly("com.github.GTNewHorizons:Botania:1.11.1-GTNH:api") {transitive = false }
     compileOnly("com.github.GTNewHorizons:ForestryMC:4.9.0:api") {transitive = false }
     compileOnly("com.github.GTNewHorizons:ForgeMultipart:1.4.8:dev") {transitive = false }
     
-    compileOnly("com.github.GTNewHorizons:Chisel:2.14.1-GTNH:api") {transitive = false }
+    compileOnly("com.github.GTNewHorizons:Chisel:2.15.0-GTNH:api") {transitive = false }
 
     compileOnly("com.github.GTNewHorizons:ZenScript:1.0.0-GTNH") {transitive = false }
     compileOnly("com.github.GTNewHorizons:CraftTweaker:3.3.1:dev") {transitive = false }
