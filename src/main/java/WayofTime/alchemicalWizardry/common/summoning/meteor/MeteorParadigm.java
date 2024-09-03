@@ -16,7 +16,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
-import gregtech.common.blocks.GT_TileEntity_Ores;
+import gregtech.common.blocks.TileEntityOres;
 
 public class MeteorParadigm {
 
@@ -220,8 +220,8 @@ public class MeteorParadigm {
     @Optional.Method(modid = "gregtech")
     private static void setGTOresNaturalIfNeeded(World world, int x, int y, int z) {
         final TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof GT_TileEntity_Ores) {
-            ((GT_TileEntity_Ores) tileEntity).mNatural = true;
+        if (tileEntity instanceof TileEntityOres) {
+            ((TileEntityOres) tileEntity).mNatural = true;
         }
     }
 }
