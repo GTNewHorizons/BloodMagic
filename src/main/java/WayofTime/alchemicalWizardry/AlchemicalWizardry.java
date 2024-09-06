@@ -718,8 +718,9 @@ public class AlchemicalWizardry {
         proxy.registerEntities();
         proxy.registerEntityTrackers();
         proxy.registerEvents();
-        BloodMagicWailaPlugin.init();
-
+        if(Loader.isModLoaded("Waila")) {
+            BloodMagicWailaPlugin.init();
+        }
         // ItemStacks used for crafting go here
         ItemStack lapisStack = new ItemStack(Items.dye, 1, 4);
         ItemStack lavaBucketStack = new ItemStack(Items.lava_bucket);
