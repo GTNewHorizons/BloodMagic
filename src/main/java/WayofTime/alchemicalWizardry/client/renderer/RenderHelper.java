@@ -114,18 +114,20 @@ public class RenderHelper {
 
         ResourceLocation test2 = new ResourceLocation("alchemicalwizardry", "textures/gui/container1.png");
         GL11.glColor4f(1, 0, 0, 1.0F);
-        mc.getTextureManager().bindTexture(test2);
+		GL11.glEnable(3042);
+        mc.renderEngine.bindTexture(test2);
 
         GL11.glScalef(1f / 8f, 1f / 8f, 1f / 8f);
-
+		GL11.glPushMatrix();
         drawTexturedModalRect(x, y + amount, 0, amount, 256, 256 - amount);
-
+		GL11.glPopMatrix();
         ResourceLocation test = new ResourceLocation("alchemicalwizardry", "textures/gui/lpVial.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.getTextureManager().bindTexture(test);
-
+        mc.renderEngine.bindTexture(test);
+		GL11.glPushMatrix();
         drawTexturedModalRect(x, y, 0, 0, 256, 256);
-
+		GL11.glPopMatrix();
+		GL11.glDisable(3042);
         GL11.glPopMatrix();
     }
 
