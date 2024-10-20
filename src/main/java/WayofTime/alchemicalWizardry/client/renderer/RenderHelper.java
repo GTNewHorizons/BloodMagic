@@ -102,30 +102,30 @@ public class RenderHelper {
         return true;
     }
 
-	private static void renderLPHUD(Minecraft mc, int lpAmount, int maxAmount) {
-		GL11.glPushMatrix();
-		int xSize = 32;
-		int ySize = 32;
-		int amount = Math.max((int) (256 * ((double) (maxAmount - lpAmount) / maxAmount)), 0);
-		int x = (lpBarX - xSize / 2) * 8;
-		int y = (lpBarY - ySize / 2) * 8;
-		ResourceLocation test2 = new ResourceLocation("alchemicalwizardry", "textures/gui/container1.png");
-		GL11.glColor4f(1, 0, 0, 1.0F);
-		GL11.glEnable(GL11.GL_BLEND);
-		mc.renderEngine.bindTexture(test2);
-		GL11.glScalef(1f / 8f, 1f / 8f, 1f / 8f);
-		GL11.glPushMatrix();
-		drawTexturedModalRect(x, y + amount, 0, amount, 256, 256 - amount);
-		GL11.glPopMatrix();
-		ResourceLocation test = new ResourceLocation("alchemicalwizardry", "textures/gui/lpVial.png");
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.renderEngine.bindTexture(test);
-		GL11.glPushMatrix();
-		drawTexturedModalRect(x, y, 0, 0, 256, 256);
-		GL11.glPopMatrix();
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glPopMatrix();
-	}
+    private static void renderLPHUD(Minecraft mc, int lpAmount, int maxAmount) {
+        GL11.glPushMatrix();
+        int xSize = 32;
+        int ySize = 32;
+        int amount = Math.max((int) (256 * ((double) (maxAmount - lpAmount) / maxAmount)), 0);
+        int x = (lpBarX - xSize / 2) * 8;
+        int y = (lpBarY - ySize / 2) * 8;
+        ResourceLocation test2 = new ResourceLocation("alchemicalwizardry", "textures/gui/container1.png");
+        GL11.glColor4f(1, 0, 0, 1.0F);
+        GL11.glEnable(GL11.GL_BLEND);
+        mc.renderEngine.bindTexture(test2);
+        GL11.glScalef(1f / 8f, 1f / 8f, 1f / 8f);
+        GL11.glPushMatrix();
+        drawTexturedModalRect(x, y + amount, 0, amount, 256, 256 - amount);
+        GL11.glPopMatrix();
+        ResourceLocation test = new ResourceLocation("alchemicalwizardry", "textures/gui/lpVial.png");
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        mc.renderEngine.bindTexture(test);
+        GL11.glPushMatrix();
+        drawTexturedModalRect(x, y, 0, 0, 256, 256);
+        GL11.glPopMatrix();
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glPopMatrix();
+    }
 
     private static void renderHPHUD(Minecraft mc, float hpAmount, float maxAmount) {
         GL11.glPushMatrix();
