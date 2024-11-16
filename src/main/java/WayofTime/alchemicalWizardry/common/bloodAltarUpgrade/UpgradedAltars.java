@@ -161,7 +161,7 @@ public class UpgradedAltars {
                         AlchemicalWizardry.secondTierRunes[0].getBlock(),
                         AlchemicalWizardry.secondTierRunes[0].getMeta(),
                         true,
-                        false));
+                        true));
         secondTierAltar.add(
                 new AltarComponent(
                         0,
@@ -179,7 +179,7 @@ public class UpgradedAltars {
                         AlchemicalWizardry.secondTierRunes[0].getBlock(),
                         AlchemicalWizardry.secondTierRunes[0].getMeta(),
                         true,
-                        false));
+                        true));
         secondTierAltar.add(
                 new AltarComponent(
                         -1,
@@ -206,7 +206,7 @@ public class UpgradedAltars {
                         AlchemicalWizardry.secondTierRunes[0].getBlock(),
                         AlchemicalWizardry.secondTierRunes[0].getMeta(),
                         true,
-                        false));
+                        true));
         secondTierAltar.add(
                 new AltarComponent(
                         0,
@@ -224,7 +224,7 @@ public class UpgradedAltars {
                         AlchemicalWizardry.secondTierRunes[0].getBlock(),
                         AlchemicalWizardry.secondTierRunes[0].getMeta(),
                         true,
-                        false));
+                        true));
 
         thirdTierAltar.add(
                 new AltarComponent(
