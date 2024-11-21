@@ -45,12 +45,8 @@ public class MeteorParadigm {
     // OREDICT:oreDictName:weight
     private static final Pattern oredictPattern = Pattern.compile("OREDICT:(.*):(\\d+)");
 
-    public void parseStringArray(String[] componentArray) {
-        parseStringArray(componentArray, false);
-    }
-
-    public void parseStringArray(String[] blockArray, boolean filler) {
-        List<MeteorParadigmComponent> addList = filler ? fillerList : componentList;
+    public static List<MeteorParadigmComponent> parseStringArray(String[] blockArray) {
+        List<MeteorParadigmComponent> addList = new ArrayList<>();
         for (int i = 0; i < blockArray.length; ++i) {
             String blockName = blockArray[i];
             boolean success = false;
@@ -101,6 +97,7 @@ public class MeteorParadigm {
                 AlchemicalWizardry.logger.warn("Unable to add Meteor Paradigm \"" + blockName + "\"");
             }
         }
+        return addList;
     }
 
     public int getTotalListWeight(List<MeteorParadigmComponent> blockList) {

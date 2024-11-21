@@ -24,9 +24,9 @@ public class MeteorRegistry {
             String[] fillerList, int fillerChance) {
         if (stack != null && componentList != null) {
             MeteorParadigm meteor = new MeteorParadigm(stack, radius, cost, fillerChance);
-            meteor.parseStringArray(componentList);
+            meteor.componentList = MeteorParadigm.parseStringArray(componentList);
             if (fillerList != null && fillerList.length > 0) {
-                meteor.parseStringArray(fillerList, true);
+                meteor.fillerList = MeteorParadigm.parseStringArray(fillerList);
             } else {
                 meteor.fillerList.add(new MeteorParadigmComponent(new ItemStack(Blocks.stone), 1));
             }
