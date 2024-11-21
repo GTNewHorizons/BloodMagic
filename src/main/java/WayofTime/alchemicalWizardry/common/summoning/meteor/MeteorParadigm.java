@@ -133,7 +133,7 @@ public class MeteorParadigm {
             fillerChance *= 1.12;
         } else if (hasTerrae) {
             newRadius += 1;
-            fillerChance *= 1.6;
+            fillerChance *= 1.06;
         }
 
         world.createExplosion(null, x, y, z, newRadius * 4, AlchemicalWizardry.doMeteorsDestroyBlocks);
