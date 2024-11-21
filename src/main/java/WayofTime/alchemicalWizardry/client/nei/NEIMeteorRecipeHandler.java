@@ -78,6 +78,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
                 }
 
                 List<MeteorParadigmComponent> sortedFiller = new ArrayList<>(meteor.fillerList);
+                sortedFiller.sort(Comparator.comparingInt(c -> -c.getWeight()));
                 float totalFillerWeight = meteor.getTotalListWeight(meteor.fillerList);
 
                 for (MeteorParadigmComponent filler : sortedFiller) {
