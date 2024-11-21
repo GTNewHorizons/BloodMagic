@@ -135,6 +135,9 @@ public class MeteorParadigm {
             newRadius += 1;
             fillerChance *= 1.06;
         }
+        if (fillerChance > 100) {
+            fillerChance = 100;
+        }
 
         world.createExplosion(null, x, y, z, newRadius * 4, AlchemicalWizardry.doMeteorsDestroyBlocks);
 
