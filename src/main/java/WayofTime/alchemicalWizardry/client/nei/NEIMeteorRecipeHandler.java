@@ -1,7 +1,6 @@
 package WayofTime.alchemicalWizardry.client.nei;
 
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
