@@ -11,6 +11,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentRegistry;
 import WayofTime.alchemicalWizardry.api.rituals.IMasterRitualStone;
 import WayofTime.alchemicalWizardry.api.rituals.RitualComponent;
@@ -56,20 +57,10 @@ public class RitualEffectSummonMeteor extends RitualEffect {
                 EntityMeteor meteor = new EntityMeteor(world, x + 0.5f, 257, z + 0.5f, meteorID);
                 meteor.motionY = -1.0f;
 
-                if (this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, 1000, true)) {
-                    meteor.hasTerrae = true;
-                }
-                if (this.canDrainReagent(ritualStone, ReagentRegistry.orbisTerraeReagent, 1000, true)) {
-                    meteor.hasOrbisTerrae = true;
-                }
-                if (this.canDrainReagent(ritualStone, ReagentRegistry.crystallosReagent, 1000, true)) {
-                    meteor.hasCrystallos = true;
-                }
-                if (this.canDrainReagent(ritualStone, ReagentRegistry.incendiumReagent, 1000, true)) {
-                    meteor.hasIncendium = true;
-                }
-                if (this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, 1000, true)) {
-                    meteor.hasTennebrae = true;
+                for (Reagent r : ReagentRegistry.reagentList.values()) {
+                    if (this.canDrainReagent(ritualStone, r, 1000, true)) {
+                        meteor.reagentList.add(r);
+                    }
                 }
 
                 entityItem.setDead();

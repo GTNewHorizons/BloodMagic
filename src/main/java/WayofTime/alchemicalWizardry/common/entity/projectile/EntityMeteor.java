@@ -1,22 +1,22 @@
 package WayofTime.alchemicalWizardry.common.entity.projectile;
 
+import java.util.ArrayList;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
+import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentRegistry;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorRegistry;
 
 public class EntityMeteor extends EnergyBlastProjectile {
 
     private int meteorID;
 
-    public boolean hasTerrae;
-    public boolean hasOrbisTerrae;
-    public boolean hasCrystallos;
-    public boolean hasIncendium;
-    public boolean hasTennebrae;
+    public ArrayList<Reagent> reagentList = new ArrayList<>();
 
     public EntityMeteor(World par1World) {
         super(par1World);
@@ -33,11 +33,11 @@ public class EntityMeteor extends EnergyBlastProjectile {
         super.writeEntityToNBT(par1NBTTagCompound);
 
         par1NBTTagCompound.setInteger("meteorID", meteorID);
-        par1NBTTagCompound.setBoolean("hasTerrae", hasTerrae);
-        par1NBTTagCompound.setBoolean("hasOrbisTerrae", hasOrbisTerrae);
-        par1NBTTagCompound.setBoolean("hasCrystallos", hasCrystallos);
-        par1NBTTagCompound.setBoolean("hasIncendium", hasIncendium);
-        par1NBTTagCompound.setBoolean("hasTennebrae", hasTennebrae);
+
+        for (Reagent r : reagentList) {
+            par1NBTTagCompound.setBoolean("reagent." + r.name, true);
+        }
+
     }
 
     @Override
@@ -45,11 +45,11 @@ public class EntityMeteor extends EnergyBlastProjectile {
         super.readEntityFromNBT(par1NBTTagCompound);
 
         meteorID = par1NBTTagCompound.getInteger("meteorID");
-        hasTerrae = par1NBTTagCompound.getBoolean("hasTerrae");
-        hasOrbisTerrae = par1NBTTagCompound.getBoolean("hasOrbisTerrae");
-        hasIncendium = par1NBTTagCompound.getBoolean("hasIncendium");
-        hasCrystallos = par1NBTTagCompound.getBoolean("hasCrystallos");
-        hasTennebrae = par1NBTTagCompound.getBoolean("hasTennebrae");
+        for (Reagent r : ReagentRegistry.reagentList.values()) {
+            if (par1NBTTagCompound.getBoolean("reagent." + r.name)) {
+                reagentList.add(r);
+            }
+        }
     }
 
     @Override
@@ -66,13 +66,7 @@ public class EntityMeteor extends EnergyBlastProjectile {
         if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && mop.entityHit != null) {
             this.onImpact(mop.entityHit);
         } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-            MeteorRegistry.createMeteorImpact(
-                    worldObj,
-                    mop.blockX,
-                    mop.blockY,
-                    mop.blockZ,
-                    this.meteorID,
-                    new boolean[] { hasTerrae, hasOrbisTerrae, hasCrystallos, hasIncendium, hasTennebrae });
+            MeteorRegistry.createMeteorImpact(worldObj, mop.blockX, mop.blockY, mop.blockZ, this.meteorID, reagentList);
         }
 
         this.setDead();
@@ -80,13 +74,8 @@ public class EntityMeteor extends EnergyBlastProjectile {
 
     @Override
     public void onImpact(Entity mop) {
-        MeteorRegistry.createMeteorImpact(
-                worldObj,
-                (int) this.posX,
-                (int) this.posY,
-                (int) this.posZ,
-                meteorID,
-                new boolean[] { hasTerrae, hasOrbisTerrae, hasCrystallos, hasIncendium, hasTennebrae });
+        MeteorRegistry
+                .createMeteorImpact(worldObj, (int) this.posX, (int) this.posY, (int) this.posZ, meteorID, reagentList);
 
         this.setDead();
     }

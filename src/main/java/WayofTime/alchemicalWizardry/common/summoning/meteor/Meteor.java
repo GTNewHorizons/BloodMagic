@@ -16,12 +16,12 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class Meteor {
 
-    private String[] ores;
-    private int radius;
-    private int cost;
-    private String focusModId;
-    private String focusName;
-    private int focusMeta;
+    public String[] ores;
+    public int radius;
+    public int cost;
+    public String focusModId;
+    public String focusName;
+    public int focusMeta;
     private String[] filler;
     private int fillerChance;
 
@@ -32,6 +32,9 @@ public class Meteor {
         if (files != null) {
             try {
                 for (File f : files) {
+                    if (f.isDirectory()) {
+                        continue;
+                    }
                     BufferedReader br = new BufferedReader(new FileReader(f));
                     Meteor m = gson.fromJson(br, Meteor.class);
                     MeteorRegistry.registerMeteorParadigm(

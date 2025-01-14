@@ -68,12 +68,11 @@ public class FallingTower {
         }
 
         public Add(ItemStack stack, int radius, int cost, String[] components, String[] filler, int fillerChance) {
-            paradigm = new MeteorParadigm(stack, radius, cost);
+            paradigm = new MeteorParadigm(stack, radius, cost, fillerChance);
             paradigm.componentList = MeteorParadigm.parseStringArray(components);
             if (filler != null) {
                 paradigm.fillerList = MeteorParadigm.parseStringArray(filler);
             }
-            paradigm.fillerChance = fillerChance;
         }
 
         @Override
