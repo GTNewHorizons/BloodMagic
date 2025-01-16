@@ -276,7 +276,7 @@ public class SoulNetworkHandler {
 
         int currEss = data.currentEssence;
 
-        if (currEss >= event.maximum) {
+        if (currEss >= event.maximum || Integer.MAX_VALUE - event.addedAmount < currEss) {
             return 0;
         }
 
