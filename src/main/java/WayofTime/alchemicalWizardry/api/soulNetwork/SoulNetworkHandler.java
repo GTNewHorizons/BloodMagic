@@ -276,11 +276,11 @@ public class SoulNetworkHandler {
 
         int currEss = data.currentEssence;
 
-        if (currEss >= event.maximum || Integer.MAX_VALUE - event.addedAmount < currEss) {
+        if (currEss >= event.maximum) {
             return 0;
         }
 
-        int newEss = Math.min(event.maximum, currEss + event.addedAmount);
+        int newEss = (int) Math.min(Integer.MAX_VALUE, Math.min(event.maximum, (long) currEss + event.addedAmount));
         if (event.getResult() != Event.Result.DENY) {
             data.currentEssence = newEss;
         }
