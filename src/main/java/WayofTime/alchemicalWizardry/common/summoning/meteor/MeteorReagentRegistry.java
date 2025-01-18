@@ -30,7 +30,7 @@ public class MeteorReagentRegistry {
     public static Map<Reagent, MeteorReagent> reagents = new HashMap<>();
 
     public static void loadConfig() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().create();
         File file = new File("config/BloodMagic/meteors/reagents/");
         if (!file.isDirectory()) {
             MeteorReagentRegistry.generateDefaultConfig();
