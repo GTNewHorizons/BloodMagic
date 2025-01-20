@@ -6,13 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,15 +24,13 @@ public class MeteorReagentRegistry {
     public static Map<Reagent, MeteorReagent> reagents = new HashMap<>();
 
     public static void loadConfig() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting()
+                .registerTypeAdapter(MeteorComponent.class, new MeteorComponentAdapter()).create();
         File file = new File("config/BloodMagic/meteors/reagents/");
-        if (!file.isDirectory()) {
-            MeteorReagentRegistry.generateDefaultConfig();
-        }
         File[] files = file.listFiles();
         if (files != null) {
-            try {
-                for (String reagent : reagentList.keySet()) {
+            for (String reagent : reagentList.keySet()) {
+                try {
                     File f = new File("config/BloodMagic/meteors/reagents/" + reagent + ".json");
                     if (!f.isFile()) {
                         continue;
@@ -48,18 +40,18 @@ public class MeteorReagentRegistry {
                     if (r == null) {
                         continue;
                     }
-                    if (r.filler.length > 0) {
-                        r.parsedFiller = MeteorParadigm.parseStringArray(r.filler);
-                    }
                     reagents.put(ReagentRegistry.getReagentForKey(reagent), r);
+                } catch (FileNotFoundException | JsonSyntaxException e) {
+                    AlchemicalWizardry.logger.warn("Error adding reagent {}", reagent);
+                    e.printStackTrace();
                 }
-            } catch (FileNotFoundException | JsonSyntaxException e) {
-                e.printStackTrace();
             }
         }
     }
 
-    // Returns the one largest radius increase (positive config).
+    /**
+     * @return the one largest radius increase from all given reagents (positive value in config).
+     */
     public static int getLargestRadiusIncrease(List<Reagent> reagentList) {
         int increase = 0;
         for (Reagent r : reagentList) {
@@ -74,7 +66,9 @@ public class MeteorReagentRegistry {
         return increase;
     }
 
-    // Returns the one largest radius decrease (negative config).
+    /**
+     * @return the one largest radius decrease from all given reagents (negative value in config).
+     */
     public static int getLargestRadiusDecrease(List<Reagent> reagentList) {
         int decrease = 0;
         for (Reagent r : reagentList) {
@@ -89,7 +83,9 @@ public class MeteorReagentRegistry {
         return decrease;
     }
 
-    // Returns the one largest filler chance increase (positive config).
+    /**
+     * @return the one largest filler chance increase from all given reagents (positive value in config).
+     */
     public static int getLargestFillerChanceIncrease(List<Reagent> reagentList) {
         int increase = 0;
         for (Reagent r : reagentList) {
@@ -104,7 +100,9 @@ public class MeteorReagentRegistry {
         return increase;
     }
 
-    // Returns the one largest filler chance decrease (negative config).
+    /**
+     * @return the one largest filler chance decrease from all given reagents (negative value in config).
+     */
     public static int getLargestFillerChanceDecrease(List<Reagent> reagentList) {
         int decrease = 0;
         for (Reagent r : reagentList) {
@@ -119,14 +117,16 @@ public class MeteorReagentRegistry {
         return decrease;
     }
 
-    // Returns the one largest raw filler chance increase (positive config).
-    public static int getLargestRawFillerChanceIncrease(List<Reagent> reagentList) {
-        int increase = 0;
+    /**
+     * @return the one largest raw filler chance increase from all given reagents (positive value in config).
+     */
+    public static float getLargestRawFillerChanceIncrease(List<Reagent> reagentList) {
+        float increase = 0;
         for (Reagent r : reagentList) {
             if (!reagents.containsKey(r)) {
                 continue;
             }
-            int change = reagents.get(r).rawFillerChanceChange;
+            float change = reagents.get(r).rawFillerChanceChange;
             if (change > increase) {
                 increase = change;
             }
@@ -134,14 +134,16 @@ public class MeteorReagentRegistry {
         return increase;
     }
 
-    // Returns the one largest raw filler chance decrease (negative config).
-    public static int getLargestRawFillerChanceDecrease(List<Reagent> reagentList) {
-        int decrease = 0;
+    /**
+     * @return the one largest raw filler chance decrease from all given reagents (negative value in config).
+     */
+    public static float getLargestRawFillerChanceDecrease(List<Reagent> reagentList) {
+        float decrease = 0;
         for (Reagent r : reagentList) {
             if (!reagents.containsKey(r)) {
                 continue;
             }
-            int change = reagents.get(r).rawFillerChanceChange;
+            float change = reagents.get(r).rawFillerChanceChange;
             if (change < decrease) {
                 decrease = change;
             }
@@ -149,14 +151,16 @@ public class MeteorReagentRegistry {
         return decrease;
     }
 
-    // Returns a list of the blocks that the given reagents will use to replace filler.
-    public static List<MeteorParadigmComponent> getFillerList(List<Reagent> reagentList) {
-        List<MeteorParadigmComponent> fillerList = new ArrayList<>();
+    /**
+     * @return a list of the MeteorComponents that the given reagents will use to replace filler.
+     */
+    public static List<MeteorComponent> getFillerList(List<Reagent> reagentList) {
+        List<MeteorComponent> fillerList = new ArrayList<>();
         for (Reagent r : reagentList) {
             if (!reagents.containsKey(r)) {
                 continue;
             }
-            List<MeteorParadigmComponent> filler = reagents.get(r).parsedFiller;
+            List<MeteorComponent> filler = reagents.get(r).filler;
             if (filler != null && !filler.isEmpty()) {
                 fillerList.addAll(filler);
             }
@@ -164,7 +168,9 @@ public class MeteorReagentRegistry {
         return fillerList;
     }
 
-    // Returns false if any of the given reagents disable explosions, otherwise true
+    /**
+     * @return false if any of the given reagents disable explosions, otherwise true
+     */
     public static boolean doExplosions(List<Reagent> reagentList) {
         for (Reagent r : reagentList) {
             if (!reagents.containsKey(r)) {
@@ -178,9 +184,9 @@ public class MeteorReagentRegistry {
     }
 
     /**
-     * Returns the value of the config AlchemicalWizardry.doMeteorsDestroyBlocks if no reagent inverts explosion block
-     * damage Returns the inverse of the value of AlchemicalWizardry.doMeteorsDestroyBlocks if any reagent inverts
-     * explosion block damage
+     * @return the value of the config AlchemicalWizardry.doMeteorsDestroyBlocks if no reagent inverts explosion block
+     *         damage. If any reagent inverts explosion block damage, the inverse of the config
+     *         AlchemicalWizardry.doMeteorsDestroyBlocks is returned.
      */
     public static boolean doMeteorsDestroyBlocks(List<Reagent> reagentList) {
         for (Reagent r : reagentList) {
@@ -192,30 +198,5 @@ public class MeteorReagentRegistry {
             }
         }
         return AlchemicalWizardry.doMeteorsDestroyBlocks;
-    }
-
-    public static void generateDefaultConfig() {
-        Map<String, String[]> lineMap = new HashMap<>();
-        lineMap.put("terrae", new String[] { "{", "  \"radiusChange\": 1,", "  \"fillerChanceChange\": 10", "}", });
-        lineMap.put(
-                "orbisTerrae",
-                new String[] { "{", "  \"radiusChange\": 2,", "  \"fillerChanceChange\": 20", "}", });
-        lineMap.put("tenebrae", new String[] { "{", "  \"filler\":  [\"minecraft:obsidian:0:180\"]", "}", });
-        lineMap.put(
-                "incendium",
-                new String[] { "{", "  \"filler\":  [", "    \"minecraft:netherrack:0:60\",",
-                        "    \"minecraft:glowstone:0:60\",", "    \"minecraft:soul_sand:0:60\"", "  ]", "}", });
-        lineMap.put("crystallos", new String[] { "{", "  \"filler\":  [\"minecraft:ice:0:180\"]", "}", });
-        try {
-            Files.createDirectories(Paths.get("config/BloodMagic/meteors/reagents/"));
-            String[] reagents = { "terrae", "orbisTerrae", "tenebrae", "incendium", "crystallos" };
-            for (String reagent : reagents) {
-                Path path = Paths.get("config/BloodMagic/meteors/reagents/" + reagent + ".json");
-                Files.createFile(path);
-                Files.write(path, Arrays.asList(lineMap.get(reagent)), StandardOpenOption.WRITE);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

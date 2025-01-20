@@ -1,58 +1,80 @@
 package WayofTime.alchemicalWizardry.common.summoning.meteor;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+
+import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
 
 public class MeteorRegistry {
 
-    public static List<MeteorParadigm> paradigmList = new ArrayList<>();
+    public static List<Meteor> meteorList = new ArrayList<>();
 
-    public static void registerMeteorParadigm(MeteorParadigm paradigm) {
-        paradigmList.add(paradigm);
-    }
-
-    public static void registerMeteorParadigm(ItemStack stack, String[] componentList, int radius, int cost) {
-        registerMeteorParadigm(stack, componentList, radius, cost, null, 0);
-    }
-
-    public static void registerMeteorParadigm(ItemStack stack, String[] componentList, int radius, int cost,
-            String[] fillerList, int fillerChance) {
-        if (stack != null && componentList != null) {
-            MeteorParadigm meteor = new MeteorParadigm(stack, radius, cost, fillerChance);
-            meteor.componentList = MeteorParadigm.parseStringArray(componentList);
-            if (fillerList != null && fillerList.length > 0) {
-                meteor.fillerList = MeteorParadigm.parseStringArray(fillerList);
-            } else {
-                meteor.fillerList.add(getDefaultMeteorParadigmComponent());
+    public static void loadConfig() {
+        Gson gson = new GsonBuilder().setPrettyPrinting()
+                .registerTypeAdapter(MeteorComponent.class, new MeteorComponentAdapter()).create();
+        File file = new File("config/BloodMagic/meteors");
+        File[] files = file.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                try {
+                    if (f.isDirectory() || !f.getName().endsWith(".json")) {
+                        continue;
+                    }
+                    BufferedReader br = new BufferedReader(new FileReader(f));
+                    Meteor m = gson.fromJson(br, Meteor.class);
+                    MeteorRegistry.registerMeteor(m);
+                } catch (FileNotFoundException | JsonSyntaxException e) {
+                    AlchemicalWizardry.logger.warn("Error adding meteor {}", f.getName());
+                    e.printStackTrace();
+                }
             }
-            paradigmList.add(meteor);
         }
     }
 
-    public static MeteorParadigmComponent getDefaultMeteorParadigmComponent() {
-        return new MeteorParadigmComponent(new ItemStack(Blocks.stone), 1);
+    public static void registerMeteor(Meteor meteor) {
+        meteor.validate();
+        meteorList.add(meteor);
     }
 
-    public static void createMeteorImpact(World world, int x, int y, int z, int paradigmID, List<Reagent> reagents) {
-        if (paradigmID < paradigmList.size()) {
-            paradigmList.get(paradigmID).createMeteorImpact(world, x, y, z, reagents);
+    public static void registerMeteor(ItemStack stack, String[] componentList, int radius, int cost) {
+        registerMeteor(stack, MeteorComponent.parseStringArray(componentList), radius, cost, null, 0);
+    }
+
+    public static void registerMeteor(ItemStack stack, List<MeteorComponent> componentList, int radius, int cost,
+            List<MeteorComponent> fillerList, int fillerChance) {
+        if (stack != null && componentList != null) {
+            Meteor meteor = new Meteor(stack, radius, cost, fillerChance, componentList, fillerList);
+            meteor.validate();
+            meteorList.add(meteor);
         }
     }
 
-    public static int getParadigmIDForItem(ItemStack stack) {
+    public static void createMeteorImpact(World world, int x, int y, int z, int meteorID, List<Reagent> reagents) {
+        if (meteorID < meteorList.size()) {
+            meteorList.get(meteorID).createMeteorImpact(world, x, y, z, reagents);
+        }
+    }
+
+    public static int getMeteorIDForItem(ItemStack stack) {
         if (stack == null) {
             return -1;
         }
 
-        for (int i = 0; i < paradigmList.size(); i++) {
-            ItemStack focusStack = paradigmList.get(i).focusStack;
+        for (int i = 0; i < meteorList.size(); i++) {
+            ItemStack focusStack = meteorList.get(i).focusItem;
 
             if (focusStack != null && focusStack.getItem() == stack.getItem()
                     && (focusStack.getItemDamage() == OreDictionary.WILDCARD_VALUE
@@ -64,7 +86,7 @@ public class MeteorRegistry {
         return -1;
     }
 
-    public static boolean isValidParadigmItem(ItemStack stack) {
-        return getParadigmIDForItem(stack) != -1;
+    public static boolean isValidMeteorFocusItem(ItemStack stack) {
+        return getMeteorIDForItem(stack) != -1;
     }
 }

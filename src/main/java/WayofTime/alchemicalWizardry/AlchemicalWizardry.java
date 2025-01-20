@@ -250,8 +250,8 @@ import WayofTime.alchemicalWizardry.common.spell.simple.SpellTeleport;
 import WayofTime.alchemicalWizardry.common.spell.simple.SpellWateryGrave;
 import WayofTime.alchemicalWizardry.common.spell.simple.SpellWindGust;
 import WayofTime.alchemicalWizardry.common.summoning.SummoningHelperAW;
-import WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorReagentRegistry;
+import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorRegistry;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEAlchemicCalcinator;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEAltar;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEBellJar;
@@ -308,6 +308,8 @@ public class AlchemicalWizardry {
 
     public static boolean parseTextFiles = false;
 
+    public static int defaultMeteorCost = 1000000;
+    public static String defaultMeteorBlock;
     public static boolean doMeteorsDestroyBlocks = true;
     public static String[] allowedCrushedOresArray;
 
@@ -621,35 +623,12 @@ public class AlchemicalWizardry {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        File bmDirectory = new File("config/BloodMagic/schematics");
 
-        if (!bmDirectory.exists() && bmDirectory.mkdirs()) {
-            try {
-                InputStream in = AlchemicalWizardry.class
-                        .getResourceAsStream("/assets/alchemicalwizardry/schematics/building/buildings.zip");
-                logger.info("none yet!");
-                if (in != null) {
-                    logger.info("I have found a zip!");
-                    ZipInputStream zipStream = new ZipInputStream(in);
-                    ZipEntry entry;
-
-                    while ((entry = zipStream.getNextEntry()) != null) {
-                        File file = new File(bmDirectory, entry.getName());
-                        if (file.exists() && file.length() > 3L) {
-                            continue;
-                        }
-                        FileOutputStream out = new FileOutputStream(file);
-
-                        byte[] buffer = new byte[8192];
-                        int len;
-                        while ((len = zipStream.read(buffer)) != -1) {
-                            out.write(buffer, 0, len);
-                        }
-                        out.close();
-                    }
-                }
-            } catch (Exception e) {}
-        }
+        generateDefaultConfig(
+                "config/BloodMagic/schematics",
+                "/assets/alchemicalwizardry/schematics/building/buildings.zip");
+        generateDefaultConfig("config/BloodMagic/meteors", "/assets/alchemicalwizardry/meteors/meteors.zip");
+        generateDefaultConfig("config/BloodMagic/meteors/reagents", "/assets/alchemicalwizardry/meteors/reagents.zip");
 
         TEDemonPortal.loadBuildingList();
 
@@ -706,6 +685,42 @@ public class AlchemicalWizardry {
         HoldingPacketHandler.init();
         ClientToServerPacketHandler.init();
         ModAchievements.init();
+    }
+
+    /**
+     * Attempt to generate default configs at the given destination using a zip located at the given source.
+     * 
+     * @param destination The destination path for the config, starting inside .minecraft.
+     * @param source      The source path for the config's zip, starting in src/main/resources/
+     */
+    private static void generateDefaultConfig(String destination, String source) {
+        File destinationDirectory = new File(destination);
+        if (!destinationDirectory.exists() && destinationDirectory.mkdirs()) {
+            try {
+                InputStream in = AlchemicalWizardry.class.getResourceAsStream(source);
+                logger.info("Attempting to load default config for {}", destinationDirectory);
+                if (in != null) {
+                    logger.info("Unpacking zip found at {}", source);
+                    ZipInputStream zipStream = new ZipInputStream(in);
+                    ZipEntry entry;
+
+                    while ((entry = zipStream.getNextEntry()) != null) {
+                        File file = new File(destinationDirectory, entry.getName());
+                        if (file.exists() && file.length() > 3L) {
+                            continue;
+                        }
+                        FileOutputStream out = new FileOutputStream(file);
+
+                        byte[] buffer = new byte[8192];
+                        int len;
+                        while ((len = zipStream.read(buffer)) != -1) {
+                            out.write(buffer, 0, len);
+                        }
+                        out.close();
+                    }
+                }
+            } catch (Exception e) {}
+        }
     }
 
     @EventHandler
@@ -3321,7 +3336,8 @@ public class AlchemicalWizardry {
         BloodMagicConfiguration.loadCustomLPValues();
 
         DemonVillageLootRegistry.init();
-        Meteor.loadConfig();
+
+        MeteorRegistry.loadConfig();
         MeteorReagentRegistry.loadConfig();
 
         this.initCompressionHandlers();

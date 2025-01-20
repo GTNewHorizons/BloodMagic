@@ -7,7 +7,8 @@ import java.util.Iterator;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorParadigm;
+import WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor;
+import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorComponent;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorRegistry;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
@@ -61,43 +62,46 @@ public class FallingTower {
 
     private static class Add implements IUndoableAction {
 
-        private MeteorParadigm paradigm;
+        private Meteor meteor;
 
         public Add(ItemStack stack, int radius, int cost, String[] components) {
             new Add(stack, radius, cost, components, null, 0);
         }
 
         public Add(ItemStack stack, int radius, int cost, String[] components, String[] filler, int fillerChance) {
-            paradigm = new MeteorParadigm(stack, radius, cost, fillerChance);
-            paradigm.componentList = MeteorParadigm.parseStringArray(components);
-            if (filler != null) {
-                paradigm.fillerList = MeteorParadigm.parseStringArray(filler);
-            }
+            meteor = new Meteor(
+                    stack,
+                    radius,
+                    cost,
+                    fillerChance,
+                    MeteorComponent.parseStringArray(components),
+                    MeteorComponent.parseStringArray(filler));
+            meteor.validate();
         }
 
         @Override
         public void apply() {
-            MeteorRegistry.registerMeteorParadigm(paradigm);
+            MeteorRegistry.registerMeteor(meteor);
         }
 
         @Override
         public boolean canUndo() {
-            return MeteorRegistry.paradigmList != null;
+            return MeteorRegistry.meteorList != null;
         }
 
         @Override
         public void undo() {
-            MeteorRegistry.paradigmList.remove(paradigm);
+            MeteorRegistry.meteorList.remove(meteor);
         }
 
         @Override
         public String describe() {
-            return "Adding Falling Tower Focus for " + paradigm.focusStack.getDisplayName();
+            return "Adding Falling Tower Focus for " + meteor.focusItem.getDisplayName();
         }
 
         @Override
         public String describeUndo() {
-            return "Removing Falling Tower Focus for " + paradigm.focusStack.getDisplayName();
+            return "Removing Falling Tower Focus for " + meteor.focusItem.getDisplayName();
         }
 
         @Override
@@ -109,7 +113,7 @@ public class FallingTower {
     private static class Remove implements IUndoableAction {
 
         private final ItemStack focus;
-        private MeteorParadigm paradigm;
+        private Meteor paradigm;
 
         public Remove(ItemStack focus) {
             this.focus = focus;
@@ -117,9 +121,9 @@ public class FallingTower {
 
         @Override
         public void apply() {
-            for (Iterator<MeteorParadigm> itr = MeteorRegistry.paradigmList.iterator(); itr.hasNext();) {
-                MeteorParadigm paradigm = itr.next();
-                if (OreDictionary.itemMatches(paradigm.focusStack, focus, false)) {
+            for (Iterator<Meteor> itr = MeteorRegistry.meteorList.iterator(); itr.hasNext();) {
+                Meteor paradigm = itr.next();
+                if (OreDictionary.itemMatches(paradigm.focusItem, focus, false)) {
                     this.paradigm = paradigm;
                     itr.remove();
                     break;
@@ -129,12 +133,12 @@ public class FallingTower {
 
         @Override
         public boolean canUndo() {
-            return MeteorRegistry.paradigmList != null && paradigm != null;
+            return MeteorRegistry.meteorList != null && paradigm != null;
         }
 
         @Override
         public void undo() {
-            MeteorRegistry.paradigmList.add(paradigm);
+            MeteorRegistry.meteorList.add(paradigm);
         }
 
         @Override

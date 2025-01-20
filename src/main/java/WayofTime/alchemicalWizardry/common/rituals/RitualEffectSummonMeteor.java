@@ -44,9 +44,9 @@ public class RitualEffectSummonMeteor extends RitualEffect {
         if (entities == null) return;
 
         for (EntityItem entityItem : entities) {
-            if (entityItem != null && MeteorRegistry.isValidParadigmItem(entityItem.getEntityItem())) {
-                int meteorID = MeteorRegistry.getParadigmIDForItem(entityItem.getEntityItem());
-                int cost = MeteorRegistry.paradigmList.get(meteorID).cost;
+            if (entityItem != null && MeteorRegistry.isValidMeteorFocusItem(entityItem.getEntityItem())) {
+                int meteorID = MeteorRegistry.getMeteorIDForItem(entityItem.getEntityItem());
+                int cost = MeteorRegistry.meteorList.get(meteorID).cost;
 
                 if (currentEssence < cost) {
                     EntityPlayer entityOwner = SpellHelper.getPlayerForUsername(owner);
