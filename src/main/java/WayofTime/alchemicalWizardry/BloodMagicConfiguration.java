@@ -33,7 +33,6 @@ import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorComponent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
-import scala.Int;
 
 /**
  * Created with IntelliJ IDEA. User: Pokefenn Date: 17/01/14 Time: 19:50
@@ -109,7 +108,7 @@ public class BloodMagicConfiguration {
                 "meteor",
                 1000000,
                 0,
-                Int.MaxValue(),
+                Integer.MAX_VALUE,
                 "The default LP cost to use for meteors if the \"cost\" property is not present in its config file.\n");
         AlchemicalWizardry.defaultMeteorBlock = config.getString(
                 "defaultMeteorBlock",
