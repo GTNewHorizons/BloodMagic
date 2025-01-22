@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -27,7 +26,7 @@ public class Meteor {
     public int radius;
     public int cost;
     public float fillerChance; // Out of 100.0
-    public transient ItemStack focusItem;
+    public ItemStack focusItem;
     private String focusModId;
     private String focusName;
     private int focusMeta;
@@ -203,13 +202,17 @@ public class Meteor {
     }
 
     /**
-     * Construct the focus item for this meteor from its modid, name, and metadata
+     * Construct the focus item for this meteor from its modid, name, and metadata if using the old config format.
      */
     private void buildFocusItem() {
         if (this.focusItem != null) return;
         this.focusItem = GameRegistry.findItemStack(this.focusModId, this.focusName, 1);
         if (this.focusItem == null) return;
-        Items.feather.setDamage(this.focusItem, this.focusMeta);
+        this.focusItem.setItemDamage(this.focusMeta);
+        AlchemicalWizardry.logger.warn(
+                "Setting focusModId, focusName, and focusMeta individually in meteor"
+                        + "configs has been deprecated. Set \"focusItem\" with format \"modId:name(:meta optional)\""
+                        + " instead.");
     }
 
     /**

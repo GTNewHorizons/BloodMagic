@@ -24,7 +24,8 @@ public class MeteorRegistry {
 
     public static void loadConfig() {
         Gson gson = new GsonBuilder().setPrettyPrinting()
-                .registerTypeAdapter(MeteorComponent.class, new MeteorComponentAdapter()).create();
+                .registerTypeAdapter(MeteorComponent.class, new MeteorComponentAdapter())
+                .registerTypeAdapter(ItemStack.class, new ItemStackAdapter()).create();
         File file = new File("config/BloodMagic/meteors");
         File[] files = file.listFiles();
         if (files != null) {

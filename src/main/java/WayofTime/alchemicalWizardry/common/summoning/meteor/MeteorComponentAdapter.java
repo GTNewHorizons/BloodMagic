@@ -14,7 +14,7 @@ class MeteorComponentAdapter extends TypeAdapter<MeteorComponent> {
     }
 
     @Override
-    public void write(JsonWriter writer, MeteorComponent mpc) throws IOException {
+    public void write(JsonWriter writer, MeteorComponent component) throws IOException {
         // Not implemented because it is not needed.
     }
 }
