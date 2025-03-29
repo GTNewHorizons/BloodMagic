@@ -73,8 +73,7 @@ public class UpgradedAltars {
             return !world.isAirBlock(compX, compY, compZ);
         }
         Block block = world.getBlock(compX, compY, compZ);
-        int metadata = world
-                .getBlockMetadata(compX, compY, compZ);
+        int metadata = world.getBlockMetadata(compX, compY, compZ);
         if (altarComponent.isBloodRune()) {
             boolean result = false;
             BlockStack[] runes = getRuneOverrides(altarTier);
