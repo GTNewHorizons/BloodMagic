@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -65,9 +66,15 @@ public class UpgradedAltars {
 
     private static boolean checkAltarComponent(AltarComponent altarComponent, IBlockAccess world, int x, int y, int z,
             int altarTier) {
-        Block block = world.getBlock(x + altarComponent.getX(), y + altarComponent.getY(), z + altarComponent.getZ());
+        int compX = x + altarComponent.getX();
+        int compY = y + altarComponent.getY();
+        int compZ = z + altarComponent.getZ();
+        if (altarComponent.getBlock() == Blocks.air) {
+            return !world.isAirBlock(compX, compY, compZ);
+        }
+        Block block = world.getBlock(compX, compY, compZ);
         int metadata = world
-                .getBlockMetadata(x + altarComponent.getX(), y + altarComponent.getY(), z + altarComponent.getZ());
+                .getBlockMetadata(compX, compY, compZ);
         if (altarComponent.isBloodRune()) {
             boolean result = false;
             BlockStack[] runes = getRuneOverrides(altarTier);
