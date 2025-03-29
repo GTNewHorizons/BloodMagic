@@ -173,7 +173,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
             if (meteor.ores.stream().anyMatch(m -> matchItem(result, m.getBlock()))) {
                 arecipes.add(new CachedMeteorRecipe(meteor, result));
             }
-            if (meteor.filler.stream().anyMatch(m -> matchItem(result, m.getBlock()))) {
+            if (meteor.fillerChance > 0 && meteor.filler.stream().anyMatch(m -> matchItem(result, m.getBlock()))) {
                 arecipes.add(new CachedMeteorRecipe(meteor, result));
             }
         }
