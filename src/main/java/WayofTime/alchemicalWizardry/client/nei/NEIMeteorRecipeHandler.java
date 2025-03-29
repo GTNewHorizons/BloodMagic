@@ -13,8 +13,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-
 import net.minecraftforge.oredict.OreDictionary;
+
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.base.Joiner;
@@ -201,9 +201,10 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
             return compared.getItemDamage() % 1000 == compareTo.getItemDamage() % 1000;
         }
 
-        // Check oredicts for ores. Checks for direct matches (oreIron with oreIron) as well as IC2/GT crushed ores (crushedGold with oreGold),
-        // EFR raw ores (rawCopper with oreCopper (although those all seem to have oreX anyways)), and GT:NH raw ores (rawOreDiamond with oreDiamond).
-        String[] prefixes = {"crushed", "rawOre", "raw"};
+        // Check oredicts for ores. Checks for direct matches (oreIron with oreIron) as well as IC2/GT crushed ores
+        // (crushedGold with oreGold), EFR raw ores (rawCopper with oreCopper (although those all seem to have oreX
+        // anyways)), and GT:NH raw ores (rawOreDiamond with oreDiamond).
+        String[] prefixes = { "crushed", "rawOre", "raw" };
         for (int i : OreDictionary.getOreIDs(compareTo)) {
             String s1 = OreDictionary.getOreName(i);
             if (s1.startsWith("ore")) {
