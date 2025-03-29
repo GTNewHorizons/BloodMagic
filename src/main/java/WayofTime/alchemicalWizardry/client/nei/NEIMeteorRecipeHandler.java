@@ -14,6 +14,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.base.Joiner;
@@ -193,11 +194,33 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
         if (NEIServerUtils.areStacksSameTypeCrafting(compared, compareTo)) {
             return true;
         }
-        // ignore ore variants (like basalt ore)
+
+        // Ignore GregTech ore variants (like basalt ore)
         if (compared.getUnlocalizedName().startsWith("gt.blockores")
                 && compareTo.getUnlocalizedName().startsWith("gt.blockores")) {
             return compared.getItemDamage() % 1000 == compareTo.getItemDamage() % 1000;
         }
+
+        // Check oredicts for ores. Checks for direct matches (oreIron with oreIron) as well as IC2/GT crushed ores (crushedGold with oreGold),
+        // EFR raw ores (rawCopper with oreCopper (although those all seem to have oreX anyways)), and GT:NH raw ores (rawOreDiamond with oreDiamond).
+        String[] prefixes = {"crushed", "rawOre", "raw"};
+        for (int i : OreDictionary.getOreIDs(compareTo)) {
+            String s1 = OreDictionary.getOreName(i);
+            if (s1.startsWith("ore")) {
+                for (int j : OreDictionary.getOreIDs(compared)) {
+                    if (i == j) {
+                        return true;
+                    }
+                    String s2 = OreDictionary.getOreName(j);
+                    for (String prefix : prefixes) {
+                        if (i == OreDictionary.getOreID(s2.replaceFirst("^" + prefix, "ore"))) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
         return false;
     }
 
