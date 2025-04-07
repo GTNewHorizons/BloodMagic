@@ -115,7 +115,7 @@ public class RitualEffectLeap extends RitualEffect {
 
                             case 3:
                                 livingEntity.motionX = 0.0;
-                                livingEntity.motionZ = -speed;
+                                livingEntity.motionZ = speed;
                                 break;
 
                             case 4:
@@ -146,7 +146,7 @@ public class RitualEffectLeap extends RitualEffect {
 
                         case 3:
                             livingEntity.motionX = 0.0;
-                            livingEntity.motionZ = -speed;
+                            livingEntity.motionZ = speed;
                             break;
 
                         case 4:
