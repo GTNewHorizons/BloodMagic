@@ -77,8 +77,8 @@ public class RitualEffectLeap extends RitualEffect {
 
             // Sanctus only makes it work on children and tenebrae only with adults.
             // Both being present prevents the ritual from working for any NPCs.
-            if (((hasSanctus && !livingEntity.isChild())
-                    || (hasTenebrae && livingEntity.isChild())) && !(livingEntity instanceof EntityPlayer)) {
+            if (((hasSanctus && !livingEntity.isChild()) || (hasTenebrae && livingEntity.isChild()))
+                    && !(livingEntity instanceof EntityPlayer)) {
                 continue;
             }
 
