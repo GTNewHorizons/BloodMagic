@@ -66,7 +66,7 @@ public class RitualEffectWater extends RitualEffect {
         if (hasOffensa) {
             boolean hasReductus = this
                     .canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
-            boolean drainReductus = world.getWorldTime() % 100 == 0;
+            boolean drainReductus = world.getTotalWorldTime() % 100 == 0;
 
             int range = 10;
             List<Entity> list = SpellHelper.getEntitiesInRange(world, x + 0.5, y + 0.5, z + 0.5, range, range);

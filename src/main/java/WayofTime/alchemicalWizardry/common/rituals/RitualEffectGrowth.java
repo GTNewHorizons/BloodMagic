@@ -42,7 +42,7 @@ public class RitualEffectGrowth extends RitualEffect {
             boolean hasVirtus = this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false);
 
             int speed = this.getSpeedForReagents(hasTerrae, hasOrbisTerrae);
-            if (world.getWorldTime() % speed != 0) {
+            if (world.getTotalWorldTime() % speed != 0) {
                 return;
             }
 

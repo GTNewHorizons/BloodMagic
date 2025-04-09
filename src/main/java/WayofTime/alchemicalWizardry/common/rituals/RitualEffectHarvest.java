@@ -40,7 +40,7 @@ public class RitualEffectHarvest extends RitualEffect {
 
             entityOwner.addPotionEffect(new PotionEffect(Potion.confusion.id, 80));
         } else {
-            if (world.getWorldTime() % 5 != 0) {
+            if (world.getTotalWorldTime() % 5 != 0) {
                 return;
             }
 

@@ -39,7 +39,7 @@ public class RitualEffectItemRouting extends RitualEffect {
         int y = ritualStone.getYCoord();
         int z = ritualStone.getZCoord();
 
-        if (world.getWorldTime() % 20 != 0) {
+        if (world.getTotalWorldTime() % 20 != 0) {
             return;
         }
 

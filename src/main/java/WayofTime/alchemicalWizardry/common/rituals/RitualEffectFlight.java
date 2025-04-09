@@ -62,7 +62,7 @@ public class RitualEffectFlight extends RitualEffect {
                 entityCount++;
             }
 
-            if (entityCount > 0 && world.getWorldTime() % reagentCooldown == 0) {
+            if (entityCount > 0 && world.getTotalWorldTime() % reagentCooldown == 0) {
                 if (hasAether) {
                     this.canDrainReagent(ritualStone, ReagentRegistry.aetherReagent, aetherDrain, true);
                 }

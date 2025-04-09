@@ -35,7 +35,7 @@ public class RitualEffectHealing extends RitualEffect {
 
         int timeDelay = 50;
 
-        if (world.getWorldTime() % timeDelay != 0) {
+        if (world.getTotalWorldTime() % timeDelay != 0) {
             return;
         }
 

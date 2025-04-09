@@ -46,7 +46,7 @@ public class RitualEffectLava extends RitualEffect {
                 && SoulNetworkHandler.canSyphonFromOnlyNetwork(owner, fireFuseCost)) {
             boolean hasReductus = this
                     .canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
-            boolean drainReductus = world.getWorldTime() % 100 == 0;
+            boolean drainReductus = world.getTotalWorldTime() % 100 == 0;
 
             int range = 5;
             List<EntityLivingBase> entityList = SpellHelper

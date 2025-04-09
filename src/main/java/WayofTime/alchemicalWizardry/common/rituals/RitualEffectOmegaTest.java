@@ -46,7 +46,7 @@ public class RitualEffectOmegaTest extends RitualEffect {
         int y = ritualStone.getYCoord();
         int z = ritualStone.getZCoord();
 
-        if (world.getWorldTime() % 200 != 0) {
+        if (world.getTotalWorldTime() % 200 != 0) {
             return;
         }
 

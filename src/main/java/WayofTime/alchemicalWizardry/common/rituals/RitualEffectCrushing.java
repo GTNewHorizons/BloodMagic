@@ -38,7 +38,7 @@ public class RitualEffectCrushing extends RitualEffect {
         int currentEssence = SoulNetworkHandler.getCurrentEssence(owner);
         World world = ritualStone.getWorld();
 
-        if (world.getWorldTime() % 10 != 5) {
+        if (world.getTotalWorldTime() % 10 != 5) {
             return;
         }
 

@@ -40,7 +40,7 @@ public class RitualEffectSphereCreator extends RitualEffect {
         // boolean hasPotentia = this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent,
         // potentiaDrain, false);
 
-        if (world.getWorldTime() % 1 != 0) {
+        if (world.getTotalWorldTime() % 1 != 0) {
             return;
         }
 
