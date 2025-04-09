@@ -80,7 +80,7 @@ public class SigilDivination extends Item implements ArmourUpgrade, IReagentMani
             par3EntityPlayer.addChatMessage(
                     new ChatComponentText(
                             StatCollector.translateToLocal("message.divinationsigil.currentessence") + " "
-                                    + SoulNetworkHandler.getCurrentEssence(ownerName)
+                                    + String.format("%,d", SoulNetworkHandler.getCurrentEssence(ownerName))
                                     + "LP"));
 
             return par1ItemStack;
