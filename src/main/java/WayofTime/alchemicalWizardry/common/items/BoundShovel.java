@@ -35,6 +35,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
     public float efficiencyOnProperMaterial = 12.0F;
     public float damageVsEntity;
     public int rightClickCost = 10000;
+    public boolean isBoundTool = true;
 
     @SideOnly(Side.CLIENT)
     private IIcon activeIcon;
@@ -87,7 +88,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer, rightClickCost, true)) {
+        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer, rightClickCost)) {
             return par1ItemStack;
         }
 

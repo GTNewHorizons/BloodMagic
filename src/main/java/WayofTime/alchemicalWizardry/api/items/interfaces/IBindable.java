@@ -17,12 +17,14 @@ public interface IBindable {
 
     // The number of ticks between passive drains
     int tickDelay = 200;
+    // Set this to true if the right click function should be disabled with the config disableBoundToolsRightClick
+    boolean isBoundTool = false;
 
     /**
      * Used by bound tools and the energy blaster/bazooka to check if they should skip their right click function.
      */
     default boolean checkRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer,
-            int rightClickCost, boolean isBoundTool) {
+            int rightClickCost) {
         if (toggle(par1ItemStack, par2World, par3EntityPlayer)) {
             return true;
         }

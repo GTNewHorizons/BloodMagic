@@ -91,7 +91,7 @@ public class EnergyBlast extends EnergyItems {
             return par1ItemStack;
         }
 
-        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), false)) {
+        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed())) {
             setDelay(par1ItemStack, getMaxDelayAfterActivation());
             return par1ItemStack;
         }
