@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common.tileEntity;
 
-import java.text.NumberFormat;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -993,26 +992,27 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
             return;
 
         final NBTTagCompound altarData = accessor.getNBTData().getCompoundTag("altar");
-        final NumberFormat numberFormat = NumberFormat.getIntegerInstance();
 
         if (altarData.hasKey("stored")) {
             currenttip.add(
-                    StatCollector.translateToLocal("tooltip.waila.currentFluid")
-                            + numberFormat.format(altarData.getInteger("stored")));
+                    StatCollector
+                            .translateToLocalFormatted("tooltip.waila.currentFluid", altarData.getInteger("stored")));
         } else {
             currenttip.add(StatCollector.translateToLocal("tooltip.waila.noFluid"));
         }
 
         currenttip.add(
-                StatCollector.translateToLocal("tooltip.waila.altarCapacity")
-                        + numberFormat.format(altarData.getInteger("capacity")));
-        currenttip.add(StatCollector.translateToLocal("tooltip.waila.tier") + altarData.getInteger("tier"));
+                StatCollector
+                        .translateToLocalFormatted("tooltip.waila.altarCapacity", altarData.getInteger("capacity")));
+        currenttip.add(StatCollector.translateToLocalFormatted("tooltip.waila.tier", altarData.getInteger("tier")));
 
         if (altarData.hasKey("progress")) {
             currenttip.add(
-                    StatCollector.translateToLocal("tooltip.waila.altarProgress") + altarData.getInteger("progress")
-                            + "%");
-            currenttip.add(StatCollector.translateToLocal("tooltip.waila.crafting") + altarData.getString("crafting"));
+                    StatCollector.translateToLocalFormatted(
+                            "tooltip.waila.altarProgress",
+                            altarData.getInteger("progress")));
+            currenttip.add(
+                    StatCollector.translateToLocalFormatted("tooltip.waila.crafting", altarData.getString("crafting")));
         }
 
     }
