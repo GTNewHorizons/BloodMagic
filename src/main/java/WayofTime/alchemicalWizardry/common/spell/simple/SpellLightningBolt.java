@@ -2,12 +2,12 @@ package WayofTime.alchemicalWizardry.common.spell.simple;
 
 import java.util.Random;
 
-import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.common.entity.projectile.LightningBoltProjectile;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;

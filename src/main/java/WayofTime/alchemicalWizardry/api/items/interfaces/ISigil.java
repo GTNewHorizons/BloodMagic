@@ -13,7 +13,7 @@ public interface ISigil extends IBindable {
      * after the toggle.
      */
     static boolean toggleSigil(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer, int energyUsed,
-                               int tickDelay) {
+            int tickDelay) {
         IBindable.setActive(par1ItemStack, !IBindable.isActive(par1ItemStack));
 
         if (!par3EntityPlayer.capabilities.isCreativeMode
@@ -21,7 +21,8 @@ public interface ISigil extends IBindable {
             IBindable.setActive(par1ItemStack, false);
         }
 
-        if (IBindable.isActive(par1ItemStack) && EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, energyUsed)) {
+        if (IBindable.isActive(par1ItemStack)
+                && EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, energyUsed)) {
             par1ItemStack.setItemDamage(1);
             IBindable.setDrainTick(par1ItemStack, par2World, tickDelay);
             return true;

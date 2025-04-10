@@ -2,13 +2,13 @@ package WayofTime.alchemicalWizardry.common.items;
 
 import java.util.List;
 
-import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 
 public class ScribeTool extends EnergyItems {
 

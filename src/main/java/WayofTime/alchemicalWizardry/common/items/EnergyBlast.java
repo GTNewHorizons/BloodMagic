@@ -2,7 +2,6 @@ package WayofTime.alchemicalWizardry.common.items;
 
 import java.util.List;
 
-import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +11,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.common.entity.projectile.EnergyBlastProjectile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -123,7 +123,12 @@ public class EnergyBlast extends EnergyItems {
             this.setDelay(par1ItemStack, delay - 1);
         }
 
-        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, getMaxDelayAfterActivation(), getActivationCost());
+        IBindable.passiveDrain(
+                par1ItemStack,
+                par2World,
+                par3EntityPlayer,
+                getMaxDelayAfterActivation(),
+                getActivationCost());
 
         par1ItemStack.setItemDamage(0);
     }

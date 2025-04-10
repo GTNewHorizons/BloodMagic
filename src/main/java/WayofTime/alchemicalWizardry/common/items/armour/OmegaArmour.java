@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.api.spell.APISpellHelper;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
@@ -137,7 +138,7 @@ public abstract class OmegaArmour extends BoundArmour {
             omegaStack.setTagCompound(tag);
         }
         this.setContainedArmourStack(omegaStack, boundStack);
-        SoulNetworkHandler.checkAndSetItemOwner(omegaStack, SoulNetworkHandler.getOwnerName(boundStack));
+        IBindable.checkAndSetItemOwner(omegaStack, SoulNetworkHandler.getOwnerName(boundStack));
         this.setItemEnchantability(omegaStack, Math.min(enchantability, 70));
 
         EnchantmentHelper.setEnchantments(new HashMap(), omegaStack);

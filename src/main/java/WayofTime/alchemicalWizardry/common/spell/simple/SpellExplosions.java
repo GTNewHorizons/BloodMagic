@@ -2,11 +2,11 @@ package WayofTime.alchemicalWizardry.common.spell.simple;
 
 import java.util.Random;
 
-import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.common.entity.projectile.ExplosionProjectile;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 

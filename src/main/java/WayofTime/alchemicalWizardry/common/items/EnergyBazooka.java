@@ -3,11 +3,8 @@ package WayofTime.alchemicalWizardry.common.items;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -46,12 +43,11 @@ public class EnergyBazooka extends EnergyBlast {
         this.activeIconTier3 = iconRegister.registerIcon("AlchemicalWizardry:EnergyBazooka3_activated");
         this.passiveIcon = iconRegister.registerIcon("AlchemicalWizardry:SheathedItem");
     }
-    
+
     @Override
     public void shoot(World par2World, EntityPlayer par3EntityPlayer) {
-        par2World.spawnEntityInWorld(
-                new EntityEnergyBazookaMainProjectile(par2World, par3EntityPlayer, this.damage));
-        
+        par2World.spawnEntityInWorld(new EntityEnergyBazookaMainProjectile(par2World, par3EntityPlayer, this.damage));
+
         Vec3 vec = par3EntityPlayer.getLookVec();
         double wantedVelocity = this.tier * 2.0D;
         par3EntityPlayer.motionX = -vec.xCoord * wantedVelocity;

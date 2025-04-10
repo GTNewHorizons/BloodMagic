@@ -2,7 +2,6 @@ package WayofTime.alchemicalWizardry.api.items.interfaces;
 
 import java.util.List;
 
-import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,6 +9,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 
@@ -18,6 +18,9 @@ public interface IBindable {
     // The number of ticks between passive drains
     int tickDelay = 200;
 
+    /**
+     * Used by bound tools and the energy blaster/bazooka to check if they should skip their right click function.
+     */
     default boolean checkRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer,
             int rightClickCost, boolean isBoundTool) {
         if (toggle(par1ItemStack, par2World, par3EntityPlayer)) {
@@ -48,6 +51,9 @@ public interface IBindable {
         return false;
     }
 
+    /**
+     * Adds the active state and owner information to an item if it has the relevant tags.
+     */
     default void addBindingInformation(ItemStack par1ItemStack, List par3List) {
         NBTTagCompound itemTag = getTag(par1ItemStack);
         if (itemTag.getBoolean("isActive")) {
@@ -93,7 +99,7 @@ public interface IBindable {
     }
 
     static void passiveDrain(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer, int delay,
-                             int cost) {
+            int cost) {
         NBTTagCompound itemTag = getTag(par1ItemStack);
         if (par2World.getTotalWorldTime() % delay == itemTag.getInteger("worldTimeDelay")
                 && itemTag.getBoolean("isActive")) {
@@ -112,35 +118,30 @@ public interface IBindable {
         getTag(par1ItemStack).setInteger("worldTimeDelay", (int) (par2World.getTotalWorldTime() - 1) % modulus);
     }
 
-    // Global static methods
     static boolean checkAndSetItemOwner(ItemStack item, EntityPlayer player) {
         return !SpellHelper.isFakePlayer(player) && SoulNetworkHandler.checkAndSetItemPlayer(item, player);
     }
 
+    /**
+     * Sets the item's owner even if it already has one.
+     */
     static void setItemOwner(ItemStack item, String ownerName) {
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-        }
-
-        item.getTagCompound().setString("ownerName", ownerName);
+        NBTTagCompound tag = IBindable.getTag(item);
+        tag.setString("ownerName", ownerName);
     }
 
+    /**
+     * Sets the item's owner only if it does not already have one.
+     */
     static void checkAndSetItemOwner(ItemStack item, String ownerName) {
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-        }
         NBTTagCompound tag = IBindable.getTag(item);
-
-        if (item.getTagCompound().getString("ownerName").isEmpty()) {
-            item.getTagCompound().setString("ownerName", ownerName);
+        if (tag.getString("ownerName").isEmpty()) {
+            tag.setString("ownerName", ownerName);
         }
     }
 
     static String getOwnerName(ItemStack item) {
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-        }
-
-        return item.getTagCompound().getString("ownerName");
+        NBTTagCompound tag = IBindable.getTag(item);
+        return tag.getString("ownerName");
     }
 }
