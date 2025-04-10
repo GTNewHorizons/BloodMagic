@@ -145,7 +145,7 @@ public class BoundAxe extends ItemAxe implements IBindable {
         if (par1ItemStack.getTagCompound() == null) {
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
-        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, 200, 20);
+        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, 20);
 
         par1ItemStack.setItemDamage(0);
     }
