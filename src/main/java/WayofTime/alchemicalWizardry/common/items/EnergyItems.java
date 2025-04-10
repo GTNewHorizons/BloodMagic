@@ -181,6 +181,26 @@ public class EnergyItems extends Item implements IBindable {
     }
 
     @Deprecated
+    public static boolean checkAndSetItemOwner(ItemStack item, EntityPlayer player) {
+        return IBindable.checkAndSetItemOwner(item, player);
+    }
+
+    @Deprecated
+    public static void setItemOwner(ItemStack item, String ownerName) {
+        IBindable.setItemOwner(item, ownerName);
+    }
+
+    @Deprecated
+    public static void checkAndSetItemOwner(ItemStack item, String ownerName) {
+        IBindable.checkAndSetItemOwner(item, ownerName);
+    }
+
+    @Deprecated
+    public static String getOwnerName(ItemStack item) {
+        return IBindable.getOwnerName(item);
+    }
+
+    @Deprecated
     public static void drainPlayerNetwork(EntityPlayer player, int damageToBeDone) {
         String ownerName = SpellHelper.getUsername(player);
 
