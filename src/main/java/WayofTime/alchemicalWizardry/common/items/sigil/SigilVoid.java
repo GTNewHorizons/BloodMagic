@@ -43,12 +43,7 @@ public class SigilVoid extends ItemBucket implements ArmourUpgrade, ISigil {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.voidsigil.desc"));
-
-        if (!(stack.getTagCompound() == null)) {
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                            + stack.getTagCompound().getString("ownerName"));
-        }
+        addBindingInformation(stack, par3List);
     }
 
     @Override

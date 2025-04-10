@@ -60,9 +60,8 @@ public class SigilOfHolding extends EnergyItems {
         par3List.add(StatCollector.translateToLocal("tooltip.sigilofholding.desc"));
 
         if (!(par1ItemStack.getTagCompound() == null)) {
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                            + par1ItemStack.getTagCompound().getString("ownerName"));
+            addBindingInformation(par1ItemStack, par3List);
+
             ItemStack[] inv = getInternalInventory(par1ItemStack);
 
             if (inv == null) {

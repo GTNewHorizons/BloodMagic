@@ -38,18 +38,7 @@ public class SigilOfElementalAffinity extends EnergyItems implements ISigil {
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.sigilofelementalaffinity.desc1"));
         par3List.add(StatCollector.translateToLocal("tooltip.sigilofelementalaffinity.desc2"));
-
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            if (par1ItemStack.getTagCompound().getBoolean("isActive")) {
-                par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.activated"));
-            } else {
-                par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.deactivated"));
-            }
-
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                            + par1ItemStack.getTagCompound().getString("ownerName"));
-        }
+        addBindingInformation(par1ItemStack, par3List);
     }
 
     @Override

@@ -33,15 +33,10 @@ public class BlankSpell extends EnergyItems {
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.blankspell.desc"));
+        addBindingInformation(par1ItemStack, par3List);
 
         if (!(par1ItemStack.getTagCompound() == null)) {
             NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-            if (!par1ItemStack.getTagCompound().getString("ownerName").equals("")) {
-                par3List.add(
-                        StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                                + par1ItemStack.getTagCompound().getString("ownerName"));
-            }
 
             par3List.add(
                     StatCollector.translateToLocal("tooltip.alchemy.coords") + " "

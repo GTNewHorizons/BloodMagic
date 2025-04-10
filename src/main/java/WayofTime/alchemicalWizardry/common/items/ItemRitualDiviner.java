@@ -74,9 +74,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
             if (!(stack.getTagCompound() == null)) {
                 String ritualID = this.getCurrentRitual(stack);
                 // TODO
-                par3List.add(
-                        StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                                + stack.getTagCompound().getString("ownerName"));
+                addBindingInformation(stack, par3List);
                 par3List.add(StatCollector.translateToLocal("tooltip.alchemy.ritualid") + " " + ritualID);
                 List<RitualComponent> ritualList = Rituals.getRitualList(this.getCurrentRitual(stack));
                 if (ritualList == null) {

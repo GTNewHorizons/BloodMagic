@@ -191,45 +191,6 @@ public class EnergyBlast extends EnergyItems {
         par3List.add(StatCollector.translateToLocal("tooltip.energyblast.desc1"));
         par3List.add(StatCollector.translateToLocal("tooltip.energyblast.desc2"));
         par3List.add(StatCollector.translateToLocal("tooltip.alchemy.damage") + " " + this.damage);
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            if (par1ItemStack.getTagCompound().getBoolean("isActive")) {
-                par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.activated"));
-            } else {
-                par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.deactivated"));
-            }
-            if (!par1ItemStack.getTagCompound().getString("ownerName").equals("")) {
-                par3List.add(
-                        StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                                + par1ItemStack.getTagCompound().getString("ownerName"));
-            }
-        }
-    }
-
-    public void setActivated(ItemStack par1ItemStack, boolean newActivated) {
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-        par1ItemStack.getTagCompound().setBoolean("isActive", newActivated);
-    }
-
-    public boolean getActivated(ItemStack par1ItemStack) {
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-        return par1ItemStack.getTagCompound().getBoolean("isActive");
-    }
-
-    public void setDelay(ItemStack par1ItemStack, int newDelay) {
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-        par1ItemStack.getTagCompound().setInteger("delay", newDelay);
-    }
-
-    public int getDelay(ItemStack par1ItemStack) {
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-        return par1ItemStack.getTagCompound().getInteger("delay");
+        addBindingInformation(par1ItemStack, par3List);
     }
 }

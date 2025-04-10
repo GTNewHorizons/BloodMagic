@@ -275,14 +275,9 @@ public class BoundArmour extends ItemArmor
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.boundarmor.devprotect"));
+        addBindingInformation(par1ItemStack, par3List);
 
         if (!(par1ItemStack.getTagCompound() == null)) {
-            if (!par1ItemStack.getTagCompound().getString("ownerName").equals("")) {
-                par3List.add(
-                        StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                                + par1ItemStack.getTagCompound().getString("ownerName"));
-            }
-
             ItemStack[] inv = getInternalInventory(par1ItemStack);
 
             if (inv == null) {

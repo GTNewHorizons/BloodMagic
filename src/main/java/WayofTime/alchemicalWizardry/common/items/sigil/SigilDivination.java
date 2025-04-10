@@ -45,12 +45,7 @@ public class SigilDivination extends Item implements ArmourUpgrade, IReagentMani
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.divinationsigil.desc1"));
         par3List.add(StatCollector.translateToLocal("tooltip.divinationsigil.desc2"));
-
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                            + par1ItemStack.getTagCompound().getString("ownerName"));
-        }
+        addBindingInformation(par1ItemStack, par3List);
     }
 
     @Override
