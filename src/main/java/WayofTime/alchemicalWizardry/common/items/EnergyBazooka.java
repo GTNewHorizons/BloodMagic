@@ -17,30 +17,10 @@ import WayofTime.alchemicalWizardry.common.entity.projectile.EntityEnergyBazooka
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class EnergyBazooka extends EnergyItems {
-
-    @SideOnly(Side.CLIENT)
-    private IIcon activeIcon;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon activeIconTier2;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon activeIconTier3;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon passiveIcon;
-
-    private int tier;
-    private int damage;
+public class EnergyBazooka extends EnergyBlast {
 
     public EnergyBazooka(int tier) {
-        super();
-        setMaxStackSize(1);
-        setCreativeTab(AlchemicalWizardry.tabBloodMagic);
-        setFull3D();
-        setMaxDamage(250);
-        this.tier = tier;
+        super(tier);
         switch (this.tier) {
             case 1:
                 this.setEnergyUsed(AlchemicalWizardry.energyBazookaLPPerShot);
@@ -66,136 +46,64 @@ public class EnergyBazooka extends EnergyItems {
         this.activeIconTier3 = iconRegister.registerIcon("AlchemicalWizardry:EnergyBazooka3_activated");
         this.passiveIcon = iconRegister.registerIcon("AlchemicalWizardry:SheathedItem");
     }
-
+    
     @Override
-    public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (tag.getBoolean("isActive")) {
-            switch (this.tier) {
-                case 1:
-                    return this.activeIcon;
-                case 2:
-                    return this.activeIconTier2;
-                case 3:
-                    return this.activeIconTier3;
-            }
-            return this.activeIcon;
-        } else {
-            return this.passiveIcon;
-        }
-    }
-
-    @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        int maxDelay = 1;
-        int maxDelayAfterActivation = 1;
-        switch (this.tier) {
-            case 1:
-                maxDelay = AlchemicalWizardry.energyBazookaMaxDelay;
-                maxDelayAfterActivation = AlchemicalWizardry.energyBazookaMaxDelayAfterActivation + 1;
-                break;
-            case 2:
-                maxDelay = AlchemicalWizardry.energyBazookaSecondTierMaxDelay;
-                maxDelayAfterActivation = AlchemicalWizardry.energyBazookaSecondTierMaxDelayAfterActivation + 1;
-                break;
-            case 3:
-                maxDelay = AlchemicalWizardry.energyBazookaThirdTierMaxDelay;
-                maxDelayAfterActivation = AlchemicalWizardry.energyBazookaThirdTierMaxDelayAfterActivation + 1;
-                break;
-        }
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            this.setActivated(par1ItemStack, !getActivated(par1ItemStack));
-            par1ItemStack.getTagCompound()
-                    .setInteger("worldTimeDelay", (int) (par2World.getWorldTime() - 1) % maxDelayAfterActivation);
-            return par1ItemStack;
-        }
-
-        if (!getActivated(par1ItemStack)) {
-            return par1ItemStack;
-        }
-
-        if (this.getDelay(par1ItemStack) > 0) {
-            return par1ItemStack;
-        }
-
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            if (!syphonBatteries(par1ItemStack, par3EntityPlayer, this.getEnergyUsed())) {
-                return par1ItemStack;
-            }
-        }
-
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-
-        if (!par2World.isRemote) {
-            par2World.spawnEntityInWorld(
-                    new EntityEnergyBazookaMainProjectile(par2World, par3EntityPlayer, this.damage));
-            this.setDelay(par1ItemStack, maxDelay);
-        }
-
+    public void shoot(World par2World, EntityPlayer par3EntityPlayer) {
+        par2World.spawnEntityInWorld(
+                new EntityEnergyBazookaMainProjectile(par2World, par3EntityPlayer, this.damage));
+        
         Vec3 vec = par3EntityPlayer.getLookVec();
-        double wantedVelocity = (double) this.tier * 2.0D;
+        double wantedVelocity = this.tier * 2.0D;
         par3EntityPlayer.motionX = -vec.xCoord * wantedVelocity;
         par3EntityPlayer.motionY = -vec.yCoord * wantedVelocity;
         par3EntityPlayer.motionZ = -vec.zCoord * wantedVelocity;
         par2World.playSoundEffect(
-                (double) ((float) par3EntityPlayer.posX + 0.5F),
-                (double) ((float) par3EntityPlayer.posY + 0.5F),
-                (double) ((float) par3EntityPlayer.posZ + 0.5F),
+                par3EntityPlayer.posX + 0.5F,
+                par3EntityPlayer.posY + 0.5F,
+                par3EntityPlayer.posZ + 0.5F,
                 "random.fizz",
                 0.5F,
                 2.6F + (par2World.rand.nextFloat() - par2World.rand.nextFloat()) * 0.8F);
         par3EntityPlayer.fallDistance = 0;
-        return par1ItemStack;
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5) {
-        if (!(par3Entity instanceof EntityPlayer)) {
-            return;
-        }
-
-        EntityPlayer par3EntityPlayer = (EntityPlayer) par3Entity;
-
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-        int delay = this.getDelay(par1ItemStack);
-
-        if (!par2World.isRemote && delay > 0) {
-            this.setDelay(par1ItemStack, delay - 1);
-        }
-        int lpPerActivation = 0;
-        int maxDelayAfterActivation = 1;
+    public int getMaxDelay() {
         switch (this.tier) {
             case 1:
-                lpPerActivation = AlchemicalWizardry.energyBazookaLPPerActivation;
-                maxDelayAfterActivation = AlchemicalWizardry.energyBazookaMaxDelayAfterActivation + 1;
-                break;
+                return AlchemicalWizardry.energyBazookaMaxDelay;
             case 2:
-                lpPerActivation = AlchemicalWizardry.energyBazookaSecondTierLPPerActivation;
-                maxDelayAfterActivation = AlchemicalWizardry.energyBazookaSecondTierMaxDelayAfterActivation + 1;
-                break;
+                return AlchemicalWizardry.energyBazookaSecondTierMaxDelay;
             case 3:
-                lpPerActivation = AlchemicalWizardry.energyBazookaThirdTierLPPerActivation;
-                maxDelayAfterActivation = AlchemicalWizardry.energyBazookaThirdTierMaxDelayAfterActivation + 1;
-                break;
+                return AlchemicalWizardry.energyBazookaThirdTierMaxDelay;
         }
-        if (par2World.getWorldTime() % maxDelayAfterActivation
-                == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")
-                && par1ItemStack.getTagCompound().getBoolean("isActive")) {
-            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, lpPerActivation)) {
-                    this.setActivated(par1ItemStack, false);
-                }
-            }
-        }
+        return 1;
+    }
 
-        par1ItemStack.setItemDamage(0);
+    @Override
+    public int getMaxDelayAfterActivation() {
+        switch (this.tier) {
+            case 1:
+                return AlchemicalWizardry.energyBazookaMaxDelayAfterActivation;
+            case 2:
+                return AlchemicalWizardry.energyBazookaSecondTierMaxDelayAfterActivation;
+            case 3:
+                return AlchemicalWizardry.energyBazookaThirdTierMaxDelayAfterActivation;
+        }
+        return 1;
+    }
+
+    @Override
+    public int getActivationCost() {
+        switch (this.tier) {
+            case 1:
+                return AlchemicalWizardry.energyBazookaLPPerActivation;
+            case 2:
+                return AlchemicalWizardry.energyBazookaSecondTierLPPerActivation;
+            case 3:
+                return AlchemicalWizardry.energyBazookaThirdTierLPPerActivation;
+        }
+        return 0;
     }
 
     @Override

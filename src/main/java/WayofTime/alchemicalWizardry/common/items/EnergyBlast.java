@@ -19,19 +19,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class EnergyBlast extends EnergyItems {
 
     @SideOnly(Side.CLIENT)
-    private IIcon activeIcon;
+    public IIcon activeIcon;
 
     @SideOnly(Side.CLIENT)
-    private IIcon activeIconTier2;
+    public IIcon activeIconTier2;
 
     @SideOnly(Side.CLIENT)
-    private IIcon activeIconTier3;
+    public IIcon activeIconTier3;
 
     @SideOnly(Side.CLIENT)
-    private IIcon passiveIcon;
+    public IIcon passiveIcon;
 
-    private int tier;
-    private int damage;
+    public int tier;
+    public int damage;
 
     public EnergyBlast(int tier) {
         super();
@@ -70,13 +70,7 @@ public class EnergyBlast extends EnergyItems {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (tag.getBoolean("isActive")) {
+        if (isActive(stack)) {
             switch (this.tier) {
                 case 1:
                     return this.activeIcon;
@@ -93,51 +87,27 @@ public class EnergyBlast extends EnergyItems {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        int maxDelay = 1;
-        int maxDelayAfterActivation = 1;
-        switch (this.tier) {
-            case 1:
-                maxDelay = AlchemicalWizardry.energyBlastMaxDelay;
-                maxDelayAfterActivation = AlchemicalWizardry.energyBlastMaxDelayAfterActivation + 1;
-                break;
-            case 2:
-                maxDelay = AlchemicalWizardry.energyBlastSecondTierMaxDelay;
-                maxDelayAfterActivation = AlchemicalWizardry.energyBlastSecondTierMaxDelayAfterActivation + 1;
-                break;
-            case 3:
-                maxDelay = AlchemicalWizardry.energyBlastThirdTierMaxDelay;
-                maxDelayAfterActivation = AlchemicalWizardry.energyBlastThirdTierMaxDelayAfterActivation + 1;
-                break;
-        }
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            this.setActivated(par1ItemStack, !getActivated(par1ItemStack));
-            par1ItemStack.getTagCompound()
-                    .setInteger("worldTimeDelay", (int) (par2World.getWorldTime() - 1) % maxDelayAfterActivation);
+        if (getDelay(par1ItemStack) > 0 && isActive(par1ItemStack) && !par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 
-        if (!getActivated(par1ItemStack)) {
+        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), false)) {
+            setDelay(par1ItemStack, getMaxDelayAfterActivation());
             return par1ItemStack;
-        }
-
-        if (this.getDelay(par1ItemStack) > 0) {
-            return par1ItemStack;
-        }
-
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            if (!syphonBatteries(par1ItemStack, par3EntityPlayer, this.getEnergyUsed())) {
-                return par1ItemStack;
-            }
         }
 
         par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
         if (!par2World.isRemote) {
-            par2World.spawnEntityInWorld(new EnergyBlastProjectile(par2World, par3EntityPlayer, this.damage));
-            this.setDelay(par1ItemStack, maxDelay);
+            shoot(par2World, par3EntityPlayer);
+            this.setDelay(par1ItemStack, getMaxDelay());
         }
 
         return par1ItemStack;
+    }
+
+    public void shoot(World par2World, EntityPlayer par3EntityPlayer) {
+        par2World.spawnEntityInWorld(new EnergyBlastProjectile(par2World, par3EntityPlayer, this.damage));
     }
 
     @Override
@@ -147,41 +117,51 @@ public class EnergyBlast extends EnergyItems {
         }
         EntityPlayer par3EntityPlayer = (EntityPlayer) par3Entity;
 
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
         int delay = this.getDelay(par1ItemStack);
 
         if (!par2World.isRemote && delay > 0) {
             this.setDelay(par1ItemStack, delay - 1);
         }
-        int lpPerActivation = 0;
-        int maxDelayAfterActivation = 1;
-        switch (this.tier) {
-            case 1:
-                lpPerActivation = AlchemicalWizardry.energyBlastLPPerActivation;
-                maxDelayAfterActivation = AlchemicalWizardry.energyBlastMaxDelayAfterActivation + 1;
-                break;
-            case 2:
-                lpPerActivation = AlchemicalWizardry.energyBlastSecondTierLPPerActivation;
-                maxDelayAfterActivation = AlchemicalWizardry.energyBlastSecondTierMaxDelayAfterActivation + 1;
-                break;
-            case 3:
-                lpPerActivation = AlchemicalWizardry.energyBlastThirdTierLPPerActivation;
-                maxDelayAfterActivation = AlchemicalWizardry.energyBlastThirdTierMaxDelayAfterActivation + 1;
-                break;
-        }
-        if (par2World.getWorldTime() % maxDelayAfterActivation
-                == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")
-                && par1ItemStack.getTagCompound().getBoolean("isActive")) {
-            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, lpPerActivation)) {
-                    this.setActivated(par1ItemStack, false);
-                }
-            }
-        }
+
+        passiveDrain(par1ItemStack, par2World, par3EntityPlayer, getMaxDelayAfterActivation(), getActivationCost());
 
         par1ItemStack.setItemDamage(0);
+    }
+
+    public int getMaxDelay() {
+        switch (this.tier) {
+            case 1:
+                return AlchemicalWizardry.energyBlastMaxDelay;
+            case 2:
+                return AlchemicalWizardry.energyBlastSecondTierMaxDelay;
+            case 3:
+                return AlchemicalWizardry.energyBlastThirdTierMaxDelay;
+        }
+        return 1;
+    }
+
+    public int getMaxDelayAfterActivation() {
+        switch (this.tier) {
+            case 1:
+                return AlchemicalWizardry.energyBlastMaxDelayAfterActivation;
+            case 2:
+                return AlchemicalWizardry.energyBlastSecondTierMaxDelayAfterActivation;
+            case 3:
+                return AlchemicalWizardry.energyBlastThirdTierMaxDelayAfterActivation;
+        }
+        return 1;
+    }
+
+    public int getActivationCost() {
+        switch (this.tier) {
+            case 1:
+                return AlchemicalWizardry.energyBlastLPPerActivation;
+            case 2:
+                return AlchemicalWizardry.energyBlastSecondTierLPPerActivation;
+            case 3:
+                return AlchemicalWizardry.energyBlastThirdTierLPPerActivation;
+        }
+        return 0;
     }
 
     @Override
@@ -192,5 +172,13 @@ public class EnergyBlast extends EnergyItems {
         par3List.add(StatCollector.translateToLocal("tooltip.energyblast.desc2"));
         par3List.add(StatCollector.translateToLocal("tooltip.alchemy.damage") + " " + this.damage);
         addBindingInformation(par1ItemStack, par3List);
+    }
+
+    public void setDelay(ItemStack par1ItemStack, int delay) {
+        getTag(par1ItemStack).setInteger("delay", delay);
+    }
+
+    public int getDelay(ItemStack par1ItemStack) {
+        return getTag(par1ItemStack).getInteger("delay");
     }
 }
