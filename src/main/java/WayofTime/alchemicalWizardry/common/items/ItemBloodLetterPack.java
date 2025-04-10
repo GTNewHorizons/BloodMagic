@@ -129,7 +129,7 @@ public class ItemBloodLetterPack extends ItemArmor implements ArmourUpgrade, IAl
             return;
         }
 
-        if (world.getWorldTime() % tickRate == 0) {
+        if (world.getTotalWorldTime() % tickRate == 0) {
             boolean shouldExecute = player.getHealth() / player.getMaxHealth() > activationPoint
                     && this.getStoredLP(itemStack) < maxStored;
 

@@ -109,7 +109,8 @@ public class ArmourInhibitor extends EnergyItems {
         }
 
         if (par1ItemStack.getTagCompound().getBoolean("isActive")) {
-            if (par2World.getWorldTime() % tickDelay == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")) {}
+            if (par2World.getTotalWorldTime() % tickDelay
+                    == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")) {}
 
             // TODO Do stuff
             par3EntityPlayer.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionInhibit.id, 2, 0));

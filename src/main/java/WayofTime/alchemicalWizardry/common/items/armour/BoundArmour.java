@@ -378,7 +378,7 @@ public class BoundArmour extends ItemArmor
                     blood--;
                 }
 
-                if (par2World.getWorldTime() % 200 == 0) {
+                if (par2World.getTotalWorldTime() % 200 == 0) {
                     if (getUpgradeCostMultiplier(par1ItemStack) > 0.02f) {
                         EnergyItems.syphonBatteries(
                                 par1ItemStack,

@@ -302,7 +302,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
-        if (entity instanceof EntityPlayer && hasStoredLocation(stack) && world.getWorldTime() % 5 == 0) {
+        if (entity instanceof EntityPlayer && hasStoredLocation(stack) && world.getTotalWorldTime() % 5 == 0) {
             Int3 loc = getStoredLocation(stack);
 
             int x = loc.xCoord;

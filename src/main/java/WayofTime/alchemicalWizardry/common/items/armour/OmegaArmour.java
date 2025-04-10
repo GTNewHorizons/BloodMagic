@@ -79,7 +79,7 @@ public abstract class OmegaArmour extends BoundArmour {
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
         super.onArmorTick(world, player, itemStack);
 
-        if (world.getWorldTime() % 50 == 0) {
+        if (world.getTotalWorldTime() % 50 == 0) {
             if (this.storeBiomeID()) {
                 int xCoord = (int) Math.floor(player.posX);
                 int zCoord = (int) Math.floor(player.posZ);
