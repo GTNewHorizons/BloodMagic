@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -29,18 +30,14 @@ public class DemonicTelepositionFocus extends TelepositionFocus {
         par3List.add(StatCollector.translateToLocal("tooltip.demonictelepfocus.desc2"));
         addBindingInformation(par1ItemStack, par3List);
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
-                            + itemTag.getInteger("xCoord")
-                            + ", "
-                            + itemTag.getInteger("yCoord")
-                            + ", "
-                            + itemTag.getInteger("zCoord"));
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimensionID(par1ItemStack));
-        }
+        NBTTagCompound itemTag = IBindable.getTag(par1ItemStack);
+        par3List.add(
+                StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
+                        + itemTag.getInteger("xCoord")
+                        + ", "
+                        + itemTag.getInteger("yCoord")
+                        + ", "
+                        + itemTag.getInteger("zCoord"));
+        par3List.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimensionID(par1ItemStack));
     }
 }

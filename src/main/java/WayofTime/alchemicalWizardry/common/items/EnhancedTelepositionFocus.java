@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items;
 
 import java.util.List;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -28,18 +29,14 @@ public class EnhancedTelepositionFocus extends TelepositionFocus {
         par3List.add(StatCollector.translateToLocal("tooltip.enhancedtelepfocus.desc"));
         addBindingInformation(par1ItemStack, par3List);
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
-                            + itemTag.getInteger("xCoord")
-                            + ", "
-                            + itemTag.getInteger("yCoord")
-                            + ", "
-                            + itemTag.getInteger("zCoord"));
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimensionID(par1ItemStack));
-        }
+        NBTTagCompound itemTag = IBindable.getTag(par1ItemStack);
+        par3List.add(
+                StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
+                        + itemTag.getInteger("xCoord")
+                        + ", "
+                        + itemTag.getInteger("yCoord")
+                        + ", "
+                        + itemTag.getInteger("zCoord"));
+        par3List.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimensionID(par1ItemStack));
     }
 }
