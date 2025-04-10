@@ -9,7 +9,6 @@ import net.minecraft.util.StatCollector;
 
 import WayofTime.alchemicalWizardry.api.command.SubCommandBase;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
-import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 
 public class SubCommandBind extends SubCommandBase {
 
@@ -56,10 +55,10 @@ public class SubCommandBind extends SubCommandBase {
             }
 
             if (bind) {
-                EnergyItems.setItemOwner(held, playerName);
+                IBindable.setItemOwner(held, playerName);
                 commandSender.addChatMessage(new ChatComponentTranslation("commands.bind.success"));
             } else {
-                if (!EnergyItems.getOwnerName(held).isEmpty()) {
+                if (!IBindable.getOwnerName(held).isEmpty()) {
                     held.stackTagCompound.removeTag("ownerName");
                     commandSender.addChatMessage(new ChatComponentTranslation("commands.bind.remove.success"));
                 }

@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.ModBlocks;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.rituals.RitualComponent;
 import WayofTime.alchemicalWizardry.api.rituals.Rituals;
 import WayofTime.alchemicalWizardry.common.block.RitualStone;
@@ -36,15 +37,13 @@ public class ItemRitualDismantler extends EnergyItems {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List par3List, boolean x) {
         par3List.add(StatCollector.translateToLocal("tooltip.dismatler.desc"));
-        if (stack.hasTagCompound()) par3List.add(
-                StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                        + stack.getTagCompound().getString("ownerName"));
+        addBindingInformation(stack, par3List);
     }
 
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7,
             float par8, float par9, float par10) {
-        return EnergyItems.checkAndSetItemOwner(stack, player)
+        return IBindable.checkAndSetItemOwner(stack, player)
                 && breakRitualStoneAtMasterStone(stack, player, world, x, y, z);
     }
 

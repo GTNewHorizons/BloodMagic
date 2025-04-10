@@ -3,7 +3,6 @@ package WayofTime.alchemicalWizardry.common.items;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -181,35 +180,24 @@ public class EnergyItems extends Item implements IBindable {
         return true;
     }
 
-    // Global static methods
+    @Deprecated
     public static boolean checkAndSetItemOwner(ItemStack item, EntityPlayer player) {
-        return !SpellHelper.isFakePlayer(player) && SoulNetworkHandler.checkAndSetItemPlayer(item, player);
+        return IBindable.checkAndSetItemOwner(item, player);
     }
 
+    @Deprecated
     public static void setItemOwner(ItemStack item, String ownerName) {
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-        }
-
-        item.getTagCompound().setString("ownerName", ownerName);
+        IBindable.setItemOwner(item, ownerName);
     }
 
+    @Deprecated
     public static void checkAndSetItemOwner(ItemStack item, String ownerName) {
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-        }
-
-        if (item.getTagCompound().getString("ownerName").equals("")) {
-            item.getTagCompound().setString("ownerName", ownerName);
-        }
+        IBindable.checkAndSetItemOwner(item, ownerName);
     }
 
+    @Deprecated
     public static String getOwnerName(ItemStack item) {
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-        }
-
-        return item.getTagCompound().getString("ownerName");
+        return IBindable.getOwnerName(item);
     }
 
     @Deprecated

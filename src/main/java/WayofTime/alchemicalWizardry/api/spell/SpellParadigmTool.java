@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import WayofTime.alchemicalWizardry.api.items.ItemSpellMultiTool;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 
 public class SpellParadigmTool extends SpellParadigm {
@@ -159,7 +160,7 @@ public class SpellParadigmTool extends SpellParadigm {
         itemTool.setDuration(toolStack, world, this.duration);
         itemTool.loadParadigmIntoStack(toolStack, this.bufferedEffectList);
 
-        SoulNetworkHandler.checkAndSetItemOwner(toolStack, SoulNetworkHandler.getOwnerName(crystalStack));
+        IBindable.checkAndSetItemOwner(toolStack, SoulNetworkHandler.getOwnerName(crystalStack));
 
         itemTool.setContainedCrystal(toolStack, crystalStack);
 

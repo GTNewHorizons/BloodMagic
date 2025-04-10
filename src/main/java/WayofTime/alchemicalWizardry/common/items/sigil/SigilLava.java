@@ -21,6 +21,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.items.interfaces.ArmourUpgrade;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.items.interfaces.ISigil;
 import WayofTime.alchemicalWizardry.common.items.EnergyBattery;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
@@ -62,12 +63,7 @@ public class SigilLava extends ItemBucket implements ArmourUpgrade, ISigil {
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.lavasigil.desc1"));
         par3List.add(StatCollector.translateToLocal("tooltip.lavasigil.desc2"));
-
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                            + par1ItemStack.getTagCompound().getString("ownerName"));
-        }
+        addBindingInformation(par1ItemStack, par3List);
     }
 
     /**
@@ -80,7 +76,7 @@ public class SigilLava extends ItemBucket implements ArmourUpgrade, ISigil {
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
             float hitX, float hitY, float hitZ) {
-        if (world.isRemote || !EnergyItems.checkAndSetItemOwner(stack, player) || player.isSneaking()) {
+        if (world.isRemote || !IBindable.checkAndSetItemOwner(stack, player) || player.isSneaking()) {
             return false;
         }
 

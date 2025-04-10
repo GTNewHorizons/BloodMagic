@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.api.spell.APISpellHelper;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
@@ -79,7 +80,7 @@ public abstract class OmegaArmour extends BoundArmour {
     public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
         super.onArmorTick(world, player, itemStack);
 
-        if (world.getWorldTime() % 50 == 0) {
+        if (world.getTotalWorldTime() % 50 == 0) {
             if (this.storeBiomeID()) {
                 int xCoord = (int) Math.floor(player.posX);
                 int zCoord = (int) Math.floor(player.posZ);
@@ -137,7 +138,7 @@ public abstract class OmegaArmour extends BoundArmour {
             omegaStack.setTagCompound(tag);
         }
         this.setContainedArmourStack(omegaStack, boundStack);
-        SoulNetworkHandler.checkAndSetItemOwner(omegaStack, SoulNetworkHandler.getOwnerName(boundStack));
+        IBindable.checkAndSetItemOwner(omegaStack, SoulNetworkHandler.getOwnerName(boundStack));
         this.setItemEnchantability(omegaStack, Math.min(enchantability, 70));
 
         EnchantmentHelper.setEnchantments(new HashMap(), omegaStack);

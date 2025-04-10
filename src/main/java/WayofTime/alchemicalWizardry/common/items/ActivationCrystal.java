@@ -17,6 +17,7 @@ import org.lwjgl.input.Keyboard;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.alchemy.AlchemyRecipeRegistry;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -92,16 +93,12 @@ public class ActivationCrystal extends EnergyItems {
             }
         }
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                            + par1ItemStack.getTagCompound().getString("ownerName"));
-        }
+        addBindingInformation(par1ItemStack, par3List);
     }
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
+        IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
         return par1ItemStack;
     }
 
@@ -113,7 +110,7 @@ public class ActivationCrystal extends EnergyItems {
     public String getUnlocalizedName(ItemStack itemStack) {
         // This is what will do all the localisation things on the alchemy components so you dont have to set it :D
         int meta = MathHelper.clamp_int(itemStack.getItemDamage(), 0, ACTIVATION_CRYSTAL_NAMES.length - 1);
-        return ("" + "item.activationCrystal" + ACTIVATION_CRYSTAL_NAMES[meta]);
+        return ("item.activationCrystal" + ACTIVATION_CRYSTAL_NAMES[meta]);
     }
 
     @Override

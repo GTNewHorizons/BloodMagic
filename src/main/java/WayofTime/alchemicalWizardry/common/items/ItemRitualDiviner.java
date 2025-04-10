@@ -23,6 +23,7 @@ import org.lwjgl.input.Keyboard;
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.ModBlocks;
 import WayofTime.alchemicalWizardry.api.Int3;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IRitualDiviner;
 import WayofTime.alchemicalWizardry.api.rituals.IMasterRitualStone;
 import WayofTime.alchemicalWizardry.api.rituals.IRitualStone;
@@ -74,9 +75,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
             if (!(stack.getTagCompound() == null)) {
                 String ritualID = this.getCurrentRitual(stack);
                 // TODO
-                par3List.add(
-                        StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                                + stack.getTagCompound().getString("ownerName"));
+                addBindingInformation(stack, par3List);
                 par3List.add(StatCollector.translateToLocal("tooltip.alchemy.ritualid") + " " + ritualID);
                 List<RitualComponent> ritualList = Rituals.getRitualList(this.getCurrentRitual(stack));
                 if (ritualList == null) {
@@ -191,7 +190,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7,
             float par8, float par9, float par10) {
-        if (!EnergyItems.checkAndSetItemOwner(stack, player)) return false;
+        if (!IBindable.checkAndSetItemOwner(stack, player)) return false;
 
         if (placeRitualStoneAtMasterStone(stack, player, world, x, y, z)) {
             this.setStoredLocation(stack, new Int3(x, y, z));
@@ -304,7 +303,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
-        if (entity instanceof EntityPlayer && hasStoredLocation(stack) && world.getWorldTime() % 5 == 0) {
+        if (entity instanceof EntityPlayer && hasStoredLocation(stack) && world.getTotalWorldTime() % 5 == 0) {
             Int3 loc = getStoredLocation(stack);
 
             int x = loc.xCoord;
@@ -369,7 +368,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (EnergyItems.checkAndSetItemOwner(stack, par3EntityPlayer) && par3EntityPlayer.isSneaking()) {
+        if (IBindable.checkAndSetItemOwner(stack, par3EntityPlayer) && par3EntityPlayer.isSneaking()) {
             rotateRituals(par2World, par3EntityPlayer, stack, true);
         }
 
@@ -381,7 +380,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
         if (entityLiving instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entityLiving;
 
-            if (!EnergyItems.checkAndSetItemOwner(stack, player)) return true;
+            if (!IBindable.checkAndSetItemOwner(stack, player)) return true;
 
             if (!player.isSwingInProgress) {
                 if (player.isSneaking()) {
