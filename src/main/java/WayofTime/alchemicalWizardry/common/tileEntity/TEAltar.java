@@ -941,13 +941,16 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
 
     public void sendChatInfoToPlayer(EntityPlayer player) {
         player.addChatMessage(
-                new ChatComponentTranslation(String.format("message.altar.currentessence"), this.fluid.amount));
+                new ChatComponentText(
+                        StatCollector.translateToLocalFormatted("message.altar.currentessence", this.fluid.amount)));
+        player.addChatMessage(
+                new ChatComponentText(
+                        StatCollector.translateToLocalFormatted(
+                                "message.altar.currenttier",
+                                UpgradedAltars.isAltarValid(worldObj, xCoord, yCoord, zCoord))));
         player.addChatMessage(
                 new ChatComponentTranslation(
-                        String.format("message.altar.currenttier"),
-                        UpgradedAltars.isAltarValid(worldObj, xCoord, yCoord, zCoord)));
-        player.addChatMessage(
-                new ChatComponentTranslation(String.format("message.altar.capacity"), this.getCapacity()));
+                        StatCollector.translateToLocalFormatted("message.altar.capacity", this.getCapacity())));
     }
 
     public void sendMoreChatInfoToPlayer(EntityPlayer player) {
@@ -955,23 +958,25 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
             int stackSize = getStackInSlot(0).stackSize;
             player.addChatMessage(
                     new ChatComponentText(
-                            StatCollector.translateToLocal("message.altar.progress") + " "
-                                    + progress
-                                    + "LP/"
-                                    + liquidRequired * stackSize
-                                    + "LP"));
+                            StatCollector.translateToLocalFormatted(
+                                    "message.altar.progress",
+                                    progress,
+                                    liquidRequired * stackSize)));
             player.addChatMessage(
                     new ChatComponentText(
-                            StatCollector.translateToLocal("message.altar.consumptionrate") + " "
-                                    + (int) (consumptionRate * (1 + consumptionMultiplier))
-                                    + "LP/t"));
+                            StatCollector.translateToLocalFormatted(
+                                    "message.altar.consumptionrate",
+                                    (int) (consumptionRate * (1 + consumptionMultiplier)))));
         }
         player.addChatMessage(
-                new ChatComponentTranslation(String.format("message.altar.currentessence"), this.fluid.amount));
+                new ChatComponentText(
+                        StatCollector.translateToLocalFormatted("message.altar.currentessence", this.fluid.amount)));
         player.addChatMessage(
-                new ChatComponentTranslation(String.format("message.altar.inputtank"), this.fluidInput.amount));
+                new ChatComponentText(
+                        StatCollector.translateToLocalFormatted("message.altar.inputtank", this.fluidInput.amount)));
         player.addChatMessage(
-                new ChatComponentTranslation(String.format("message.altar.outputtank"), this.fluidOutput.amount));
+                new ChatComponentText(
+                        StatCollector.translateToLocalFormatted("message.altar.outputtank", this.fluidOutput.amount)));
     }
 
     @Override
