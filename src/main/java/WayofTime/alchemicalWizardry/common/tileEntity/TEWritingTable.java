@@ -733,10 +733,11 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
         final NBTTagCompound tag = accessor.getNBTData();
         final int curProgress = tag.getInteger("progress");
         if (curProgress > 0) {
-            currenttip.add(StatCollector.translateToLocal("tooltip.waila.altarProgress") + curProgress + "%");
+            currenttip.add(StatCollector.translateToLocalFormatted("tooltip.waila.chemistrySetProgress", curProgress));
         }
         if (tag.hasKey("crafting")) {
-            currenttip.add(StatCollector.translateToLocal("tooltip.waila.crafting") + tag.getString("crafting"));
+            currenttip
+                    .add(StatCollector.translateToLocalFormatted("tooltip.waila.crafting", tag.getString("crafting")));
         }
 
     }

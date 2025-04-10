@@ -77,12 +77,7 @@ public class SigilDivination extends Item implements ArmourUpgrade, IReagentMani
                 .getMovingObjectPositionFromPlayer(par2World, par3EntityPlayer, false);
 
         if (movingobjectposition == null) {
-            par3EntityPlayer.addChatMessage(
-                    new ChatComponentText(
-                            StatCollector.translateToLocal("message.divinationsigil.currentessence") + " "
-                                    + String.format("%,d", SoulNetworkHandler.getCurrentEssence(ownerName))
-                                    + "LP"));
-
+            tellEssence(par3EntityPlayer, ownerName);
             return par1ItemStack;
         } else {
             if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
@@ -93,12 +88,7 @@ public class SigilDivination extends Item implements ArmourUpgrade, IReagentMani
                 TileEntity tile = par2World.getTileEntity(x, y, z);
 
                 if (!(tile instanceof IReagentHandler)) {
-                    par3EntityPlayer.addChatMessage(
-                            new ChatComponentText(
-                                    StatCollector.translateToLocal("message.divinationsigil.currentessence") + " "
-                                            + SoulNetworkHandler.getCurrentEssence(ownerName)
-                                            + "LP"));
-
+                    tellEssence(par3EntityPlayer, ownerName);
                     return par1ItemStack;
                 }
 
@@ -108,14 +98,7 @@ public class SigilDivination extends Item implements ArmourUpgrade, IReagentMani
                 if (infoList != null) {
                     for (ReagentContainerInfo info : infoList) {
                         if (info != null && info.reagent != null && info.reagent.reagent != null) {
-                            par3EntityPlayer.addChatComponentMessage(
-                                    new ChatComponentText(
-                                            StatCollector.translateToLocal("message.divinationsigil.reagent") + " "
-                                                    + ReagentRegistry.getKeyForReagent(info.reagent.reagent)
-                                                    + ","
-                                                    + StatCollector.translateToLocal("message.divinationsigil.amount")
-                                                    + " "
-                                                    + info.reagent.amount));
+                            tellReagent(par3EntityPlayer, info);
                         }
                     }
                 }
@@ -123,6 +106,26 @@ public class SigilDivination extends Item implements ArmourUpgrade, IReagentMani
         }
 
         return par1ItemStack;
+    }
+
+    private static void tellReagent(EntityPlayer par3EntityPlayer, ReagentContainerInfo info) {
+        par3EntityPlayer.addChatComponentMessage(
+                new ChatComponentText(
+                        StatCollector.translateToLocalFormatted(
+                                "message.divinationsigil.reagent",
+                                ReagentRegistry.getKeyForReagent(info.reagent.reagent))));
+        par3EntityPlayer.addChatComponentMessage(
+                new ChatComponentText(
+                        StatCollector
+                                .translateToLocalFormatted("message.divinationsigil.amount", info.reagent.amount)));
+    }
+
+    private static void tellEssence(EntityPlayer par3EntityPlayer, String ownerName) {
+        par3EntityPlayer.addChatMessage(
+                new ChatComponentText(
+                        StatCollector.translateToLocalFormatted(
+                                "message.divinationsigil.currentessence",
+                                SoulNetworkHandler.getCurrentEssence(ownerName))));
     }
 
     @Override
