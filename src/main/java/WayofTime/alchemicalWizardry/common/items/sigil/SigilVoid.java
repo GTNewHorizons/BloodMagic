@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items.sigil;
 
 import java.util.List;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBucket;
@@ -69,7 +70,7 @@ public class SigilVoid extends ItemBucket implements ArmourUpgrade, ISigil {
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
             float hitX, float hitY, float hitZ) {
-        if (world.isRemote || !EnergyItems.checkAndSetItemOwner(stack, player) || player.isSneaking()) {
+        if (world.isRemote || !IBindable.checkAndSetItemOwner(stack, player) || player.isSneaking()) {
             return false;
         }
 

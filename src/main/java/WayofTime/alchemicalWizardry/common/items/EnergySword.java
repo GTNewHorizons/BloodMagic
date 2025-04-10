@@ -34,6 +34,8 @@ public class EnergySword extends ItemSword implements IBindable {
     private IIcon passiveIcon;
 
     private int energyUsed;
+    // The number of ticks between passive drains
+    protected int tickDelay = 100;
 
     public EnergySword() {
         super(AlchemicalWizardry.bloodBoundToolMaterial);
@@ -62,13 +64,7 @@ public class EnergySword extends ItemSword implements IBindable {
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (tag.getBoolean("isActive")) {
+        if (IBindable.isActive(stack)) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;
@@ -81,7 +77,7 @@ public class EnergySword extends ItemSword implements IBindable {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
-        boolean isActive = getActivated(stack);
+        boolean isActive = IBindable.isActive(stack);
         if (isActive && !player.worldObj.isRemote) {
             OmegaParadigm parad = this.getOmegaParadigmOfWeilder(player);
 
@@ -98,7 +94,7 @@ public class EnergySword extends ItemSword implements IBindable {
     public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLivingBase,
             EntityLivingBase par3EntityLivingBase) {
         if (par3EntityLivingBase instanceof EntityPlayer) {
-            if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, (EntityPlayer) par3EntityLivingBase) || !EnergyItems
+            if (!IBindable.checkAndSetItemOwner(par1ItemStack, (EntityPlayer) par3EntityLivingBase) || !EnergyItems
                     .syphonBatteries(par1ItemStack, (EntityPlayer) par3EntityLivingBase, this.getEnergyUsed())) {
                 return false;
             }
@@ -111,15 +107,8 @@ public class EnergySword extends ItemSword implements IBindable {
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         super.onItemRightClick(par1ItemStack, par2World, par3EntityPlayer);
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            this.setActivated(par1ItemStack, !getActivated(par1ItemStack));
-            par1ItemStack.getTagCompound().setInteger("worldTimeDelay", (int) (par2World.getWorldTime() - 1) % 100);
-            return par1ItemStack;
-        }
 
-        if (!getActivated(par1ItemStack)) {
-            return par1ItemStack;
-        }
+        IBindable.toggle(par1ItemStack, par2World, par3EntityPlayer);
 
         return par1ItemStack;
     }
@@ -141,36 +130,9 @@ public class EnergySword extends ItemSword implements IBindable {
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
 
-        if (par2World.getWorldTime() % 100 == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")
-                && par1ItemStack.getTagCompound().getBoolean("isActive")) {
-            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, 50)) {
-                    this.setActivated(par1ItemStack, false);
-                }
-            }
-        }
+        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, 100, 50);
 
         par1ItemStack.setItemDamage(0);
-    }
-
-    public void setActivated(ItemStack par1ItemStack, boolean newActivated) {
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-        if (itemTag == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        itemTag.setBoolean("isActive", newActivated);
-    }
-
-    public boolean getActivated(ItemStack par1ItemStack) {
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-        if (itemTag == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        return itemTag.getBoolean("isActive");
     }
 
     public float func_82803_g() {

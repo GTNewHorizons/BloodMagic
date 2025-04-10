@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -27,7 +28,7 @@ public class SpellHolyBlast extends HomSpell {
     @Override
     public ItemStack onOffensiveRangedRightClick(ItemStack par1ItemStack, World par2World,
             EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 
@@ -48,7 +49,7 @@ public class SpellHolyBlast extends HomSpell {
     @Override
     public ItemStack onOffensiveMeleeRightClick(ItemStack par1ItemStack, World par2World,
             EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 
@@ -115,7 +116,7 @@ public class SpellHolyBlast extends HomSpell {
 
     @Override
     public ItemStack onDefensiveRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 
@@ -145,7 +146,7 @@ public class SpellHolyBlast extends HomSpell {
     @Override
     public ItemStack onEnvironmentalRightClick(ItemStack par1ItemStack, World par2World,
             EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 

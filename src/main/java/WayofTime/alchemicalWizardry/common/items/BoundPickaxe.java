@@ -33,6 +33,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
 
     public float efficiencyOnProperMaterial = 12.0F;
     public float damageVsEntity;
+    public int rightClickCost = 10000;
 
     @SideOnly(Side.CLIENT)
     private IIcon activeIcon;
@@ -77,13 +78,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (tag.getBoolean("isActive")) {
+        if (IBindable.isActive(stack)) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;
@@ -92,32 +87,9 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            this.setActivated(par1ItemStack, !getActivated(par1ItemStack));
-            par1ItemStack.getTagCompound().setInteger("worldTimeDelay", (int) (par2World.getWorldTime() - 1) % 200);
+        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer, rightClickCost, true)) {
             return par1ItemStack;
         }
-
-        if (par2World.isRemote) {
-            return par1ItemStack;
-        }
-
-        if (!getActivated(par1ItemStack) || SpellHelper.isFakePlayer(par2World, par3EntityPlayer)) {
-            return par1ItemStack;
-        }
-
-        if (AlchemicalWizardry.disableBoundToolsRightClick) {
-            return par1ItemStack;
-        }
-
-        if (par3EntityPlayer.isPotionActive(AlchemicalWizardry.customPotionInhibit)) {
-            return par1ItemStack;
-        }
-
-        if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, 10000)) {
-            return par1ItemStack;
-        }
-
         Vec3 blockVec = SpellHelper.getEntityBlockVector(par3EntityPlayer);
         int posX = (int) (blockVec.xCoord);
         int posY = (int) (blockVec.yCoord);
@@ -190,36 +162,9 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
 
-        if (par2World.getWorldTime() % 200 == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")
-                && par1ItemStack.getTagCompound().getBoolean("isActive")) {
-            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, 20)) {
-                    this.setActivated(par1ItemStack, false);
-                }
-            }
-        }
+        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, 200, 20);
 
         par1ItemStack.setItemDamage(0);
-    }
-
-    public void setActivated(ItemStack par1ItemStack, boolean newActivated) {
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-        if (itemTag == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        itemTag.setBoolean("isActive", newActivated);
-    }
-
-    public boolean getActivated(ItemStack par1ItemStack) {
-        if (!par1ItemStack.hasTagCompound()) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-        return itemTag.getBoolean("isActive");
     }
 
     /**
@@ -229,7 +174,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
     @Override
     public float func_150893_a(ItemStack par1ItemStack, Block par2Block) // getStrVsBlock
     {
-        if (!getActivated(par1ItemStack)) {
+        if (!IBindable.isActive(par1ItemStack)) {
             return 0.0F;
         }
 
@@ -240,9 +185,10 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
      * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise
      * the damage on the stack.
      */
+    @Override
     public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLivingBase,
             EntityLivingBase par3EntityLivingBase) {
-        return getActivated(par1ItemStack);
+        return IBindable.isActive(par1ItemStack);
     }
 
     @Override
@@ -277,7 +223,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
      */
     @Override
     public float getDigSpeed(ItemStack stack, Block block, int meta) {
-        if (!getActivated(stack)) {
+        if (!IBindable.isActive(stack)) {
             return 0.0F;
         }
 
@@ -290,11 +236,11 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
-        return !getActivated(stack);
+        return !IBindable.isActive(stack);
     }
 
     @Override
     public int getHarvestLevel(ItemStack stack, String toolClass) {
-        return getActivated(stack) ? super.getHarvestLevel(stack, toolClass) : -1;
+        return IBindable.isActive(stack) ? super.getHarvestLevel(stack, toolClass) : -1;
     }
 }

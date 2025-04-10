@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items;
 
 import java.util.List;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -52,7 +53,7 @@ public class ItemComplexSpellCrystal extends EnergyItems {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 

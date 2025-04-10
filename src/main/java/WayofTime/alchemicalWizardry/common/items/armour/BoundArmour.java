@@ -262,7 +262,7 @@ public class BoundArmour extends ItemArmor
     @Override
     public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
         if (entity instanceof EntityPlayer) {
-            EnergyItems.checkAndSetItemOwner(stack, (EntityPlayer) entity);
+            IBindable.checkAndSetItemOwner(stack, (EntityPlayer) entity);
 
             if (((EntityPlayer) entity).capabilities.isCreativeMode) {
                 return;
@@ -327,7 +327,7 @@ public class BoundArmour extends ItemArmor
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
+        IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
         return super.onItemRightClick(par1ItemStack, par2World, par3EntityPlayer);
     }
 
@@ -348,7 +348,7 @@ public class BoundArmour extends ItemArmor
 
     public void repairArmour(World world, EntityPlayer player, ItemStack itemStack) {
         if (itemStack.getItemDamage() > 0) {
-            EnergyItems.checkAndSetItemOwner(itemStack, player);
+            IBindable.checkAndSetItemOwner(itemStack, player);
 
             if (!player.capabilities.isCreativeMode) {
                 if (EnergyItems.syphonBatteries(itemStack, player, itemStack.getItemDamage() * 75)) {

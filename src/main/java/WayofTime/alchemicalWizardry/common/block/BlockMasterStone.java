@@ -1,5 +1,6 @@
 package WayofTime.alchemicalWizardry.common.block;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -79,7 +80,7 @@ public class BlockMasterStone extends BlockContainer {
                 acItem.getCrystalLevel(playerItem),
                 playerItem,
                 player,
-                acItem.getOwnerName(playerItem));
+                IBindable.getOwnerName(playerItem));
         world.markBlockForUpdate(x, y, z);
         return true;
     }

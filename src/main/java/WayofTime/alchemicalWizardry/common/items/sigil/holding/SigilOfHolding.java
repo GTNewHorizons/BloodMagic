@@ -2,6 +2,8 @@ package WayofTime.alchemicalWizardry.common.items.sigil.holding;
 
 import java.util.List;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
+import WayofTime.alchemicalWizardry.api.items.interfaces.ISigil;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +20,7 @@ import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class SigilOfHolding extends EnergyItems {
+public class SigilOfHolding extends EnergyItems implements ISigil {
 
     private static int invSize = 5;
 
@@ -90,7 +92,7 @@ public class SigilOfHolding extends EnergyItems {
     @Override
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4,
             int par5, int par6, int par7, float par8, float par9, float par10) {
-        if (checkAndSetItemOwner(par1ItemStack, par2EntityPlayer)) {
+        if (IBindable.checkAndSetItemOwner(par1ItemStack, par2EntityPlayer)) {
             int currentSlot = getCurrentItem(par1ItemStack);
             ItemStack[] inv = getInternalInventory(par1ItemStack);
 
@@ -117,7 +119,7 @@ public class SigilOfHolding extends EnergyItems {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)) {
+        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)) {
             if (par3EntityPlayer.isSneaking()) {
                 InventoryHolding.setUUID(par1ItemStack);
                 par3EntityPlayer.openGui(
@@ -152,7 +154,7 @@ public class SigilOfHolding extends EnergyItems {
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
             float hitX, float hitY, float hitZ) {
-        if (checkAndSetItemOwner(stack, player)) {
+        if (IBindable.checkAndSetItemOwner(stack, player)) {
             int currentSlot = getCurrentItem(stack);
             ItemStack[] inv = getInternalInventory(stack);
 

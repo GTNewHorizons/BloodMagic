@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items;
 
 import java.util.List;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -97,7 +98,7 @@ public class ActivationCrystal extends EnergyItems {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
+        IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
         return par1ItemStack;
     }
 

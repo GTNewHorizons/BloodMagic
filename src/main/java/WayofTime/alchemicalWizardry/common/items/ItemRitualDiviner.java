@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items;
 
 import java.util.List;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -189,7 +190,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7,
             float par8, float par9, float par10) {
-        if (!EnergyItems.checkAndSetItemOwner(stack, player)) return false;
+        if (!IBindable.checkAndSetItemOwner(stack, player)) return false;
 
         if (placeRitualStoneAtMasterStone(stack, player, world, x, y, z)) {
             this.setStoredLocation(stack, new Int3(x, y, z));
@@ -367,7 +368,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
 
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (EnergyItems.checkAndSetItemOwner(stack, par3EntityPlayer) && par3EntityPlayer.isSneaking()) {
+        if (IBindable.checkAndSetItemOwner(stack, par3EntityPlayer) && par3EntityPlayer.isSneaking()) {
             rotateRituals(par2World, par3EntityPlayer, stack, true);
         }
 
@@ -379,7 +380,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
         if (entityLiving instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entityLiving;
 
-            if (!EnergyItems.checkAndSetItemOwner(stack, player)) return true;
+            if (!IBindable.checkAndSetItemOwner(stack, player)) return true;
 
             if (!player.isSwingInProgress) {
                 if (player.isSneaking()) {

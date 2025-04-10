@@ -50,9 +50,9 @@ public class SigilDivination extends Item implements ArmourUpgrade, IReagentMani
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
+        IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
 
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.worldObj.isRemote) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.worldObj.isRemote) {
             return par1ItemStack;
         }
 

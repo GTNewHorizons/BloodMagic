@@ -45,7 +45,7 @@ public class CheatyItem extends Item implements IBindable {
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         World world = par3EntityPlayer.worldObj;
 
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)
                 || par3EntityPlayer instanceof FakePlayer) {
             return par1ItemStack;
         }

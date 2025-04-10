@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items;
 
 import java.util.List;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,7 +43,7 @@ public class ItemRitualDismantler extends EnergyItems {
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7,
             float par8, float par9, float par10) {
-        return EnergyItems.checkAndSetItemOwner(stack, player)
+        return IBindable.checkAndSetItemOwner(stack, player)
                 && breakRitualStoneAtMasterStone(stack, player, world, x, y, z);
     }
 

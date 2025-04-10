@@ -43,7 +43,7 @@ public class ItemDiabloKey extends EnergyItems {
 
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         World world = par3EntityPlayer.worldObj;
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)
                 || par3EntityPlayer instanceof FakePlayer) {
             return par1ItemStack;
         }
@@ -101,7 +101,7 @@ public class ItemDiabloKey extends EnergyItems {
             }
 
             if (item instanceof IBindable) {
-                EnergyItems.checkAndSetItemOwner(itemStack, ownerName);
+                IBindable.checkAndSetItemOwner(itemStack, ownerName);
             }
         }
         par3EntityPlayer.inventoryContainer.detectAndSendChanges();
@@ -114,7 +114,7 @@ public class ItemDiabloKey extends EnergyItems {
     public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
         list.add(new ItemStack(ModItems.itemKeyOfDiablo));
         ItemStack boundKey = new ItemStack(ModItems.itemKeyOfDiablo);
-        EnergyItems.checkAndSetItemOwner(boundKey, "Server-wide Soul Network");
+        IBindable.checkAndSetItemOwner(boundKey, "Server-wide Soul Network");
         list.add(boundKey);
     }
 }

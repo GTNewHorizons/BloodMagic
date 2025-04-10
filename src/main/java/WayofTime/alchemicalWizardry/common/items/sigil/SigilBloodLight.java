@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items.sigil;
 
 import java.util.List;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -45,7 +46,7 @@ public class SigilBloodLight extends EnergyItems implements IHolding, ArmourUpgr
     @Override
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4,
             int par5, int par6, int par7, float par8, float par9, float par10) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par2EntityPlayer)
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par2EntityPlayer)
                 || !EnergyItems.syphonBatteries(par1ItemStack, par2EntityPlayer, getEnergyUsed())) {
             return true;
         }
@@ -83,7 +84,7 @@ public class SigilBloodLight extends EnergyItems implements IHolding, ArmourUpgr
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 

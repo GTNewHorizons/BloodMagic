@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items.sigil;
 
 import java.util.List;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -51,13 +52,7 @@ public class SigilOfTheFastMiner extends EnergyItems implements ArmourUpgrade, I
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (tag.getBoolean("isActive")) {
+        if (IBindable.isActive(stack)) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;
@@ -76,24 +71,12 @@ public class SigilOfTheFastMiner extends EnergyItems implements ArmourUpgrade, I
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = par1ItemStack.getTagCompound();
-        tag.setBoolean("isActive", !(tag.getBoolean("isActive")));
-
-        if (tag.getBoolean("isActive")
-                && EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, getEnergyUsed())) {
-            par1ItemStack.setItemDamage(1);
-            tag.setInteger("worldTimeDelay", (int) (par2World.getWorldTime() - 1) % 200);
+        if (ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay)) {
             par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 2, 1, true));
-        } else {
-            par1ItemStack.setItemDamage(par1ItemStack.getMaxDamage());
         }
 
         return par1ItemStack;
@@ -111,18 +94,11 @@ public class SigilOfTheFastMiner extends EnergyItems implements ArmourUpgrade, I
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
 
-        if (par1ItemStack.getTagCompound().getBoolean("isActive")) {
+        if (IBindable.isActive(par1ItemStack)) {
             par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 2, 1, true));
         }
 
-        if (par2World.getWorldTime() % 200 == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")
-                && par1ItemStack.getTagCompound().getBoolean("isActive")) {
-            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, getEnergyUsed())) {
-                    par1ItemStack.getTagCompound().setBoolean("isActive", false);
-                }
-            }
-        }
+        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, getEnergyUsed());
     }
 
     @Override

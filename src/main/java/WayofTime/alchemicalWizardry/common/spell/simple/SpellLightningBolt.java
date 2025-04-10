@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.spell.simple;
 
 import java.util.Random;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -23,7 +24,7 @@ public class SpellLightningBolt extends HomSpell {
     @Override
     public ItemStack onOffensiveRangedRightClick(ItemStack par1ItemStack, World par2World,
             EntityPlayer par3EntityPlayer) {
-        if (EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 
@@ -45,7 +46,7 @@ public class SpellLightningBolt extends HomSpell {
     public ItemStack onOffensiveMeleeRightClick(ItemStack par1ItemStack, World par2World,
             EntityPlayer par3EntityPlayer) {
         // TODO Make it work better...?
-        if (EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 
@@ -88,7 +89,7 @@ public class SpellLightningBolt extends HomSpell {
 
     @Override
     public ItemStack onDefensiveRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 
@@ -132,7 +133,7 @@ public class SpellLightningBolt extends HomSpell {
     @Override
     public ItemStack onEnvironmentalRightClick(ItemStack par1ItemStack, World par2World,
             EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 

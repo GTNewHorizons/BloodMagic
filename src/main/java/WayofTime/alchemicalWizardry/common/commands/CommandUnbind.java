@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
-import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 
 public class CommandUnbind extends CommandBase {
 
@@ -30,7 +29,7 @@ public class CommandUnbind extends CommandBase {
         ItemStack item = entityplayermp.getCurrentEquippedItem();
 
         if (item != null && item.getItem() instanceof IBindable) {
-            if (!EnergyItems.getOwnerName(item).isEmpty()) {
+            if (!IBindable.getOwnerName(item).isEmpty()) {
                 item.getTagCompound().removeTag("ownerName");
                 func_152373_a(iCommandSender, this, "commands.unbind.success");
             } else {

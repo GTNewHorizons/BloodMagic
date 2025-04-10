@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items.sigil;
 
 import java.util.List;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -30,8 +31,6 @@ public class SigilOfTheBridge extends EnergyItems implements ArmourUpgrade, ISig
     @SideOnly(Side.CLIENT)
     private IIcon passiveIcon;
 
-    private int tickDelay = 200;
-
     public SigilOfTheBridge() {
         super();
         this.maxStackSize = 1;
@@ -56,13 +55,7 @@ public class SigilOfTheBridge extends EnergyItems implements ArmourUpgrade, ISig
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (tag.getBoolean("isActive")) {
+        if (IBindable.isActive(stack)) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;
@@ -81,24 +74,11 @@ public class SigilOfTheBridge extends EnergyItems implements ArmourUpgrade, ISig
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = par1ItemStack.getTagCompound();
-        tag.setBoolean("isActive", !(tag.getBoolean("isActive")));
-
-        if (tag.getBoolean("isActive")
-                && EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, getEnergyUsed())) {
-            par1ItemStack.setItemDamage(1);
-            tag.setInteger("worldTimeDelay", (int) (par2World.getWorldTime() - 1) % tickDelay);
-        } else {
-            par1ItemStack.setItemDamage(par1ItemStack.getMaxDamage());
-        }
+        ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay);
 
         return par1ItemStack;
     }
@@ -115,15 +95,8 @@ public class SigilOfTheBridge extends EnergyItems implements ArmourUpgrade, ISig
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
 
-        if (par1ItemStack.getTagCompound().getBoolean("isActive")) {
-            if (par2World.getWorldTime() % tickDelay == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")) {
-                if (EnergyItems
-                        .syphonBatteries(par1ItemStack, (EntityPlayer) par3Entity, this.getLPUsed(par1ItemStack))) {
-                    this.setLPUsed(par1ItemStack, 0);
-                } else {
-                    par1ItemStack.getTagCompound().setBoolean("isActive", false);
-                }
-            }
+        if (IBindable.isActive(par1ItemStack)) {
+            IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, getEnergyUsed());
             if (!par3EntityPlayer.onGround && !par3EntityPlayer.isSneaking()) {
                 return;
             }

@@ -2,11 +2,11 @@ package WayofTime.alchemicalWizardry.common.items;
 
 import java.util.List;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -70,7 +70,7 @@ public class EnergyBlast extends EnergyItems {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (isActive(stack)) {
+        if (IBindable.isActive(stack)) {
             switch (this.tier) {
                 case 1:
                     return this.activeIcon;
@@ -87,7 +87,7 @@ public class EnergyBlast extends EnergyItems {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (getDelay(par1ItemStack) > 0 && isActive(par1ItemStack) && !par3EntityPlayer.isSneaking()) {
+        if (getDelay(par1ItemStack) > 0 && IBindable.isActive(par1ItemStack) && !par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 
@@ -123,7 +123,7 @@ public class EnergyBlast extends EnergyItems {
             this.setDelay(par1ItemStack, delay - 1);
         }
 
-        passiveDrain(par1ItemStack, par2World, par3EntityPlayer, getMaxDelayAfterActivation(), getActivationCost());
+        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, getMaxDelayAfterActivation(), getActivationCost());
 
         par1ItemStack.setItemDamage(0);
     }
@@ -175,10 +175,10 @@ public class EnergyBlast extends EnergyItems {
     }
 
     public void setDelay(ItemStack par1ItemStack, int delay) {
-        getTag(par1ItemStack).setInteger("delay", delay);
+        IBindable.getTag(par1ItemStack).setInteger("delay", delay);
     }
 
     public int getDelay(ItemStack par1ItemStack) {
-        return getTag(par1ItemStack).getInteger("delay");
+        return IBindable.getTag(par1ItemStack).getInteger("delay");
     }
 }

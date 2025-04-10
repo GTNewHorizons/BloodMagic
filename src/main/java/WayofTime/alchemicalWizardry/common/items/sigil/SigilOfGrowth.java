@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items.sigil;
 
 import java.util.List;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import net.minecraft.block.Block;
 import net.minecraft.block.IGrowable;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -58,13 +59,7 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (tag.getBoolean("isActive")) {
+        if (IBindable.isActive(stack)) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;
@@ -84,7 +79,7 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
     @Override
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4,
             int par5, int par6, int par7, float par8, float par9, float par10) {
-        if (EnergyItems.checkAndSetItemOwner(par1ItemStack, par2EntityPlayer)) {
+        if (IBindable.checkAndSetItemOwner(par1ItemStack, par2EntityPlayer)) {
             if (applyBonemeal(par1ItemStack, par3World, par4, par5, par6, par2EntityPlayer)) {
                 EnergyItems.syphonBatteries(par1ItemStack, par2EntityPlayer, getEnergyUsed());
 
@@ -101,7 +96,7 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 
@@ -109,20 +104,7 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
             return par1ItemStack;
         }
 
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = par1ItemStack.getTagCompound();
-        tag.setBoolean("isActive", !(tag.getBoolean("isActive")));
-
-        if (tag.getBoolean("isActive")
-                && EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, getEnergyUsed())) {
-            par1ItemStack.setItemDamage(1);
-            tag.setInteger("worldTimeDelay", (int) (par2World.getWorldTime() - 1) % tickDelay);
-        } else {
-            par1ItemStack.setItemDamage(par1ItemStack.getMaxDamage());
-        }
+        ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay);
 
         return par1ItemStack;
     }
@@ -137,12 +119,9 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
 
-        if (par1ItemStack.getTagCompound().getBoolean("isActive")) {
-            if (par2World.getWorldTime() % tickDelay == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")) {
-                if (!EnergyItems.syphonBatteries(par1ItemStack, (EntityPlayer) par3Entity, getEnergyUsed())) {
-                    par1ItemStack.getTagCompound().setBoolean("isActive", false);
-                }
-            }
+        if (IBindable.isActive(par1ItemStack)) {
+
+            IBindable.passiveDrain(par1ItemStack, par2World, (EntityPlayer) par3Entity, tickDelay, getEnergyUsed());
             int range = 3;
             int verticalRange = 2;
             int posX = (int) Math.round(par3Entity.posX - 0.5f);
