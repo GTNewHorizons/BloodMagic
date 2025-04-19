@@ -38,7 +38,7 @@ public class RitualEffectFeatheredKnife extends RitualEffect {
 
         int timeDelay = hasPotentia ? 10 : 20;
 
-        if (world.getWorldTime() % timeDelay != 0) {
+        if (world.getTotalWorldTime() % timeDelay != 0) {
             return;
         }
 
