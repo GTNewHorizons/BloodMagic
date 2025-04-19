@@ -69,7 +69,7 @@ public class RitualEffectFeatheredEarth extends RitualEffect // Nullifies all fa
 
             SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
 
-            if (flag && world.getWorldTime() % costCooldown == 0) {
+            if (flag && world.getTotalWorldTime() % costCooldown == 0) {
                 if (hasTerrae) {
                     this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, terraeDrain, true);
                 }
