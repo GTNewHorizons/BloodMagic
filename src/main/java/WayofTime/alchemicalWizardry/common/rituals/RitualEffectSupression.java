@@ -44,7 +44,7 @@ public class RitualEffectSupression extends RitualEffect {
         int radius = this.getRadiusForReagents(hasAether, hasAquasalus);
         int masterRadius = radius;
 
-        int yIndex = (int) (world.getWorldTime() % (2 * radius + 1)) - radius;
+        int yIndex = (int) (world.getTotalWorldTime() % (2 * radius + 1)) - radius;
         boolean expansion = false;
 
         if (ritualStone.getVar1() < (radius + 1)) {
@@ -86,7 +86,7 @@ public class RitualEffectSupression extends RitualEffect {
 
             SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * costMod);
 
-            if (world.getWorldTime() % 100 == 0) {
+            if (world.getTotalWorldTime() % 100 == 0) {
                 if (hasAquasalus) {
                     this.canDrainReagent(ritualStone, ReagentRegistry.aquasalusReagent, aquasalusDrain, true);
                 }
