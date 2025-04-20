@@ -86,7 +86,7 @@ public class SigilOfSupression extends EnergyItems implements ArmourUpgrade, ISi
             return par1ItemStack;
         }
 
-        ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay);
+        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
 
         return par1ItemStack;
     }
@@ -137,7 +137,7 @@ public class SigilOfSupression extends EnergyItems implements ArmourUpgrade, ISi
                 }
             }
         }
-        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, getEnergyUsed());
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
     }
 
     @Override

@@ -15,16 +15,11 @@ import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 
 public interface IBindable {
 
-    // The number of ticks between passive drains
-    int tickDelay = 200;
-    // Set this to true if the right click function should be disabled with the config disableBoundToolsRightClick
-    boolean isBoundTool = false;
-
     /**
      * Used by bound tools and the energy blaster/bazooka to check if they should skip their right click function.
+     * Drains the soul network by the amount returned by rightClickCost.
      */
-    default boolean checkRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer,
-            int rightClickCost) {
+    default boolean checkRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         if (toggle(par1ItemStack, par2World, par3EntityPlayer)) {
             return true;
         }
@@ -37,7 +32,7 @@ public interface IBindable {
             return true;
         }
 
-        if (isBoundTool && AlchemicalWizardry.disableBoundToolsRightClick) {
+        if (isBoundTool() && AlchemicalWizardry.disableBoundToolsRightClick) {
             return true;
         }
 
@@ -46,7 +41,7 @@ public interface IBindable {
         }
 
         if (!(par3EntityPlayer.capabilities.isCreativeMode
-                || EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, rightClickCost))) {
+                || EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, rightClickCost()))) {
             return true;
         }
 
@@ -91,33 +86,45 @@ public interface IBindable {
         return itemTag;
     }
 
-    static boolean toggle(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
+    default boolean toggle(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         if (!checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             setActive(par1ItemStack, !isActive(par1ItemStack));
-            setDrainTick(par1ItemStack, par2World, tickDelay);
+            setDrainTick(par1ItemStack, par2World);
             return true;
         }
         return false;
     }
 
-    static void passiveDrain(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer, int delay,
-            int cost) {
+    /**
+     * Checks if the current tick is the proper tick to do a passive drain based on getDrainTicks. If it is, it runs doPassiveDrain and returns true. Otherwise, returns false.
+     */
+    default boolean checkPassiveDrain(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         NBTTagCompound itemTag = getTag(par1ItemStack);
-        if (par2World.getTotalWorldTime() % delay == itemTag.getInteger("worldTimeDelay")
+        if (par2World.getTotalWorldTime() % this.drainTicks() == itemTag.getInteger("worldTimeDelay")
                 && itemTag.getBoolean("isActive")) {
-            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, cost)) {
-                    setActive(par1ItemStack, false);
-                }
+            this.doPassiveDrain(par1ItemStack, par3EntityPlayer);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * The action to take when checkPassiveDrain is run on the proper tick based on getDrainTicks.
+     */
+    default void doPassiveDrain(ItemStack par1ItemStack, EntityPlayer par3EntityPlayer) {
+        if (!par3EntityPlayer.capabilities.isCreativeMode) {
+            if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, drainCost())) {
+                setActive(par1ItemStack, false);
             }
         }
     }
 
     /**
-     * Sets the drain tick delay based on the current world age and the given modulus
+     * Sets the drain tick delay based on the current world age and getDrainTicks().
      */
-    static void setDrainTick(ItemStack par1ItemStack, World par2World, int modulus) {
-        getTag(par1ItemStack).setInteger("worldTimeDelay", (int) (par2World.getTotalWorldTime() - 1) % modulus);
+    default void setDrainTick(ItemStack par1ItemStack, World par2World) {
+        getTag(par1ItemStack)
+                .setInteger("worldTimeDelay", (int) (par2World.getTotalWorldTime() - 1) % this.drainTicks());
     }
 
     static boolean checkAndSetItemOwner(ItemStack item, EntityPlayer player) {
@@ -145,5 +152,33 @@ public interface IBindable {
     static String getOwnerName(ItemStack item) {
         NBTTagCompound tag = IBindable.getTag(item);
         return tag.getString("ownerName");
+    }
+
+    /**
+     * The number of ticks between passive drains from the soul network while the item is active.
+     */
+    default int drainTicks() {
+        return 200;
+    }
+
+    /**
+     * Return true if the right click function should be disabled with the config disableBoundToolsRightClick.
+     */
+    default boolean isBoundTool() {
+        return false;
+    }
+
+    /**
+     * The cost to use the right click function of this item. Used by bound tools and the Energy Blaster/Bazooka.
+     */
+    default int rightClickCost() {
+        return 0;
+    }
+
+    /**
+     * The amount of LP drained from the soul network for each passive drain while the item is active.
+     */
+    default int drainCost() {
+        return 0;
     }
 }

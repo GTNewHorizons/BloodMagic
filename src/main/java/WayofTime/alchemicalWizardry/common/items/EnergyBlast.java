@@ -91,8 +91,8 @@ public class EnergyBlast extends EnergyItems {
             return par1ItemStack;
         }
 
-        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed())) {
-            setDelay(par1ItemStack, getMaxDelayAfterActivation());
+        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer)) {
+            setDelay(par1ItemStack, drainTicks());
             return par1ItemStack;
         }
 
@@ -100,7 +100,7 @@ public class EnergyBlast extends EnergyItems {
 
         if (!par2World.isRemote) {
             shoot(par2World, par3EntityPlayer);
-            this.setDelay(par1ItemStack, getMaxDelay());
+            this.setDelay(par1ItemStack, getShotDelay());
         }
 
         return par1ItemStack;
@@ -123,17 +123,15 @@ public class EnergyBlast extends EnergyItems {
             this.setDelay(par1ItemStack, delay - 1);
         }
 
-        IBindable.passiveDrain(
-                par1ItemStack,
-                par2World,
-                par3EntityPlayer,
-                getMaxDelayAfterActivation(),
-                getActivationCost());
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
 
         par1ItemStack.setItemDamage(0);
     }
 
-    public int getMaxDelay() {
+    /**
+     * The delay between firing multiple shots.
+     */
+    public int getShotDelay() {
         switch (this.tier) {
             case 1:
                 return AlchemicalWizardry.energyBlastMaxDelay;
@@ -145,7 +143,11 @@ public class EnergyBlast extends EnergyItems {
         return 1;
     }
 
-    public int getMaxDelayAfterActivation() {
+    /**
+     * Used for the warmup delay as well as for passive draining.
+     */
+    @Override
+    public int drainTicks() {
         switch (this.tier) {
             case 1:
                 return AlchemicalWizardry.energyBlastMaxDelayAfterActivation;
@@ -157,7 +159,8 @@ public class EnergyBlast extends EnergyItems {
         return 1;
     }
 
-    public int getActivationCost() {
+    @Override
+    public int drainCost() {
         switch (this.tier) {
             case 1:
                 return AlchemicalWizardry.energyBlastLPPerActivation;
@@ -167,6 +170,11 @@ public class EnergyBlast extends EnergyItems {
                 return AlchemicalWizardry.energyBlastThirdTierLPPerActivation;
         }
         return 0;
+    }
+
+    @Override
+    public int rightClickCost() {
+        return getEnergyUsed();
     }
 
     @Override

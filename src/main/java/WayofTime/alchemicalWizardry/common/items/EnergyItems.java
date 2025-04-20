@@ -22,11 +22,16 @@ public class EnergyItems extends Item implements IBindable {
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
     }
 
-    protected void setEnergyUsed(int par1int) {
+    public void setEnergyUsed(int par1int) {
         this.energyUsed = par1int;
     }
 
-    protected int getEnergyUsed() {
+    public int getEnergyUsed() {
+        return this.energyUsed;
+    }
+
+    @Override
+    public int drainCost() {
         return this.energyUsed;
     }
 
@@ -89,9 +94,9 @@ public class EnergyItems extends Item implements IBindable {
                         posY,
                         posZ);
                 world.playSoundEffect(
-                        (double) ((float) player.posX + 0.5F),
-                        (double) ((float) player.posY + 0.5F),
-                        (double) ((float) player.posZ + 0.5F),
+                        ((float) player.posX + 0.5F),
+                        ((float) player.posY + 0.5F),
+                        ((float) player.posZ + 0.5F),
                         "random.fizz",
                         0.5F,
                         2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
@@ -180,21 +185,25 @@ public class EnergyItems extends Item implements IBindable {
         return true;
     }
 
+    // Used by some addon mods like Blood Arsenal
     @Deprecated
     public static boolean checkAndSetItemOwner(ItemStack item, EntityPlayer player) {
         return IBindable.checkAndSetItemOwner(item, player);
     }
 
+    // Used by some addon mods like Blood Arsenal
     @Deprecated
     public static void setItemOwner(ItemStack item, String ownerName) {
         IBindable.setItemOwner(item, ownerName);
     }
 
+    // Used by some addon mods like Blood Arsenal
     @Deprecated
     public static void checkAndSetItemOwner(ItemStack item, String ownerName) {
         IBindable.checkAndSetItemOwner(item, ownerName);
     }
 
+    // Used by some addon mods like Blood Arsenal
     @Deprecated
     public static String getOwnerName(ItemStack item) {
         return IBindable.getOwnerName(item);

@@ -64,7 +64,7 @@ public class EnergyBazooka extends EnergyBlast {
     }
 
     @Override
-    public int getMaxDelay() {
+    public int getShotDelay() {
         switch (this.tier) {
             case 1:
                 return AlchemicalWizardry.energyBazookaMaxDelay;
@@ -77,7 +77,7 @@ public class EnergyBazooka extends EnergyBlast {
     }
 
     @Override
-    public int getMaxDelayAfterActivation() {
+    public int drainTicks() {
         switch (this.tier) {
             case 1:
                 return AlchemicalWizardry.energyBazookaMaxDelayAfterActivation;
@@ -90,7 +90,7 @@ public class EnergyBazooka extends EnergyBlast {
     }
 
     @Override
-    public int getActivationCost() {
+    public int drainCost() {
         switch (this.tier) {
             case 1:
                 return AlchemicalWizardry.energyBazookaLPPerActivation;

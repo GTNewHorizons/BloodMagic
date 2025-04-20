@@ -33,8 +33,6 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
     @SideOnly(Side.CLIENT)
     private IIcon passiveIcon;
 
-    private int tickDelay = 100;
-
     public SigilOfGrowth() {
         super();
         this.maxStackSize = 1;
@@ -104,7 +102,7 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
             return par1ItemStack;
         }
 
-        ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay);
+        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
 
         return par1ItemStack;
     }
@@ -121,7 +119,7 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
 
         if (IBindable.isActive(par1ItemStack)) {
 
-            IBindable.passiveDrain(par1ItemStack, par2World, (EntityPlayer) par3Entity, tickDelay, getEnergyUsed());
+            checkPassiveDrain(par1ItemStack, par2World, (EntityPlayer) par3Entity);
             int range = 3;
             int verticalRange = 2;
             int posX = (int) Math.round(par3Entity.posX - 0.5f);
@@ -172,6 +170,11 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
         }
 
         return false;
+    }
+
+    @Override
+    public int drainTicks() {
+        return 100;
     }
 
     @Override

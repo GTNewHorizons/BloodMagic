@@ -34,7 +34,6 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
     public float efficiencyOnProperMaterial = 12.0F;
     public float damageVsEntity;
     public int rightClickCost = 10000;
-    public boolean isBoundTool = true;
 
     @SideOnly(Side.CLIENT)
     private IIcon activeIcon;
@@ -59,6 +58,11 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
     }
 
     public int getEnergyUsed() {
+        return this.energyUsed;
+    }
+
+    @Override
+    public int drainCost() {
         return this.energyUsed;
     }
 
@@ -88,7 +92,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer, rightClickCost)) {
+        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer)) {
             return par1ItemStack;
         }
         Vec3 blockVec = SpellHelper.getEntityBlockVector(par3EntityPlayer);
@@ -163,7 +167,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
 
-        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, 20);
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
 
         par1ItemStack.setItemDamage(0);
     }
@@ -197,7 +201,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
             EntityLivingBase par7EntityLivingBase) {
 
         if (par7EntityLivingBase instanceof EntityPlayer) {
-            EnergyItems.syphonBatteries(par1ItemStack, (EntityPlayer) par7EntityLivingBase, getEnergyUsed());
+            EnergyItems.syphonBatteries(par1ItemStack, (EntityPlayer) par7EntityLivingBase, drainCost());
         }
         return true;
     }
@@ -243,5 +247,15 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
     @Override
     public int getHarvestLevel(ItemStack stack, String toolClass) {
         return IBindable.isActive(stack) ? super.getHarvestLevel(stack, toolClass) : -1;
+    }
+
+    @Override
+    public boolean isBoundTool() {
+        return true;
+    }
+
+    @Override
+    public int rightClickCost() {
+        return rightClickCost;
     }
 }

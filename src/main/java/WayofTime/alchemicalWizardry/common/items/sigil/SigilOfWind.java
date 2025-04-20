@@ -74,7 +74,7 @@ public class SigilOfWind extends EnergyItems implements ArmourUpgrade, ISigil {
             return par1ItemStack;
         }
 
-        if (ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay)) {
+        if (toggleSigil(par1ItemStack, par2World, par3EntityPlayer)) {
             par3EntityPlayer.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionProjProt.id, 2, 1));
         }
 
@@ -97,7 +97,7 @@ public class SigilOfWind extends EnergyItems implements ArmourUpgrade, ISigil {
             par3EntityPlayer.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionProjProt.id, 2, 1));
         }
 
-        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, 200, getEnergyUsed());
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
     }
 
     @Override

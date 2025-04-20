@@ -31,8 +31,6 @@ public class SigilOfMagnetism extends EnergyItems implements ArmourUpgrade, IHol
     @SideOnly(Side.CLIENT)
     private IIcon passiveIcon;
 
-    private int tickDelay = 300;
-
     public SigilOfMagnetism() {
         super();
         this.maxStackSize = 1;
@@ -79,7 +77,7 @@ public class SigilOfMagnetism extends EnergyItems implements ArmourUpgrade, IHol
             return par1ItemStack;
         }
 
-        ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay);
+        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
 
         return par1ItemStack;
     }
@@ -98,7 +96,7 @@ public class SigilOfMagnetism extends EnergyItems implements ArmourUpgrade, IHol
 
         if (IBindable.isActive(par1ItemStack)) {
 
-            IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, getEnergyUsed());
+            checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
 
             int range = 5;
             int verticalRange = 5;
@@ -136,6 +134,11 @@ public class SigilOfMagnetism extends EnergyItems implements ArmourUpgrade, IHol
                 }
             }
         }
+    }
+
+    @Override
+    public int drainTicks() {
+        return 300;
     }
 
     @Override

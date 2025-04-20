@@ -75,7 +75,7 @@ public class SigilOfTheFastMiner extends EnergyItems implements ArmourUpgrade, I
             return par1ItemStack;
         }
 
-        if (ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay)) {
+        if (toggleSigil(par1ItemStack, par2World, par3EntityPlayer)) {
             par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 2, 1, true));
         }
 
@@ -98,7 +98,7 @@ public class SigilOfTheFastMiner extends EnergyItems implements ArmourUpgrade, I
             par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 2, 1, true));
         }
 
-        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, getEnergyUsed());
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
     }
 
     @Override

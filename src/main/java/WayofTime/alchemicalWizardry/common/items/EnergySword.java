@@ -34,8 +34,6 @@ public class EnergySword extends ItemSword implements IBindable {
     private IIcon passiveIcon;
 
     private int energyUsed;
-    // The number of ticks between passive drains
-    protected int tickDelay = 100;
 
     public EnergySword() {
         super(AlchemicalWizardry.bloodBoundToolMaterial);
@@ -51,6 +49,11 @@ public class EnergySword extends ItemSword implements IBindable {
     }
 
     public int getEnergyUsed() {
+        return this.energyUsed;
+    }
+
+    @Override
+    public int drainCost() {
         return this.energyUsed;
     }
 
@@ -95,7 +98,7 @@ public class EnergySword extends ItemSword implements IBindable {
             EntityLivingBase par3EntityLivingBase) {
         if (par3EntityLivingBase instanceof EntityPlayer) {
             if (!IBindable.checkAndSetItemOwner(par1ItemStack, (EntityPlayer) par3EntityLivingBase) || !EnergyItems
-                    .syphonBatteries(par1ItemStack, (EntityPlayer) par3EntityLivingBase, this.getEnergyUsed())) {
+                    .syphonBatteries(par1ItemStack, (EntityPlayer) par3EntityLivingBase, this.drainCost())) {
                 return false;
             }
         }
@@ -108,7 +111,7 @@ public class EnergySword extends ItemSword implements IBindable {
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         super.onItemRightClick(par1ItemStack, par2World, par3EntityPlayer);
 
-        IBindable.toggle(par1ItemStack, par2World, par3EntityPlayer);
+        this.toggle(par1ItemStack, par2World, par3EntityPlayer);
 
         return par1ItemStack;
     }
@@ -130,7 +133,7 @@ public class EnergySword extends ItemSword implements IBindable {
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
 
-        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, 100, 50);
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
 
         par1ItemStack.setItemDamage(0);
     }

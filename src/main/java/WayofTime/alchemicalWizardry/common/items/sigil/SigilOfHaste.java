@@ -74,7 +74,7 @@ public class SigilOfHaste extends EnergyItems implements ArmourUpgrade, ISigil {
             return par1ItemStack;
         }
 
-        if (ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay)) {
+        if (toggleSigil(par1ItemStack, par2World, par3EntityPlayer)) {
             par3EntityPlayer.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionBoost.id, 3, 1));
         }
 
@@ -97,7 +97,7 @@ public class SigilOfHaste extends EnergyItems implements ArmourUpgrade, ISigil {
             par3EntityPlayer.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionBoost.id, 3, 1));
         }
 
-        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, getEnergyUsed());
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
     }
 
     @Override

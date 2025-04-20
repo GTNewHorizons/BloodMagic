@@ -75,7 +75,7 @@ public class ArmourInhibitor extends EnergyItems {
 
         if (IBindable.isActive(par1ItemStack)) {
             par1ItemStack.setItemDamage(1);
-            IBindable.setDrainTick(par1ItemStack, par2World, tickDelay);
+            this.setDrainTick(par1ItemStack, par2World);
         } else {
             par1ItemStack.setItemDamage(par1ItemStack.getMaxDamage());
         }
@@ -92,10 +92,6 @@ public class ArmourInhibitor extends EnergyItems {
         EntityPlayer par3EntityPlayer = (EntityPlayer) par3Entity;
 
         if (IBindable.isActive(par1ItemStack)) {
-            if (par2World.getTotalWorldTime() % tickDelay
-                    == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")) {}
-
-            // TODO Do stuff
             par3EntityPlayer.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionInhibit.id, 2, 0));
         }
     }

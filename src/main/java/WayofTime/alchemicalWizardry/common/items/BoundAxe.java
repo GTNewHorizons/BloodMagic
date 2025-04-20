@@ -33,7 +33,6 @@ public class BoundAxe extends ItemAxe implements IBindable {
     public float efficiencyOnProperMaterial = 12.0F;
     public float damageVsEntity;
     public int rightClickCost = 10000;
-    public boolean isBoundTool = true;
 
     @SideOnly(Side.CLIENT)
     private IIcon activeIcon;
@@ -62,6 +61,11 @@ public class BoundAxe extends ItemAxe implements IBindable {
     }
 
     @Override
+    public int drainCost() {
+        return this.energyUsed;
+    }
+
+    @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.boundaxe.desc"));
         addBindingInformation(par1ItemStack, par3List);
@@ -86,7 +90,7 @@ public class BoundAxe extends ItemAxe implements IBindable {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer, rightClickCost)) {
+        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer)) {
             return par1ItemStack;
         }
 
@@ -146,7 +150,7 @@ public class BoundAxe extends ItemAxe implements IBindable {
         if (par1ItemStack.getTagCompound() == null) {
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
-        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, 20);
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
 
         par1ItemStack.setItemDamage(0);
     }
@@ -219,5 +223,15 @@ public class BoundAxe extends ItemAxe implements IBindable {
     @Override
     public int getHarvestLevel(ItemStack stack, String toolClass) {
         return IBindable.isActive(stack) ? super.getHarvestLevel(stack, toolClass) : -1;
+    }
+
+    @Override
+    public boolean isBoundTool() {
+        return true;
+    }
+
+    @Override
+    public int rightClickCost() {
+        return rightClickCost;
     }
 }

@@ -75,7 +75,7 @@ public class SigilOfElementalAffinity extends EnergyItems implements ISigil {
             return par1ItemStack;
         }
 
-        if (ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay)) {
+        if (toggleSigil(par1ItemStack, par2World, par3EntityPlayer)) {
             par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.waterBreathing.id, 2, 0, true));
             par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 2, 0, true));
         }
@@ -101,6 +101,6 @@ public class SigilOfElementalAffinity extends EnergyItems implements ISigil {
             par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.fireResistance.id, 2, 0, true));
         }
 
-        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, getEnergyUsed());
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
     }
 }

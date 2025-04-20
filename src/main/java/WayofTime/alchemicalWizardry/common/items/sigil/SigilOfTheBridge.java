@@ -78,7 +78,7 @@ public class SigilOfTheBridge extends EnergyItems implements ArmourUpgrade, ISig
             return par1ItemStack;
         }
 
-        ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay);
+        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
 
         return par1ItemStack;
     }
@@ -96,7 +96,7 @@ public class SigilOfTheBridge extends EnergyItems implements ArmourUpgrade, ISig
         }
 
         if (IBindable.isActive(par1ItemStack)) {
-            IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, getEnergyUsed());
+            checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
             if (!par3EntityPlayer.onGround && !par3EntityPlayer.isSneaking()) {
                 return;
             }

@@ -60,13 +60,7 @@ public class SigilDivination extends Item implements ArmourUpgrade, IReagentMani
             return par1ItemStack;
         }
 
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-        if (itemTag == null || itemTag.getString("ownerName").equals("")) {
-            return par1ItemStack;
-        }
-
-        String ownerName = itemTag.getString("ownerName");
+        String ownerName = IBindable.getOwnerName(par1ItemStack);
 
         MovingObjectPosition movingobjectposition = this
                 .getMovingObjectPositionFromPlayer(par2World, par3EntityPlayer, false);

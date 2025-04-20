@@ -76,7 +76,7 @@ public class SigilOfEnderSeverance extends EnergyItems implements IHolding, ISig
             return par1ItemStack;
         }
 
-        ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay);
+        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
 
         return par1ItemStack;
     }
@@ -104,6 +104,6 @@ public class SigilOfEnderSeverance extends EnergyItems implements IHolding, ISig
             }
         }
 
-        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, getEnergyUsed());
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
     }
 }

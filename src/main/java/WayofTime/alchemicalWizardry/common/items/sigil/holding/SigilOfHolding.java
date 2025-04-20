@@ -306,4 +306,9 @@ public class SigilOfHolding extends EnergyItems implements ISigil {
             inv[i].getItem().onUpdate(inv[i], par2World, par3Entity, par4, par5);
         }
     }
+
+    @Override
+    public boolean canBeStored() {
+        return false;
+    }
 }

@@ -76,7 +76,7 @@ public class SigilPackRat extends EnergyItems implements IHolding, ArmourUpgrade
             return par1ItemStack;
         }
 
-        ISigil.toggleSigil(par1ItemStack, par2World, par3EntityPlayer, getEnergyUsed(), tickDelay);
+        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
 
         return par1ItemStack;
     }
@@ -107,7 +107,7 @@ public class SigilPackRat extends EnergyItems implements IHolding, ArmourUpgrade
             }
         }
 
-        IBindable.passiveDrain(par1ItemStack, par2World, par3EntityPlayer, tickDelay, getEnergyUsed());
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
     }
 
     @Override
