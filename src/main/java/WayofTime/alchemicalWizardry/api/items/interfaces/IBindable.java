@@ -96,7 +96,8 @@ public interface IBindable {
     }
 
     /**
-     * Checks if the current tick is the proper tick to do a passive drain based on getDrainTicks. If it is, it runs doPassiveDrain and returns true. Otherwise, returns false.
+     * Checks if the current tick is the proper tick to do a passive drain based on getDrainTicks. If it is, it runs
+     * doPassiveDrain and returns true. Otherwise, returns false.
      */
     default boolean checkPassiveDrain(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         NBTTagCompound itemTag = getTag(par1ItemStack);
