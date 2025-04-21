@@ -13,10 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import WayofTime.alchemicalWizardry.client.nei.widgets.CostInfo;
-import WayofTime.alchemicalWizardry.client.nei.widgets.RadiusInfo;
-import WayofTime.alchemicalWizardry.client.nei.widgets.ReagentInfo;
-import WayofTime.alchemicalWizardry.client.nei.widgets.RitualInfo;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -31,6 +27,10 @@ import com.google.common.base.Joiner;
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
+import WayofTime.alchemicalWizardry.client.nei.widgets.CostInfo;
+import WayofTime.alchemicalWizardry.client.nei.widgets.RadiusInfo;
+import WayofTime.alchemicalWizardry.client.nei.widgets.ReagentInfo;
+import WayofTime.alchemicalWizardry.client.nei.widgets.RitualInfo;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorComponent;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorReagent;
@@ -304,7 +304,9 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
                 if (rect.contains(mousePos)) {
                     list.add(StatCollector.translateToLocal("nei.recipe.meteor.cost"));
                     if (SoulNetworkHandler.getCurrentEssence(mc.thePlayer.getDisplayName()) < cachedRecipe.getCost()) {
-                        list.add(EnumChatFormatting.RED + StatCollector.translateToLocal("nei.recipe.meteor.tooExpensive"));
+                        list.add(
+                                EnumChatFormatting.RED
+                                        + StatCollector.translateToLocal("nei.recipe.meteor.tooExpensive"));
                     }
                 }
 
@@ -323,6 +325,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
 
                 rect = reagentInfo.getRect(gui);
                 if (rect.contains(mousePos)) {
+                    reagentInfo.onHover(list);
                     addMeteorReagentInfo(list, cachedRecipe);
                 }
             }
@@ -350,14 +353,17 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
                     l.add(
                             StatCollector.translateToLocalFormatted(
                                     "nei.recipe.reagent.meteor.filler.chance",
-                                    fmt.format(Meteor.getNewFillerChance(
-                                            cachedRecipe.fillerChance,
-                                            Collections.singletonList(r)))));
+                                    fmt.format(
+                                            Meteor.getNewFillerChance(
+                                                    cachedRecipe.fillerChance,
+                                                    Collections.singletonList(r)))));
                 }
 
                 if (!mr.filler.isEmpty()) {
                     l.add(
-                            StatCollector.translateToLocalFormatted("nei.recipe.reagent.meteor.filler.blocks", reagentFillerBlockNames(mr)));
+                            StatCollector.translateToLocalFormatted(
+                                    "nei.recipe.reagent.meteor.filler.blocks",
+                                    reagentFillerBlockNames(mr)));
                 }
             }
 

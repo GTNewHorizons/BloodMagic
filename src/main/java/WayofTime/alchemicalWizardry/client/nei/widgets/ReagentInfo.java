@@ -7,8 +7,8 @@ import java.util.List;
 
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
-
 import net.minecraft.util.StatCollector;
+
 import org.lwjgl.opengl.GL11;
 
 import WayofTime.alchemicalWizardry.ModBlocks;

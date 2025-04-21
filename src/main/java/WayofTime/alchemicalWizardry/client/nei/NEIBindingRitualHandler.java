@@ -4,24 +4,20 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 
-import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
-import WayofTime.alchemicalWizardry.client.nei.widgets.ReagentInfo;
-import WayofTime.alchemicalWizardry.client.nei.widgets.RitualInfo;
-import codechicken.lib.gui.GuiDraw;
-import codechicken.nei.guihook.GuiContainerManager;
-import codechicken.nei.recipe.GuiRecipe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import WayofTime.alchemicalWizardry.api.bindingRegistry.BindingRecipe;
 import WayofTime.alchemicalWizardry.api.bindingRegistry.BindingRegistry;
+import WayofTime.alchemicalWizardry.client.nei.widgets.ReagentInfo;
+import WayofTime.alchemicalWizardry.client.nei.widgets.RitualInfo;
+import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
+import codechicken.nei.guihook.GuiContainerManager;
+import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-import net.minecraft.util.StatCollector;
-
-import static WayofTime.alchemicalWizardry.client.ClientUtils.mc;
 
 /**
  * Binding Ritual Handler by Arcaratus
@@ -88,6 +84,7 @@ public class NEIBindingRitualHandler extends TemplateRecipeHandler {
 
     /**
      * Draws for every recipe, but it should really just do it once per page.
+     * 
      * @param recipe The recipeIndex being drawn
      */
     @Override
