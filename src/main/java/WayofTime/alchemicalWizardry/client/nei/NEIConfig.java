@@ -13,6 +13,7 @@ import codechicken.nei.api.IConfigureNEI;
 public class NEIConfig implements IConfigureNEI {
 
     private static ArrayList<Item> bloodOrbs = null;
+    private static ArrayList<Item> byCapacity = null;
 
     public static ArrayList<Item> getBloodOrbs() {
         if (bloodOrbs == null) {
@@ -42,6 +43,19 @@ public class NEIConfig implements IConfigureNEI {
             }
         }
         return bloodOrbsTemp;
+    }
+
+    public static ArrayList<Item> getOrbsByCapacity() {
+        if (byCapacity == null) {
+            byCapacity = new ArrayList<>(getBloodOrbs());
+            byCapacity.sort((a, b) -> {
+                if (a instanceof IBloodOrb && b instanceof IBloodOrb) {
+                    return Integer.compare(((IBloodOrb) a).getMaxEssence(), ((IBloodOrb) b).getMaxEssence());
+                }
+                return 0;
+            });
+        }
+        return byCapacity;
     }
 
     @Override

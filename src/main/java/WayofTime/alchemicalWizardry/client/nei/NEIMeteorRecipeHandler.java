@@ -1,51 +1,70 @@
 package WayofTime.alchemicalWizardry.client.nei;
 
+import static WayofTime.alchemicalWizardry.client.ClientUtils.mc;
+
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import net.minecraft.client.Minecraft;
+import WayofTime.alchemicalWizardry.client.nei.widgets.CostInfo;
+import WayofTime.alchemicalWizardry.client.nei.widgets.RadiusInfo;
+import WayofTime.alchemicalWizardry.client.nei.widgets.ReagentInfo;
+import WayofTime.alchemicalWizardry.client.nei.widgets.RitualInfo;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.base.Joiner;
 
+import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
+import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.Meteor;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorComponent;
+import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorReagent;
+import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorReagentRegistry;
 import WayofTime.alchemicalWizardry.common.summoning.meteor.MeteorRegistry;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
+import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
 public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
 
+    private static final RitualInfo ritualInfo = new RitualInfo("AW019FallingTower", 0.75f);
+    private static final ReagentInfo reagentInfo = new ReagentInfo(0.75f);
+
     public class CachedMeteorRecipe extends CachedRecipe {
 
         private final List<PositionedStack> input = new ArrayList<>();
         private final List<PositionedStack> outputs = new ArrayList<>();
-        private final int cost;
-        private final int radius;
+        private final CostInfo costInfo;
+        private final RadiusInfo radiusInfo;
         private Point focus;
 
+        public float fillerChance;
+
         public CachedMeteorRecipe(Meteor meteor, ItemStack focusStack) {
-            this.input.add(new PositionedStack(meteor.focusItem, 74, 4));
+            this.input.add(new PositionedStack(meteor.focusItem, 75, 4));
             int row = 0;
             int col = 0;
 
             float totalComponentWeight = MeteorComponent.getTotalListWeight(meteor.ores);
-            float fillerChance = meteor.fillerChance;
+            fillerChance = meteor.fillerChance;
             List<MeteorComponent> sortedComponents = new ArrayList<>(meteor.ores);
             sortedComponents.sort(Comparator.comparingInt(c -> -c.getWeight()));
 
@@ -115,8 +134,8 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
                 }
             }
 
-            this.radius = meteor.radius;
-            this.cost = meteor.cost;
+            this.costInfo = new CostInfo(meteor.cost);
+            this.radiusInfo = new RadiusInfo(meteor.radius);
         }
 
         private String getReagentStrings(MeteorComponent component) {
@@ -144,11 +163,11 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
         }
 
         public int getCost() {
-            return cost;
+            return costInfo.getCost();
         }
 
         public int getRadius() {
-            return radius;
+            return radiusInfo.getRadius();
         }
     }
 
@@ -238,12 +257,10 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     @Override
     public void drawExtras(int recipe) {
         CachedMeteorRecipe meteorRecipe = (CachedMeteorRecipe) this.arecipes.get(recipe);
-        int cost = meteorRecipe.getCost();
-        int radius = meteorRecipe.getRadius();
-        Minecraft.getMinecraft().fontRenderer
-                .drawString(I18n.format("nei.recipe.meteor.cost", String.format("%,d", cost)), 2, 168, 0x000000);
-        Minecraft.getMinecraft().fontRenderer
-                .drawString(I18n.format("nei.recipe.meteor.radius", radius), 2, 179, 0x000000);
+        meteorRecipe.costInfo.onDraw(30, 4);
+        meteorRecipe.radiusInfo.onDraw(120, 4);
+        ritualInfo.onDraw(0, 0);
+        reagentInfo.onDraw(153, 0);
     }
 
     @Override
@@ -276,6 +293,91 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     }
 
     @Override
+    public List<String> handleTooltip(GuiRecipe<?> gui, List<String> list, int recipeIndex) {
+        if (GuiContainerManager.shouldShowTooltip(gui) && list.isEmpty()) {
+            CachedRecipe cRecipe = arecipes.get(recipeIndex);
+            Point mousePos = GuiDraw.getMousePosition();
+
+            if (cRecipe instanceof CachedMeteorRecipe) {
+                CachedMeteorRecipe cachedRecipe = (CachedMeteorRecipe) cRecipe;
+                Rectangle rect = cachedRecipe.costInfo.getRect(gui);
+                if (rect.contains(mousePos)) {
+                    list.add(StatCollector.translateToLocal("nei.recipe.meteor.cost"));
+                    if (SoulNetworkHandler.getCurrentEssence(mc.thePlayer.getDisplayName()) < cachedRecipe.getCost()) {
+                        list.add(EnumChatFormatting.RED + StatCollector.translateToLocal("nei.recipe.meteor.tooExpensive"));
+                    }
+                }
+
+                rect = cachedRecipe.radiusInfo.getRect(gui);
+                if (rect.contains(mousePos)) {
+                    list.add(
+                            StatCollector.translateToLocalFormatted(
+                                    "nei.recipe.meteor.diameter",
+                                    2 * cachedRecipe.radiusInfo.getRadius() + 1));
+                }
+
+                rect = ritualInfo.getRect(gui);
+                if (rect.contains(mousePos)) {
+                    ritualInfo.onHover(list);
+                }
+
+                rect = reagentInfo.getRect(gui);
+                if (rect.contains(mousePos)) {
+                    list.add(StatCollector.translateToLocal("nei.recipe.reagent.text"));
+                    addMeteorReagentInfo(list, cachedRecipe);
+                }
+            }
+        }
+        return super.handleTooltip(gui, list, recipeIndex);
+    }
+
+    private void addMeteorReagentInfo(List<String> list, CachedMeteorRecipe cachedRecipe) {
+        DecimalFormat fmt = new DecimalFormat("###.##");
+        for (Map.Entry<Reagent, MeteorReagent> entry : MeteorReagentRegistry.reagents.entrySet()) {
+            ArrayList<String> l = new ArrayList<>();
+            Reagent r = entry.getKey();
+            MeteorReagent mr = entry.getValue();
+
+            if (mr.radiusChange != 0) {
+                l.add(
+                        StatCollector.translateToLocalFormatted(
+                                "nei.recipe.reagent.meteor.radius",
+                                mr.radiusChange,
+                                Meteor.getNewRadius(cachedRecipe.getRadius(), Collections.singletonList(r))));
+            }
+
+            if (cachedRecipe.fillerChance > 0) {
+                if (mr.fillerChanceChange != 0 || mr.rawFillerChanceChange != 0) {
+                    l.add(
+                            StatCollector.translateToLocalFormatted(
+                                    "nei.recipe.reagent.meteor.filler.chance",
+                                    fmt.format(Meteor.getNewFillerChance(
+                                            cachedRecipe.fillerChance,
+                                            Collections.singletonList(r)))));
+                }
+
+                if (!mr.filler.isEmpty()) {
+                    l.add(
+                            StatCollector.translateToLocalFormatted("nei.recipe.reagent.meteor.filler.blocks", reagentFillerBlockNames(mr)));
+                }
+            }
+
+            if (mr.disableExplosions) {
+                l.add(StatCollector.translateToLocal("nei.recipe.reagent.meteor.explosions"));
+            } else if (mr.invertExplosionBlockDamage && AlchemicalWizardry.doMeteorsDestroyBlocks) {
+                l.add(StatCollector.translateToLocal("nei.recipe.reagent.meteor.blockDamage.off"));
+            } else if (mr.invertExplosionBlockDamage) {
+                l.add(StatCollector.translateToLocal("nei.recipe.reagent.meteor.blockDamage.on"));
+            }
+
+            if (!l.isEmpty()) {
+                list.add(r.name + ":");
+                list.addAll(l);
+            }
+        }
+    }
+
+    @Override
     public String getRecipeName() {
         return I18n.format("nei.recipe.meteor.category");
     }
@@ -291,5 +393,13 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
 
     private int getEstimatedAmount(float chance, int radius) {
         return (int) Math.ceil(4f / 3 * Math.PI * Math.pow(radius + 0.5, 3) * chance);
+    }
+
+    private String reagentFillerBlockNames(MeteorReagent mr) {
+        ArrayList<String> blockNames = new ArrayList<>();
+        for (MeteorComponent mc : mr.filler) {
+            blockNames.add(mc.getBlock().getDisplayName());
+        }
+        return Joiner.on(", ").join(blockNames);
     }
 }
