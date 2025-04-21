@@ -208,7 +208,7 @@ public class RitualEffectAutoAlchemy extends RitualEffect {
                     }
                 }
 
-                if (world.getWorldTime() % 10 == 0) {
+                if (world.getTotalWorldTime() % 10 == 0) {
                     if (flag == 0 && inputInv1 != null) {
                         for (int i = 0; i < recipe.length; i++) {
                             ItemStack recItem = recipe[i];

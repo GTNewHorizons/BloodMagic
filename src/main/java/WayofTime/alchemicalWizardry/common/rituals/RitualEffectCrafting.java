@@ -48,7 +48,7 @@ public class RitualEffectCrafting extends RitualEffect {
 
         boolean hasPotentia = this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, false);
 
-        if (world.getWorldTime() % (hasPotentia ? 1 : 4) != 0) {
+        if (world.getTotalWorldTime() % (hasPotentia ? 1 : 4) != 0) {
             return;
         }
 
