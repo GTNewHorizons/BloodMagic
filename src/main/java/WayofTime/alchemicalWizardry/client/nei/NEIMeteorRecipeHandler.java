@@ -323,7 +323,6 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
 
                 rect = reagentInfo.getRect(gui);
                 if (rect.contains(mousePos)) {
-                    list.add(StatCollector.translateToLocal("nei.recipe.reagent.text"));
                     addMeteorReagentInfo(list, cachedRecipe);
                 }
             }
