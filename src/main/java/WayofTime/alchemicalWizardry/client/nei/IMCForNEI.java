@@ -9,6 +9,7 @@ public class IMCForNEI {
     public static void IMCSender() {
         sendHandler("alchemicalwizardry.meteor", "AWWayofTime:masterStone", 130);
         sendCatalyst("alchemicalwizardry.meteor", "AWWayofTime:masterStone");
+        sendCatalyst("alchemicalwizardry.bindingritual", "AWWayofTime:masterStone");
     }
 
     private static void sendHandler(String handlerName, String stack, int height) {

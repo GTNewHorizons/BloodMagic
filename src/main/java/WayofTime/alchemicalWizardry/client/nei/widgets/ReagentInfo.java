@@ -3,10 +3,12 @@ package WayofTime.alchemicalWizardry.client.nei.widgets;
 import static WayofTime.alchemicalWizardry.client.ClientUtils.mc;
 
 import java.awt.Rectangle;
+import java.util.List;
 
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import WayofTime.alchemicalWizardry.ModBlocks;
@@ -36,5 +38,12 @@ public class ReagentInfo {
 
     public Rectangle getRect(GuiRecipe<?> gui) {
         return new Rectangle(gui.guiLeft + prevX + 4, gui.guiTop + prevY + 14, (int) (18 * scale), (int) (18 * scale));
+    }
+
+    /**
+     * Adds the text Reagent effects: to the tooltip list.
+     */
+    public void onHover(List<String> list) {
+        list.add(StatCollector.translateToLocal("nei.recipe.reagent.text"));
     }
 }

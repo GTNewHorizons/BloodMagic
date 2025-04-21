@@ -292,6 +292,7 @@ nei.recipe.reagent.meteor.filler.blocks= Replaces filler with %s
 nei.recipe.reagent.meteor.explosions= Entirely disables meteor explosions
 nei.recipe.reagent.meteor.blockDamage.on= Enables meteor block damage
 nei.recipe.reagent.meteor.blockDamage.off= Disables meteor block damage
+nei.recipe.reagent.none=No reagents can be added to this ritual.
 
 #Rituals
 ritual.AW001Water.name=Ritual of the Full Spring
