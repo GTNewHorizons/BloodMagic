@@ -34,6 +34,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
 
     public float efficiencyOnProperMaterial = 12.0F;
     public float damageVsEntity;
+    public int rightClickCost = 10000;
 
     @SideOnly(Side.CLIENT)
     private IIcon activeIcon;
@@ -62,22 +63,14 @@ public class BoundShovel extends ItemSpade implements IBindable {
     }
 
     @Override
+    public int drainCost() {
+        return this.energyUsed;
+    }
+
+    @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.boundshovel.desc"));
-
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            if (par1ItemStack.getTagCompound().getBoolean("isActive")) {
-                par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.activated"));
-            } else {
-                par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.deactivated"));
-            }
-
-            if (!par1ItemStack.getTagCompound().getString("ownerName").equals("")) {
-                par3List.add(
-                        StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                                + par1ItemStack.getTagCompound().getString("ownerName"));
-            }
-        }
+        addBindingInformation(par1ItemStack, par3List);
     }
 
     @Override
@@ -90,13 +83,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (tag.getBoolean("isActive")) {
+        if (IBindable.isActive(stack)) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;
@@ -105,29 +92,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            this.setActivated(par1ItemStack, !getActivated(par1ItemStack));
-            par1ItemStack.getTagCompound().setInteger("worldTimeDelay", (int) (par2World.getWorldTime() - 1) % 200);
-            return par1ItemStack;
-        }
-
-        if (par2World.isRemote) {
-            return par1ItemStack;
-        }
-
-        if (!getActivated(par1ItemStack) || SpellHelper.isFakePlayer(par2World, par3EntityPlayer)) {
-            return par1ItemStack;
-        }
-
-        if (AlchemicalWizardry.disableBoundToolsRightClick) {
-            return par1ItemStack;
-        }
-
-        if (par3EntityPlayer.isPotionActive(AlchemicalWizardry.customPotionInhibit)) {
-            return par1ItemStack;
-        }
-
-        if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, 10000)) {
+        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer)) {
             return par1ItemStack;
         }
 
@@ -186,36 +151,10 @@ public class BoundShovel extends ItemSpade implements IBindable {
         if (par1ItemStack.getTagCompound() == null) {
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
-        if (par2World.getWorldTime() % 200 == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")
-                && par1ItemStack.getTagCompound().getBoolean("isActive")) {
-            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, 20)) {
-                    this.setActivated(par1ItemStack, false);
-                }
-            }
-        }
+
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
 
         par1ItemStack.setItemDamage(0);
-    }
-
-    public void setActivated(ItemStack par1ItemStack, boolean newActivated) {
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-        if (itemTag == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        itemTag.setBoolean("isActive", newActivated);
-    }
-
-    public boolean getActivated(ItemStack par1ItemStack) {
-        if (!par1ItemStack.hasTagCompound()) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-        return itemTag.getBoolean("isActive");
     }
 
     /**
@@ -224,7 +163,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
      */
     @Override
     public float func_150893_a(ItemStack par1ItemStack, Block par2Block) {
-        if (!getActivated(par1ItemStack)) {
+        if (!IBindable.isActive(par1ItemStack)) {
             return 0.0F;
         }
 
@@ -237,7 +176,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
      */
     public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLivingBase,
             EntityLivingBase par3EntityLivingBase) {
-        return getActivated(par1ItemStack);
+        return IBindable.isActive(par1ItemStack);
     }
 
     public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, int par3, int par4, int par5, int par6,
@@ -275,7 +214,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
      */
     @Override
     public float getDigSpeed(ItemStack stack, Block block, int meta) {
-        if (!getActivated(stack)) {
+        if (!IBindable.isActive(stack)) {
             return 0.0F;
         }
 
@@ -288,11 +227,21 @@ public class BoundShovel extends ItemSpade implements IBindable {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
-        return !getActivated(stack);
+        return !IBindable.isActive(stack);
     }
 
     @Override
     public int getHarvestLevel(ItemStack stack, String toolClass) {
-        return getActivated(stack) ? super.getHarvestLevel(stack, toolClass) : -1;
+        return IBindable.isActive(stack) ? super.getHarvestLevel(stack, toolClass) : -1;
+    }
+
+    @Override
+    public boolean isBoundTool() {
+        return true;
+    }
+
+    @Override
+    public int rightClickCost() {
+        return rightClickCost;
     }
 }

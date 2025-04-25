@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
-import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 
 public class CommandBind extends CommandBase {
 
@@ -38,8 +37,8 @@ public class CommandBind extends CommandBase {
         }
 
         if (item != null && item.getItem() instanceof IBindable) {
-            if (EnergyItems.getOwnerName(item).isEmpty()) {
-                EnergyItems.checkAndSetItemOwner(item, targetPlayer);
+            if (IBindable.getOwnerName(item).isEmpty()) {
+                IBindable.checkAndSetItemOwner(item, targetPlayer);
                 func_152373_a(iCommandSender, this, "commands.bind.success");
             } else {
                 throw new CommandException("commands.bind.failed.alreadyBound");

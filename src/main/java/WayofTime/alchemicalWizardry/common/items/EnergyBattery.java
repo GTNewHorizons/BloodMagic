@@ -43,15 +43,11 @@ public class EnergyBattery extends Item implements ArmourUpgrade, IBindable, IBl
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.energybattery.desc"));
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                            + par1ItemStack.getTagCompound().getString("ownerName"));
-        }
+        addBindingInformation(par1ItemStack, par3List);
     }
 
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)) {
             return par1ItemStack;
         }
 
