@@ -82,16 +82,15 @@ public class NEIBindingRitualHandler extends TemplateRecipeHandler {
         }
     }
 
-    /**
-     * Draws for every recipe, but it should really just do it once per page.
-     * 
-     * @param recipe The recipeIndex being drawn
-     */
     @Override
     public void drawExtras(int recipe) {
         super.drawExtras(recipe);
-        ritualInfo.onDraw(0, 0);
-        reagentInfo.onDraw(150, 0);
+
+        // Only shows these for the first result
+        if (recipe == 0) {
+            ritualInfo.onDraw(0, 0);
+            reagentInfo.onDraw(150, 0);
+        }
     }
 
     @Override
@@ -100,7 +99,7 @@ public class NEIBindingRitualHandler extends TemplateRecipeHandler {
             CachedRecipe cRecipe = arecipes.get(recipeIndex);
             Point mousePos = GuiDraw.getMousePosition();
 
-            if (cRecipe instanceof NEIBindingRitualHandler.CachedBindingRecipe) {
+            if (recipeIndex == 0 && cRecipe instanceof NEIBindingRitualHandler.CachedBindingRecipe) {
                 Rectangle rect = ritualInfo.getRect(gui);
                 if (rect.contains(mousePos)) {
                     ritualInfo.onHover(list);
