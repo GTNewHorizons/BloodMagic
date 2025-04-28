@@ -245,6 +245,11 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     }
 
     @Override
+    public int recipiesPerPage() {
+        return 1;
+    }
+
+    @Override
     public String getGuiTexture() {
         return new ResourceLocation("alchemicalwizardry", "gui/nei/meteor.png").toString();
     }

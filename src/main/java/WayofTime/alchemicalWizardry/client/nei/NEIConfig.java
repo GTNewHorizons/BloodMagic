@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
 import codechicken.nei.ItemList;
@@ -14,6 +15,10 @@ public class NEIConfig implements IConfigureNEI {
 
     private static ArrayList<Item> bloodOrbs = null;
     private static ArrayList<Item> byCapacity = null;
+
+    public static final ResourceLocation ARROW_TEXTURE = new ResourceLocation(
+            "alchemicalwizardry",
+            "gui/nei/arrow.png");
 
     public static ArrayList<Item> getBloodOrbs() {
         if (bloodOrbs == null) {
@@ -72,6 +77,8 @@ public class NEIConfig implements IConfigureNEI {
         API.registerUsageHandler(new NEIBindingRitualHandler());
         API.registerRecipeHandler(new NEIMeteorRecipeHandler());
         API.registerUsageHandler(new NEIMeteorRecipeHandler());
+        API.registerRecipeHandler(new NEICalcinatorHandler());
+        API.registerUsageHandler(new NEICalcinatorHandler());
     }
 
     @Override
