@@ -2,15 +2,19 @@ package WayofTime.alchemicalWizardry.common.block;
 
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
@@ -28,6 +32,20 @@ public class BlockAlchemicCalcinator extends BlockContainer {
         this.setBlockName("alchemicCalcinator");
     }
 
+    @SideOnly(Side.CLIENT)
+    private IIcon icon;
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(int side, int meta) {
+        return icon;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        this.icon = iconRegister.registerIcon("AlchemicalWizardry:BlankRune");
+    }
     @Override
     public TileEntity createNewTileEntity(World world, int meta) {
         return new TEAlchemicCalcinator();
