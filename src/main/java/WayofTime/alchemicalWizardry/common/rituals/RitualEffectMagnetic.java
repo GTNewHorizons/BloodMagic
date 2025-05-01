@@ -68,7 +68,7 @@ public class RitualEffectMagnetic extends RitualEffect {
 
         boolean hasPotentia = this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, false);
 
-        if (world.getWorldTime() % (hasPotentia ? 10 : 40) != 0) {
+        if (world.getTotalWorldTime() % (hasPotentia ? 10 : 40) != 0) {
             return;
         }
 
