@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import WayofTime.alchemicalWizardry.compat.structurelib.CompatStructureLib;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -278,7 +277,7 @@ import WayofTime.alchemicalWizardry.common.tileEntity.TEWritingTable;
 import WayofTime.alchemicalWizardry.common.tileEntity.gui.GuiHandler;
 import WayofTime.alchemicalWizardry.common.tweaker.MineTweakerIntegration;
 import WayofTime.alchemicalWizardry.compat.BloodMagicWailaPlugin;
-import WayofTime.alchemicalWizardry.compat.structurelib.AltarStructure;
+import WayofTime.alchemicalWizardry.compat.structurelib.CompatStructureLib;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;

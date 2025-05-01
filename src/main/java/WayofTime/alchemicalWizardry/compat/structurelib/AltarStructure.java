@@ -1,8 +1,7 @@
 /*
- * Original class by https://github.com/Superfrogman98, copied with permission
- * Original PR: https://github.com/GTNewHorizons/StructureCompat/pull/6
- * Link to message giving permission (GT: New Horizons Discord server):
- * https://discord.com/channels/181078474394566657/603348502637969419/1367345532376453130
+ * Original class by https://github.com/Superfrogman98, copied with permission Original PR:
+ * https://github.com/GTNewHorizons/StructureCompat/pull/6 Link to message giving permission (GT: New Horizons Discord
+ * server): https://discord.com/channels/181078474394566657/603348502637969419/1367345532376453130
  */
 
 package WayofTime.alchemicalWizardry.compat.structurelib;
