@@ -131,7 +131,7 @@ public class BloodMagicConfiguration {
                 .getBoolean();
         AlchemicalWizardry.causeHungerChatMessage = config.get("WimpySettings", "causeHungerChatMessage", true)
                 .getBoolean();
-        AlchemicalWizardry.allowPotionRepair = config.get("WimpySettings", "allowPotionRepair", false).getBoolean();
+        AlchemicalWizardry.allowPotionRepair = config.get("WimpySettings", "allowPotionRepair", true).getBoolean();
         // AlchemicalWizardry.lockdownAltar = config.get("WimpySettings", "LockdownAltarWithRegen", true).getBoolean();
         AlchemicalWizardry.lockdownAltar = false;
         AlchemicalWizardry.disableBoundToolsRightClick = config
