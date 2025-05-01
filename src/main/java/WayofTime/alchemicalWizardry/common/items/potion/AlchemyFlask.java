@@ -1,5 +1,7 @@
 package WayofTime.alchemicalWizardry.common.items.potion;
 
+import static WayofTime.alchemicalWizardry.AlchemicalWizardry.allowPotionRepair;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -346,5 +348,11 @@ public class AlchemyFlask extends Item {
         }
         potionStack.getTagCompound().setTag("CustomPotionEffects", nbttaglist);
         return new EntityPotion(worldObj, entityLivingBase, potionStack);
+    }
+
+    @Override
+    public boolean isRepairable() {
+        if (allowPotionRepair) return super.isRepairable();
+        return false;
     }
 }
