@@ -493,6 +493,7 @@ public class AlchemicalWizardry {
     public static boolean causeHungerWithRegen;
     public static boolean causeHungerChatMessage = true;
     public static boolean disableBoundToolsRightClick;
+    public static boolean allowPotionRepair;
 
     public static BlockStack[] secondTierRunes = new BlockStack[10];
     public static BlockStack[] thirdTierRunes = new BlockStack[10];
