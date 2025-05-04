@@ -39,4 +39,6 @@ dependencies {
 
     compileOnly("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev") {transitive = false }
     compileOnly("curse.maven:guide-api-228832:2287185") {transitive = false }
+
+    compileOnly("com.github.GTNewHorizons:StructureLib:1.4.6:dev")
 }
