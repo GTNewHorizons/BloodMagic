@@ -39,18 +39,13 @@ public class CheatyItem extends Item implements IBindable {
         par3List.add(StatCollector.translateToLocal("tooltip.mode.creative"));
         par3List.add(StatCollector.translateToLocal("tooltip.cheatyitem.desc1"));
         par3List.add(StatCollector.translateToLocal("tooltip.cheatyitem.desc2"));
-
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                            + par1ItemStack.getTagCompound().getString("ownerName"));
-        }
+        addBindingInformation(par1ItemStack, par3List);
     }
 
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         World world = par3EntityPlayer.worldObj;
 
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)
                 || par3EntityPlayer instanceof FakePlayer) {
             return par1ItemStack;
         }
