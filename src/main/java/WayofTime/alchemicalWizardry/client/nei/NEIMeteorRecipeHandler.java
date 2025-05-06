@@ -26,7 +26,7 @@ import com.google.common.base.Joiner;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
-import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
+import WayofTime.alchemicalWizardry.api.spell.APISpellHelper;
 import WayofTime.alchemicalWizardry.client.nei.widgets.CostInfo;
 import WayofTime.alchemicalWizardry.client.nei.widgets.RadiusInfo;
 import WayofTime.alchemicalWizardry.client.nei.widgets.ReagentInfo;
@@ -303,7 +303,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
                 Rectangle rect = cachedRecipe.costInfo.getRect(gui);
                 if (rect.contains(mousePos)) {
                     list.add(StatCollector.translateToLocal("nei.recipe.meteor.cost"));
-                    if (SoulNetworkHandler.getCurrentEssence(mc.thePlayer.getDisplayName()) < cachedRecipe.getCost()) {
+                    if (APISpellHelper.getPlayerLPTag(mc.thePlayer) < cachedRecipe.getCost()) {
                         list.add(
                                 EnumChatFormatting.RED
                                         + StatCollector.translateToLocal("nei.recipe.meteor.tooExpensive"));

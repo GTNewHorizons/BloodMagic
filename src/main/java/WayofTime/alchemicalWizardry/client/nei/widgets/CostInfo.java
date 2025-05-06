@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
-import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
+import WayofTime.alchemicalWizardry.api.spell.APISpellHelper;
 import codechicken.nei.recipe.GuiRecipe;
 
 public class CostInfo {
@@ -57,7 +57,7 @@ public class CostInfo {
         prevX = x;
         prevY = y;
 
-        int currentLP = SoulNetworkHandler.getCurrentEssence(mc.thePlayer.getDisplayName());
+        int currentLP = APISpellHelper.getPlayerLPTag(mc.thePlayer);
 
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_BLEND);
