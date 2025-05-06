@@ -1,8 +1,6 @@
 package WayofTime.alchemicalWizardry.client.nei.widgets;
 
 import static WayofTime.alchemicalWizardry.client.ClientUtils.mc;
-import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.getBloodOrbs;
-import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.getOrbsByCapacity;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -16,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
 import WayofTime.alchemicalWizardry.api.spell.APISpellHelper;
+import WayofTime.alchemicalWizardry.client.nei.NEIConfig;
 import codechicken.nei.recipe.GuiRecipe;
 
 public class CostInfo {
@@ -32,8 +31,7 @@ public class CostInfo {
         this.cost = cost;
 
         Item orb = null;
-        getOrbsByCapacity();
-        ArrayList<Item> orbList = getBloodOrbs();
+        ArrayList<Item> orbList = NEIConfig.getOrbsByCapacity();
         for (Item o : orbList) {
             if (((IBloodOrb) o).getMaxEssence() >= cost) {
                 orb = o;
@@ -55,13 +53,11 @@ public class CostInfo {
         prevX = x;
         prevY = y;
 
-        int currentLP = APISpellHelper.getPlayerLPTag(mc.thePlayer);
-
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        if (cost > currentLP) {
+        if (cost > APISpellHelper.getPlayerLPTag(mc.thePlayer)) {
             GL11.glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
         } else {
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
