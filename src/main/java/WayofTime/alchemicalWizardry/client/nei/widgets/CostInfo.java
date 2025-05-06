@@ -63,7 +63,7 @@ public class CostInfo {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-        if (orbLP > currentLP) {
+        if (cost > currentLP) {
             GL11.glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
         } else {
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
