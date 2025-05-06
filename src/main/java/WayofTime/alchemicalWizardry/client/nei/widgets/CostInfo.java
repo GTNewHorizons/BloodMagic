@@ -22,7 +22,6 @@ public class CostInfo {
 
     private final int cost;
     private int prevX, prevY;
-    private final int orbLP;
     private final ItemStack orbStack;
     private static final RenderItem renderItem = new RenderItem();
     static {
@@ -45,7 +44,6 @@ public class CostInfo {
             orb = orbList.get(orbList.size() - 1);
         }
 
-        orbLP = ((IBloodOrb) orb).getMaxEssence();
         orbStack = new ItemStack(orb);
     }
 
