@@ -20,7 +20,6 @@ import WayofTime.alchemicalWizardry.api.rituals.IMasterRitualStone;
 import WayofTime.alchemicalWizardry.api.rituals.RitualComponent;
 import WayofTime.alchemicalWizardry.api.rituals.RitualEffect;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
-import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 import WayofTime.alchemicalWizardry.common.items.armour.BoundArmour;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 
@@ -65,13 +64,13 @@ public class RitualEffectUnbinding extends RitualEffect {
                 boolean hasSanctus = this
                         .canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, false);
                 if (hasSanctus) {
-                    if (itemStack.getItem() instanceof IBindable && !EnergyItems.getOwnerName(itemStack).equals("")) {
+                    if (itemStack.getItem() instanceof IBindable && !IBindable.getOwnerName(itemStack).equals("")) {
                         world.addWeatherEffect(new EntityLightningBolt(world, x, y + 1, z - 5));
                         world.addWeatherEffect(new EntityLightningBolt(world, x, y + 1, z + 5));
                         world.addWeatherEffect(new EntityLightningBolt(world, x - 5, y + 1, z));
                         world.addWeatherEffect(new EntityLightningBolt(world, x + 5, y + 1, z));
 
-                        EnergyItems.setItemOwner(itemStack, "");
+                        IBindable.setItemOwner(itemStack, "");
                         this.canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, true);
                         drain = true;
                         ritualStone.setActive(false);
