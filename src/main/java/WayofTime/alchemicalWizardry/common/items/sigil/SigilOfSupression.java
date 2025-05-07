@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.items.interfaces.ArmourUpgrade;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.items.interfaces.ISigil;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
@@ -44,18 +45,7 @@ public class SigilOfSupression extends EnergyItems implements ArmourUpgrade, ISi
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.sigilofsupression.desc"));
-
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            if (par1ItemStack.getTagCompound().getBoolean("isActive")) {
-                par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.activated"));
-            } else {
-                par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.deactivated"));
-            }
-
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                            + par1ItemStack.getTagCompound().getString("ownerName"));
-        }
+        addBindingInformation(par1ItemStack, par3List);
     }
 
     @Override
@@ -68,16 +58,10 @@ public class SigilOfSupression extends EnergyItems implements ArmourUpgrade, ISi
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (tag.getBoolean("isActive")) {
-            return activeIcon;
+        if (IBindable.isActive(stack)) {
+            return this.activeIcon;
         } else {
-            return passiveIcon;
+            return this.passiveIcon;
         }
     }
 
@@ -93,9 +77,7 @@ public class SigilOfSupression extends EnergyItems implements ArmourUpgrade, ISi
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        int tickDelay = 200;
-
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)
                 || SpellHelper.isFakePlayer(par2World, par3EntityPlayer)) {
             return par1ItemStack;
         }
@@ -104,25 +86,7 @@ public class SigilOfSupression extends EnergyItems implements ArmourUpgrade, ISi
             return par1ItemStack;
         }
 
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = par1ItemStack.getTagCompound();
-        tag.setBoolean("isActive", !(tag.getBoolean("isActive")));
-
-        if (tag.getBoolean("isActive")) {
-            par1ItemStack.setItemDamage(1);
-            tag.setInteger("worldTimeDelay", (int) (par2World.getWorldTime() - 1) % tickDelay);
-
-            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, getEnergyUsed())) {
-                    tag.setBoolean("isActive", false);
-                }
-            }
-        } else {
-            par1ItemStack.setItemDamage(par1ItemStack.getMaxDamage());
-        }
+        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
 
         return par1ItemStack;
     }
@@ -143,7 +107,7 @@ public class SigilOfSupression extends EnergyItems implements ArmourUpgrade, ISi
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
 
-        if (par1ItemStack.getTagCompound().getBoolean("isActive") && (!par2World.isRemote)) {
+        if (IBindable.isActive(par1ItemStack) && (!par2World.isRemote)) {
             Vec3 blockVec = SpellHelper.getEntityBlockVector(par3EntityPlayer);
             int x = (int) blockVec.xCoord;
             int y = (int) blockVec.yCoord;
@@ -173,15 +137,7 @@ public class SigilOfSupression extends EnergyItems implements ArmourUpgrade, ISi
                 }
             }
         }
-
-        if (par2World.getWorldTime() % 200 == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")
-                && par1ItemStack.getTagCompound().getBoolean("isActive")) {
-            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, getEnergyUsed())) {
-                    par1ItemStack.getTagCompound().setBoolean("isActive", false);
-                }
-            }
-        }
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
     }
 
     @Override

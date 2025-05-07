@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.items.interfaces.ArmourUpgrade;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.items.interfaces.ISigil;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 import cpw.mods.fml.relauncher.Side;
@@ -37,18 +38,7 @@ public class SigilOfWind extends EnergyItems implements ArmourUpgrade, ISigil {
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.sigilofwind.desc"));
-
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            if (par1ItemStack.getTagCompound().getBoolean("isActive")) {
-                par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.activated"));
-            } else {
-                par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.deactivated"));
-            }
-
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                            + par1ItemStack.getTagCompound().getString("ownerName"));
-        }
+        addBindingInformation(par1ItemStack, par3List);
     }
 
     @Override
@@ -61,13 +51,7 @@ public class SigilOfWind extends EnergyItems implements ArmourUpgrade, ISigil {
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (tag.getBoolean("isActive")) {
+        if (IBindable.isActive(stack)) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;
@@ -86,24 +70,12 @@ public class SigilOfWind extends EnergyItems implements ArmourUpgrade, ISigil {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
             return par1ItemStack;
         }
 
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = par1ItemStack.getTagCompound();
-        tag.setBoolean("isActive", !(tag.getBoolean("isActive")));
-
-        if (tag.getBoolean("isActive")
-                && EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, getEnergyUsed())) {
-            par1ItemStack.setItemDamage(1);
-            tag.setInteger("worldTimeDelay", (int) (par2World.getWorldTime() - 1) % 200);
+        if (toggleSigil(par1ItemStack, par2World, par3EntityPlayer)) {
             par3EntityPlayer.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionProjProt.id, 2, 1));
-        } else {
-            par1ItemStack.setItemDamage(par1ItemStack.getMaxDamage());
         }
 
         return par1ItemStack;
@@ -121,18 +93,11 @@ public class SigilOfWind extends EnergyItems implements ArmourUpgrade, ISigil {
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
 
-        if (par1ItemStack.getTagCompound().getBoolean("isActive")) {
+        if (IBindable.isActive(par1ItemStack)) {
             par3EntityPlayer.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionProjProt.id, 2, 1));
         }
 
-        if (par2World.getWorldTime() % 200 == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")
-                && par1ItemStack.getTagCompound().getBoolean("isActive")) {
-            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, getEnergyUsed())) {
-                    par1ItemStack.getTagCompound().setBoolean("isActive", false);
-                }
-            }
-        }
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
     }
 
     @Override

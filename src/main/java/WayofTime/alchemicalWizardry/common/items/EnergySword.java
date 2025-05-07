@@ -19,12 +19,13 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.common.omega.OmegaParadigm;
 import WayofTime.alchemicalWizardry.common.omega.OmegaRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class EnergySword extends ItemSword {
+public class EnergySword extends ItemSword implements IBindable {
 
     @SideOnly(Side.CLIENT)
     private IIcon activeIcon;
@@ -52,6 +53,11 @@ public class EnergySword extends ItemSword {
     }
 
     @Override
+    public int drainCost() {
+        return this.energyUsed;
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister) {
         this.itemIcon = iconRegister.registerIcon("AlchemicalWizardry:BoundSword_activated");
@@ -61,13 +67,7 @@ public class EnergySword extends ItemSword {
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (stack.getTagCompound() == null) {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (tag.getBoolean("isActive")) {
+        if (IBindable.isActive(stack)) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;
@@ -80,7 +80,7 @@ public class EnergySword extends ItemSword {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
-        boolean isActive = getActivated(stack);
+        boolean isActive = IBindable.isActive(stack);
         if (isActive && !player.worldObj.isRemote) {
             OmegaParadigm parad = this.getOmegaParadigmOfWeilder(player);
 
@@ -97,8 +97,8 @@ public class EnergySword extends ItemSword {
     public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLivingBase,
             EntityLivingBase par3EntityLivingBase) {
         if (par3EntityLivingBase instanceof EntityPlayer) {
-            if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, (EntityPlayer) par3EntityLivingBase) || !EnergyItems
-                    .syphonBatteries(par1ItemStack, (EntityPlayer) par3EntityLivingBase, this.getEnergyUsed())) {
+            if (!IBindable.checkAndSetItemOwner(par1ItemStack, (EntityPlayer) par3EntityLivingBase) || !EnergyItems
+                    .syphonBatteries(par1ItemStack, (EntityPlayer) par3EntityLivingBase, this.drainCost())) {
                 return false;
             }
         }
@@ -110,15 +110,8 @@ public class EnergySword extends ItemSword {
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
         super.onItemRightClick(par1ItemStack, par2World, par3EntityPlayer);
-        if (!EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            this.setActivated(par1ItemStack, !getActivated(par1ItemStack));
-            par1ItemStack.getTagCompound().setInteger("worldTimeDelay", (int) (par2World.getWorldTime() - 1) % 100);
-            return par1ItemStack;
-        }
 
-        if (!getActivated(par1ItemStack)) {
-            return par1ItemStack;
-        }
+        this.toggle(par1ItemStack, par2World, par3EntityPlayer);
 
         return par1ItemStack;
     }
@@ -140,36 +133,9 @@ public class EnergySword extends ItemSword {
             par1ItemStack.setTagCompound(new NBTTagCompound());
         }
 
-        if (par2World.getWorldTime() % 100 == par1ItemStack.getTagCompound().getInteger("worldTimeDelay")
-                && par1ItemStack.getTagCompound().getBoolean("isActive")) {
-            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, 50)) {
-                    this.setActivated(par1ItemStack, false);
-                }
-            }
-        }
+        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
 
         par1ItemStack.setItemDamage(0);
-    }
-
-    public void setActivated(ItemStack par1ItemStack, boolean newActivated) {
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-        if (itemTag == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        itemTag.setBoolean("isActive", newActivated);
-    }
-
-    public boolean getActivated(ItemStack par1ItemStack) {
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-        if (itemTag == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        return itemTag.getBoolean("isActive");
     }
 
     public float func_82803_g() {
@@ -180,20 +146,7 @@ public class EnergySword extends ItemSword {
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.caution.desc1"));
         par3List.add(StatCollector.translateToLocal("tooltip.caution.desc2"));
-
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            if (par1ItemStack.getTagCompound().getBoolean("isActive")) {
-                par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.activated"));
-            } else {
-                par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.deactivated"));
-            }
-
-            if (!par1ItemStack.getTagCompound().getString("ownerName").equals("")) {
-                par3List.add(
-                        StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                                + par1ItemStack.getTagCompound().getString("ownerName"));
-            }
-        }
+        addBindingInformation(par1ItemStack, par3List);
     }
 
     @Override

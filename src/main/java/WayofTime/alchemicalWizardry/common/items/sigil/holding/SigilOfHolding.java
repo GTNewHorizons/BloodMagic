@@ -14,11 +14,13 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
+import WayofTime.alchemicalWizardry.api.items.interfaces.ISigil;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class SigilOfHolding extends EnergyItems {
+public class SigilOfHolding extends EnergyItems implements ISigil {
 
     private static int invSize = 5;
 
@@ -60,9 +62,8 @@ public class SigilOfHolding extends EnergyItems {
         par3List.add(StatCollector.translateToLocal("tooltip.sigilofholding.desc"));
 
         if (!(par1ItemStack.getTagCompound() == null)) {
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                            + par1ItemStack.getTagCompound().getString("ownerName"));
+            addBindingInformation(par1ItemStack, par3List);
+
             ItemStack[] inv = getInternalInventory(par1ItemStack);
 
             if (inv == null) {
@@ -91,7 +92,7 @@ public class SigilOfHolding extends EnergyItems {
     @Override
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4,
             int par5, int par6, int par7, float par8, float par9, float par10) {
-        if (checkAndSetItemOwner(par1ItemStack, par2EntityPlayer)) {
+        if (IBindable.checkAndSetItemOwner(par1ItemStack, par2EntityPlayer)) {
             int currentSlot = getCurrentItem(par1ItemStack);
             ItemStack[] inv = getInternalInventory(par1ItemStack);
 
@@ -118,7 +119,7 @@ public class SigilOfHolding extends EnergyItems {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)) {
+        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)) {
             if (par3EntityPlayer.isSneaking()) {
                 InventoryHolding.setUUID(par1ItemStack);
                 par3EntityPlayer.openGui(
@@ -153,7 +154,7 @@ public class SigilOfHolding extends EnergyItems {
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
             float hitX, float hitY, float hitZ) {
-        if (checkAndSetItemOwner(stack, player)) {
+        if (IBindable.checkAndSetItemOwner(stack, player)) {
             int currentSlot = getCurrentItem(stack);
             ItemStack[] inv = getInternalInventory(stack);
 
@@ -304,5 +305,10 @@ public class SigilOfHolding extends EnergyItems {
 
             inv[i].getItem().onUpdate(inv[i], par2World, par3Entity, par4, par5);
         }
+    }
+
+    @Override
+    public boolean canBeStored() {
+        return false;
     }
 }

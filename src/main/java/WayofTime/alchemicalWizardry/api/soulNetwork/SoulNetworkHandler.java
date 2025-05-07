@@ -14,6 +14,7 @@ import WayofTime.alchemicalWizardry.api.event.AddToNetworkEvent;
 import WayofTime.alchemicalWizardry.api.event.ItemBindEvent;
 import WayofTime.alchemicalWizardry.api.event.ItemDrainInContainerEvent;
 import WayofTime.alchemicalWizardry.api.event.ItemDrainNetworkEvent;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.Event.Result;
@@ -340,14 +341,9 @@ public class SoulNetworkHandler {
         return false;
     }
 
+    @Deprecated
     public static void checkAndSetItemOwner(ItemStack item, String ownerName) {
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-        }
-
-        if (item.getTagCompound().getString("ownerName").equals("")) {
-            item.getTagCompound().setString("ownerName", ownerName);
-        }
+        IBindable.checkAndSetItemOwner(item, ownerName);
     }
 
     public static String getUsername(EntityPlayer player) {
