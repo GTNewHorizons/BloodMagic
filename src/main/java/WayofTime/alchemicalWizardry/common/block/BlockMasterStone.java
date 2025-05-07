@@ -11,6 +11,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.common.items.ActivationCrystal;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEMasterStone;
 import cpw.mods.fml.relauncher.Side;
@@ -79,7 +80,7 @@ public class BlockMasterStone extends BlockContainer {
                 acItem.getCrystalLevel(playerItem),
                 playerItem,
                 player,
-                acItem.getOwnerName(playerItem));
+                IBindable.getOwnerName(playerItem));
         world.markBlockForUpdate(x, y, z);
         return true;
     }
