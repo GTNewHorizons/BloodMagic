@@ -199,11 +199,11 @@ public class ItemIncense extends Item implements IIncense {
 
     public enum EnumIncense {
 
-        WOODASH(0, 200, 1.0f, 1000, 0.937f, 0.898f, 0.820f),
-        RED(200, 600, 1.5f, 1000, 1.0f, 0, 0),
-        BLUE(600, 1200, 3.0f, 1000, 0, 0, 1.0f),
-        GREEN(1200, 2000, 4.0f, 1000, 0, 1.0f, 0),
-        PURPLE(2000, 3000, 5.0f, 1000, 1.0f, 0, 1.0f);
+        WOODASH(0, 400, 1.0f, 2000, 0.937f, 0.898f, 0.820f),
+        RED(400, 800, 1.5f, 2000, 1.0f, 0, 0),
+        BLUE(800, 1500, 3.0f, 2000, 0, 0, 1.0f),
+        GREEN(1500, 2400, 4.0f, 2000, 0, 1.0f, 0),
+        PURPLE(2400, 3500, 5.0f, 2000, 1.0f, 0, 1.0f);
 
         public final int minValue;
         public final int maxValue;
