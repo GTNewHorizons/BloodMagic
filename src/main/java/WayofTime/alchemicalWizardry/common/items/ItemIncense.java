@@ -142,6 +142,9 @@ public class ItemIncense extends Item implements IIncense {
         ItemStack quartzStack = new ItemStack(Items.quartz, 1, WILDCARD);
         ItemStack blazePowderStack = new ItemStack(Items.blaze_powder);
         ItemStack netherwartStack = new ItemStack(Items.nether_wart);
+
+        ItemStack blankSlateStack = new ItemStack(ModItems.blankSlate);
+        ItemStack reinforcedSlateStack = new ItemStack(ModItems.reinforcedSlate);
         ItemStack fracturedBoneStack = new ItemStack(ModItems.baseAlchemyItems, 1, 5);
 
         ItemStack woodashStack = new ItemStack(ModItems.itemIncense, 1, 0);
@@ -156,7 +159,7 @@ public class ItemIncense extends Item implements IIncense {
                         new ItemStack(Items.redstone),
                         leavesStack,
                         leavesStack,
-                        new ItemStack(ModItems.apprenticeBloodOrb)));
+                        new ItemStack(ModItems.weakBloodOrb)));
         GameRegistry.addRecipe(
                 new ShapelessBloodOrbRecipe(
                         new ItemStack(ModItems.itemIncense, 1, 2),
@@ -168,7 +171,7 @@ public class ItemIncense extends Item implements IIncense {
                         glowstoneStack,
                         stringStack,
                         stringStack,
-                        new ItemStack(ModItems.magicianBloodOrb)));
+                        new ItemStack(ModItems.apprenticeBloodOrb)));
         GameRegistry.addRecipe(
                 new ShapelessBloodOrbRecipe(
                         new ItemStack(ModItems.itemIncense, 1, 3),
@@ -178,7 +181,8 @@ public class ItemIncense extends Item implements IIncense {
                         soulSandStack,
                         gunpowderStack,
                         fermentedEyeStack,
-                        new ItemStack(ModItems.masterBloodOrb)));
+                        blankSlateStack,
+                        new ItemStack(ModItems.apprenticeBloodOrb)));
         GameRegistry.addRecipe(
                 new ShapelessBloodOrbRecipe(
                         new ItemStack(ModItems.itemIncense, 1, 4),
@@ -189,8 +193,8 @@ public class ItemIncense extends Item implements IIncense {
                         netherwartStack,
                         blazePowderStack,
                         fracturedBoneStack,
-                        goldNuggetStack,
-                        new ItemStack(ModItems.archmageBloodOrb)));
+                        reinforcedSlateStack,
+                        new ItemStack(ModItems.masterBloodOrb)));
     }
 
     public enum EnumIncense {
