@@ -87,13 +87,13 @@ public class Meteor {
         }
     }
 
-    private int getNewRadius(int radius, List<Reagent> reagents) {
+    public static int getNewRadius(int radius, List<Reagent> reagents) {
         radius += MeteorReagentRegistry.getLargestRadiusIncrease(reagents);
         radius += MeteorReagentRegistry.getLargestRadiusDecrease(reagents);
         return Math.max(radius, 1);
     }
 
-    private float getNewFillerChance(float fillerChance, List<Reagent> reagents) {
+    public static float getNewFillerChance(float fillerChance, List<Reagent> reagents) {
         // Don't add filler to meteors that have none
         if (fillerChance <= 0) {
             return 0;
@@ -120,7 +120,7 @@ public class Meteor {
      * @return a new filler list. The original list is entirely replaced if any of the supplied reagents have a filler
      *         config.
      */
-    private List<MeteorComponent> getNewFillerList(List<MeteorComponent> fillerList, List<Reagent> reagents) {
+    public static List<MeteorComponent> getNewFillerList(List<MeteorComponent> fillerList, List<Reagent> reagents) {
         List<MeteorComponent> reagentFillers = getFillerList(reagents);
         reagentFillers = removeBlocksMissingRequiredReagents(reagentFillers, reagents);
         if (!reagentFillers.isEmpty() && reagentFillers.get(0) != defaultMeteorBlock) {
@@ -129,7 +129,7 @@ public class Meteor {
         return removeBlocksMissingRequiredReagents(fillerList, reagents);
     }
 
-    private List<MeteorComponent> removeBlocksMissingRequiredReagents(List<MeteorComponent> blockList,
+    public static List<MeteorComponent> removeBlocksMissingRequiredReagents(List<MeteorComponent> blockList,
             List<Reagent> reagents) {
         ArrayList<MeteorComponent> newList = new ArrayList<>();
         for (MeteorComponent component : blockList) {
