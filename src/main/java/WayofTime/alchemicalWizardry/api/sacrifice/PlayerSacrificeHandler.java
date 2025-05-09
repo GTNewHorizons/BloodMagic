@@ -13,7 +13,7 @@ import WayofTime.alchemicalWizardry.api.tile.IBloodAltar;
 public class PlayerSacrificeHandler {
 
     public static float scalingOfSacrifice = 0.001f;
-    public static int soulFrayDuration = 400;
+    public static int soulFrayDuration = 240;
     public static Potion soulFrayId;
 
     public static float getPlayerIncense(EntityPlayer player) {
