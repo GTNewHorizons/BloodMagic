@@ -2,8 +2,6 @@ package WayofTime.alchemicalWizardry.common.block;
 
 import java.util.Random;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -21,6 +19,8 @@ import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IReagentManipulator;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEAlchemicCalcinator;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockAlchemicCalcinator extends BlockContainer {
 
@@ -46,6 +46,7 @@ public class BlockAlchemicCalcinator extends BlockContainer {
     public void registerBlockIcons(IIconRegister iconRegister) {
         this.icon = iconRegister.registerIcon("AlchemicalWizardry:BlankRune");
     }
+
     @Override
     public TileEntity createNewTileEntity(World world, int meta) {
         return new TEAlchemicCalcinator();

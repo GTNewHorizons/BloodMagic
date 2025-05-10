@@ -8,6 +8,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 
 public class ScribeTool extends EnergyItems {
 
@@ -25,17 +26,12 @@ public class ScribeTool extends EnergyItems {
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.scribetool.desc"));
-
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
-                            + par1ItemStack.getTagCompound().getString("ownerName"));
-        }
+        addBindingInformation(par1ItemStack, par3List);
     }
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (EnergyItems.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)) {
+        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)) {
             if (par1ItemStack.getItemDamage() > 0) {
                 par1ItemStack.setItemDamage(par1ItemStack.getItemDamage() - 1);
             }
