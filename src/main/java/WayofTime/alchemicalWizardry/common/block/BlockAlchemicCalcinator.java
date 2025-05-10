@@ -24,6 +24,9 @@ import WayofTime.alchemicalWizardry.common.tileEntity.TEAlchemicCalcinator;
 
 public class BlockAlchemicCalcinator extends BlockContainer {
 
+    @SideOnly(Side.CLIENT)
+    private IIcon icon;
+
     public BlockAlchemicCalcinator() {
         super(Material.rock);
         setHardness(2.0F);
@@ -31,9 +34,6 @@ public class BlockAlchemicCalcinator extends BlockContainer {
         this.setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         this.setBlockName("alchemicCalcinator");
     }
-
-    @SideOnly(Side.CLIENT)
-    private IIcon icon;
 
     @Override
     @SideOnly(Side.CLIENT)

@@ -29,6 +29,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockBelljar extends BlockContainer {
 
+    @SideOnly(Side.CLIENT)
+    private IIcon bottomIcon;
+
+    @SideOnly(Side.CLIENT)
+    private IIcon otherIcon;
+
     public BlockBelljar() {
         super(Material.glass);
         setHardness(2.0F);
@@ -38,12 +44,6 @@ public class BlockBelljar extends BlockContainer {
         this.setStepSound(Block.soundTypeGlass);
         this.setHarvestLevel("pickaxe", 0);
     }
-
-    @SideOnly(Side.CLIENT)
-    private IIcon bottomIcon;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon otherIcon;
 
     @Override
     @SideOnly(Side.CLIENT)
