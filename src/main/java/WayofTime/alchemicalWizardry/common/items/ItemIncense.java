@@ -194,7 +194,7 @@ public class ItemIncense extends Item implements IIncense {
                         blazePowderStack,
                         fracturedBoneStack,
                         reinforcedSlateStack,
-                        new ItemStack(ModItems.masterBloodOrb)));
+                        new ItemStack(ModItems.magicianBloodOrb)));
     }
 
     public enum EnumIncense {
