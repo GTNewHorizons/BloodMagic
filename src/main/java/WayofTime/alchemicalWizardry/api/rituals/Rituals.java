@@ -132,6 +132,9 @@ public class Rituals {
         TileEntity te;
 
         for (RitualComponent rc : ritual) {
+            if (!world.blockExists(x + rc.getX(direction), y + rc.getY(), z + rc.getZ(direction))) {
+                return false;
+            }
             test = world.getBlock(x + rc.getX(direction), y + rc.getY(), z + rc.getZ(direction));
             te = world.getTileEntity(x + rc.getX(direction), y + rc.getY(), z + rc.getZ(direction));
 
