@@ -2,7 +2,6 @@ package WayofTime.alchemicalWizardry.common.rituals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -63,6 +62,7 @@ public class RitualEffectItemRouting extends RitualEffect {
                 if (!lastItemWasFocus) paradigm.clear();
                 paradigm.addRoutingFocusPosAndFacing(outputFocus.getPosAndFacing(keyStack));
                 paradigm.addLogic(outputFocus.getLogic(keyStack));
+                paradigm.addName(outputFocus.getName(keyStack));
                 lastItemWasFocus = true;
                 continue;
             }
@@ -97,6 +97,7 @@ public class RitualEffectItemRouting extends RitualEffect {
             ItemStack inputFocusStack = inputFocusInventory.getStackInSlot(i);
             if (inputFocusStack == null || !(inputFocusStack.getItem() instanceof InputRoutingFocus inputFocus))
                 continue;
+            if (!paradigm.doesNameMatch(inputFocus.getName(inputFocusStack))) continue;
 
             TileEntity inputChest = world.getTileEntity(
                     inputFocus.xCoord(inputFocusStack),
@@ -151,8 +152,7 @@ public class RitualEffectItemRouting extends RitualEffect {
                 : SpellHelper.insertStackIntoInventory(stack, inventory, direction, maxAmount);
     }
 
-    private List<IInventory> findBufferChests(World world, int x, int y, int z,
-            Int3[] locations) {
+    private List<IInventory> findBufferChests(World world, int x, int y, int z, Int3[] locations) {
         List<IInventory> chestList = new ArrayList<>();
         for (Int3 chestLocation : locations) {
             TileEntity tileEntity = world

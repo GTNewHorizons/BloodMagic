@@ -168,4 +168,17 @@ public class RoutingFocus extends Item {
     public RoutingFocusLogic getLogic(ItemStack itemStack) {
         return new RoutingFocusLogic();
     }
+
+    public String getName(ItemStack stack) {
+        if (stack.hasTagCompound()) {
+            NBTTagCompound tag = stack.getTagCompound();
+            if (tag.hasKey("display", 10)) { // 10 = NBTTagCompound
+                NBTTagCompound display = tag.getCompoundTag("display");
+                if (display.hasKey("Name", 8)) { // 8 = NBTTagString
+                    return display.getString("Name");
+                }
+            }
+        }
+        return "";
+    }
 }

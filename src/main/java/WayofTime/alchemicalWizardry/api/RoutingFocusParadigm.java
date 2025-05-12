@@ -11,6 +11,8 @@ public class RoutingFocusParadigm {
 
     public List<RoutingFocusPosAndFacing> locationList = new LinkedList<>();
 
+    public List<String> nameList = new LinkedList<>();
+
     public int maximumAmount = 0;
 
     public void addRoutingFocusPosAndFacing(RoutingFocusPosAndFacing facing) {
@@ -22,6 +24,14 @@ public class RoutingFocusParadigm {
             maximumAmount += ((ILimitingLogic) logic).getRoutingLimit();
         }
         logicList.add(logic);
+    }
+
+    public void addName(String name) {
+        nameList.add(name);
+    }
+
+    public boolean doesNameMatch(String name) {
+        return nameList.contains(name);
     }
 
     public boolean doesItemMatch(ItemStack keyStack, ItemStack checkedStack) {
@@ -42,6 +52,7 @@ public class RoutingFocusParadigm {
     public void clear() {
         logicList.clear();
         locationList.clear();
+        nameList.clear();
         maximumAmount = 0;
     }
 
