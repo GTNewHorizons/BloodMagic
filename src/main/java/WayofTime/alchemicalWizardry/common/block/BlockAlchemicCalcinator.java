@@ -5,20 +5,27 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IReagentManipulator;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEAlchemicCalcinator;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockAlchemicCalcinator extends BlockContainer {
+
+    @SideOnly(Side.CLIENT)
+    private IIcon icon;
 
     public BlockAlchemicCalcinator() {
         super(Material.rock);
@@ -26,6 +33,18 @@ public class BlockAlchemicCalcinator extends BlockContainer {
         setResistance(5.0F);
         this.setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         this.setBlockName("alchemicCalcinator");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(int side, int meta) {
+        return icon;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        this.icon = iconRegister.registerIcon("AlchemicalWizardry:BlankRune");
     }
 
     @Override
