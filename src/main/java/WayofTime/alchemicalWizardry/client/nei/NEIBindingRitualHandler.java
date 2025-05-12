@@ -24,7 +24,7 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
  */
 public class NEIBindingRitualHandler extends TemplateRecipeHandler {
 
-    private static final RitualInfo ritualInfo = new RitualInfo("AW006Binding", 1f);
+    private static final RitualInfo ritualInfo = new RitualInfo(1f, "AW006Binding");
     private static final ReagentInfo reagentInfo = new ReagentInfo(1f);
 
     public class CachedBindingRecipe extends CachedRecipe {

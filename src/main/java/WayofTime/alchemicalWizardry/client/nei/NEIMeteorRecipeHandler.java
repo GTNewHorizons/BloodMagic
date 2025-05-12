@@ -45,7 +45,7 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 
 public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
 
-    private static final RitualInfo ritualInfo = new RitualInfo("AW019FallingTower", 0.75f);
+    private static final RitualInfo ritualInfo = new RitualInfo(0.75f, "AW019FallingTower");
     private static final ReagentInfo reagentInfo = new ReagentInfo(0.75f);
 
     public class CachedMeteorRecipe extends CachedRecipe {
@@ -134,8 +134,8 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
                 }
             }
 
-            this.costInfo = new CostInfo(meteor.cost);
-            this.radiusInfo = new RadiusInfo(meteor.radius);
+            this.costInfo = new CostInfo(1.0f, meteor.cost);
+            this.radiusInfo = new RadiusInfo(1.0f, meteor.radius);
         }
 
         private String getReagentStrings(MeteorComponent component) {
