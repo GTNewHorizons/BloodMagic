@@ -94,24 +94,20 @@ public class NEIBindingRitualHandler extends TemplateRecipeHandler {
     }
 
     @Override
-    public List<String> handleTooltip(GuiRecipe<?> gui, List<String> list, int recipeIndex) {
-        if (GuiContainerManager.shouldShowTooltip(gui) && list.isEmpty()) {
+    public List<String> handleTooltip(GuiRecipe<?> gui, List<String> currenttip, int recipeIndex) {
+        if (GuiContainerManager.shouldShowTooltip(gui) && currenttip.isEmpty()) {
             CachedRecipe cRecipe = arecipes.get(recipeIndex);
             Point mousePos = GuiDraw.getMousePosition();
 
             if (recipeIndex == 0 && cRecipe instanceof NEIBindingRitualHandler.CachedBindingRecipe) {
-                Rectangle rect = ritualInfo.getRect(gui);
-                if (rect.contains(mousePos)) {
-                    ritualInfo.onHover(list);
-                }
-
-                rect = reagentInfo.getRect(gui);
-                if (rect.contains(mousePos)) {
-                    list.add(StatCollector.translateToLocal("nei.recipe.reagent.none"));
+                if (ritualInfo.getRect(gui).contains(mousePos)) {
+                    ritualInfo.onHover(currenttip);
+                } else if (reagentInfo.getRect(gui).contains(mousePos)) {
+                    currenttip.add(StatCollector.translateToLocal("nei.recipe.reagent.none"));
                 }
             }
         }
-        return super.handleTooltip(gui, list, recipeIndex);
+        return super.handleTooltip(gui, currenttip, recipeIndex);
     }
 
     @Override

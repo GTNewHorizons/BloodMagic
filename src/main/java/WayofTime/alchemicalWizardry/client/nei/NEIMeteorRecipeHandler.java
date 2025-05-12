@@ -281,9 +281,8 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
         CachedMeteorRecipe meteorRecipe = (CachedMeteorRecipe) this.arecipes.get(recipe);
         for (PositionedStack pStack : meteorRecipe.outputs) {
             // if (!gui.isMouseOver(pStack, recipe)) continue; // put it back when NEI is properly patched
-            if (!(pStack instanceof TooltipStack)) break;
+            if (!(pStack instanceof TooltipStack tStack)) break;
 
-            TooltipStack tStack = (TooltipStack) pStack;
             if (Arrays.stream(tStack.items).anyMatch(s -> NEIServerUtils.areStacksSameTypeCrafting(s, stack))) {
                 currenttip.addAll(tStack.getTooltips());
                 break;
@@ -293,44 +292,33 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     }
 
     @Override
-    public List<String> handleTooltip(GuiRecipe<?> gui, List<String> list, int recipeIndex) {
-        if (GuiContainerManager.shouldShowTooltip(gui) && list.isEmpty()) {
+    public List<String> handleTooltip(GuiRecipe<?> gui, List<String> currenttip, int recipeIndex) {
+        if (GuiContainerManager.shouldShowTooltip(gui) && currenttip.isEmpty()) {
             CachedRecipe cRecipe = arecipes.get(recipeIndex);
             Point mousePos = GuiDraw.getMousePosition();
 
-            if (cRecipe instanceof CachedMeteorRecipe) {
-                CachedMeteorRecipe cachedRecipe = (CachedMeteorRecipe) cRecipe;
-                Rectangle rect = cachedRecipe.costInfo.getRect(gui);
-                if (rect.contains(mousePos)) {
-                    list.add(StatCollector.translateToLocal("nei.recipe.meteor.cost"));
+            if (cRecipe instanceof CachedMeteorRecipe cachedRecipe) {
+                if (cachedRecipe.costInfo.getRect(gui).contains(mousePos)) {
+                    currenttip.add(StatCollector.translateToLocal("nei.recipe.meteor.cost"));
                     if (APISpellHelper.getPlayerLPTag(mc.thePlayer) < cachedRecipe.getCost()) {
-                        list.add(
+                        currenttip.add(
                                 EnumChatFormatting.RED
                                         + StatCollector.translateToLocal("nei.recipe.meteor.tooExpensive"));
                     }
-                }
-
-                rect = cachedRecipe.radiusInfo.getRect(gui);
-                if (rect.contains(mousePos)) {
-                    list.add(
+                } else if (cachedRecipe.radiusInfo.getRect(gui).contains(mousePos)) {
+                    currenttip.add(
                             StatCollector.translateToLocalFormatted(
                                     "nei.recipe.meteor.diameter",
                                     2 * cachedRecipe.radiusInfo.getRadius() + 1));
-                }
-
-                rect = ritualInfo.getRect(gui);
-                if (rect.contains(mousePos)) {
-                    ritualInfo.onHover(list);
-                }
-
-                rect = reagentInfo.getRect(gui);
-                if (rect.contains(mousePos)) {
-                    reagentInfo.onHover(list);
-                    addMeteorReagentInfo(list, cachedRecipe);
+                } else if (ritualInfo.getRect(gui).contains(mousePos)) {
+                    ritualInfo.onHover(currenttip);
+                } else if (reagentInfo.getRect(gui).contains(mousePos)) {
+                    reagentInfo.onHover(currenttip);
+                    addMeteorReagentInfo(currenttip, cachedRecipe);
                 }
             }
         }
-        return super.handleTooltip(gui, list, recipeIndex);
+        return super.handleTooltip(gui, currenttip, recipeIndex);
     }
 
     private void addMeteorReagentInfo(List<String> list, CachedMeteorRecipe cachedRecipe) {
