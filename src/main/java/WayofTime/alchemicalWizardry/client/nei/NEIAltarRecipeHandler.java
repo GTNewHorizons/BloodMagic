@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -82,9 +83,13 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
     @Override
     public void drawExtras(int id) {
         CachedAltarRecipe recipe = (CachedAltarRecipe) arecipes.get(id);
+        Minecraft.getMinecraft().fontRenderer.drawString(
+                EnumChatFormatting.GRAY + StatCollector.translateToLocal("bm.string.tier") + ": " + recipe.tier,
+                78,
+                5,
+                0);
         Minecraft.getMinecraft().fontRenderer
-                .drawString("§7" + StatCollector.translateToLocal("bm.string.tier") + ": " + recipe.tier, 78, 5, 0);
-        Minecraft.getMinecraft().fontRenderer.drawString("§7LP: " + recipe.lp_amount, 78, 15, 0);
+                .drawString(EnumChatFormatting.GRAY + "LP: " + recipe.lp_amount, 78, 15, 0);
     }
 
     @Override

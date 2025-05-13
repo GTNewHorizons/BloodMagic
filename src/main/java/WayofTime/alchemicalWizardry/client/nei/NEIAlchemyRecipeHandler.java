@@ -10,6 +10,7 @@ import java.util.List;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -140,7 +141,7 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
     @Override
     public void drawExtras(int id) {
         CachedAlchemyRecipe recipe = (CachedAlchemyRecipe) arecipes.get(id);
-        String text = "§7" + recipe.lp + "LP";
+        String text = EnumChatFormatting.GRAY.toString() + recipe.lp + "LP";
         mc.fontRenderer.drawString(text, getLPX(text), 28, 0);
     }
 
