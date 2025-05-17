@@ -38,24 +38,23 @@ public class RitualEffectItemRouting extends RitualEffect {
 
         if (world.getTotalWorldTime() % 20 != 0) return;
 
-        List<IInventory> outputChestList = findBufferChests(world, x, y, z, OUTPUT_BUFFER_LOCATIONS);
-        if (outputChestList.isEmpty()) return;
+        List<IInventory> outputFocusChests = findBufferChests(world, x, y, z, OUTPUT_BUFFER_LOCATIONS);
+        if (outputFocusChests.isEmpty()) return;
 
         List<IInventory> inputFocusChests = findBufferChests(world, x, y, z, INPUT_BUFFER_LOCATIONS);
         if (inputFocusChests.isEmpty()) return;
 
-        for (IInventory outputFocusChests : outputChestList) {
-            processOutputFocusInventory(world, outputFocusChests, inputFocusChests);
+        for (IInventory outputFoci : outputFocusChests) {
+            processOutputFoci(world, outputFoci, inputFocusChests);
         }
     }
 
-    private void processOutputFocusInventory(World world, IInventory outputFocusChests,
-            List<IInventory> inputFocusChests) {
+    private void processOutputFoci(World world, IInventory outputFoci, List<IInventory> inputFocusChests) {
         RoutingFocusParadigm paradigm = new RoutingFocusParadigm();
         boolean lastItemWasFocus = true;
 
-        for (int i = 0; i < outputFocusChests.getSizeInventory(); i++) {
-            ItemStack keyStack = outputFocusChests.getStackInSlot(i);
+        for (int i = 0; i < outputFoci.getSizeInventory(); i++) {
+            ItemStack keyStack = outputFoci.getStackInSlot(i);
             if (keyStack == null) continue;
 
             if (keyStack.getItem() instanceof OutputRoutingFocus outputFocus) {
@@ -71,58 +70,50 @@ public class RitualEffectItemRouting extends RitualEffect {
             for (RoutingFocusPosAndFacing posAndFacing : paradigm.locationList) {
                 if (posAndFacing == null) continue;
                 ForgeDirection inputDirection = posAndFacing.facing;
-                TileEntity outputChest = world.getTileEntity(
+                TileEntity outputTarget = world.getTileEntity(
                         posAndFacing.location.xCoord,
                         posAndFacing.location.yCoord,
                         posAndFacing.location.zCoord);
 
-                if (!(outputChest instanceof IInventory outputChestInventory)) continue;
+                if (!(outputTarget instanceof IInventory outputInventory)) continue;
 
-                for (IInventory inputFocusInventory : inputFocusChests) {
-                    processInputFocusInventory(
-                            world,
-                            inputFocusInventory,
-                            keyStack,
-                            paradigm,
-                            outputChestInventory,
-                            inputDirection);
+                for (IInventory inputFoci : inputFocusChests) {
+                    processInputFoci(world, inputFoci, keyStack, paradigm, outputInventory, inputDirection);
                 }
             }
         }
     }
 
-    private void processInputFocusInventory(World world, IInventory inputFocusInventory, ItemStack keyStack,
-            RoutingFocusParadigm paradigm, IInventory outputChestInventory, ForgeDirection inputDirection) {
-        for (int i = 0; i < inputFocusInventory.getSizeInventory(); i++) {
-            ItemStack inputFocusStack = inputFocusInventory.getStackInSlot(i);
+    private void processInputFoci(World world, IInventory inputFoci, ItemStack keyStack, RoutingFocusParadigm paradigm,
+            IInventory outputInventory, ForgeDirection inputDirection) {
+        for (int i = 0; i < inputFoci.getSizeInventory(); i++) {
+            ItemStack inputFocusStack = inputFoci.getStackInSlot(i);
             if (inputFocusStack == null || !(inputFocusStack.getItem() instanceof InputRoutingFocus inputFocus))
                 continue;
             if (!paradigm.doesNameMatch(inputFocus.getName(inputFocusStack))) continue;
 
-            TileEntity inputChest = world.getTileEntity(
+            TileEntity inputTarget = world.getTileEntity(
                     inputFocus.xCoord(inputFocusStack),
                     inputFocus.yCoord(inputFocusStack),
                     inputFocus.zCoord(inputFocusStack));
 
-            if (!(inputChest instanceof IInventory inputChestInventory)) continue;
+            if (!(inputTarget instanceof IInventory inputChest)) continue;
 
-            boolean[] canSyphonList = getSyphonableSlots(
-                    inputChestInventory,
-                    inputFocus.getSetDirection(inputFocusStack));
+            boolean[] slotList = checkSlots(inputChest, inputFocus.getSetDirection(inputFocusStack));
 
-            for (int j = 0; j < inputChestInventory.getSizeInventory(); j++) {
-                if (!canSyphonList[j]) continue;
-                ItemStack syphonedStack = inputChestInventory.getStackInSlot(j);
-                if (!canExtractItem(inputChestInventory, j, syphonedStack, inputFocus.getSetDirection(inputFocusStack)))
+            for (int j = 0; j < inputChest.getSizeInventory(); j++) {
+                if (!slotList[j]) continue;
+                ItemStack syphonedStack = inputChest.getStackInSlot(j);
+                if (!canExtractItem(inputChest, j, syphonedStack, inputFocus.getSetDirection(inputFocusStack)))
                     continue;
 
                 if (paradigm.doesItemMatch(keyStack, syphonedStack)) {
                     ItemStack newStack = insertStackWithLimit(
                             syphonedStack,
-                            outputChestInventory,
+                            outputInventory,
                             inputDirection,
                             paradigm.maximumAmount);
-                    inputChestInventory.setInventorySlotContents(
+                    inputChest.setInventorySlotContents(
                             j,
                             (newStack != null && newStack.stackSize > 0) ? newStack : null);
                 }
@@ -130,7 +121,7 @@ public class RitualEffectItemRouting extends RitualEffect {
         }
     }
 
-    private boolean[] getSyphonableSlots(IInventory inventory, ForgeDirection direction) {
+    private boolean[] checkSlots(IInventory inventory, ForgeDirection direction) {
         boolean[] result = new boolean[inventory.getSizeInventory()];
         if (inventory instanceof ISidedInventory sidedInv) {
             int[] validSlots = sidedInv.getAccessibleSlotsFromSide(direction.ordinal());
