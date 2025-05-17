@@ -12,8 +12,6 @@ public class RoutingFocusLogicLimitMatchNBT extends RoutingFocusLogicMatchNBT im
     public RoutingFocusLogicLimitMatchNBT(ItemStack stack) {
         if (stack != null && stack.getItem() instanceof ILimitedRoutingFocus) {
             limit = ((ILimitedRoutingFocus) stack.getItem()).getRoutingFocusLimit(stack);
-        } else {
-            limit = 0;
         }
     }
 

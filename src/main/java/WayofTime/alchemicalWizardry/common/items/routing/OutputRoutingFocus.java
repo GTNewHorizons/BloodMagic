@@ -32,8 +32,11 @@ public class OutputRoutingFocus extends RoutingFocus implements ILimitedRoutingF
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List,
+            boolean par4) {
         super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
+        if (!(par1ItemStack.getItem() instanceof OutputRoutingFocus focus)) return;
+        par3List.addAll(focus.getLogic(par1ItemStack).getDescription());
 
         if (!(par1ItemStack.getTagCompound() == null)) {
             int limit = this.getRoutingFocusLimit(par1ItemStack);
@@ -62,20 +65,6 @@ public class OutputRoutingFocus extends RoutingFocus implements ILimitedRoutingF
             case 4 -> this.globalIcon;
             default -> this.itemIcon;
         };
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack itemStack) {
-        String addedString = switch (itemStack.getItemDamage()) {
-            case 0 -> "default";
-            case 1 -> "modItem";
-            case 2 -> "ignMeta";
-            case 3 -> "matchNBT";
-            case 4 -> "global";
-            default -> "";
-        };
-
-        return super.getUnlocalizedName() + "." + addedString;
     }
 
     @Override
