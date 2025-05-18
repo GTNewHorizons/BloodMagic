@@ -74,7 +74,8 @@ public class RoutingFocus extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List,
+            boolean par4) {
         par3List.add(StatCollector.translateToLocal(this.getFocusDescription()));
 
         if (!(par1ItemStack.getTagCompound() == null)) {
@@ -89,7 +90,9 @@ public class RoutingFocus extends Item {
                             + itemTag.getInteger("zCoord"));
             par3List.add(
                     StatCollector.translateToLocal("tooltip.alchemy.direction") + " "
-                            + this.getSetDirection(par1ItemStack));
+                            + StatCollector.translateToLocal(
+                                    "message.ritual.side."
+                                            + this.getSetDirection(par1ItemStack).toString().toLowerCase()));
         }
     }
 
@@ -167,5 +170,18 @@ public class RoutingFocus extends Item {
 
     public RoutingFocusLogic getLogic(ItemStack itemStack) {
         return new RoutingFocusLogic();
+    }
+
+    public String getName(ItemStack stack) {
+        if (stack.hasTagCompound()) {
+            NBTTagCompound tag = stack.getTagCompound();
+            if (tag.hasKey("display", 10)) {
+                NBTTagCompound display = tag.getCompoundTag("display");
+                if (display.hasKey("Name", 8)) {
+                    return display.getString("Name");
+                }
+            }
+        }
+        return "";
     }
 }

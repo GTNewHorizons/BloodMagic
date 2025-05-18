@@ -1,7 +1,12 @@
 package WayofTime.alchemicalWizardry.common.routing;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 import WayofTime.alchemicalWizardry.api.RoutingFocusLogic;
 import cpw.mods.fml.common.registry.GameData;
@@ -23,11 +28,18 @@ public class RoutingFocusLogicModItems extends RoutingFocusLogic {
         String str = GameData.getItemRegistry().getNameForObject(itm);
         if (!str.isEmpty()) {
             String[] strs = str.split(":");
-            if (strs != null && strs.length >= 1) {
+            if (strs.length >= 1) {
                 return strs[0];
             }
         }
 
         return "";
+    }
+
+    public List<String> getDescription() {
+        return new ArrayList<>(
+                Collections.singletonList(
+                        StatCollector.translateToLocal("tooltip.routingFocus.logic") + " "
+                                + StatCollector.translateToLocal("item.outputRoutingFocus.modItem.logic")));
     }
 }

@@ -7,9 +7,11 @@ import net.minecraft.item.ItemStack;
 
 public class RoutingFocusParadigm {
 
-    public List<RoutingFocusLogic> logicList = new LinkedList();
+    public List<RoutingFocusLogic> logicList = new LinkedList<>();
 
-    public List<RoutingFocusPosAndFacing> locationList = new LinkedList();
+    public List<RoutingFocusPosAndFacing> locationList = new LinkedList<>();
+
+    public List<String> nameList = new LinkedList<>();
 
     public int maximumAmount = 0;
 
@@ -22,6 +24,14 @@ public class RoutingFocusParadigm {
             maximumAmount += ((ILimitingLogic) logic).getRoutingLimit();
         }
         logicList.add(logic);
+    }
+
+    public void addName(String name) {
+        nameList.add(name);
+    }
+
+    public boolean doesNameMatch(String name) {
+        return nameList.contains(name);
     }
 
     public boolean doesItemMatch(ItemStack keyStack, ItemStack checkedStack) {
@@ -42,6 +52,7 @@ public class RoutingFocusParadigm {
     public void clear() {
         logicList.clear();
         locationList.clear();
+        nameList.clear();
         maximumAmount = 0;
     }
 

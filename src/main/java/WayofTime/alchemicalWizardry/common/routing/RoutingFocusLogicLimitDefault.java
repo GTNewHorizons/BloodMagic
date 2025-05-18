@@ -11,8 +11,6 @@ public class RoutingFocusLogicLimitDefault extends RoutingFocusLogicLimit {
     public RoutingFocusLogicLimitDefault(ItemStack stack) {
         if (stack != null && stack.getItem() instanceof ILimitedRoutingFocus) {
             limit = ((ILimitedRoutingFocus) stack.getItem()).getRoutingFocusLimit(stack);
-        } else {
-            limit = 0;
         }
     }
 

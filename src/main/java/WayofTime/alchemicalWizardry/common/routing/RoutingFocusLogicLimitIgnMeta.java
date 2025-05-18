@@ -12,8 +12,6 @@ public class RoutingFocusLogicLimitIgnMeta extends RoutingFocusLogicIgnMeta impl
     public RoutingFocusLogicLimitIgnMeta(ItemStack stack) {
         if (stack != null && stack.getItem() instanceof ILimitedRoutingFocus) {
             limit = ((ILimitedRoutingFocus) stack.getItem()).getRoutingFocusLimit(stack);
-        } else {
-            limit = 0;
         }
     }
 
