@@ -12,7 +12,7 @@ import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 
 public class ScribeTool extends EnergyItems {
 
-    private int meta;
+    private final int meta;
 
     public ScribeTool(int inkType) {
         super();
@@ -24,17 +24,16 @@ public class ScribeTool extends EnergyItems {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.scribetool.desc"));
         addBindingInformation(par1ItemStack, par3List);
     }
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)) {
-            if (par1ItemStack.getItemDamage() > 0) {
-                par1ItemStack.setItemDamage(par1ItemStack.getItemDamage() - 1);
-            }
+        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) && par1ItemStack.getItemDamage() > 0
+                && EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, getEnergyUsed())) {
+            par1ItemStack.setItemDamage(par1ItemStack.getItemDamage() - 1);
         }
         return par1ItemStack;
     }
