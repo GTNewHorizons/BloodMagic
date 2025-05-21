@@ -2,7 +2,6 @@ package WayofTime.alchemicalWizardry.client.nei;
 
 import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.getBloodOrbs;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,21 +32,17 @@ public class NEIBloodOrbShapedHandler extends ShapedRecipeHandler {
         public void setIngredients(int width, int height, Object[] items) {
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
-                    if (items[y * width + x] == null) continue;
-
                     Object o = items[y * width + x];
+                    if (o == null) continue;
+
                     if (o instanceof ItemStack) {
-                        PositionedStack stack = new PositionedStack(
-                                items[y * width + x],
-                                25 + x * 18,
-                                6 + y * 18,
-                                false);
+                        PositionedStack stack = new PositionedStack(o, 25 + x * 18, 6 + y * 18, false);
                         stack.setMaxSize(1);
                         ingredients.add(stack);
-                    } else if (o instanceof Integer) {
+                    } else if (o instanceof Integer i) {
                         ArrayList<ItemStack> orbs = new ArrayList<>();
                         for (Item item : getBloodOrbs()) {
-                            if (((IBloodOrb) item).getOrbLevel() >= (Integer) o) {
+                            if (((IBloodOrb) item).getOrbLevel() >= i) {
                                 orbs.add(new ItemStack(item));
                             }
                         }
@@ -64,13 +59,12 @@ public class NEIBloodOrbShapedHandler extends ShapedRecipeHandler {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void loadCraftingRecipes(String outputId, Object... results) {
         if (outputId.equals("crafting") && getClass() == NEIBloodOrbShapedHandler.class) {
-            for (IRecipe irecipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
-                if (irecipe instanceof ShapedBloodOrbRecipe) {
-                    CachedBloodOrbRecipe recipe = forgeShapedRecipe((ShapedBloodOrbRecipe) irecipe);
+            for (IRecipe irecipe : CraftingManager.getInstance().getRecipeList()) {
+                if (irecipe instanceof ShapedBloodOrbRecipe orbRecipe) {
+                    CachedBloodOrbRecipe recipe = forgeShapedRecipe(orbRecipe);
                     if (recipe == null) continue;
 
                     recipe.computeVisuals();
@@ -82,12 +76,11 @@ public class NEIBloodOrbShapedHandler extends ShapedRecipeHandler {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void loadCraftingRecipes(ItemStack result) {
-        for (IRecipe irecipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
-            if (irecipe instanceof ShapedBloodOrbRecipe) {
-                CachedBloodOrbRecipe recipe = forgeShapedRecipe((ShapedBloodOrbRecipe) irecipe);
+        for (IRecipe irecipe : CraftingManager.getInstance().getRecipeList()) {
+            if (irecipe instanceof ShapedBloodOrbRecipe orbRecipe) {
+                CachedBloodOrbRecipe recipe = forgeShapedRecipe(orbRecipe);
                 if (recipe == null || !NEIServerUtils.areStacksSameTypeCraftingWithNBT(recipe.result.item, result))
                     continue;
 
@@ -97,12 +90,11 @@ public class NEIBloodOrbShapedHandler extends ShapedRecipeHandler {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void loadUsageRecipes(ItemStack ingredient) {
-        for (IRecipe irecipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
+        for (IRecipe irecipe : CraftingManager.getInstance().getRecipeList()) {
             CachedShapedRecipe recipe = null;
-            if (irecipe instanceof ShapedBloodOrbRecipe) recipe = forgeShapedRecipe((ShapedBloodOrbRecipe) irecipe);
+            if (irecipe instanceof ShapedBloodOrbRecipe orbRecipe) recipe = forgeShapedRecipe(orbRecipe);
 
             if (recipe == null || !recipe.contains(recipe.ingredients, ingredient.getItem())) continue;
 
@@ -132,11 +124,6 @@ public class NEIBloodOrbShapedHandler extends ShapedRecipeHandler {
             return null;
 
         return new CachedBloodOrbRecipe(width, height, items, recipe.getRecipeOutput());
-    }
-
-    @Override
-    public void loadTransferRects() {
-        transferRects.add(new RecipeTransferRect(new Rectangle(84, 23, 24, 18), "crafting"));
     }
 
     @Override

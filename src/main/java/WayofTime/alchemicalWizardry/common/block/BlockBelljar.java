@@ -3,8 +3,10 @@ package WayofTime.alchemicalWizardry.common.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
@@ -26,12 +29,36 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockBelljar extends BlockContainer {
 
+    @SideOnly(Side.CLIENT)
+    private IIcon bottomIcon;
+
+    @SideOnly(Side.CLIENT)
+    private IIcon otherIcon;
+
     public BlockBelljar() {
         super(Material.glass);
         setHardness(2.0F);
         setResistance(5.0F);
         this.setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         this.setBlockName("crystalBelljar");
+        this.setStepSound(Block.soundTypeGlass);
+        this.setHarvestLevel("pickaxe", 0);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(int side, int meta) {
+        if (side == 0) {
+            return bottomIcon;
+        }
+        return otherIcon;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        this.bottomIcon = iconRegister.registerIcon("minecraft:planks_oak");
+        this.otherIcon = iconRegister.registerIcon("minecraft:glass");
     }
 
     @SideOnly(Side.CLIENT)

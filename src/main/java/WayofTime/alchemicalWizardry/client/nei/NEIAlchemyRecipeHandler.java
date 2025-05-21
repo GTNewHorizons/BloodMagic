@@ -1,15 +1,16 @@
 package WayofTime.alchemicalWizardry.client.nei;
 
+import static WayofTime.alchemicalWizardry.client.ClientUtils.mc;
 import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.getBloodOrbs;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -28,28 +29,19 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
 
     public class CachedAlchemyRecipe extends CachedRecipe {
 
-        public class BloodOrbs {
-
-            public PositionedStack stack;
-
-            public BloodOrbs(ItemStack orb) {
-                this.stack = new PositionedStack(orb, 136, 47, false);
-            }
-        }
-
-        ArrayList<BloodOrbs> orbs;
+        ArrayList<ItemStack> orbs;
         PositionedStack output;
         List<PositionedStack> inputs;
         int lp;
 
         public CachedAlchemyRecipe(AlchemyRecipe recipe, ItemStack orb) {
             this(recipe);
-            this.orbs = new ArrayList<BloodOrbs>();
-            orbs.add(new BloodOrbs(orb));
+            this.orbs = new ArrayList<>();
+            orbs.add(orb);
         }
 
         public CachedAlchemyRecipe(AlchemyRecipe recipe) {
-            List<PositionedStack> inputs = new ArrayList<PositionedStack>();
+            List<PositionedStack> inputs = new ArrayList<>();
             ItemStack[] stacks = recipe.getRecipe();
             if (stacks.length > 0) inputs.add(new PositionedStack(stacks[0], 76, 3));
             if (stacks.length > 1) inputs.add(new PositionedStack(stacks[1], 51, 19));
@@ -59,10 +51,10 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
             this.inputs = inputs;
             this.output = new PositionedStack(recipe.getResult(), 76, 25);
             this.lp = recipe.getAmountNeeded() * 100;
-            this.orbs = new ArrayList<BloodOrbs>();
+            this.orbs = new ArrayList<>();
             for (Item orb : getBloodOrbs()) {
                 if (((IBloodOrb) orb).getOrbLevel() >= recipe.getOrbLevel()) {
-                    orbs.add(new BloodOrbs(new ItemStack(orb)));
+                    orbs.add(new ItemStack(orb));
                 }
             }
         }
@@ -79,8 +71,11 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
 
         @Override
         public PositionedStack getOtherStack() {
-            if (orbs == null || orbs.size() <= 0) return null;
-            return orbs.get((cycleticks / 48) % orbs.size()).stack;
+            if (orbs == null || orbs.isEmpty()) return null;
+            PositionedStack stack = new PositionedStack(orbs, 136, 47, false);
+            stack.setPermutationToRender((cycleticks / 48) % orbs.size());
+            stack.setMaxSize(1);
+            return stack;
         }
     }
 
@@ -122,10 +117,10 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
 
     @Override
     public void loadUsageRecipes(ItemStack ingredient) {
-        if (ingredient.getItem() instanceof IBloodOrb) {
+        if (ingredient.getItem() instanceof IBloodOrb orb) {
             for (AlchemyRecipe recipe : AlchemyRecipeRegistry.recipes) {
                 if (recipe == null) continue;
-                if (((IBloodOrb) ingredient.getItem()).getOrbLevel() >= recipe.getOrbLevel()) {
+                if (orb.getOrbLevel() >= recipe.getOrbLevel()) {
                     arecipes.add(new CachedAlchemyRecipe(recipe, ingredient));
                 }
             }
@@ -145,17 +140,14 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
 
     @Override
     public void drawExtras(int id) {
-        CachedAlchemyRecipe cache = (CachedAlchemyRecipe) arecipes.get(id);
-        Minecraft.getMinecraft().fontRenderer.drawString("\u00a77" + cache.lp + "LP", getLPX(cache.lp), 34, 0);
+        CachedAlchemyRecipe recipe = (CachedAlchemyRecipe) arecipes.get(id);
+        String text = EnumChatFormatting.GRAY.toString() + recipe.lp + "LP";
+        mc.fontRenderer.drawString(text, getLPX(text), 28, 0);
     }
 
-    public int getLPX(int lp) {
-        if (lp < 10) return 122;
-        else if (lp < 100) return 122;
-        else if (lp < 1000) return 130;
-        else if (lp < 10000) return 127;
-        else if (lp < 100000) return 124;
-        return 122;
+    public int getLPX(String text) {
+        int textWidth = mc.fontRenderer.getStringWidth(text);
+        return 144 - (textWidth / 2);
     }
 
     @Override

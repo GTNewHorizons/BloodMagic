@@ -100,14 +100,14 @@ public class RitualEffectInterdiction extends RitualEffect {
 
                     if (itemFlag) {
                         flag = true;
-                        if (world.getWorldTime() % aetherDrainRate == 0) {
+                        if (world.getTotalWorldTime() % aetherDrainRate == 0) {
                             this.canDrainReagent(ritualStone, ReagentRegistry.aetherReagent, aetherDrain, true);
                         }
                     }
                 }
             }
 
-            if (world.getWorldTime() % 2 == 0 && flag) {
+            if (world.getTotalWorldTime() % 2 == 0 && flag) {
                 SoulNetworkHandler.syphonFromNetwork(owner, getCostPerRefresh());
             }
         }

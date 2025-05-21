@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -65,7 +66,7 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
     public void loadCraftingRecipes(ItemStack result) {
         for (AltarRecipe recipe : AltarRecipeRegistry.altarRecipes) {
             if (NEIServerUtils.areStacksSameTypeCraftingWithNBT(recipe.result, result)) {
-                if (recipe != null && recipe.result != null) arecipes.add(new CachedAltarRecipe(recipe));
+                if (recipe.result != null) arecipes.add(new CachedAltarRecipe(recipe));
             }
         }
     }
@@ -74,7 +75,7 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
     public void loadUsageRecipes(ItemStack ingredient) {
         for (AltarRecipe recipe : AltarRecipeRegistry.altarRecipes) {
             if (NEIServerUtils.areStacksSameTypeCraftingWithNBT(recipe.requiredItem, ingredient)) {
-                if (recipe != null && recipe.result != null) arecipes.add(new CachedAltarRecipe(recipe));
+                if (recipe.result != null) arecipes.add(new CachedAltarRecipe(recipe));
             }
         }
     }
@@ -83,26 +84,30 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
     public void drawExtras(int id) {
         CachedAltarRecipe recipe = (CachedAltarRecipe) arecipes.get(id);
         Minecraft.getMinecraft().fontRenderer.drawString(
-                "\u00a77" + StatCollector.translateToLocal("bm.string.tier") + ": " + recipe.tier,
+                EnumChatFormatting.GRAY + StatCollector.translateToLocal("bm.string.tier") + ": " + recipe.tier,
                 78,
                 5,
                 0);
-        Minecraft.getMinecraft().fontRenderer.drawString("\u00a77" + "LP: " + recipe.lp_amount, 78, 15, 0);
+        Minecraft.getMinecraft().fontRenderer
+                .drawString(EnumChatFormatting.GRAY + "LP: " + recipe.lp_amount, 78, 15, 0);
     }
 
     @Override
     public List<String> handleTooltip(GuiRecipe<?> gui, List<String> currenttip, int id) {
         super.handleTooltip(gui, currenttip, id);
-        Point mouse = GuiDraw.getMousePosition();
-        Point root = gui.getRecipePosition(id);
-        int offsetX = gui.guiLeft + root.x;
-        int offsetY = gui.guiTop + root.y;
-        if (mouse.x >= 14 + offsetX && mouse.x <= 75 + offsetX && mouse.y >= 22 + offsetY && mouse.y <= 56 + offsetY) {
+        if (altarRect(gui, id).contains(GuiDraw.getMousePosition())) {
             CachedAltarRecipe recipe = (CachedAltarRecipe) arecipes.get(id);
             currenttip.add(StatCollector.translateToLocal("bm.string.consume") + ": " + recipe.consumption + "LP/t");
             currenttip.add(StatCollector.translateToLocal("bm.string.drain") + ": " + recipe.drain + "LP/t");
         }
         return currenttip;
+    }
+
+    public Rectangle altarRect(GuiRecipe<?> gui, int id) {
+        Point root = gui.getRecipePosition(id);
+        int offsetX = gui.guiLeft + root.x;
+        int offsetY = gui.guiTop + root.y;
+        return new Rectangle(14 + offsetX, 22 + offsetY, 62, 34);
     }
 
     @Override
@@ -117,7 +122,7 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
 
     @Override
     public String getRecipeName() {
-        return "          " + StatCollector.translateToLocal("tile.bloodAltar.name");
+        return StatCollector.translateToLocal("tile.bloodAltar.name");
     }
 
     @Override

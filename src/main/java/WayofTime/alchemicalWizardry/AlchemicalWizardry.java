@@ -277,6 +277,7 @@ import WayofTime.alchemicalWizardry.common.tileEntity.TEWritingTable;
 import WayofTime.alchemicalWizardry.common.tileEntity.gui.GuiHandler;
 import WayofTime.alchemicalWizardry.common.tweaker.MineTweakerIntegration;
 import WayofTime.alchemicalWizardry.compat.BloodMagicWailaPlugin;
+import WayofTime.alchemicalWizardry.compat.structurelib.CompatStructureLib;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -493,6 +494,7 @@ public class AlchemicalWizardry {
     public static boolean causeHungerWithRegen;
     public static boolean causeHungerChatMessage = true;
     public static boolean disableBoundToolsRightClick;
+    public static boolean allowPotionRepair;
 
     public static BlockStack[] secondTierRunes = new BlockStack[10];
     public static BlockStack[] thirdTierRunes = new BlockStack[10];
@@ -3330,6 +3332,10 @@ public class AlchemicalWizardry {
         isPneumaticCraftLoaded = Loader.isModLoaded("PneumaticCraft");
         isFMPLoaded = Loader.isModLoaded("ForgeMultipart");
         isChiselLoaded = Loader.isModLoaded("chisel");
+
+        if (Loader.isModLoaded("structurelib")) {
+            CompatStructureLib.init();
+        }
 
         BloodMagicConfiguration.loadBlacklist();
         BloodMagicConfiguration.blacklistRituals();

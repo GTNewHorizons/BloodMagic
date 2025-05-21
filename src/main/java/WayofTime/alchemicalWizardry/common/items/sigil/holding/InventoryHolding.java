@@ -153,7 +153,7 @@ public class InventoryHolding implements IInventory {
 
     @Override
     public boolean isItemValidForSlot(int slotIndex, ItemStack itemStack) {
-        return itemStack.getItem() instanceof ISigil;
+        return itemStack.getItem() instanceof ISigil && ((ISigil) itemStack.getItem()).canBeStored();
     }
 
     public void readFromNBT(NBTTagCompound nbtTagCompound) {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
@@ -45,7 +46,10 @@ public class RitualEffectSummonMeteor extends RitualEffect {
 
         for (EntityItem entityItem : entities) {
             if (entityItem != null && MeteorRegistry.isValidMeteorFocusItem(entityItem.getEntityItem())) {
-                int meteorID = MeteorRegistry.getMeteorIDForItem(entityItem.getEntityItem());
+                ItemStack stack = entityItem.getEntityItem();
+                if (stack == null || stack.stackSize <= 0) continue;
+
+                int meteorID = MeteorRegistry.getMeteorIDForItem(stack);
                 int cost = MeteorRegistry.meteorList.get(meteorID).cost;
 
                 if (currentEssence < cost) {
@@ -63,7 +67,14 @@ public class RitualEffectSummonMeteor extends RitualEffect {
                     }
                 }
 
-                entityItem.setDead();
+                stack.stackSize--;
+
+                if (stack.stackSize <= 0) {
+                    world.removeEntity(entityItem);
+                } else {
+                    entityItem.setEntityItemStack(stack);
+                }
+
                 world.spawnEntityInWorld(meteor);
                 ritualStone.setActive(false);
                 SoulNetworkHandler.syphonFromNetwork(owner, cost);
