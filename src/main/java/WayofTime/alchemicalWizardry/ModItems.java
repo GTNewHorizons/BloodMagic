@@ -8,7 +8,6 @@ import WayofTime.alchemicalWizardry.api.items.ItemSpellMultiTool;
 import WayofTime.alchemicalWizardry.api.spell.SpellParadigmTool;
 import WayofTime.alchemicalWizardry.common.items.AWBaseItems;
 import WayofTime.alchemicalWizardry.common.items.ActivationCrystal;
-import WayofTime.alchemicalWizardry.common.items.AirScribeTool;
 import WayofTime.alchemicalWizardry.common.items.ApprenticeBloodOrb;
 import WayofTime.alchemicalWizardry.common.items.ArchmageBloodOrb;
 import WayofTime.alchemicalWizardry.common.items.ArmourInhibitor;
@@ -20,17 +19,13 @@ import WayofTime.alchemicalWizardry.common.items.BoundShovel;
 import WayofTime.alchemicalWizardry.common.items.CheatyItem;
 import WayofTime.alchemicalWizardry.common.items.CreativeDagger;
 import WayofTime.alchemicalWizardry.common.items.DaggerOfSacrifice;
-import WayofTime.alchemicalWizardry.common.items.DawnScribeTool;
 import WayofTime.alchemicalWizardry.common.items.DemonPlacer;
 import WayofTime.alchemicalWizardry.common.items.DemonicTelepositionFocus;
-import WayofTime.alchemicalWizardry.common.items.DuskScribeTool;
-import WayofTime.alchemicalWizardry.common.items.EarthScribeTool;
 import WayofTime.alchemicalWizardry.common.items.EnergyBattery;
 import WayofTime.alchemicalWizardry.common.items.EnergyBazooka;
 import WayofTime.alchemicalWizardry.common.items.EnergyBlast;
 import WayofTime.alchemicalWizardry.common.items.EnergySword;
 import WayofTime.alchemicalWizardry.common.items.EnhancedTelepositionFocus;
-import WayofTime.alchemicalWizardry.common.items.FireScribeTool;
 import WayofTime.alchemicalWizardry.common.items.ItemAlchemyBase;
 import WayofTime.alchemicalWizardry.common.items.ItemBloodLetterPack;
 import WayofTime.alchemicalWizardry.common.items.ItemComplexSpellCrystal;
@@ -45,9 +40,9 @@ import WayofTime.alchemicalWizardry.common.items.MagicianBloodOrb;
 import WayofTime.alchemicalWizardry.common.items.MasterBloodOrb;
 import WayofTime.alchemicalWizardry.common.items.ReinforcedTelepositionFocus;
 import WayofTime.alchemicalWizardry.common.items.SacrificialDagger;
+import WayofTime.alchemicalWizardry.common.items.ScribeTool;
 import WayofTime.alchemicalWizardry.common.items.TelepositionFocus;
 import WayofTime.alchemicalWizardry.common.items.TranscendentBloodOrb;
-import WayofTime.alchemicalWizardry.common.items.WaterScribeTool;
 import WayofTime.alchemicalWizardry.common.items.armour.BoundArmour;
 import WayofTime.alchemicalWizardry.common.items.armour.OmegaArmourEarth;
 import WayofTime.alchemicalWizardry.common.items.armour.OmegaArmourFire;
@@ -271,10 +266,14 @@ public class ModItems {
         sigilOfHaste = new SigilOfHaste().setUnlocalizedName("sigilOfHaste");
         sigilOfHolding = new SigilOfHolding().setUnlocalizedName("sigilOfHolding");
         divinationSigil = new SigilDivination().setUnlocalizedName("divinationSigil");
-        waterScribeTool = new WaterScribeTool().setUnlocalizedName("waterScribeTool");
-        fireScribeTool = new FireScribeTool().setUnlocalizedName("fireScribeTool");
-        earthScribeTool = new EarthScribeTool().setUnlocalizedName("earthScribeTool");
-        airScribeTool = new AirScribeTool().setUnlocalizedName("airScribeTool");
+
+        waterScribeTool = new ScribeTool(1, "WaterScribeTool").setUnlocalizedName("waterScribeTool");
+        fireScribeTool = new ScribeTool(2, "FireScribeTool").setUnlocalizedName("fireScribeTool");
+        earthScribeTool = new ScribeTool(3, "EarthScribeTool").setUnlocalizedName("earthScribeTool");
+        airScribeTool = new ScribeTool(4, "AirScribeTool").setUnlocalizedName("airScribeTool");
+        duskScribeTool = new ScribeTool(5, "DuskScribeTool").setUnlocalizedName("duskScribeTool");
+        dawnScribeTool = new ScribeTool(6, "DawnScribeTool").setUnlocalizedName("dawnScribeTool");
+
         activationCrystal = new ActivationCrystal();
         boundPickaxe = new BoundPickaxe().setUnlocalizedName("boundPickaxe");
         boundAxe = new BoundAxe().setUnlocalizedName("boundAxe");
@@ -313,7 +312,6 @@ public class ModItems {
         demonicTelepositionFocus = new DemonicTelepositionFocus().setUnlocalizedName("demonicTelepositionFocus");
         imbuedSlate = new AWBaseItems().setUnlocalizedName("imbuedSlate");
         demonicSlate = new AWBaseItems().setUnlocalizedName("demonicSlate");
-        duskScribeTool = new DuskScribeTool().setUnlocalizedName("duskScribeTool");
         sigilOfTheBridge = new SigilOfTheBridge().setUnlocalizedName("sigilOfTheBridge");
         armourInhibitor = new ArmourInhibitor().setUnlocalizedName("armourInhibitor");
         creativeFiller = new CheatyItem().setUnlocalizedName("cheatyItem");
@@ -347,8 +345,6 @@ public class ModItems {
         itemAttunedCrystal = new ItemAttunedCrystal().setUnlocalizedName("itemAttunedCrystal");
         itemTankSegmenter = new ItemTankSegmenter().setUnlocalizedName("itemTankSegmenter");
         itemDestinationClearer = new ItemDestinationClearer().setUnlocalizedName("destinationClearer");
-
-        dawnScribeTool = new DawnScribeTool().setUnlocalizedName("dawnScribeTool");
 
         itemBloodPack = new ItemBloodLetterPack().setUnlocalizedName("itemBloodPack");
         itemHarvestSigil = new SigilHarvest().setUnlocalizedName("itemHarvestSigil");
@@ -409,6 +405,8 @@ public class ModItems {
         GameRegistry.registerItem(ModItems.fireScribeTool, "fireScribeTool");
         GameRegistry.registerItem(ModItems.earthScribeTool, "earthScribeTool");
         GameRegistry.registerItem(ModItems.airScribeTool, "airScribeTool");
+        GameRegistry.registerItem(ModItems.duskScribeTool, "duskScribeTool");
+        GameRegistry.registerItem(ModItems.dawnScribeTool, "dawnScribeTool");
         GameRegistry.registerItem(ModItems.activationCrystal, "activationCrystal");
         GameRegistry.registerItem(ModItems.boundPickaxe, "boundPickaxe");
         GameRegistry.registerItem(ModItems.boundAxe, "boundAxe");
@@ -449,7 +447,6 @@ public class ModItems {
         GameRegistry.registerItem(ModItems.demonicTelepositionFocus, "demonicTelepositionFocus");
         GameRegistry.registerItem(ModItems.imbuedSlate, "imbuedSlate");
         GameRegistry.registerItem(ModItems.demonicSlate, "demonicSlate");
-        GameRegistry.registerItem(ModItems.duskScribeTool, "duskScribeTool");
         GameRegistry.registerItem(ModItems.sigilOfTheBridge, "sigilOfTheBridge");
         GameRegistry.registerItem(ModItems.armourInhibitor, "armourInhibitor");
         GameRegistry.registerItem(ModItems.creativeFiller, "creativeFiller");
@@ -484,8 +481,6 @@ public class ModItems {
 
         GameRegistry.registerItem(ModItems.baseItems, "bloodMagicBaseItems");
         GameRegistry.registerItem(ModItems.baseAlchemyItems, "bloodMagicBaseAlchemyItems");
-
-        GameRegistry.registerItem(ModItems.dawnScribeTool, "dawnScribeTool");
 
         GameRegistry.registerItem(ModItems.itemBloodPack, "itemBloodPack");
         GameRegistry.registerItem(ModItems.itemHarvestSigil, "itemHarvestSigil");

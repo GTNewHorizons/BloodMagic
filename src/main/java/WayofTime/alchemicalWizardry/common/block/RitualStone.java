@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -59,36 +58,28 @@ public class RitualStone extends Block implements IRitualStone {
     }
 
     @Override
-    public int damageDropped(int metadata) {
-        return 0;
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int idk, float what,
-            float these, float are) {
-        ItemStack playerItem = player.getCurrentEquippedItem();
-
-        if (playerItem == null) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float subX,
+            float subY, float subZ) {
+        ItemStack stack = player.getCurrentEquippedItem();
+        if (stack == null || !(stack.getItem() instanceof ScribeTool scribe)) {
             return false;
         }
 
-        Item item = playerItem.getItem();
+        int toolType = scribe.getType();
 
-        if (!(item instanceof ScribeTool)) {
+        if (toolType == world.getBlockMetadata(x, y, z)) {
             return false;
         }
 
-        if (playerItem.getMaxDamage() <= playerItem.getItemDamage() && !(playerItem.getMaxDamage() == 0)) {
+        if (stack.getMaxDamage() != 0 && stack.getItemDamage() >= stack.getMaxDamage()) {
             return false;
         }
-
-        ScribeTool scribeTool = (ScribeTool) item;
 
         if (!player.capabilities.isCreativeMode) {
-            playerItem.setItemDamage(playerItem.getItemDamage() + 1);
+            stack.setItemDamage(stack.getItemDamage() + 1);
         }
 
-        world.setBlockMetadataWithNotify(x, y, z, scribeTool.getType(), 3);
+        world.setBlockMetadataWithNotify(x, y, z, toolType, 3);
         world.markBlockForUpdate(x, y, z);
         return true;
     }
@@ -96,31 +87,15 @@ public class RitualStone extends Block implements IRitualStone {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int metadata) {
-        switch (metadata) {
-            case 0:
-                return blankIcon;
-
-            case 1:
-                return waterStoneIcon;
-
-            case 2:
-                return fireStoneIcon;
-
-            case 3:
-                return earthStoneIcon;
-
-            case 4:
-                return airStoneIcon;
-
-            case 5:
-                return duskStoneIcon;
-
-            case 6:
-                return dawnStoneIcon;
-
-            default:
-                return blankIcon;
-        }
+        return switch (metadata) {
+            case 1 -> waterStoneIcon;
+            case 2 -> fireStoneIcon;
+            case 3 -> earthStoneIcon;
+            case 4 -> airStoneIcon;
+            case 5 -> duskStoneIcon;
+            case 6 -> dawnStoneIcon;
+            default -> blankIcon;
+        };
     }
 
     @Override
