@@ -41,7 +41,7 @@ public class ScribeTool extends EnergyItems {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean sneaking) {
         list.add(StatCollector.translateToLocal("tooltip.scribetool.desc"));
         addBindingInformation(stack, list);
     }
