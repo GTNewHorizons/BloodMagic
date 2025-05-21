@@ -2,43 +2,64 @@ package WayofTime.alchemicalWizardry.common.items;
 
 import java.util.List;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ScribeTool extends EnergyItems {
 
     private final int meta;
+    private final String iconName;
 
-    public ScribeTool(int inkType) {
+    @SideOnly(Side.CLIENT)
+    private IIcon icon;
+
+    public ScribeTool(int inkType, String iconName) {
         super();
+        this.meta = inkType;
+        this.iconName = iconName;
         setMaxStackSize(1);
-        setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         setMaxDamage(10);
         setEnergyUsed(10);
-        this.meta = inkType;
-    }
-
-    @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.scribetool.desc"));
-        addBindingInformation(par1ItemStack, par3List);
-    }
-
-    @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) && par1ItemStack.getItemDamage() > 0
-                && EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, getEnergyUsed())) {
-            par1ItemStack.setItemDamage(par1ItemStack.getItemDamage() - 1);
-        }
-        return par1ItemStack;
+        setCreativeTab(AlchemicalWizardry.tabBloodMagic);
     }
 
     public int getType() {
         return this.meta;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
+        list.add(StatCollector.translateToLocal("tooltip.scribetool.desc"));
+        addBindingInformation(stack, list);
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(stack, player) && stack.getItemDamage() > 0
+                && EnergyItems.syphonBatteries(stack, player, getEnergyUsed())) {
+            stack.setItemDamage(stack.getItemDamage() - 1);
+        }
+        return stack;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister register) {
+        this.icon = register.registerIcon("AlchemicalWizardry:" + iconName);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int damage) {
+        return this.icon;
     }
 }
