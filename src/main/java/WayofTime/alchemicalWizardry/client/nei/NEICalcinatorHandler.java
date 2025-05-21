@@ -16,7 +16,6 @@ import net.minecraftforge.common.util.Constants;
 
 import org.lwjgl.opengl.GL11;
 
-import WayofTime.alchemicalWizardry.ModBlocks;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentContainer;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentRegistry;

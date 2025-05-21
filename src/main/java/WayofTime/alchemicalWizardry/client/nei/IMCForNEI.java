@@ -9,10 +9,8 @@ public class IMCForNEI {
     public static void IMCSender() {
         sendHandler("alchemicalwizardry.meteor", "AWWayofTime:masterStone", 181, 1);
         sendHandler("alchemicalwizardry.calcinator", "AWWayofTime:blockAlchemicCalcinator", 55, 5);
-        sendHandler("alchemicalwizardry.rituals", "AWWayofTime:ritualDiviner", 181, 5);
         sendCatalyst("alchemicalwizardry.meteor", "AWWayofTime:masterStone");
         sendCatalyst("alchemicalwizardry.bindingritual", "AWWayofTime:masterStone");
-        sendCatalyst("alchemicalwizardry.rituals", "AWWayofTime:ritualDiviner");
         sendCatalyst("alchemicalwizardry.calcinator", "AWWayofTime:blockAlchemicCalcinator");
     }
 
