@@ -22,6 +22,10 @@ public class ScribeTool extends EnergyItems {
     @SideOnly(Side.CLIENT)
     private IIcon icon;
 
+    public ScribeTool(int inkType) {
+        this(inkType, "unknown");
+    }
+
     public ScribeTool(int inkType, String iconName) {
         super();
         this.meta = inkType;
