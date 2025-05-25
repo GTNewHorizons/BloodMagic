@@ -24,6 +24,7 @@ public class RoutingFocusLogicMatchNBT extends RoutingFocusLogic {
         return previous && this.getDefaultMatch(keyStack, checkedStack);
     }
 
+    @Override
     public List<String> getDescription() {
         return new ArrayList<>(
                 Collections.singletonList(

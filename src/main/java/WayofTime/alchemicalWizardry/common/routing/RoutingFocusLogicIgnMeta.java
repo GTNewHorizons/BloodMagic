@@ -16,6 +16,7 @@ public class RoutingFocusLogicIgnMeta extends RoutingFocusLogic {
         return (keyStack != null && checkedStack != null && keyStack.getItem() == checkedStack.getItem());
     }
 
+    @Override
     public List<String> getDescription() {
         return new ArrayList<>(
                 Collections.singletonList(
