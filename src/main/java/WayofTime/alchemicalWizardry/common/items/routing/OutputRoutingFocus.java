@@ -32,8 +32,11 @@ public class OutputRoutingFocus extends RoutingFocus implements ILimitedRoutingF
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List,
+            boolean par4) {
         super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
+        if (!(par1ItemStack.getItem() instanceof OutputRoutingFocus focus)) return;
+        par3List.addAll(focus.getLogic(par1ItemStack).getDescription());
 
         if (!(par1ItemStack.getTagCompound() == null)) {
             int limit = this.getRoutingFocusLimit(par1ItemStack);
@@ -55,49 +58,18 @@ public class OutputRoutingFocus extends RoutingFocus implements ILimitedRoutingF
 
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int damage) {
-        switch (damage) {
-            case 0:
-                return this.itemIcon;
-            case 1:
-                return this.modItemIcon;
-            case 2:
-                return this.ignMetaIcon;
-            case 3:
-                return this.matchNBTIcon;
-            case 4:
-                return this.globalIcon;
-        }
-        return this.itemIcon;
-    }
-
-    @Override
-    public String getUnlocalizedName(ItemStack itemStack) {
-        String addedString = "";
-
-        switch (itemStack.getItemDamage()) {
-            case 0:
-                addedString = "default";
-                break;
-            case 1:
-                addedString = "modItem";
-                break;
-            case 2:
-                addedString = "ignMeta";
-                break;
-            case 3:
-                addedString = "matchNBT";
-                break;
-            case 4:
-                addedString = "global";
-                break;
-        }
-
-        return super.getUnlocalizedName() + "." + addedString;
+        return switch (damage) {
+            case 1 -> this.modItemIcon;
+            case 2 -> this.ignMetaIcon;
+            case 3 -> this.matchNBTIcon;
+            case 4 -> this.globalIcon;
+            default -> this.itemIcon;
+        };
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
+    public void getSubItems(Item id, CreativeTabs creativeTab, List<ItemStack> list) {
         for (int meta = 0; meta < 5; ++meta) {
             list.add(new ItemStack(id, 1, meta));
         }
@@ -106,18 +78,14 @@ public class OutputRoutingFocus extends RoutingFocus implements ILimitedRoutingF
     @Override
     public RoutingFocusLogic getLogic(ItemStack itemStack) {
         if (itemStack != null) {
-            switch (itemStack.getItemDamage()) {
-                case 0:
-                    return new RoutingFocusLogicLimitDefault(itemStack);
-                case 1:
-                    return new RoutingFocusLogicLimitModItems(itemStack);
-                case 2:
-                    return new RoutingFocusLogicLimitIgnMeta(itemStack);
-                case 3:
-                    return new RoutingFocusLogicLimitMatchNBT(itemStack);
-                case 4:
-                    return new RoutingFocusLogicLimitGlobal(itemStack);
-            }
+            return switch (itemStack.getItemDamage()) {
+                case 0 -> new RoutingFocusLogicLimitDefault(itemStack);
+                case 1 -> new RoutingFocusLogicLimitModItems(itemStack);
+                case 2 -> new RoutingFocusLogicLimitIgnMeta(itemStack);
+                case 3 -> new RoutingFocusLogicLimitMatchNBT(itemStack);
+                case 4 -> new RoutingFocusLogicLimitGlobal(itemStack);
+                default -> new RoutingFocusLogic();
+            };
         }
 
         return new RoutingFocusLogic();
