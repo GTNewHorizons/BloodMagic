@@ -14,7 +14,7 @@ public class IMCForNEI {
         sendCatalyst("alchemicalwizardry.calcinator", "AWWayofTime:blockAlchemicCalcinator");
     }
 
-    private static void sendHandler(String handlerName, String stack, int height, int recipes) {
+    private static void sendHandler(String handlerName, String stack, int height, int recipesPerPage) {
         NBTTagCompound NBT = new NBTTagCompound();
         NBT.setString("handler", handlerName);
         NBT.setString("modName", "Blood Magic");
@@ -22,7 +22,7 @@ public class IMCForNEI {
         NBT.setBoolean("modRequired", true);
         NBT.setString("itemName", stack);
         NBT.setInteger("handlerHeight", height);
-        NBT.setInteger("maxRecipesPerPage", recipes);
+        NBT.setInteger("maxRecipesPerPage", recipesPerPage);
         FMLInterModComms.sendMessage("NotEnoughItems", "registerHandlerInfo", NBT);
     }
 
