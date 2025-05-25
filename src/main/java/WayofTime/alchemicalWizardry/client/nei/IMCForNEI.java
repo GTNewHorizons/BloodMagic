@@ -7,12 +7,14 @@ import cpw.mods.fml.common.event.FMLInterModComms;
 public class IMCForNEI {
 
     public static void IMCSender() {
-        sendHandler("alchemicalwizardry.meteor", "AWWayofTime:masterStone", 181);
+        sendHandler("alchemicalwizardry.meteor", "AWWayofTime:masterStone", 181, 1);
+        sendHandler("alchemicalwizardry.calcinator", "AWWayofTime:blockAlchemicCalcinator", 55, 5);
         sendCatalyst("alchemicalwizardry.meteor", "AWWayofTime:masterStone");
         sendCatalyst("alchemicalwizardry.bindingritual", "AWWayofTime:masterStone");
+        sendCatalyst("alchemicalwizardry.calcinator", "AWWayofTime:blockAlchemicCalcinator");
     }
 
-    private static void sendHandler(String handlerName, String stack, int height) {
+    private static void sendHandler(String handlerName, String stack, int height, int recipesPerPage) {
         NBTTagCompound NBT = new NBTTagCompound();
         NBT.setString("handler", handlerName);
         NBT.setString("modName", "Blood Magic");
@@ -20,7 +22,7 @@ public class IMCForNEI {
         NBT.setBoolean("modRequired", true);
         NBT.setString("itemName", stack);
         NBT.setInteger("handlerHeight", height);
-        NBT.setInteger("maxRecipesPerPage", 1);
+        NBT.setInteger("maxRecipesPerPage", recipesPerPage);
         FMLInterModComms.sendMessage("NotEnoughItems", "registerHandlerInfo", NBT);
     }
 
