@@ -53,13 +53,13 @@ Blood Magic is an arcane art that is practiced by mages who attempt to gather a 
 
 ![CCA4.0](https://licensebuttons.net/l/by/4.0/88x31.png)
 
-Blood Magic: AlchemicalWizardry by WayofTime is licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
+Blood Magic: Alchemical Wizardry by WayofTime is licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
 
 ## Installation Instructions
 
 This mod requires "Minecraft Forge" in order to operate. It is incredibly easy to download and set up, so you might as well get to it!
 
-1. Download [Forge](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.7.10.html). "Recommended" and "Latest" will both yield the same files - you want the "universal", not the source. Forge also has an "Installer" option, so all you need to do is launch that program and it will make a lovely Forge profile. If you haven't, look up how to use the installer if you are confused!
+1. Download [Forge](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.7.10.html). "Recommended" and "Latest" will both yield the same files. Download "Universal" to install it manually. Forge also has an "Installer" option, so all you need to do is launch that program and it will make a lovely Forge profile.
 2. Download the latest version of Blood Magic from the [Releases Page](https://github.com/GTNewHorizons/BloodMagic/releases) (ignore versions that end with `-pre` if you are not looking to test in-development features).
 3. Place the mod in the `.minecraft/mods` folder. If you use the official Minecraft launcher from Mojang, check [this page](https://minecraft.wiki/w/.minecraft) on the Minecraft Wiki to find it. If you use a different launcher, check its interface for a "Minecraft Folder" button, "View Mods" button, or something similar.
 
@@ -69,7 +69,7 @@ This mod requires "Minecraft Forge" in order to operate. It is incredibly easy t
 
 **A**: Many things, including:
 * Better configuration for meteors summoned by the Mark of the Falling Tower ritual. Run the mod once and check config/BloodMagic/meteors/README for a guide on how to edit the default ones and create your own. The old ModTweaker system should still work, but this new system is far more powerful and configurable for pack developers.
-* [Buffs](https://github.com/GTNewHorizons/BloodMagic/pull/15) to various altar upgrade runes.
+* [Buffs](https://github.com/GTNewHorizons/BloodMagic/pull/15) to various Blood Altar upgrade runes.
 * The [Rune of Quickness](https://github.com/GTNewHorizons/BloodMagic/pull/51), a new rune which lowers the Blood Altar's delay between crafts.
 * [Improvements](https://github.com/GTNewHorizons/BloodMagic/pull/85) to the Orchestra of the Phantom Hands.
 * [Buffs](https://github.com/GTNewHorizons/BloodMagic/pull/83) to the Incense Crucible.
