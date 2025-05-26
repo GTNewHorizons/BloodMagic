@@ -22,9 +22,9 @@ Blood Magic is an arcane art that is practiced by mages who attempt to gather a 
 * [Donate to WayofTime on Patreon](https://www.patreon.com/BloodMagic)
 
 ## GT:NH Links
-Wiki: Hosted on [Miraheze](https://wiki.gtnewhorizons.com/wiki/Blood_Magic). Contains both fork-specific and pack-specific information. It is currently very incomplete, so feel free to contribute!
-[Discord](https://discord.gg/gtnh): Talk to other players about Blood Magic and any other mods present in GT:NH.
-[Releases](https://github.com/GTNewHorizons/BloodMagic/releases)
+* Wiki: Hosted on [Miraheze](https://wiki.gtnewhorizons.com/wiki/Blood_Magic). Contains both fork-specific and pack-specific information. It is currently very incomplete, so feel free to contribute!
+* [Discord](https://discord.gg/gtnh): Talk to other players about Blood Magic and any other mods present in GT:NH.
+* [Releases](https://github.com/GTNewHorizons/BloodMagic/releases)
 
 ## Issue Reporting
 
@@ -57,11 +57,11 @@ Blood Magic: AlchemicalWizardry by WayofTime is licensed under a [Creative Commo
 
 ## Installation Instructions
 
-This mod requires "Minecraft Forge" in order to operate. It is incredibly easy to download and set up, so might as well get to it!
+This mod requires "Minecraft Forge" in order to operate. It is incredibly easy to download and set up, so you might as well get to it!
 
-1. Download [Forge](http://files.minecraftforge.net/). Usually "Recommended" is best - you want the "universal", not the source. Forge also has an "install" option now, so all you need to do is launch that program and it will make a lovely Forge profile. If you haven't, look up how to use the installer and the new 1.6.x launcher if you are confused!
+1. Download [Forge](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.7.10.html). "Recommended" and "Latest" will both yield the same files - you want the "universal", not the source. Forge also has an "Installer" option, so all you need to do is launch that program and it will make a lovely Forge profile. If you haven't, look up how to use the installer if you are confused!
 2. Download the latest version of Blood Magic from the [Releases Page](https://github.com/GTNewHorizons/BloodMagic/releases) (ignore versions that end with `-pre` if you are not looking to test in-development features).
-3. Place the mod in the `.minecraft/mods` folder. If you use the official Minecraft launcher from Mojang, check [this page](https://minecraft.wiki/w/.minecraft) on the Minecraft Wiki. If you use a different launcher, check its interface for a "Minecraft Folder" button, "View Mods" button, or something similar.
+3. Place the mod in the `.minecraft/mods` folder. If you use the official Minecraft launcher from Mojang, check [this page](https://minecraft.wiki/w/.minecraft) on the Minecraft Wiki to find it. If you use a different launcher, check its interface for a "Minecraft Folder" button, "View Mods" button, or something similar.
 
 ## FAQ
 
