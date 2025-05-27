@@ -5,4 +5,8 @@ public interface IBloodOrb {
     int getMaxEssence();
 
     int getOrbLevel();
+
+    default boolean isFilledForFree() {
+        return false;
+    }
 }

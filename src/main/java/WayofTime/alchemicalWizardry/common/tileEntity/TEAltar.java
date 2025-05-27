@@ -629,11 +629,12 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
                 return;
             }
 
-            if ("item.orb_armok".equals(returnedItem.getUnlocalizedName())) {
-                // Creative orb. Fill owner's network to the maximum, affected by altar runes.
-                SoulNetworkHandler.setCurrentEssence(
+            if (item.isFilledForFree()) {
+                // Fill owner's network to the maximum, affected by altar runes.
+                SoulNetworkHandler.addCurrentEssenceToMaximum(
                         ownerName,
-                        (int) Math.min(Integer.MAX_VALUE, (long) (item.getMaxEssence() * this.orbCapacityMultiplier)));
+                        Integer.MAX_VALUE,
+                        (int) Math.min(Integer.MAX_VALUE, (long) item.getMaxEssence() * this.orbCapacityMultiplier));
 
                 if (totalWorldTime % 4 == 0) {
                     SpellHelper.sendIndexedParticleToAllAround(
