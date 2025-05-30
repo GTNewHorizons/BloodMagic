@@ -1,0 +1,7 @@
+#Block Localization
+tile.armourForge.name=Soul Armour Forge
+item.armourInhibitor.name=Armour Inhibitor
+
+#Achievements
+achievement.alchemicalwizardry:blankRunes=Stepping Towards Tier 2
+achievement.alchemicalwizardry:boundArmor.desc=Craft Bound Armour with the Soul Armour Forge
