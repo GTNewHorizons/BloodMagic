@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
@@ -17,9 +16,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockStabilityGlyph extends Block implements IStabilityGlyph {
-
-    @SideOnly(Side.CLIENT)
-    private IIcon stability1;
 
     public BlockStabilityGlyph() {
         super(Material.iron);
@@ -32,19 +28,7 @@ public class BlockStabilityGlyph extends Block implements IStabilityGlyph {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        this.blockIcon = iconRegister.registerIcon("AlchemicalWizardry:LargeBloodStoneBrick");
-        this.stability1 = iconRegister.registerIcon("AlchemicalWizardry:GlyphStability1");
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta) {
-        switch (meta) {
-            case 0:
-                return stability1;
-            default:
-                return this.blockIcon;
-        }
+        this.blockIcon = iconRegister.registerIcon("AlchemicalWizardry:GlyphStability1");
     }
 
     @Override

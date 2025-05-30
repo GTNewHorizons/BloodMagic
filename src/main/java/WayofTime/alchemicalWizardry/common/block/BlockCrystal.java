@@ -17,10 +17,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCrystal extends Block {
 
-    // private Icon bloodRuneIcon;
-    @SideOnly(Side.CLIENT)
-    private IIcon fullIcon;
-
     @SideOnly(Side.CLIENT)
     private IIcon brickIcon;
 
@@ -35,8 +31,7 @@ public class BlockCrystal extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        this.blockIcon = iconRegister.registerIcon("AlchemicalWizardry:BlankRune");
-        this.fullIcon = iconRegister.registerIcon("AlchemicalWizardry:ShardCluster");
+        this.blockIcon = iconRegister.registerIcon("AlchemicalWizardry:ShardCluster");
         this.brickIcon = iconRegister.registerIcon("AlchemicalWizardry:ShardClusterBrick");
     }
 
@@ -57,16 +52,10 @@ public class BlockCrystal extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        switch (meta) {
-            case 0:
-                return fullIcon;
-
-            case 1:
-                return brickIcon;
-
-            default:
-                return blockIcon;
+        if (meta == 1) {
+            return brickIcon;
         }
+        return blockIcon;
     }
 
     @Override
