@@ -41,14 +41,11 @@ public class BlockConduit extends BlockOrientable {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        switch (side) {
-            case 0:
-                return bottomIcon;
-            case 1:
-                return topIcon;
-            default:
-                return sideIcon2;
-        }
+        return switch (side) {
+            case 0 -> bottomIcon;
+            case 1 -> topIcon;
+            default -> sideIcon2;
+        };
     }
 
     @Override

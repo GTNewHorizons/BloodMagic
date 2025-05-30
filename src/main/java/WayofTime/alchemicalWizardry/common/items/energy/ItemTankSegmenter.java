@@ -104,13 +104,11 @@ public class ItemTankSegmenter extends Item implements IReagentManipulator {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int pass) {
-        switch (pass) {
-            case 0:
-                return this.crystalBody;
-            case 1:
-                return this.crystalLabel;
-        }
-        return this.itemIcon;
+        return switch (pass) {
+            case 0 -> this.crystalBody;
+            case 1 -> this.crystalLabel;
+            default -> this.itemIcon;
+        };
     }
 
     @Override

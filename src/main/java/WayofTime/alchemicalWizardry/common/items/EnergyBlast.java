@@ -71,15 +71,11 @@ public class EnergyBlast extends EnergyItems {
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
         if (IBindable.isActive(stack)) {
-            switch (this.tier) {
-                case 1:
-                    return this.activeIcon;
-                case 2:
-                    return this.activeIconTier2;
-                case 3:
-                    return this.activeIconTier3;
-            }
-            return this.activeIcon;
+            return switch (this.tier) {
+                case 2 -> this.activeIconTier2;
+                case 3 -> this.activeIconTier3;
+                default -> this.activeIcon;
+            };
         } else {
             return this.passiveIcon;
         }

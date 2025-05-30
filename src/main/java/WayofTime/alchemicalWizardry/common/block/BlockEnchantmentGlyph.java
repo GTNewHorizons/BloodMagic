@@ -19,9 +19,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockEnchantmentGlyph extends Block implements IEnchantmentGlyph {
 
     @SideOnly(Side.CLIENT)
-    private IIcon enchantability;
-
-    @SideOnly(Side.CLIENT)
     private IIcon enchantmentLevel;
 
     public BlockEnchantmentGlyph() {
@@ -35,22 +32,17 @@ public class BlockEnchantmentGlyph extends Block implements IEnchantmentGlyph {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        this.blockIcon = iconRegister.registerIcon("AlchemicalWizardry:LargeBloodStoneBrick");
-        this.enchantability = iconRegister.registerIcon("AlchemicalWizardry:GlyphEnchantability");
+        this.blockIcon = iconRegister.registerIcon("AlchemicalWizardry:GlyphEnchantability");
         this.enchantmentLevel = iconRegister.registerIcon("AlchemicalWizardry:GlyphEnchantmentLevel");
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        switch (meta) {
-            case 0:
-                return enchantability;
-            case 1:
-                return enchantmentLevel;
-            default:
-                return this.blockIcon;
+        if (meta == 1) {
+            return enchantmentLevel;
         }
+        return this.blockIcon;
     }
 
     @Override

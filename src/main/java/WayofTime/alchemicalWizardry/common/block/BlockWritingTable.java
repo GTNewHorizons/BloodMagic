@@ -15,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
@@ -24,15 +23,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockWritingTable extends BlockContainer {
-
-    @SideOnly(Side.CLIENT)
-    private IIcon topIcon;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon sideIcon2;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon bottomIcon;
 
     public BlockWritingTable() {
         super(Material.wood);
@@ -45,22 +35,7 @@ public class BlockWritingTable extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        this.topIcon = iconRegister.registerIcon("AlchemicalWizardry:AlchemicChemistrySet");
-        this.sideIcon2 = iconRegister.registerIcon("AlchemicalWizardry:BloodAltar_SideType2");
-        this.bottomIcon = iconRegister.registerIcon("AlchemicalWizardry:BloodAltar_Bottom");
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta) {
-        switch (side) {
-            case 0:
-                return bottomIcon;
-            case 1:
-                return topIcon;
-            default:
-                return sideIcon2;
-        }
+        this.blockIcon = iconRegister.registerIcon("AlchemicalWizardry:AlchemicChemistrySet");
     }
 
     @Override
