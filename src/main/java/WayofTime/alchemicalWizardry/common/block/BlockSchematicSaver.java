@@ -1,7 +1,10 @@
 package WayofTime.alchemicalWizardry.common.block;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -16,6 +19,12 @@ public class BlockSchematicSaver extends BlockContainer {
         setResistance(5.0F);
         // setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         this.setBlockName("schematicSaver");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister iconRegister) {
+        this.blockIcon = iconRegister.registerIcon("AlchemicalWizardry:SchematicSaver");
     }
 
     @Override
