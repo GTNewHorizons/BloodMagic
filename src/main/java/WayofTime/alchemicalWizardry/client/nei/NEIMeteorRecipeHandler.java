@@ -404,8 +404,6 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     private String requiredReagentsForFiller(MeteorComponent mc) {
         List<Reagent> reagents = mc.getRequiredReagents();
         if (reagents.isEmpty()) return "";
-        return " (" + reagents.stream()
-                .map(r -> r.name)
-                .collect(Collectors.joining(", ")) + ")";
+        return " (" + reagents.stream().map(r -> r.name).collect(Collectors.joining(", ")) + ")";
     }
 }
