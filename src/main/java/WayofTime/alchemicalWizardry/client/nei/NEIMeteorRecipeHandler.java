@@ -396,8 +396,16 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     private String reagentFillerBlockNames(MeteorReagent mr) {
         ArrayList<String> blockNames = new ArrayList<>();
         for (MeteorComponent mc : mr.filler) {
-            blockNames.add(mc.getBlock().getDisplayName());
+            blockNames.add(mc.getBlock().getDisplayName() + requiredReagentsForFiller(mc));
         }
         return Joiner.on(", ").join(blockNames);
+    }
+
+    private String requiredReagentsForFiller(MeteorComponent mc) {
+        List<Reagent> reagents = mc.getRequiredReagents();
+        if (reagents.isEmpty()) return "";
+        return " (" + reagents.stream()
+                .map(r -> r.name)
+                .collect(Collectors.joining(", ")) + ")";
     }
 }
