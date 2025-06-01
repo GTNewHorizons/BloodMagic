@@ -43,6 +43,7 @@ public class EnergyBattery extends Item implements ArmourUpgrade, IBindable, IBl
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.energybattery.desc"));
+        par3List.add(StatCollector.translateToLocalFormatted("tooltip.energybattery.capacity", this.getMaxEssence()));
         addBindingInformation(par1ItemStack, par3List);
     }
 
