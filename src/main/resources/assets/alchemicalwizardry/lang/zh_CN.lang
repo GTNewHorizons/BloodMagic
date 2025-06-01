@@ -434,6 +434,7 @@ tooltip.divinationsigil.desc1=凝视着灵魂
 tooltip.divinationsigil.desc2=获取当前生命本质的情况
 tooltip.energybazooka.desc=Boom.
 tooltip.energybattery.desc=存储原始的生命本质
+tooltip.energybattery.capacity=容量: %,d LP
 tooltip.energyblast.desc1=用于发射
 tooltip.energyblast.desc2=毁灭性的炮弹.
 tooltip.enhancedtelepfocus.desc=一个核心在祭坛中进一步加强
