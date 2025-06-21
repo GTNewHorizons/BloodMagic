@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -88,49 +89,27 @@ public class ItemSanguineArmour extends ItemArmor
 
         if (this == ModItems.sanguinePants) {
             return "alchemicalwizardry:models/armor/sanguineArmour_layer_2.png";
+        }
+
+        return null;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean adv) {
+        if (this.armorType == 0) {
+            list.add(StatCollector.translateToLocal("tooltip.sanguinearmor.desc1"));
         } else {
-            return null;
+            list.add(StatCollector.translateToLocal("tooltip.sanguinearmor.desc2"));
         }
+
+        list.add(
+                EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocalFormatted(
+                        "tooltip.sanguinearmor.visdisc",
+                        getVisDiscount(stack, player, null)));
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        int discount = 0;
-
-        switch (this.armorType) {
-            case 0:
-                discount = 6;
-                break;
-            case 1:
-                discount = 3;
-                break;
-            case 2:
-                discount = 3;
-                break;
-            case 3:
-                discount = 2;
-                break;
-        }
-
-        switch (this.armorType) {
-            case 0:
-                par3List.add(StatCollector.translateToLocal("tooltip.sanguinearmor.desc1"));
-                break;
-            case 1:
-
-            case 2:
-
-            case 3:
-                par3List.add(StatCollector.translateToLocal("tooltip.sanguinearmor.desc2"));
-        }
-
-        par3List.add(StatCollector.translateToLocal("tooltip.sanguinearmor.visdisc") + " " + discount + "%");
-    }
-
-    @Override
-    public void onArmourUpdate(World world, EntityPlayer player, ItemStack thisItemStack) {
-        return;
-    }
+    public void onArmourUpdate(World world, EntityPlayer player, ItemStack thisItemStack) {}
 
     @Override
     public boolean isUpgrade() {
@@ -149,17 +128,12 @@ public class ItemSanguineArmour extends ItemArmor
 
     @Override
     public int getVisDiscount(ItemStack stack, EntityPlayer player, Aspect aspect) {
-        switch (this.armorType) {
-            case 0:
-                return 7;
-            case 1:
-                return 3;
-            case 2:
-                return 2;
-            case 3:
-                return 2;
-        }
-        return 0;
+        return switch (this.armorType) {
+            case 0 -> 7;
+            case 1 -> 3;
+            case 2, 3 -> 2;
+            default -> 0;
+        };
     }
 
     @Override
