@@ -71,12 +71,21 @@ public class BlockAltar extends BlockContainer {
         TileEntity tile = world.getTileEntity(x, y, z);
 
         if (tile instanceof TEAltar) {
-            ItemStack stack = ((TEAltar) tile).getStackInSlot(0);
+            TEAltar altar = (TEAltar) tile;
 
-            if (stack != null && stack.getItem() instanceof EnergyBattery) {
-                EnergyBattery bloodOrb = (EnergyBattery) stack.getItem();
-                int maxEssence = bloodOrb.getMaxEssence();
-                int currentEssence = bloodOrb.getCurrentEssence(stack);
+            if (world.getBlock(x, y - 1, z) instanceof LargeBloodStoneBrick) {
+                ItemStack stack = altar.getStackInSlot(0);
+
+                if (stack != null && stack.getItem() instanceof EnergyBattery) {
+                    EnergyBattery bloodOrb = (EnergyBattery) stack.getItem();
+                    int maxEssence = bloodOrb.getMaxEssence();
+                    int currentEssence = bloodOrb.getCurrentEssence(stack);
+                    int level = currentEssence * 15 / maxEssence;
+                    return Math.min(15, level) % 16;
+                }
+            } else {
+                int maxEssence = altar.getCapacity();
+                int currentEssence = altar.getCurrentBlood();
                 int level = currentEssence * 15 / maxEssence;
                 return Math.min(15, level) % 16;
             }
