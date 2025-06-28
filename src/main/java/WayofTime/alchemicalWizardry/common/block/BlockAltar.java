@@ -18,7 +18,9 @@ import net.minecraft.world.World;
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.ModItems;
 import WayofTime.alchemicalWizardry.api.items.IAltarManipulator;
-import WayofTime.alchemicalWizardry.common.items.EnergyBattery;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
+import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.common.items.sigil.holding.SigilOfHolding;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEAltar;
 import cpw.mods.fml.relauncher.Side;
@@ -70,28 +72,29 @@ public class BlockAltar extends BlockContainer {
     public int getComparatorInputOverride(World world, int x, int y, int z, int meta) {
         TileEntity tile = world.getTileEntity(x, y, z);
 
-        if (tile instanceof TEAltar) {
-            TEAltar altar = (TEAltar) tile;
-
-            if (world.getBlock(x, y - 1, z) instanceof LargeBloodStoneBrick) {
-                ItemStack stack = altar.getStackInSlot(0);
-
-                if (stack != null && stack.getItem() instanceof EnergyBattery) {
-                    EnergyBattery bloodOrb = (EnergyBattery) stack.getItem();
-                    int maxEssence = bloodOrb.getMaxEssence();
-                    int currentEssence = bloodOrb.getCurrentEssence(stack);
-                    int level = currentEssence * 15 / maxEssence;
-                    return Math.min(15, level) % 16;
-                }
-            } else {
-                int maxEssence = altar.getCapacity();
-                int currentEssence = altar.getCurrentBlood();
-                int level = currentEssence * 15 / maxEssence;
-                return Math.min(15, level) % 16;
-            }
+        if (!(tile instanceof TEAltar altar)) {
+            return 0;
         }
 
-        return 0;
+        int maxEssence;
+        int currentEssence;
+
+        if (world.getBlock(x, y - 1, z) instanceof LargeBloodStoneBrick) {
+            ItemStack stack = altar.getStackInSlot(0);
+
+            if (stack == null || !(stack.getItem() instanceof IBloodOrb bloodOrb)
+                    || !(stack.getItem() instanceof IBindable)) {
+                return 0;
+            }
+
+            maxEssence = (int) (bloodOrb.getMaxEssence() * altar.getOrbMultiplier());
+            currentEssence = SoulNetworkHandler.getCurrentEssence(IBindable.getOwnerName(stack));
+        } else {
+            maxEssence = altar.getCapacity();
+            currentEssence = altar.getCurrentBlood();
+        }
+
+        return Math.min(15, currentEssence * 15 / maxEssence) % 16;
     }
 
     @Override
