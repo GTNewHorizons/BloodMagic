@@ -133,25 +133,26 @@ public class EnergyItems extends Item implements IBindable {
     }
 
     public static boolean canSyphonInContainer(ItemStack ist, int damageToBeDone) {
-        if (ist.getTagCompound() != null && !(ist.getTagCompound().getString("ownerName").equals(""))) {
-            String ownerName = ist.getTagCompound().getString("ownerName");
-
-            if (MinecraftServer.getServer() == null) {
-                return false;
-            }
-
-            World world = MinecraftServer.getServer().worldServers[0];
-            LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, ownerName);
-
-            if (data == null) {
-                data = new LifeEssenceNetwork(ownerName);
-                world.setItemData(ownerName, data);
-            }
-
-            return data.currentEssence >= damageToBeDone;
+        if (!(ist.getItem() instanceof IBindable)) {
+            return false;
         }
 
-        return false;
+        String ownerName = IBindable.getOwnerName(ist);
+        MinecraftServer server = MinecraftServer.getServer();
+
+        if (ownerName.isEmpty() || server == null) {
+            return false;
+        }
+
+        World world = server.worldServers[0];
+        LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, ownerName);
+
+        if (data == null) {
+            data = new LifeEssenceNetwork(ownerName);
+            world.setItemData(ownerName, data);
+        }
+
+        return data.currentEssence >= damageToBeDone;
     }
 
     public static void hurtPlayer(EntityPlayer user, int energySyphoned) {

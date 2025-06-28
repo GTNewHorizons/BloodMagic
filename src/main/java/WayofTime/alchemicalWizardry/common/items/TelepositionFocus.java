@@ -17,7 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class TelepositionFocus extends EnergyItems {
 
-    private int focusLevel;
+    private final int focusLevel;
 
     public TelepositionFocus(int focusLevel) {
         super();
@@ -33,7 +33,8 @@ public class TelepositionFocus extends EnergyItems {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List,
+            boolean par4) {
         par3List.add(StatCollector.translateToLocal("tooltip.telepositionfocus.desc"));
         addBindingInformation(par1ItemStack, par3List);
 
@@ -50,20 +51,12 @@ public class TelepositionFocus extends EnergyItems {
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)) {
-            if (par3EntityPlayer.isSneaking()) {
-                return par1ItemStack;
-            }
-        }
+        IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
         return par1ItemStack;
     }
 
     public int getDimensionID(ItemStack itemStack) {
-        if (itemStack.getTagCompound() == null) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        return itemStack.getTagCompound().getInteger("dimensionId");
+        return IBindable.getTag(itemStack).getInteger("dimensionId");
     }
 
     public World getWorld(ItemStack itemStack) {
@@ -72,27 +65,15 @@ public class TelepositionFocus extends EnergyItems {
     }
 
     public int xCoord(ItemStack itemStack) {
-        if (!(itemStack.getTagCompound() == null)) {
-            return itemStack.getTagCompound().getInteger("xCoord");
-        } else {
-            return 0;
-        }
+        return IBindable.getTag(itemStack).getInteger("xCoord");
     }
 
     public int yCoord(ItemStack itemStack) {
-        if (!(itemStack.getTagCompound() == null)) {
-            return itemStack.getTagCompound().getInteger("yCoord");
-        } else {
-            return 0;
-        }
+        return IBindable.getTag(itemStack).getInteger("yCoord");
     }
 
     public int zCoord(ItemStack itemStack) {
-        if (!(itemStack.getTagCompound() == null)) {
-            return itemStack.getTagCompound().getInteger("zCoord");
-        } else {
-            return 0;
-        }
+        return IBindable.getTag(itemStack).getInteger("zCoord");
     }
 
     public int getFocusLevel() {

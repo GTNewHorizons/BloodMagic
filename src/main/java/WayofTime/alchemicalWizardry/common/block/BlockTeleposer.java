@@ -4,7 +4,6 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
-import net.minecraft.block.BlockMobSpawner;
 import net.minecraft.block.BlockPortal;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -21,13 +20,13 @@ import net.minecraftforge.common.MinecraftForge;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.event.TeleposeEvent;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.common.demonVillage.tileEntity.TEDemonPortal;
 import WayofTime.alchemicalWizardry.common.items.TelepositionFocus;
 import WayofTime.alchemicalWizardry.common.tileEntity.TETeleposer;
 import codechicken.multipart.MultipartHelper;
 import codechicken.multipart.TileMultipart;
-import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -37,10 +36,7 @@ public class BlockTeleposer extends BlockContainer {
     private IIcon topIcon;
 
     @SideOnly(Side.CLIENT)
-    private IIcon sideIcon2;
-
-    @SideOnly(Side.CLIENT)
-    private IIcon bottomIcon;
+    private IIcon sideIcon;
 
     public BlockTeleposer() {
         super(Material.rock);
@@ -54,18 +50,14 @@ public class BlockTeleposer extends BlockContainer {
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
         this.topIcon = iconRegister.registerIcon("AlchemicalWizardry:Teleposer_Top");
-        this.sideIcon2 = iconRegister.registerIcon("AlchemicalWizardry:Teleposer_Side");
-        this.bottomIcon = iconRegister.registerIcon("AlchemicalWizardry:Teleposer_Side");
+        this.sideIcon = iconRegister.registerIcon("AlchemicalWizardry:Teleposer_Side");
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        return switch (side) {
-            case 0 -> bottomIcon;
-            case 1 -> topIcon;
-            default -> sideIcon2;
-        };
+        if (side == 1) return topIcon;
+        return sideIcon;
     }
 
     @Override
@@ -73,23 +65,18 @@ public class BlockTeleposer extends BlockContainer {
             float these, float are) {
         ItemStack playerItem = player.getCurrentEquippedItem();
 
-        if (playerItem != null) {
-            if (playerItem.getItem() instanceof TelepositionFocus) {
-                SoulNetworkHandler.checkAndSetItemPlayer(playerItem, player);
-
-                if (playerItem.getTagCompound() == null) {
-                    playerItem.setTagCompound(new NBTTagCompound());
-                }
-
-                NBTTagCompound itemTag = playerItem.getTagCompound();
-                itemTag.setInteger("xCoord", x);
-                itemTag.setInteger("yCoord", y);
-                itemTag.setInteger("zCoord", z);
-                itemTag.setInteger("dimensionId", world.provider.dimensionId);
-                return true;
-            }
+        if (playerItem == null || !(playerItem.getItem() instanceof TelepositionFocus)) {
+            player.openGui(AlchemicalWizardry.instance, 1, world, x, y, z);
+            return true;
         }
-        player.openGui(AlchemicalWizardry.instance, 1, world, x, y, z);
+
+        SoulNetworkHandler.checkAndSetItemPlayer(playerItem, player);
+
+        NBTTagCompound itemTag = IBindable.getTag(playerItem);
+        itemTag.setInteger("xCoord", x);
+        itemTag.setInteger("yCoord", y);
+        itemTag.setInteger("zCoord", z);
+        itemTag.setInteger("dimensionId", world.provider.dimensionId);
         return true;
     }
 
@@ -103,38 +90,36 @@ public class BlockTeleposer extends BlockContainer {
         Random rand = new Random();
         TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-        if (!(tileEntity instanceof IInventory)) {
+        if (!(tileEntity instanceof IInventory inventory)) {
             return;
         }
 
-        IInventory inventory = (IInventory) tileEntity;
+        ItemStack item = inventory.getStackInSlot(0);
 
-        for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            ItemStack item = inventory.getStackInSlot(i);
-
-            if (item != null && item.stackSize > 0) {
-                float rx = rand.nextFloat() * 0.8F + 0.1F;
-                float ry = rand.nextFloat() * 0.8F + 0.1F;
-                float rz = rand.nextFloat() * 0.8F + 0.1F;
-                EntityItem entityItem = new EntityItem(
-                        world,
-                        x + rx,
-                        y + ry,
-                        z + rz,
-                        new ItemStack(item.getItem(), item.stackSize, item.getItemDamage()));
-
-                if (item.hasTagCompound()) {
-                    entityItem.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
-                }
-
-                float factor = 0.05F;
-                entityItem.motionX = rand.nextGaussian() * factor;
-                entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
-                entityItem.motionZ = rand.nextGaussian() * factor;
-                world.spawnEntityInWorld(entityItem);
-                item.stackSize = 0;
-            }
+        if (item == null || item.stackSize <= 0) {
+            return;
         }
+
+        float rx = rand.nextFloat() * 0.8F + 0.1F;
+        float ry = rand.nextFloat() * 0.8F + 0.1F;
+        float rz = rand.nextFloat() * 0.8F + 0.1F;
+        EntityItem entityItem = new EntityItem(
+                world,
+                x + rx,
+                y + ry,
+                z + rz,
+                new ItemStack(item.getItem(), item.stackSize, item.getItemDamage()));
+
+        if (item.hasTagCompound()) {
+            entityItem.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
+        }
+
+        float factor = 0.05F;
+        entityItem.motionX = rand.nextGaussian() * factor;
+        entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
+        entityItem.motionZ = rand.nextGaussian() * factor;
+        world.spawnEntityInWorld(entityItem);
+        item.stackSize = 0;
     }
 
     @Override
@@ -142,126 +127,93 @@ public class BlockTeleposer extends BlockContainer {
         return new TETeleposer();
     }
 
-    public static boolean swapBlocks(Object caller, World worldI, World worldF, int xi, int yi, int zi, int xf, int yf,
-            int zf) {
-        return swapBlocks(caller, worldI, worldF, xi, yi, zi, xf, yf, zf, true, 3);
+    public static boolean swapBlocks(Object caller, World worldA, World worldB, int xA, int yA, int zA, int xB, int yB,
+            int zB) {
+        return swapBlocks(caller, worldA, worldB, xA, yA, zA, xB, yB, zB, true, 3);
     }
 
-    public static boolean swapBlocksWithoutSound(Object caller, World worldI, World worldF, int xi, int yi, int zi,
-            int xf, int yf, int zf) {
-        return swapBlocks(caller, worldI, worldF, xi, yi, zi, xf, yf, zf, false, 3);
+    public static boolean swapBlocksWithoutSound(Object caller, World worldA, World worldB, int xA, int yA, int zA,
+            int xB, int yB, int zB) {
+        return swapBlocks(caller, worldA, worldB, xA, yA, zA, xB, yB, zB, false, 3);
     }
 
-    public static boolean swapBlocks(Object caller, World worldI, World worldF, int xi, int yi, int zi, int xf, int yf,
-            int zf, boolean doSound, int flag) {
-        TileEntity tileEntityI = worldI.getTileEntity(xi, yi, zi);
-        TileEntity tileEntityF = worldF.getTileEntity(xf, yf, zf);
+    public static boolean swapBlocks(Object caller, World worldA, World worldB, int xA, int yA, int zA, int xB, int yB,
+            int zB, boolean doSound, int flag) {
+        TileEntity tileA = worldA.getTileEntity(xA, yA, zA);
+        TileEntity tileB = worldB.getTileEntity(xB, yB, zB);
 
-        NBTTagCompound nbttag1 = new NBTTagCompound();
-        NBTTagCompound nbttag2 = new NBTTagCompound();
+        NBTTagCompound nbtA = new NBTTagCompound();
+        NBTTagCompound nbtB = new NBTTagCompound();
 
-        if (tileEntityI != null) {
-            tileEntityI.writeToNBT(nbttag1);
-        }
+        if (tileA != null) tileA.writeToNBT(nbtA);
+        if (tileB != null) tileB.writeToNBT(nbtB);
 
-        if (tileEntityF != null) {
-            tileEntityF.writeToNBT(nbttag2);
-        }
+        Block blockA = worldA.getBlock(xA, yA, zA);
+        Block blockB = worldB.getBlock(xB, yB, zB);
 
-        Block blockI = worldI.getBlock(xi, yi, zi);
-        Block blockF = worldF.getBlock(xf, yf, zf);
+        if (blockA.equals(Blocks.air) && blockB.equals(Blocks.air)) return false;
 
-        if (blockI.equals(Blocks.air) && blockF.equals(Blocks.air)) {
+        if (!(caller instanceof TEDemonPortal) && (blockA instanceof BlockPortal || blockB instanceof BlockPortal))
             return false;
-        }
 
-        if (blockI instanceof BlockMobSpawner || blockF instanceof BlockMobSpawner || caller instanceof TEDemonPortal
-                ? false
-                : blockI instanceof BlockPortal || blockF instanceof BlockPortal) {
-            return false;
-        }
+        int metaA = worldA.getBlockMetadata(xA, yA, zA);
+        int metaB = worldB.getBlockMetadata(xB, yB, zB);
 
-        int metaI = worldI.getBlockMetadata(xi, yi, zi);
-        int metaF = worldF.getBlockMetadata(xf, yf, zf);
-
-        TeleposeEvent evt = new TeleposeEvent(worldI, xi, yi, zi, blockI, metaI, worldF, xf, yf, zf, blockF, metaF);
+        TeleposeEvent evt = new TeleposeEvent(worldA, xA, yA, zA, blockA, metaA, worldB, xB, yB, zB, blockB, metaB);
         if (MinecraftForge.EVENT_BUS.post(evt)) return false;
 
         if (doSound) {
-            worldI.playSoundEffect(xi, yi, zi, "mob.endermen.portal", 1.0F, 1.0F);
-            worldF.playSoundEffect(xf, yf, zf, "mob.endermen.portal", 1.0F, 1.0F);
+            String sound = "mob.endermen.portal";
+            worldA.playSoundEffect(xA, yA, zA, sound, 1.0F, 1.0F);
+            worldB.playSoundEffect(xB, yB, zB, sound, 1.0F, 1.0F);
         }
 
-        // CLEAR TILES
-        Block finalBlock = blockF;
+        // Clear current tile entities
+        worldB.setTileEntity(xB, yB, zB, blockB.createTileEntity(worldB, metaB));
+        worldA.setTileEntity(xA, yA, zA, blockA.createTileEntity(worldA, metaA));
 
-        if (finalBlock != null) {
-            TileEntity tileToSet = finalBlock.createTileEntity(worldF, metaF);
+        // Swap blocks
+        worldB.setBlock(xB, yB, zB, blockA, metaA, flag);
+        worldA.setBlock(xA, yA, zA, blockB, metaB, flag);
 
-            worldF.setTileEntity(xf, yf, zf, tileToSet);
-        }
-
-        if (blockI != null) {
-            TileEntity tileToSet = blockI.createTileEntity(worldI, metaI);
-
-            worldI.setTileEntity(xi, yi, zi, tileToSet);
-        }
-
-        // TILES CLEARED
-        worldF.setBlock(xf, yf, zf, blockI, metaI, flag);
-
-        if (tileEntityI != null) {
-            TileEntity newTileEntityI = TileEntity.createAndLoadEntity(nbttag1);
-
-            if (AlchemicalWizardry.isFMPLoaded && isMultipart(tileEntityI)) {
-                newTileEntityI = createMultipartFromNBT(worldF, nbttag1);
-            }
-
-            worldF.setTileEntity(xf, yf, zf, newTileEntityI);
-
-            newTileEntityI.xCoord = xf;
-            newTileEntityI.yCoord = yf;
-            newTileEntityI.zCoord = zf;
-
-            if (AlchemicalWizardry.isFMPLoaded && isMultipart(tileEntityI)) {
-                sendDescriptorOfTile(worldF, newTileEntityI);
-            }
-        }
-
-        worldI.setBlock(xi, yi, zi, finalBlock, metaF, flag);
-
-        if (tileEntityF != null) {
-            TileEntity newTileEntityF = TileEntity.createAndLoadEntity(nbttag2);
-            if (AlchemicalWizardry.isFMPLoaded && isMultipart(tileEntityF)) {
-                newTileEntityF = createMultipartFromNBT(worldI, nbttag2);
-            }
-
-            worldI.setTileEntity(xi, yi, zi, newTileEntityF);
-
-            newTileEntityF.xCoord = xi;
-            newTileEntityF.yCoord = yi;
-            newTileEntityF.zCoord = zi;
-
-            if (AlchemicalWizardry.isFMPLoaded && isMultipart(tileEntityF)) {
-                sendDescriptorOfTile(worldI, newTileEntityF);
-            }
-        }
+        // Restore tile entities
+        swapTile(worldB, xB, yB, zB, tileA, nbtA);
+        swapTile(worldA, xA, yA, zA, tileB, nbtB);
 
         return true;
     }
 
-    @Optional.Method(modid = "ForgeMultipart")
-    public static boolean isMultipart(TileEntity tile) {
-        return tile instanceof TileMultipart;
+    private static void swapTile(World world, int x, int y, int z, TileEntity oldTile, NBTTagCompound nbt) {
+        if (oldTile == null) return;
+
+        TileEntity newTile;
+
+        boolean multipart = AlchemicalWizardry.isFMPLoaded && oldTile instanceof TileMultipart;
+        if (multipart) {
+            newTile = MultipartHelper.createTileFromNBT(world, nbt);
+        } else {
+            newTile = TileEntity.createAndLoadEntity(nbt);
+        }
+
+        world.setTileEntity(x, y, z, newTile);
+
+        newTile.xCoord = x;
+        newTile.yCoord = y;
+        newTile.zCoord = z;
+
+        if (multipart) MultipartHelper.sendDescPacket(world, newTile);
     }
 
-    @Optional.Method(modid = "ForgeMultipart")
-    public static TileEntity createMultipartFromNBT(World world, NBTTagCompound tag) {
-        return MultipartHelper.createTileFromNBT(world, tag);
-    }
-
-    @Optional.Method(modid = "ForgeMultipart")
-    public static void sendDescriptorOfTile(World world, TileEntity tile) {
-        MultipartHelper.sendDescPacket(world, tile);
+    @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block neighbor) {
+        if (!(world.getTileEntity(x, y, z) instanceof TETeleposer teleposer)) return;
+        // was it a low->high pulse
+        boolean isPowered = world.isBlockIndirectlyGettingPowered(x, y, z);
+        if (!teleposer.hasRedstone && isPowered) {
+            teleposer.hasRedstone = true;
+            teleposer.activate();
+        } else {
+            teleposer.hasRedstone = isPowered;
+        }
     }
 }

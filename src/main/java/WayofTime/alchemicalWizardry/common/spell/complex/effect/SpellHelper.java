@@ -1,7 +1,6 @@
 package WayofTime.alchemicalWizardry.common.spell.complex.effect;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -26,17 +25,15 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.server.S06PacketUpdateHealth;
-import net.minecraft.network.play.server.S07PacketRespawn;
-import net.minecraft.network.play.server.S1DPacketEntityEffect;
 import net.minecraft.network.play.server.S1FPacketSetExperience;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
@@ -52,7 +49,6 @@ import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.api.spell.APISpellHelper;
 import WayofTime.alchemicalWizardry.common.NewPacketHandler;
 import WayofTime.alchemicalWizardry.common.items.sigil.SigilDivination;
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class SpellHelper {
 
@@ -756,89 +752,64 @@ public class SpellHelper {
         return null;
     }
 
-    // Adapated from Enhanced Portals 3 code
-    public static Entity teleportEntityToDim(World oldWorld, int newWorldID, double d, double e, double f,
+    public static void teleportEntityToDim(World oldWorld, int newWorldID, double x, double y, double z,
             Entity entity) {
-        if (entity != null) {
-            if (entity.timeUntilPortal <= 0) {
-                WorldServer oldWorldServer = MinecraftServer.getServer().worldServerForDimension(entity.dimension);
-                WorldServer newWorldServer = MinecraftServer.getServer().worldServerForDimension(newWorldID);
-                if (entity instanceof EntityPlayer) {
-                    EntityPlayerMP player = (EntityPlayerMP) entity;
-                    if (!player.worldObj.isRemote) {
-                        player.worldObj.theProfiler.startSection("portal");
-                        player.worldObj.theProfiler.startSection("changeDimension");
-                        ServerConfigurationManager config = player.mcServer.getConfigurationManager();
-                        oldWorld.playSoundEffect(
-                                player.posX,
-                                player.posY,
-                                player.posZ,
-                                "mob.endermen.portal",
-                                1.0F,
-                                1.0F);
-                        player.closeScreen();
-                        player.dimension = newWorldServer.provider.dimensionId;
-                        player.playerNetServerHandler.sendPacket(
-                                new S07PacketRespawn(
-                                        player.dimension,
-                                        player.worldObj.difficultySetting,
-                                        newWorldServer.getWorldInfo().getTerrainType(),
-                                        player.theItemInWorldManager.getGameType()));
-                        oldWorldServer.removeEntity(player);
-                        player.isDead = false;
-                        player.setLocationAndAngles(d, e, f, player.rotationYaw, player.rotationPitch);
-                        newWorldServer.spawnEntityInWorld(player);
-                        player.setWorld(newWorldServer);
-                        config.func_72375_a(player, oldWorldServer);
-                        player.playerNetServerHandler
-                                .setPlayerLocation(d, e, f, entity.rotationYaw, entity.rotationPitch);
-                        player.theItemInWorldManager.setWorld(newWorldServer);
-                        config.updateTimeAndWeatherForPlayer(player, newWorldServer);
-                        config.syncPlayerInventory(player);
-                        player.worldObj.theProfiler.endSection();
-                        oldWorldServer.resetUpdateEntityTick();
-                        newWorldServer.resetUpdateEntityTick();
-                        player.worldObj.theProfiler.endSection();
-                        for (Iterator<PotionEffect> potion = player.getActivePotionEffects().iterator(); potion
-                                .hasNext();) {
-                            player.playerNetServerHandler
-                                    .sendPacket(new S1DPacketEntityEffect(player.getEntityId(), potion.next()));
-                        }
-                        player.playerNetServerHandler.sendPacket(
-                                new S1FPacketSetExperience(
-                                        player.experience,
-                                        player.experienceTotal,
-                                        player.experienceLevel));
-                        FMLCommonHandler.instance().firePlayerChangedDimensionEvent(
-                                player,
-                                oldWorldServer.provider.dimensionId,
-                                player.dimension);
-                        player.timeUntilPortal = 150;
-                    }
-                    player.worldObj.theProfiler.endSection();
-                    newWorldServer.playSoundEffect(d, e, f, "mob.endermen.portal", 1.0F, 1.0F);
-                    return player;
-                } else {
-                    NBTTagCompound tag = new NBTTagCompound();
-                    entity.writeToNBTOptional(tag);
-                    entity.setDead();
-                    oldWorld.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
-                    Entity teleportedEntity = EntityList.createEntityFromNBT(tag, newWorldServer);
-                    if (teleportedEntity != null) {
-                        teleportedEntity.setLocationAndAngles(d, e, f, entity.rotationYaw, entity.rotationPitch);
-                        teleportedEntity.forceSpawn = true;
-                        newWorldServer.spawnEntityInWorld(teleportedEntity);
-                        teleportedEntity.setWorld(newWorldServer);
-                        teleportedEntity.timeUntilPortal = 150;
-                    }
-                    oldWorldServer.resetUpdateEntityTick();
-                    newWorldServer.resetUpdateEntityTick();
-                    newWorldServer.playSoundEffect(d, e, f, "mob.endermen.portal", 1.0F, 1.0F);
-                    return teleportedEntity;
-                }
-            }
+        if (entity == null || entity.timeUntilPortal > 0) return;
+
+        MinecraftServer server = MinecraftServer.getServer();
+        WorldServer oldWorldServer = server.worldServerForDimension(entity.dimension);
+        WorldServer newWorldServer = server.worldServerForDimension(newWorldID);
+
+        oldWorld.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+
+        if (entity instanceof EntityPlayerMP player) {
+            teleportPlayer(player, newWorldServer, x, y, z);
+        } else {
+            teleportNonPlayer(entity, oldWorldServer, newWorldServer, x, y, z);
         }
-        return null;
+
+        newWorldServer.playSoundEffect(x, y, z, "mob.endermen.portal", 1.0F, 1.0F);
+    }
+
+    private static void teleportPlayer(EntityPlayerMP player, WorldServer newWorldServer, double x, double y,
+            double z) {
+        if (player.worldObj.isRemote) return;
+
+        // Teleporting to the Spirit World from Witchery causes the player to get stuck until exiting the world.
+        // Blocks and mobs are fine, so only player TPs need to be canceled.
+        // TODO: Figure out a better fix for this instead of just preventing it.
+        if (newWorldServer.provider.getDimensionName().equals("Spirit World")) {
+            player.addChatComponentMessage(new ChatComponentTranslation("message.warn.spiritWorld"));
+            return;
+        }
+
+        player.mcServer.getConfigurationManager().transferPlayerToDimension(
+                player,
+                newWorldServer.provider.dimensionId,
+                new BMTeleporter(newWorldServer, x, y, z));
+
+        player.timeUntilPortal = 20;
+        player.playerNetServerHandler.sendPacket(
+                new S1FPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
+    }
+
+    private static void teleportNonPlayer(Entity entity, WorldServer oldWorldServer, WorldServer newWorldServer,
+            double x, double y, double z) {
+        NBTTagCompound tag = new NBTTagCompound();
+        entity.writeToNBTOptional(tag);
+        entity.setDead();
+
+        Entity newEntity = EntityList.createEntityFromNBT(tag, newWorldServer);
+        if (newEntity != null) {
+            newEntity.setLocationAndAngles(x, y, z, entity.rotationYaw, entity.rotationPitch);
+            newEntity.forceSpawn = true;
+            newWorldServer.spawnEntityInWorld(newEntity);
+            newEntity.setWorld(newWorldServer);
+            newEntity.timeUntilPortal = 20;
+        }
+
+        oldWorldServer.resetUpdateEntityTick();
+        newWorldServer.resetUpdateEntityTick();
     }
 
     public static boolean areItemStacksEqual(ItemStack stack, ItemStack compressedStack) {
@@ -925,5 +896,35 @@ public class SpellHelper {
         }
 
         return damage;
+    }
+
+    private static class BMTeleporter extends Teleporter {
+
+        private final double x;
+        private final double y;
+        private final double z;
+
+        public BMTeleporter(WorldServer worldServer, double x, double y, double z) {
+            super(worldServer);
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
+        @Override
+        public void placeInPortal(Entity entity, double x, double y, double z, float rotationYaw) {
+            entity.setLocationAndAngles(this.x, this.y, this.z, entity.rotationYaw, entity.rotationPitch);
+            entity.motionX = entity.motionY = entity.motionZ = 0.0D;
+        }
+
+        @Override
+        public boolean placeInExistingPortal(Entity entity, double x, double y, double z, float rotationYaw) {
+            return false;
+        }
+
+        @Override
+        public boolean makePortal(Entity entity) {
+            return false;
+        }
     }
 }

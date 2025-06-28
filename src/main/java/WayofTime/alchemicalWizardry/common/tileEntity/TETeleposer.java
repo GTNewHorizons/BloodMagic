@@ -1,18 +1,17 @@
 package WayofTime.alchemicalWizardry.common.tileEntity;
 
-import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.common.NewPacketHandler;
 import WayofTime.alchemicalWizardry.common.block.BlockTeleposer;
@@ -30,16 +29,14 @@ public class TETeleposer extends TEInventory implements IBloodMagicWailaProvider
 
     private int resultID;
     private int resultDamage;
-    private int previousInput;
 
-    private boolean isActive;
+    public boolean hasRedstone;
 
     public TETeleposer() {
         super(sizeInv);
         resultID = 0;
         resultDamage = 0;
-        isActive = false;
-        previousInput = 0;
+        hasRedstone = false;
     }
 
     @Override
@@ -48,8 +45,7 @@ public class TETeleposer extends TEInventory implements IBloodMagicWailaProvider
 
         resultID = par1NBTTagCompound.getInteger("resultID");
         resultDamage = par1NBTTagCompound.getInteger("resultDamage");
-        isActive = par1NBTTagCompound.getBoolean("isActive");
-        previousInput = par1NBTTagCompound.getInteger("previousInput");
+        hasRedstone = par1NBTTagCompound.getBoolean("hasRedstone");
     }
 
     @Override
@@ -58,8 +54,7 @@ public class TETeleposer extends TEInventory implements IBloodMagicWailaProvider
 
         par1NBTTagCompound.setInteger("resultID", resultID);
         par1NBTTagCompound.setInteger("resultDamage", resultDamage);
-        par1NBTTagCompound.setBoolean("isActive", isActive);
-        par1NBTTagCompound.setInteger("previousInput", previousInput);
+        par1NBTTagCompound.setBoolean("hasRedstone", hasRedstone);
     }
 
     @Override
@@ -72,167 +67,131 @@ public class TETeleposer extends TEInventory implements IBloodMagicWailaProvider
         return 1;
     }
 
-    // Logic for the actual block is under here
-    @Override
-    public void updateEntity() {
-        super.updateEntity();
+    public void activate() {
+        if (worldObj.isRemote) return;
 
-        if (worldObj.isRemote) {
+        ItemStack focus = this.getStackInSlot(0);
+
+        if (focus == null || !(focus.getItem() instanceof TelepositionFocus focusItem)) {
             return;
         }
 
-        int currentInput = worldObj.getBlockPowerInput(xCoord, yCoord, zCoord);
+        World targetWorld = focusItem.getWorld(focus);
+        if (targetWorld == null) return;
 
-        if (previousInput == 0 && currentInput != 0) {
-            ItemStack focus = this.getStackInSlot(0);
+        int x = focusItem.xCoord(focus);
+        int y = focusItem.yCoord(focus);
+        int z = focusItem.zCoord(focus);
 
-            if (focus != null && focus.getItem() instanceof TelepositionFocus) {
-                TelepositionFocus focusItem = (TelepositionFocus) (focus.getItem());
-                int xf = focusItem.xCoord(focus);
-                int yf = focusItem.yCoord(focus);
-                int zf = focusItem.zCoord(focus);
-                World worldF = focusItem.getWorld(focus);
-                int damage = (int) (0.5f * Math.sqrt(
-                        (xCoord - xf) * (xCoord - xf) + (yCoord - yf + 1) * (yCoord - yf + 1)
-                                + (zCoord - zf) * (zCoord - zf)));
-                int focusLevel = focusItem.getFocusLevel();
-                int transportCount = 0;
-                int entityCount = 0;
+        if (!(targetWorld.getTileEntity(x, y, z) instanceof TETeleposer target) || target == this) {
+            return;
+        }
 
-                if (worldF != null && worldF.getTileEntity(xf, yf, zf) instanceof TETeleposer
-                        && !worldF.getTileEntity(xf, yf, zf).equals(this)) {
-                    // Prime the teleportation
-                    int d0 = focusLevel - 1;
-                    AxisAlignedBB axisalignedbb1 = AxisAlignedBB.getBoundingBox(
-                            (double) this.xCoord - 0.5,
-                            (double) this.yCoord + d0 + 0.5,
-                            (double) this.zCoord - 0.5,
-                            (double) (this.xCoord + 0.5),
-                            (double) (this.yCoord + 1.5 + d0),
-                            (double) (this.zCoord + 0.5)).expand(d0, d0, d0);
-                    axisalignedbb1.maxY = Math.min((double) this.worldObj.getHeight(), this.yCoord + 2 + d0 + d0);
-                    List list1 = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb1);
-                    Iterator iterator1 = list1.iterator();
-                    EntityLivingBase entityplayer1;
+        int damage = (int) (0.5f
+                * Math.sqrt(Math.pow(xCoord - x, 2) + Math.pow(yCoord - y + 1, 2) + Math.pow(zCoord - z, 2)));
 
-                    while (iterator1.hasNext()) {
-                        entityplayer1 = (EntityLivingBase) iterator1.next();
-                        entityCount++;
-                    }
+        int size = focusItem.getFocusLevel();
 
-                    AxisAlignedBB axisalignedbb2 = AxisAlignedBB
-                            .getBoundingBox(xf - 0.5, yf + d0 + 0.5, zf - 0.5, xf + 0.5, yf + 1.5 + d0, zf + 0.5)
-                            .expand(d0, d0, d0);
-                    List list2 = worldF.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb2);
-                    Iterator iterator2 = list2.iterator();
-                    EntityLivingBase entityplayer2;
+        List<EntityLivingBase> localEntities = getEntitiesInArea(worldObj, xCoord, yCoord, zCoord, size);
+        List<EntityLivingBase> targetEntities = getEntitiesInArea(targetWorld, x, y, z, size);
 
-                    while (iterator2.hasNext()) {
-                        entityplayer2 = (EntityLivingBase) iterator2.next();
-                        entityCount++;
-                    }
+        int entityCount = localEntities.size() + targetEntities.size();
 
-                    if (EnergyItems.canSyphonInContainer(
-                            focus,
-                            damage * (focusLevel * 2 - 1) * (focusLevel * 2 - 1) * (focusLevel * 2 - 1)
-                                    + damage * entityCount)) {
-                        for (int k = 0; k <= (focusLevel * 2 - 2); k++)
-                            for (int i = -(focusLevel - 1); i <= (focusLevel - 1); i++) {
-                                for (int j = -(focusLevel - 1); j <= (focusLevel - 1); j++) {
-                                    {
-                                        if (BlockTeleposer.swapBlocks(
-                                                this,
-                                                worldObj,
-                                                worldF,
-                                                xCoord + i,
-                                                yCoord + 1 + k,
-                                                zCoord + j,
-                                                xf + i,
-                                                yf + 1 + k,
-                                                zf + j)) {
-                                            transportCount++;
-                                        }
-                                    }
-                                }
-                            }
+        if (!EnergyItems.canSyphonInContainer(focus, damage * entityCount)) return;
 
-                        if (!worldF.equals(worldObj)) {
-                            entityCount = 0;
-                        }
+        int movedBlocks = moveBlocks(size, targetWorld, x, y, z);
 
-                        // Teleport with minimum cost of 2000 LP.
-                        int cost = Math.max(damage * transportCount + damage * entityCount, 2000);
-                        SoulNetworkHandler.syphonFromNetwork(focus, cost);
+        int cost = Math.max(damage * movedBlocks + damage * entityCount, 2000);
 
-                        if (worldF.equals(worldObj)) {
-                            iterator1 = list1.iterator();
-                            iterator2 = list2.iterator();
+        SoulNetworkHandler.syphonFromNetwork(focus, cost);
 
-                            while (iterator1.hasNext()) {
-                                entityplayer1 = (EntityLivingBase) iterator1.next();
-                                entityplayer1.worldObj = worldF;
-                                entityplayer1.setPositionAndUpdate(
-                                        entityplayer1.posX - this.xCoord + xf,
-                                        entityplayer1.posY - this.yCoord + yf,
-                                        entityplayer1.posZ - this.zCoord + zf);
-                            }
+        if (targetWorld.equals(worldObj)) {
+            teleportEntitiesSameWorld(localEntities, this.xCoord, this.yCoord, this.zCoord, x, y, z);
+            teleportEntitiesSameWorld(targetEntities, x, y, z, this.xCoord, this.yCoord, this.zCoord);
+        } else {
+            teleportEntitiesToOtherWorld(
+                    localEntities,
+                    worldObj,
+                    this.xCoord,
+                    this.yCoord,
+                    this.zCoord,
+                    targetWorld,
+                    x,
+                    y,
+                    z);
+            teleportEntitiesToOtherWorld(
+                    targetEntities,
+                    targetWorld,
+                    x,
+                    y,
+                    z,
+                    worldObj,
+                    this.xCoord,
+                    this.yCoord,
+                    this.zCoord);
 
-                            while (iterator2.hasNext()) {
-                                entityplayer2 = (EntityLivingBase) iterator2.next();
-                                entityplayer2.worldObj = worldF;
-                                entityplayer2.setPositionAndUpdate(
-                                        entityplayer2.posX + this.xCoord - xf,
-                                        entityplayer2.posY + this.yCoord - yf,
-                                        entityplayer2.posZ + this.zCoord - zf);
-                            }
-                        } else {
-                            iterator1 = list1.iterator();
-                            iterator2 = list2.iterator();
+        }
+    }
 
-                            while (iterator1.hasNext()) {
-                                entityplayer1 = (EntityLivingBase) iterator1.next();
-                                SpellHelper.teleportEntityToDim(
-                                        worldObj,
-                                        worldF.provider.dimensionId,
-                                        entityplayer1.posX - this.xCoord + xf,
-                                        entityplayer1.posY - this.yCoord + yf,
-                                        entityplayer1.posZ - this.zCoord + zf,
-                                        entityplayer1);
-                                // entityplayer1.worldObj = worldF;
-                                // entityplayer1.setPositionAndUpdate(entityplayer1.posX
-                                // - this.xCoord + xf, entityplayer1.posY - this.yCoord + yf, entityplayer1.posZ -
-                                // this.zCoord + zf);
-                            }
+    private List<EntityLivingBase> getEntitiesInArea(World world, int x, int y, int z, int size) {
+        double half = (size * 2 - 1) / 2.0;
 
-                            while (iterator2.hasNext()) {
-                                entityplayer2 = (EntityLivingBase) iterator2.next();
-                                SpellHelper.teleportEntityToDim(
-                                        worldF,
-                                        worldObj.provider.dimensionId,
-                                        entityplayer2.posX + this.xCoord - xf,
-                                        entityplayer2.posY + this.yCoord - yf,
-                                        entityplayer2.posZ + this.zCoord - zf,
-                                        entityplayer2);
-                                // entityplayer2.worldObj = worldF;
-                                // entityplayer2.setPositionAndUpdate(entityplayer2.posX
-                                // + this.xCoord - xf, entityplayer2.posY + this.yCoord - yf, entityplayer2.posZ +
-                                // this.zCoord - zf);
-                            }
-                        }
+        AxisAlignedBB box = AxisAlignedBB.getBoundingBox(
+                x + 0.5 - half,
+                y + 1,
+                z + 0.5 - half,
+                x + 0.5 + half,
+                y + 1 + (size * 2 - 1),
+                z + 0.5 + half);
+
+        return world.getEntitiesWithinAABB(EntityLivingBase.class, box);
+    }
+
+    private int moveBlocks(int focusLevel, World targetWorld, int x, int y, int z) {
+        int transportCount = 0;
+        int range = focusLevel - 1;
+
+        for (int k = 0; k <= (focusLevel * 2 - 2); k++) {
+            for (int i = -range; i <= range; i++) {
+                for (int j = -range; j <= range; j++) {
+                    if (BlockTeleposer.swapBlocks(
+                            this,
+                            worldObj,
+                            targetWorld,
+                            xCoord + i,
+                            yCoord + 1 + k,
+                            zCoord + j,
+                            x + i,
+                            y + 1 + k,
+                            z + j)) {
+                        transportCount++;
                     }
                 }
             }
         }
-
-        previousInput = currentInput;
+        return transportCount;
     }
 
-    public void setActive() {
-        isActive = false;
+    private void teleportEntitiesSameWorld(List<EntityLivingBase> list, int sourceX, int sourceY, int sourceZ,
+            int destX, int destY, int destZ) {
+        String sound = "mob.endermen.portal";
+        for (EntityLivingBase e : list) {
+            e.setPositionAndUpdate(e.posX - sourceX + destX, e.posY - sourceY + destY, e.posZ - sourceZ + destZ);
+            e.worldObj.playSoundEffect(e.posX, e.posY, e.posZ, sound, 1.0F, 1.0F);
+        }
     }
 
-    public boolean isActive() {
-        return isActive;
+    private void teleportEntitiesToOtherWorld(List<EntityLivingBase> list, World sourceWorld, int sourceX, int sourceY,
+            int sourceZ, World destWorld, int destX, int destY, int destZ) {
+        for (EntityLivingBase e : list) {
+            SpellHelper.teleportEntityToDim(
+                    sourceWorld,
+                    destWorld.provider.dimensionId,
+                    e.posX - sourceX + destX,
+                    e.posY - sourceY + destY,
+                    e.posZ - sourceZ + destZ,
+                    e);
+        }
     }
 
     @Override
@@ -247,11 +206,8 @@ public class TETeleposer extends TEInventory implements IBloodMagicWailaProvider
 
         if (intData.length == 3) {
             for (int i = 0; i < 1; i++) {
-                if (intData[i * 3 + 2] != 0) {
-                    ItemStack is = new ItemStack(
-                            Item.getItemById(intData[i * 3]),
-                            intData[i * 3 + 2],
-                            intData[i * 3 + 1]);
+                if (intData[2] != 0) {
+                    ItemStack is = new ItemStack(Item.getItemById(intData[i * 3]), intData[2], intData[1]);
                     inv[i] = is;
                 } else {
                     inv[i] = null;
@@ -261,18 +217,17 @@ public class TETeleposer extends TEInventory implements IBloodMagicWailaProvider
     }
 
     public int[] buildIntDataList() {
-        int[] sortList = new int[3]; // 1 * 3
-        int pos = 0;
+        int[] sortList = new int[3];
 
         for (ItemStack is : inv) {
             if (is != null) {
-                sortList[pos++] = Item.getIdFromItem(is.getItem());
-                sortList[pos++] = is.getItemDamage();
-                sortList[pos++] = is.stackSize;
+                sortList[0] = Item.getIdFromItem(is.getItem());
+                sortList[1] = is.getItemDamage();
+                sortList[2] = is.stackSize;
             } else {
-                sortList[pos++] = 0;
-                sortList[pos++] = 0;
-                sortList[pos++] = 0;
+                for (int i = 0; i < 3; i++) {
+                    sortList[i] = 0;
+                }
             }
         }
 
@@ -289,12 +244,20 @@ public class TETeleposer extends TEInventory implements IBloodMagicWailaProvider
             IWailaConfigHandler config) {
         if (!config.getConfig(BloodMagicWailaPlugin.WAILA_CONFIG_TELEPOSER)) return;
         final ItemStack contained = getStackInSlot(0);
-        if (contained != null) {
+        if (contained.getItem() instanceof TelepositionFocus focus) {
             currenttip.add(contained.getDisplayName());
+
+            NBTTagCompound itemTag = IBindable.getTag(contained);
+            currenttip.add(
+                    StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
+                            + itemTag.getInteger("xCoord")
+                            + ", "
+                            + itemTag.getInteger("yCoord")
+                            + ", "
+                            + itemTag.getInteger("zCoord"));
+            currenttip.add(
+                    StatCollector.translateToLocal("tooltip.alchemy.dimension") + " "
+                            + focus.getDimensionID(contained));
         }
     }
-
-    @Override
-    public void getWailaNBTData(final EntityPlayerMP player, final TileEntity tile, final NBTTagCompound tag,
-            final World world, int x, int y, int z) {}
 }
