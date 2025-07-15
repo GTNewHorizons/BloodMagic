@@ -9,8 +9,8 @@ import cpw.mods.fml.common.registry.GameData;
  */
 public class BlockStack {
 
-    private Block block;
-    private int meta;
+    private final Block block;
+    private final int meta;
 
     public BlockStack(Block block, int meta) {
         this.block = block;
