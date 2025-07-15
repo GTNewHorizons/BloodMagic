@@ -12,15 +12,18 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.ofChain;
 import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.oredict.OreDictionary;
 
+import com.github.bsideup.jabel.Desugar;
 import com.google.common.base.Joiner;
 import com.gtnewhorizon.structurelib.alignment.constructable.IMultiblockInfoContainer;
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
+import com.gtnewhorizon.structurelib.structure.IStructureElement;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 import com.gtnewhorizon.structurelib.structure.StructureDefinition;
 
@@ -82,27 +85,42 @@ public class AltarStructure {
                 .addElement('r',ofChain(ofBlockAnyMeta(ModBlocks.bloodRune),ofBlockAnyMeta(ModBlocks.speedRune),ofBlockAnyMeta(ModBlocks.runeOfSelfSacrifice),ofBlockAnyMeta(ModBlocks.runeOfSacrifice),ofBlockAnyMeta(ModBlocks.efficiencyRune)));
 
         char[] keys = {'t', 'g', 'v', 'b', 'e', 'i', 'c'};
+        List<BlockStack>[] values = new List[] {
+                AlchemicalWizardry.thirdTierPillars,
+                AlchemicalWizardry.thirdTierCaps,
+                AlchemicalWizardry.fourthTierPillars,
+                AlchemicalWizardry.fourthTierCaps,
+                AlchemicalWizardry.fifthTierBeacons,
+                AlchemicalWizardry.sixthTierPillars,
+                AlchemicalWizardry.sixthTierCaps
+        };
+
         for (int i = 0; i < keys.length; i++) {
-            BlockStack stack = AlchemicalWizardry.specialAltarBlock[i];
-            if (stack != null && stack.getBlock() != Blocks.air) {
-                altarBuilder.addElement(keys[i], ofBlock(stack.getBlock(), stack.getMeta()));
-            } else {
+            if (values[i].isEmpty()) {
                 altarBuilder.addElement(keys[i], ANY_BLOCK);
+                continue;
             }
+
+            altarBuilder.addElement(keys[i],
+                    ofChain(
+                            values[i].stream()
+                                    .map(s -> s.getMeta() == OreDictionary.WILDCARD_VALUE
+                                            ? ofBlockAnyMeta(s.getBlock())
+                                            : ofBlock(s.getBlock(), s.getMeta()))
+                                    .toArray(IStructureElement[]::new)
+                    )
+            );
         }
+
 
         IMultiblockInfoContainer.registerTileClass(TEAltar.class,
                 new AltarStructure.AltarMultiblockInfoContainer(altarBuilder.build()));
         // spotless:on
     }
 
-    private static class AltarMultiblockInfoContainer implements IMultiblockInfoContainer<TEAltar> {
-
-        private final IStructureDefinition<TEAltar> structureAltar;
-
-        public AltarMultiblockInfoContainer(IStructureDefinition<TEAltar> structureAltar) {
-            this.structureAltar = structureAltar;
-        }
+    @Desugar
+    private record AltarMultiblockInfoContainer(IStructureDefinition<TEAltar> structureAltar)
+            implements IMultiblockInfoContainer<TEAltar> {
 
         @Override
         public void construct(ItemStack triggerStack, boolean hintsOnly, TEAltar ctx, ExtendedFacing aSide) {
@@ -157,18 +175,20 @@ public class AltarStructure {
             return built;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public String[] getDescription(ItemStack stackSize) {
             ArrayList<String> out = new ArrayList<>();
             out.add(StatCollector.translateToLocal("structurelib.bloodmagic.altar.1"));
             out.add(StatCollector.translateToLocal("structurelib.bloodmagic.altar.2"));
 
-            int[] pillarIndices = { 0, 2, 5 };
             int[] pillarTiers = { 3, 4, 6 };
+            List<BlockStack>[] pillarLists = new List[] { AlchemicalWizardry.thirdTierPillars,
+                    AlchemicalWizardry.fourthTierPillars, AlchemicalWizardry.sixthTierPillars };
             ArrayList<Integer> pillars = new ArrayList<>();
 
-            for (int i = 0; i < pillarIndices.length; i++) {
-                if (AlchemicalWizardry.specialAltarBlock[pillarIndices[i]].getBlock() == Blocks.air) {
+            for (int i = 0; i < pillarTiers.length; i++) {
+                if (pillarLists[i].isEmpty()) {
                     pillars.add(pillarTiers[i]);
                 }
             }
@@ -180,12 +200,13 @@ public class AltarStructure {
                                 Joiner.on(", ").join(pillars)));
             }
 
-            int[] capIndices = { 1, 3, 6 };
             int[] capTiers = { 3, 4, 6 };
+            List<BlockStack>[] capLists = new List[] { AlchemicalWizardry.thirdTierCaps,
+                    AlchemicalWizardry.fourthTierCaps, AlchemicalWizardry.sixthTierCaps };
             ArrayList<Integer> caps = new ArrayList<>();
 
-            for (int i = 0; i < capIndices.length; i++) {
-                if (AlchemicalWizardry.specialAltarBlock[capIndices[i]].getBlock() == Blocks.air) {
+            for (int i = 0; i < capTiers.length; i++) {
+                if (capLists[i].isEmpty()) {
                     caps.add(capTiers[i]);
                 }
             }
@@ -197,7 +218,7 @@ public class AltarStructure {
                                 Joiner.on(", ").join(caps)));
             }
 
-            if (AlchemicalWizardry.specialAltarBlock[4].getBlock() == Blocks.air) { // T5 Beacon
+            if (AlchemicalWizardry.fifthTierBeacons.isEmpty()) { // T5 Beacon
                 out.add(StatCollector.translateToLocal("structurelib.bloodmagic.altar.5"));
             }
 

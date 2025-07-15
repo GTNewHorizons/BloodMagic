@@ -49,14 +49,14 @@ public class AltarComponent {
     }
 
     public Block getBlock() {
-        if (validBlocks.isEmpty()) {
+        if (anyBlockMatches()) {
             return Blocks.air;
         }
         return validBlocks.get(0).getBlock();
     }
 
     public int getMetadata() {
-        if (validBlocks.isEmpty()) {
+        if (anyBlockMatches()) {
             return OreDictionary.WILDCARD_VALUE;
         }
         return validBlocks.get(0).getMeta();
@@ -75,7 +75,7 @@ public class AltarComponent {
     }
 
     public boolean matches(Block block, int meta) {
-        if (validBlocks.isEmpty()) return true;
+        if (anyBlockMatches()) return true;
 
         for (BlockStack pair : validBlocks) {
             if (pair.getBlock() == block
@@ -84,5 +84,9 @@ public class AltarComponent {
             }
         }
         return false;
+    }
+
+    public boolean anyBlockMatches() {
+        return validBlocks.isEmpty();
     }
 }

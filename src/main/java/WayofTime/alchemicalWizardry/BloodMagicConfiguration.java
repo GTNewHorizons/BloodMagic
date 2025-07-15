@@ -16,7 +16,6 @@ import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.init.Blocks;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.oredict.OreDictionary;
@@ -624,66 +623,63 @@ public class BloodMagicConfiguration {
     }
 
     public static void finishLoading() {
-        AlchemicalWizardry.secondTierRunes = BloodMagicConfiguration.getAltarRunesForTier(
-                "secondTier",
-                new BlockStack[] { new BlockStack(ModBlocks.bloodRune, 0), new BlockStack(ModBlocks.speedRune, 0),
-                        new BlockStack(ModBlocks.efficiencyRune, 0), new BlockStack(ModBlocks.runeOfSacrifice, 0),
-                        new BlockStack(ModBlocks.runeOfSelfSacrifice, 0), new BlockStack(ModBlocks.bloodRune, 1),
-                        new BlockStack(ModBlocks.bloodRune, 2), new BlockStack(ModBlocks.bloodRune, 3),
-                        new BlockStack(ModBlocks.bloodRune, 4), new BlockStack(ModBlocks.bloodRune, 5),
-                        new BlockStack(ModBlocks.bloodRune, 6) });
-        AlchemicalWizardry.thirdTierRunes = BloodMagicConfiguration.getAltarRunesForTier(
-                "thirdTier",
-                new BlockStack[] { new BlockStack(ModBlocks.bloodRune, 0), new BlockStack(ModBlocks.speedRune, 0),
-                        new BlockStack(ModBlocks.efficiencyRune, 0), new BlockStack(ModBlocks.runeOfSacrifice, 0),
-                        new BlockStack(ModBlocks.runeOfSelfSacrifice, 0), new BlockStack(ModBlocks.bloodRune, 1),
-                        new BlockStack(ModBlocks.bloodRune, 2), new BlockStack(ModBlocks.bloodRune, 3),
-                        new BlockStack(ModBlocks.bloodRune, 4), new BlockStack(ModBlocks.bloodRune, 5),
-                        new BlockStack(ModBlocks.bloodRune, 6) });
-        AlchemicalWizardry.fourthTierRunes = BloodMagicConfiguration.getAltarRunesForTier(
-                "fourthTier",
-                new BlockStack[] { new BlockStack(ModBlocks.bloodRune, 0), new BlockStack(ModBlocks.speedRune, 0),
-                        new BlockStack(ModBlocks.efficiencyRune, 0), new BlockStack(ModBlocks.runeOfSacrifice, 0),
-                        new BlockStack(ModBlocks.runeOfSelfSacrifice, 0), new BlockStack(ModBlocks.bloodRune, 1),
-                        new BlockStack(ModBlocks.bloodRune, 2), new BlockStack(ModBlocks.bloodRune, 3),
-                        new BlockStack(ModBlocks.bloodRune, 4), new BlockStack(ModBlocks.bloodRune, 5),
-                        new BlockStack(ModBlocks.bloodRune, 6) });
-        AlchemicalWizardry.fifthTierRunes = BloodMagicConfiguration.getAltarRunesForTier(
-                "fifthTier",
-                new BlockStack[] { new BlockStack(ModBlocks.bloodRune, 0), new BlockStack(ModBlocks.speedRune, 0),
-                        new BlockStack(ModBlocks.efficiencyRune, 0), new BlockStack(ModBlocks.runeOfSacrifice, 0),
-                        new BlockStack(ModBlocks.runeOfSelfSacrifice, 0), new BlockStack(ModBlocks.bloodRune, 1),
-                        new BlockStack(ModBlocks.bloodRune, 2), new BlockStack(ModBlocks.bloodRune, 3),
-                        new BlockStack(ModBlocks.bloodRune, 4), new BlockStack(ModBlocks.bloodRune, 5),
-                        new BlockStack(ModBlocks.bloodRune, 6) });
-        AlchemicalWizardry.sixthTierRunes = BloodMagicConfiguration.getAltarRunesForTier(
-                "sixthTier",
-                new BlockStack[] { new BlockStack(ModBlocks.bloodRune, 0), new BlockStack(ModBlocks.speedRune, 0),
-                        new BlockStack(ModBlocks.efficiencyRune, 0), new BlockStack(ModBlocks.runeOfSacrifice, 0),
-                        new BlockStack(ModBlocks.runeOfSelfSacrifice, 0), new BlockStack(ModBlocks.bloodRune, 1),
-                        new BlockStack(ModBlocks.bloodRune, 2), new BlockStack(ModBlocks.bloodRune, 3),
-                        new BlockStack(ModBlocks.bloodRune, 4), new BlockStack(ModBlocks.bloodRune, 5),
-                        new BlockStack(ModBlocks.bloodRune, 6) });
-        AlchemicalWizardry.specialAltarBlock = getAltarRunesForTier(
-                "specialBlocks",
-                new BlockStack[] { new BlockStack(Blocks.air, 0), new BlockStack(Blocks.glowstone, 0),
-                        new BlockStack(Blocks.air, 0), new BlockStack(ModBlocks.largeBloodStoneBrick, 0),
-                        new BlockStack(Blocks.beacon, 0), new BlockStack(Blocks.air, 0),
-                        new BlockStack(ModBlocks.blockCrystal, 0) },
-                "Set the special blocks for the altar with the format mod:block(:meta) in the following order:\n"
-                        + "Tier 3 pillar\n"
-                        + "Tier 3 cap\n"
-                        + "Tier 4 pillar\n"
-                        + "Tier 4 cap\n"
-                        + "Tier 5 beacon\n"
-                        + "Tier 6 pillar\n"
-                        + "Tier 6 cap\n"
-                        + "Set any of these to minecraft:air to allow for that component to be any block EXCEPT air (e.g., let any block be used for a pillar).");
+        String[] defaultRunes = { "AWWayofTime:AlchemicalWizardrybloodRune", "AWWayofTime:speedRune",
+                "AWWayofTime:efficiencyRune", "AWWayofTime:runeOfSacrifice", "AWWayofTime:runeOfSelfSacrifice",
+                "AWWayofTime:AlchemicalWizardrybloodRune:1", "AWWayofTime:AlchemicalWizardrybloodRune:2",
+                "AWWayofTime:AlchemicalWizardrybloodRune:3", "AWWayofTime:AlchemicalWizardrybloodRune:4",
+                "AWWayofTime:AlchemicalWizardrybloodRune:5", "AWWayofTime:AlchemicalWizardrybloodRune:6" };
+
+        AlchemicalWizardry.secondTierRunes = readRuneOverrides("secondTier", defaultRunes);
+        AlchemicalWizardry.thirdTierRunes = readRuneOverrides("thirdTier", defaultRunes);
+        AlchemicalWizardry.fourthTierRunes = readRuneOverrides("fourthTier", defaultRunes);
+        AlchemicalWizardry.fifthTierRunes = readRuneOverrides("fifthTier", defaultRunes);
+        AlchemicalWizardry.sixthTierRunes = readRuneOverrides("sixthTier", defaultRunes);
+
+        AlchemicalWizardry.fifthTierBeacons = readBlockConfig(
+                "altar blocks",
+                "fifthTierBeacons",
+                new String[] { "minecraft:beacon", "etfuturum:beacon", "chisel:beacon:*" },
+                "Valid blocks for the Blood Altar's tier 5 beacons:\n"
+                        + "Use the following format for all of these entries: mod:block(:meta). Meta * or 32767 allows for any meta.\n"
+                        + "An empty entry allows for any non-air block to be used for that part of the structure.\n"
+                        + "Invalid or missing blocks are skipped. If all entries are invalid, any block can be used as a fallback.");
+        AlchemicalWizardry.thirdTierCaps = readBlockConfig(
+                "altar blocks",
+                "thirdTierCaps",
+                new String[] { "minecraft:glowstone", "BloodArsenal:blood_infused_glowstone", "Botania:seaLamp",
+                        "chisel:glowstone:*", "etfuturum:sea_lantern", "etfuturum:shroomlight",
+                        "ExtraUtilities:color_lightgem:*" },
+                "Valid blocks for the Blood Altar's tier 3 caps:");
+        AlchemicalWizardry.thirdTierPillars = readBlockConfig(
+                "altar blocks",
+                "thirdTierPillars",
+                new String[] {},
+                "Valid blocks for the Blood Altar's tier 3 pillars:");
+        AlchemicalWizardry.fourthTierCaps = readBlockConfig(
+                "altar blocks",
+                "fourthTierCaps",
+                new String[] { "AWWayofTime:largeBloodStoneBrick" },
+                "Valid blocks for the Blood Altar's tier 4 caps:");
+        AlchemicalWizardry.fourthTierPillars = readBlockConfig(
+                "altar blocks",
+                "fourthTierPillars",
+                new String[] {},
+                "Valid blocks for the Blood Altar's tier 4 pillars.");
+        AlchemicalWizardry.sixthTierCaps = readBlockConfig(
+                "altar blocks",
+                "sixthTierCaps",
+                new String[] { "AWWayofTime:blockCrystal" },
+                "Valid blocks for the Blood Altar's tier 6 caps:");
+        AlchemicalWizardry.sixthTierPillars = readBlockConfig(
+                "altar blocks",
+                "sixthTierPillars",
+                new String[] {},
+                "Valid blocks for the Blood Altar's tier 6 pillars:");
         config.save();
     }
 
     public static void loadCustomLPValues() {
-        AlchemicalWizardry.lpPerSactificeCustom = new HashMap<Class<?>, Integer>();
+        AlchemicalWizardry.lpPerSactificeCustom = new HashMap<>();
         for (Object object : EntityList.stringToClassMapping.entrySet()) {
             Entry entry = (Entry) object;
             String entityName = (String) entry.getKey();
@@ -798,7 +794,6 @@ public class BloodMagicConfiguration {
                 // Check if it's an int, if so, parse it. If not, set meta to 0 to avoid crashing.
                 if (isInteger(blockData[2])) meta = Integer.parseInt(blockData[2]);
                 else if (blockData[2].equals("*")) meta = OreDictionary.WILDCARD_VALUE;
-                else meta = 0;
             }
 
             AlchemicalWizardryEventHooks.teleposerBlacklist.add(new BlockStack(block, meta));
@@ -808,53 +803,43 @@ public class BloodMagicConfiguration {
     private static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return false;
-        } catch (NullPointerException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return false;
         }
-        // only got here if we didn't return false
         return true;
     }
 
-    private static BlockStack[] getAltarRunesForTier(String tierName, BlockStack[] defaultValues) {
-        return getAltarRunesForTier(tierName, defaultValues, "");
+    private static List<BlockStack> readRuneOverrides(String key, String[] defaultValues) {
+        return readBlockConfig("rune overrides", key, defaultValues, "");
     }
 
-    private static BlockStack[] getAltarRunesForTier(String tierName, BlockStack[] defaultValues, String comment) {
-        String[] defaultNames = new String[defaultValues.length];
-        for (int i = 0; i < defaultValues.length; i++) {
-            defaultNames[i] = Block.blockRegistry.getNameForObject(defaultValues[i].getBlock()) + ":"
-                    + defaultValues[i].getMeta();
-        }
-        Property property = config.get("rune overrides", tierName, defaultNames, comment);
-        String[] names = property.getStringList();
-        if (names.length != defaultNames.length) {
-            property.set(defaultNames);
-            return defaultValues;
-        }
-        BlockStack[] blockStacks = new BlockStack[names.length];
-        for (int i = 0; i < names.length; i++) {
-            String[] parts = names[i].split(":");
-            if (parts.length < 2 || parts.length > 3) {
-                property.set(defaultNames);
-                return defaultValues;
+    private static List<BlockStack> readBlockConfig(String category, String key, String[] defaultValues,
+            String comment) {
+        Property property = config.get(category, key, defaultValues, comment);
+        List<BlockStack> validStacks = new ArrayList<>();
+
+        for (String name : property.getStringList()) {
+            String[] blockData = name.split(":");
+            if (blockData.length < 2 || blockData.length > 3) {
+                continue;
             }
-            Block block = GameRegistry.findBlock(parts[0], parts[1]);
-            int metadata = 0;
-            if (parts.length == 3) {
-                try {
-                    metadata = Integer.parseInt(parts[2]);
-                } catch (NumberFormatException exception) {
-                    metadata = 0;
-                }
-            }
+
+            Block block = GameRegistry.findBlock(blockData[0], blockData[1]);
             if (block == null) {
-                property.set(defaultNames);
-                return defaultValues;
+                AlchemicalWizardry.logger.info("Block not found for {} {}: {}", category, key, name);
+                continue;
             }
-            blockStacks[i] = new BlockStack(block, metadata);
+
+            int meta = 0;
+            if (blockData.length == 3) {
+                if (isInteger(blockData[2])) meta = Integer.parseInt(blockData[2]);
+                else if (blockData[2].equals("*")) meta = OreDictionary.WILDCARD_VALUE;
+            }
+
+            validStacks.add(new BlockStack(block, meta));
         }
-        return blockStacks;
+
+        return validStacks;
     }
+
 }
