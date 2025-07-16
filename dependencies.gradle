@@ -23,13 +23,13 @@
  */
 
 dependencies {
-    api("com.github.GTNewHorizons:waila:1.8.10:dev")
-    api("com.github.GTNewHorizons:NotEnoughItems:2.7.60-GTNH:dev")
+    api("com.github.GTNewHorizons:waila:1.8.12:dev")
+    api("com.github.GTNewHorizons:NotEnoughItems:2.7.64-GTNH:dev")
 
-    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:5.09.51.368:dev") {transitive = false }
+    compileOnly("com.github.GTNewHorizons:GT5-Unofficial:5.09.51.393:dev") {transitive = false }
 
-    compileOnly("com.github.GTNewHorizons:Botania:1.12.12-GTNH:api") {transitive = false }
-    compileOnly("com.github.GTNewHorizons:ForestryMC:4.10.13:api") {transitive = false }
+    compileOnly("com.github.GTNewHorizons:Botania:1.12.16-GTNH:api") {transitive = false }
+    compileOnly("com.github.GTNewHorizons:ForestryMC:4.10.14:api") {transitive = false }
     compileOnly("com.github.GTNewHorizons:ForgeMultipart:1.6.7:dev") {transitive = false }
     
     compileOnly("com.github.GTNewHorizons:Chisel:2.16.5-GTNH:api") {transitive = false }
@@ -40,5 +40,5 @@ dependencies {
     compileOnly("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev") {transitive = false }
     compileOnly("curse.maven:guide-api-228832:2287185") {transitive = false }
 
-    compileOnly("com.github.GTNewHorizons:StructureLib:1.4.12:dev")
+    compileOnly("com.github.GTNewHorizons:StructureLib:1.4.15:dev")
 }
