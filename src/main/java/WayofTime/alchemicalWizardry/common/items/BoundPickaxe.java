@@ -50,7 +50,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
         this.damageVsEntity = 5;
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         this.setEnergyUsed(5);
-        setHarvestLevel("pickaxe", 5);
+        setHarvestLevel("pickaxe", 7);
     }
 
     public void setEnergyUsed(int i) {
