@@ -10,14 +10,16 @@ import java.util.Random;
 
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import com.gtnewhorizon.gtnhlib.util.data.ImmutableBlockMeta;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
-import gregtech.common.blocks.TileEntityOres;
+import gregtech.common.ores.OreInfo;
+import gregtech.common.ores.OreManager;
 
 public class Meteor {
 
@@ -230,9 +232,14 @@ public class Meteor {
 
     @Optional.Method(modid = "gregtech")
     private static void setGTOresNaturalIfNeeded(World world, int x, int y, int z) {
-        final TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileEntityOres) {
-            ((TileEntityOres) tileEntity).mNatural = true;
+        try (OreInfo<?> info = OreManager.getOreInfo(world, x, y, z)) {
+            if (info == null) return;
+
+            info.isNatural = true;
+
+            ImmutableBlockMeta bm = OreManager.getAdapter(info).getBlock(info);
+
+            world.setBlock(x, y, z, bm.getBlock(), bm.getBlockMeta(), 2);
         }
     }
 }
