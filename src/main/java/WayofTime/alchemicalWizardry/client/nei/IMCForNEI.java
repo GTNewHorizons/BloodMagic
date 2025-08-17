@@ -1,5 +1,7 @@
 package WayofTime.alchemicalWizardry.client.nei;
 
+import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.BloodMagicConfiguration;
 import net.minecraft.nbt.NBTTagCompound;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
@@ -12,6 +14,39 @@ public class IMCForNEI {
         sendCatalyst("alchemicalwizardry.meteor", "AWWayofTime:masterStone");
         sendCatalyst("alchemicalwizardry.bindingritual", "AWWayofTime:masterStone");
         sendCatalyst("alchemicalwizardry.calcinator", "AWWayofTime:blockAlchemicCalcinator");
+        // Blood Altar Progression
+        sendInfoPage("AWWayofTime: Altar,sacrificialKnife", "nei.infopage.bloodAltar.1." + (AlchemicalWizardry.wimpySettings ? "b" : "a"));
+        sendInfoPage("AWWayofTime: Altar", "nei.infopage.bloodAltar.2");
+        sendInfoPage("AWWayofTime: Altar,bucketLife", "nei.infopage.bloodAltar.3");
+        sendInfoPage("AWWayofTime: Altar,weakBloodOrb", "nei.infopage.bloodAltar.4");
+        sendInfoPage("AWWayofTime: Altar,apprenticeBloodOrb|<AWWayofTime:AlchemicalWizardrybloodRune>", "nei.infopage.bloodAltar.5");
+        sendInfoPage("AWWayofTime: Altar,magicianBloodOrb|<minecraft:glowstone>", "nei.infopage.bloodAltar.6");
+        sendInfoPage("AWWayofTime: Altar,masterBloodOrb,largeBloodStoneBrick", "nei.infopage.bloodAltar.7");
+        sendInfoPage("AWWayofTime: Altar,archmageBloodOrb|minecraft:beacon", "nei.infopage.bloodAltar.8");
+        sendInfoPage("AWWayofTime: Altar,transcendentBloodOrb|<AWWayofTime:blockCrystal>", "nei.infopage.bloodAltar.9");
+        // Altar Runes
+        sendInfoPage("<AWWayofTime:AlchemicalWizardrybloodRune:1>", "nei.infopage.rune.augmentedCapacity");
+        sendInfoPage("<AWWayofTime:AlchemicalWizardrybloodRune:2>", "nei.infopage.rune.dislocation");
+        sendInfoPage("<AWWayofTime:AlchemicalWizardrybloodRune:3>", "nei.infopage.rune.orb");
+        sendInfoPage("<AWWayofTime:AlchemicalWizardrybloodRune:4>", "nei.infopage.rune.superiorCapacity");
+        sendInfoPage("<AWWayofTime:AlchemicalWizardrybloodRune:5>", "nei.infopage.rune.acceleration");
+        sendInfoPage("<AWWayofTime:AlchemicalWizardrybloodRune:6>", "nei.infopage.rune.quickness");
+        sendInfoPage("<AWWayofTime:speedRune>", "nei.infopage.rune.speed");
+        sendInfoPage("<AWWayofTime:efficiencyRune>", "nei.infopage.rune.efficiency");
+        sendInfoPage("AWWayofTime runeOfSacrifice,daggerOfSacrifice", "nei.infopage.rune.sacrifice");
+        sendInfoPage("AWWayofTime runeOfSelfSacrifice,sacrificialKnife", "nei.infopage.rune.selfSacrifice");
+        sendInfoPage("<AWWayofTime:AlchemicalWizardrybloodRune>|AWWayofTime runeOfSacrifice,daggerOfSacrifice", "nei.infopage.rune.blank");
+        // Progression Items
+        sendInfoPage("AWWayofTime: masterBloodOrb,largeBloodStoneBrick,weakBloodShard,energySword,alchemyFlask", "nei.infopage.bloodShards");
+        sendInfoPage("AWWayofTime: masterBloodOrb,demonBloodShard,blockPlinth,blockPedestal,aether,aquasalus,incendium,sanctus,tennebrae|<AWWayofTime:terrae>", "nei.infopage.demonShards.1");
+        sendInfoPage("AWWayofTime: masterBloodOrb,demonBloodShard,blockPlinth,blockPedestal,aether,aquasalus,incendium,sanctus,tennebrae|<AWWayofTime:terrae>", "nei.infopage.demonShards.2");
+        sendInfoPage("AWWayofTime: demonBloodShard,blockPlinth,blockPedestal,aether,aquasalus,incendium,sanctus,tennebrae|<AWWayofTime:terrae>", "nei.infopage.demonShards.3");
+        sendInfoPage("AWWayofTime:bloodMagicBaseItems 28,29|<AWWayofTime:blockCrystal>", "nei.infopage.convocationShards");
+        // Blood Orb / Soul Network Explanation
+        sendInfoPage("AWWayofTime: BloodOrb|<avaritia:orb_armok>|<ForbiddenMagic:EldritchOrb>|<BloodArsenal:transparent_orb>", "nei.infopage.bloodOrbs.1");
+        sendInfoPage("AWWayofTime: BloodOrb|<avaritia:orb_armok>|<ForbiddenMagic:EldritchOrb>|<BloodArsenal:transparent_orb>", "nei.infopage.bloodOrbs.2");
+        sendInfoPage("AWWayofTime: BloodOrb|<avaritia:orb_armok>|<ForbiddenMagic:EldritchOrb>|<BloodArsenal:transparent_orb>", "nei.infopage.bloodOrbs.3");
+        sendInfoPage("AWWayofTime: BloodOrb,divinationSigil|<avaritia:orb_armok>|<ForbiddenMagic:EldritchOrb>|<BloodArsenal:transparent_orb>", "nei.infopage.bloodOrbs.4");
     }
 
     private static void sendHandler(String handlerName, String stack, int height, int recipesPerPage) {
@@ -36,5 +71,12 @@ public class IMCForNEI {
 
     private static void sendCatalyst(String handlerName, String stack) {
         sendCatalyst(handlerName, stack, 0);
+    }
+
+    private static void sendInfoPage(String filter, String page) {
+        NBTTagCompound NBT = new NBTTagCompound();
+        NBT.setString("filter", filter);
+        NBT.setString("page", page);
+        FMLInterModComms.sendMessage("NotEnoughItems", "addItemInfo", NBT);
     }
 }
