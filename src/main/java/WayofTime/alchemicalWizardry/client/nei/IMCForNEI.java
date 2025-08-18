@@ -24,6 +24,14 @@ public class IMCForNEI {
         sendInfoPage("AWWayofTime: Altar,masterBloodOrb,largeBloodStoneBrick", "nei.infopage.bloodAltar.7");
         sendInfoPage("AWWayofTime: Altar,archmageBloodOrb|minecraft:beacon", "nei.infopage.bloodAltar.8");
         sendInfoPage("AWWayofTime: Altar,transcendentBloodOrb|<AWWayofTime:blockCrystal>", "nei.infopage.bloodAltar.9");
+        // Incense
+        sendInfoPage("AWWayofTime: incense,sacrificialKnife,blockCrucible", "nei.infopage.incense.1");
+        sendInfoPage("AWWayofTime: incense,sacrificialKnife,blockCrucible", "nei.infopage.incense.2." + (AlchemicalWizardry.wimpySettings ? "b" : "a"));
+        sendInfoPage("AWWayofTime: incense,sacrificialKnife,blockCrucible", "nei.infopage.incense.3");
+        // Sacrifices
+        sendInfoPage("AWWayofTime runeOfSacrifice,daggerOfSacrifice", "nei.infopage.sacrifice.1");
+        sendInfoPage("AWWayofTime runeOfSacrifice,daggerOfSacrifice", "nei.infopage.sacrifice.2");
+        sendInfoPage("AWWayofTime runeOfSacrifice,daggerOfSacrifice", "nei.infopage.sacrifice.3");
         // Altar Runes
         sendInfoPage("<AWWayofTime:AlchemicalWizardrybloodRune:1>", "nei.infopage.rune.augmentedCapacity");
         sendInfoPage("<AWWayofTime:AlchemicalWizardrybloodRune:2>", "nei.infopage.rune.dislocation");
@@ -47,6 +55,18 @@ public class IMCForNEI {
         sendInfoPage("AWWayofTime: BloodOrb|<avaritia:orb_armok>|<ForbiddenMagic:EldritchOrb>|<BloodArsenal:transparent_orb>", "nei.infopage.bloodOrbs.2");
         sendInfoPage("AWWayofTime: BloodOrb|<avaritia:orb_armok>|<ForbiddenMagic:EldritchOrb>|<BloodArsenal:transparent_orb>", "nei.infopage.bloodOrbs.3");
         sendInfoPage("AWWayofTime: BloodOrb,divinationSigil|<avaritia:orb_armok>|<ForbiddenMagic:EldritchOrb>|<BloodArsenal:transparent_orb>", "nei.infopage.bloodOrbs.4");
+        // Rituals
+        sendInfoPage("<AWWayofTime:imperfectRitualStone>", "nei.infopage.rituals.weak.1");
+        sendInfoPage("<AWWayofTime:imperfectRitualStone>", "nei.infopage.rituals.weak.2");
+        sendInfoPage("<AWWayofTime:ritualStone>|AWWayofTime masterStone,itemRitualDiviner,ScribeTool|activationCrystal 0,1", "nei.infopage.rituals.1");
+        sendInfoPage("<AWWayofTime:ritualStone>|AWWayofTime masterStone,itemRitualDiviner,ScribeTool|activationCrystal 0,1", "nei.infopage.rituals.2");
+        sendInfoPage("<AWWayofTime:ritualStone>|AWWayofTime masterStone,itemRitualDiviner,ScribeTool|activationCrystal 0,1", "nei.infopage.rituals.3");
+        // Reagents
+        sendInfoPage("AWWayofTime masterStone,blockAlchemicCalcinator", "nei.infopage.reagents.1");
+        sendInfoPage("AWWayofTime masterStone,blockAlchemicCalcinator|<AWWayofTime:terrae>", "nei.infopage.reagents.2");
+        sendInfoPage("AWWayofTime masterStone,blockAlchemicCalcinator,itemAttunedCrystal", "nei.infopage.reagents.3");
+        sendInfoPage("AWWayofTime masterStone,blockAlchemicCalcinator,itemTankSegmenter,itemDestinationClearer", "nei.infopage.reagents.4");
+        sendInfoPage("AWWayofTime masterStone,blockAlchemicCalcinator,blockReagentConduit,CrystalBelljar", "nei.infopage.reagents.5");
     }
 
     private static void sendHandler(String handlerName, String stack, int height, int recipesPerPage) {
