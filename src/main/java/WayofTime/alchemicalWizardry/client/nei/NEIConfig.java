@@ -20,13 +20,9 @@ public class NEIConfig implements IConfigureNEI {
             "alchemicalwizardry",
             "gui/nei/arrow.png");
 
-    public static ArrayList<Item> getBloodOrbs() {
+    public synchronized static ArrayList<Item> getBloodOrbs() {
         if (bloodOrbs == null) {
-            synchronized (NEIConfig.class) {
-                if (bloodOrbs == null) {
-                    bloodOrbs = collectAllBloodOrbs();
-                }
-            }
+            bloodOrbs = collectAllBloodOrbs();
         }
         return bloodOrbs;
     }
@@ -39,7 +35,7 @@ public class NEIConfig implements IConfigureNEI {
             }
         }
         if (bloodOrbsTemp.isEmpty()) {
-            // If there is NEI no cache - go to item registry
+            // If there is no NEI cache - go to item registry
             for (Object anItemRegistry : Item.itemRegistry) {
                 Item item = (Item) anItemRegistry;
                 if (item instanceof IBloodOrb) {
@@ -50,12 +46,12 @@ public class NEIConfig implements IConfigureNEI {
         return bloodOrbsTemp;
     }
 
-    public static ArrayList<Item> getOrbsByCapacity() {
+    public synchronized static ArrayList<Item> getOrbsByCapacity() {
         if (byCapacity == null) {
             byCapacity = new ArrayList<>(getBloodOrbs());
             byCapacity.sort((a, b) -> {
-                if (a instanceof IBloodOrb && b instanceof IBloodOrb) {
-                    return Integer.compare(((IBloodOrb) a).getMaxEssence(), ((IBloodOrb) b).getMaxEssence());
+                if (a instanceof IBloodOrb orbA && b instanceof IBloodOrb orbB) {
+                    return Integer.compare(orbA.getMaxEssence(), orbB.getMaxEssence());
                 }
                 return 0;
             });
