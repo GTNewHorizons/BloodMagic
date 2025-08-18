@@ -29,7 +29,7 @@ public class NEIBindingRitualHandler extends TemplateRecipeHandler {
 
     public class CachedBindingRecipe extends CachedRecipe {
 
-        PositionedStack input, output;
+        private final PositionedStack input, output;
 
         public CachedBindingRecipe(BindingRecipe recipe) {
             input = new PositionedStack(recipe.requiredItem, 37, 21, false);
