@@ -112,14 +112,17 @@ public class NEICalcinatorHandler extends TemplateRecipeHandler {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            GL11.glColor4ub((byte) reagent.getColourRed(), (byte) reagent.getColourGreen(), (byte) reagent.getColourBlue(), (byte) 255);
+            GL11.glColor4ub(
+                    (byte) reagent.getColourRed(),
+                    (byte) reagent.getColourGreen(),
+                    (byte) reagent.getColourBlue(),
+                    (byte) 255);
 
             tessellator.startDrawingQuads();
             tessellator.addVertexWithUV(arrowX, arrowY + ARROW_HEIGHT, 0, 0, 1);
-            tessellator.addVertexWithUV(arrowX + fillWidth, arrowY + ARROW_HEIGHT, 0,
-                    fillWidth / (float) ARROW_WIDTH, 1);
-            tessellator.addVertexWithUV(arrowX + fillWidth, arrowY, 0,
-                    fillWidth / (float) ARROW_WIDTH, 0);
+            tessellator
+                    .addVertexWithUV(arrowX + fillWidth, arrowY + ARROW_HEIGHT, 0, fillWidth / (float) ARROW_WIDTH, 1);
+            tessellator.addVertexWithUV(arrowX + fillWidth, arrowY, 0, fillWidth / (float) ARROW_WIDTH, 0);
             tessellator.addVertexWithUV(arrowX, arrowY, 0, 0, 0);
             tessellator.draw();
 
