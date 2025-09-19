@@ -25,10 +25,10 @@ public class NEIAltarRecipeHandler extends TemplateRecipeHandler {
 
     public class CachedAltarRecipe extends CachedRecipe {
 
-        PositionedStack input;
+        private final PositionedStack input;
         // PositionedStack inputItems;
-        PositionedStack output;
-        int tier, lp_amount, consumption, drain;
+        private final PositionedStack output;
+        private final int tier, lp_amount, consumption, drain;
 
         public CachedAltarRecipe(AltarRecipe recipe) {
             // inputItems = new PositionedStack(recipe.input, 38, 2, false);
