@@ -51,7 +51,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
         this.damageVsEntity = 5;
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         setEnergyUsed(5);
-        setHarvestLevel("shovel", 5);
+        setHarvestLevel("shovel", 7);
     }
 
     public void setEnergyUsed(int i) {

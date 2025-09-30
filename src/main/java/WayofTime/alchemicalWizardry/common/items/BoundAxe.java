@@ -49,7 +49,7 @@ public class BoundAxe extends ItemAxe implements IBindable {
         this.damageVsEntity = 5;
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         setEnergyUsed(5);
-        this.setHarvestLevel("axe", 5);
+        this.setHarvestLevel("axe", 7);
     }
 
     public void setEnergyUsed(int i) {
