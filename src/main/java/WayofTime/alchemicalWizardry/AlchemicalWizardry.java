@@ -1437,39 +1437,42 @@ public class AlchemicalWizardry {
                 emptyBucketStack,
                 'l',
                 new ItemStack(Items.leather_chestplate));
+
         customPotionDrowning = (new PotionDrowning(customPotionDrowningID, true, 0)).setIconIndex(0, 0)
-                .setPotionName("Drowning");
-        customPotionBoost = (new PotionBoost(customPotionBoostID, false, 0)).setIconIndex(0, 0).setPotionName("Boost");
+                .setPotionName("bm.buff.drowning");
+        customPotionBoost = (new PotionBoost(customPotionBoostID, false, 0)).setIconIndex(0, 0)
+                .setPotionName("bm.buff.boost");
         customPotionProjProt = (new PotionProjectileProtect(customPotionProjProtID, false, 0)).setIconIndex(0, 0)
-                .setPotionName("Whirlwind");
+                .setPotionName("bm.buff.whirlwind");
         customPotionInhibit = (new PotionInhibit(customPotionInhibitID, false, 0)).setIconIndex(0, 0)
-                .setPotionName("Inhibit");
+                .setPotionName("bm.buff.inhibit");
         customPotionFlight = (new PotionFlight(customPotionFlightID, false, 0)).setIconIndex(0, 0)
-                .setPotionName("Flight");
+                .setPotionName("bm.buff.flight");
         customPotionReciprocation = (new PotionReciprocation(customPotionReciprocationID, false, 0xFFFFFF))
-                .setIconIndex(0, 0).setPotionName("Reciprocation");
-        customPotionFlameCloak = (new PotionFlameCloak(customPotionFlameCloakID, false, 0).setIconIndex(0, 0)
-                .setPotionName("Flame Cloak"));
-        customPotionIceCloak = (new PotionIceCloak(customPotionIceCloakID, false, 0).setIconIndex(0, 0)
-                .setPotionName("Ice Cloak"));
-        customPotionHeavyHeart = (new PotionHeavyHeart(customPotionHeavyHeartID, true, 0).setIconIndex(0, 0)
-                .setPotionName("Heavy Heart"));
-        customPotionFireFuse = (new PotionFireFuse(customPotionFireFuseID, true, 0).setIconIndex(0, 0)
-                .setPotionName("Fire Fuse"));
-        customPotionPlanarBinding = (new PotionPlanarBinding(customPotionPlanarBindingID, true, 0).setIconIndex(0, 0)
-                .setPotionName("Planar Binding"));
-        customPotionSoulFray = (new PotionSoulFray(customPotionSoulFrayID, true, 0).setIconIndex(0, 0)
-                .setPotionName("Soul Fray"));
+                .setIconIndex(0, 0).setPotionName("bm.buff.reciprocation");
+        customPotionFlameCloak = (new PotionFlameCloak(customPotionFlameCloakID, false, 0)).setIconIndex(0, 0)
+                .setPotionName("bm.buff.flame_cloak");
+        customPotionIceCloak = (new PotionIceCloak(customPotionIceCloakID, false, 0)).setIconIndex(0, 0)
+                .setPotionName("bm.buff.ice_cloak");
+        customPotionHeavyHeart = (new PotionHeavyHeart(customPotionHeavyHeartID, true, 0)).setIconIndex(0, 0)
+                .setPotionName("bm.buff.heavy_heart");
+        customPotionFireFuse = (new PotionFireFuse(customPotionFireFuseID, true, 0)).setIconIndex(0, 0)
+                .setPotionName("bm.buff.fire_fuse");
+        customPotionPlanarBinding = (new PotionPlanarBinding(customPotionPlanarBindingID, true, 0)).setIconIndex(0, 0)
+                .setPotionName("bm.buff.planar_binding");
+        customPotionSoulFray = (new PotionSoulFray(customPotionSoulFrayID, true, 0)).setIconIndex(0, 0)
+                .setPotionName("bm.buff.soul_fray");
         PlayerSacrificeHandler.soulFrayId = customPotionSoulFray;
-        customPotionSoulHarden = (new PotionSoulHarden(customPotionSoulHardenID, false, 0).setIconIndex(0, 0)
-                .setPotionName("Soul Harden"));
-        customPotionDeaf = (new PotionDeaf(customPotionDeafID, true, 0).setIconIndex(0, 0).setPotionName("Deafness"));
-        customPotionFeatherFall = (new PotionFeatherFall(customPotionFeatherFallID, false, 0).setIconIndex(0, 0)
-                .setPotionName("Feather Fall"));
-        customPotionDemonCloak = (new PotionDemonCloak(customPotionDemonCloakID, false, 0).setIconIndex(0, 0)
-                .setPotionName("Demon Cloaking"));
-        customPotionAmphibian = (new PotionAmphibian(customPotionAmphibianID, false, 0).setIconIndex(0, 0)
-                .setPotionName("Amphibian"));
+        customPotionSoulHarden = (new PotionSoulHarden(customPotionSoulHardenID, false, 0)).setIconIndex(0, 0)
+                .setPotionName("bm.buff.soul_harden");
+        customPotionDeaf = (new PotionDeaf(customPotionDeafID, true, 0)).setIconIndex(0, 0)
+                .setPotionName("bm.buff.deafness");
+        customPotionFeatherFall = (new PotionFeatherFall(customPotionFeatherFallID, false, 0)).setIconIndex(0, 0)
+                .setPotionName("bm.buff.feather_fall");
+        customPotionDemonCloak = (new PotionDemonCloak(customPotionDemonCloakID, false, 0)).setIconIndex(0, 0)
+                .setPotionName("bm.buff.demon_cloak");
+        customPotionAmphibian = (new PotionAmphibian(customPotionAmphibianID, false, 0)).setIconIndex(0, 0)
+                .setPotionName("bm.buff.amphibian");
 
         ItemStack masterBloodOrbStack = new ItemStack(ModItems.masterBloodOrb);
         ItemStack transcendentBloodOrbStack = new ItemStack(ModItems.transcendentBloodOrb);
