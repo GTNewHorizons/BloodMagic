@@ -2,10 +2,12 @@ package WayofTime.alchemicalWizardry.client.nei;
 
 import static WayofTime.alchemicalWizardry.client.ClientUtils.mc;
 import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.ARROW_TEXTURE;
+import static codechicken.lib.gui.GuiDraw.fontRenderer;
 
 import java.awt.Rectangle;
+import java.util.Collections;
+import java.util.List;
 
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
@@ -28,19 +30,39 @@ public class NEICalcinatorHandler extends TemplateRecipeHandler {
     public class CachedReagentInfo extends CachedRecipe {
 
         private final Reagent reagent;
+        private final PositionedStack stack;
+        private final PositionedStack orbs;
         private final int amount;
-        private final int color;
+
+        private final String amountText;
+        private final int amountTextWidth;
+
+        private final String nameText;
+        private final int nameTextWidth;
+
+        private static final int ARROW_WIDTH = 24;
+        private static final int ARROW_HEIGHT = 16;
+        private static final int FILL_TIME = 192;
+        private static final int HOLD_TIME = 8;
 
         public CachedReagentInfo(ReagentStack reagent) {
             this.reagent = reagent.reagent;
+            this.stack = new PositionedStack(ReagentRegistry.getItemForReagent(reagent.reagent), 32, 6);
             this.amount = reagent.amount;
-            this.color = reagent.reagent.getColourRed() << 16 | reagent.reagent.getColourGreen() << 8
-                    | reagent.reagent.getColourBlue();
+
+            ItemStack[] orbStacks = NEIConfig.getBloodOrbs().stream().map(ItemStack::new).toArray(ItemStack[]::new);
+            this.orbs = new PositionedStack(orbStacks, 32, 33);
+
+            this.amountText = String.format("%,d AR", amount);
+            this.amountTextWidth = fontRenderer.getStringWidth(amountText);
+
+            this.nameText = this.reagent.name;
+            this.nameTextWidth = fontRenderer.getStringWidth(nameText);
         }
 
         @Override
         public PositionedStack getResult() {
-            return new PositionedStack(ReagentRegistry.getItemForReagent(reagent), 32, 6);
+            return stack;
         }
 
         public Reagent getReagent() {
@@ -54,39 +76,29 @@ public class NEICalcinatorHandler extends TemplateRecipeHandler {
         public void onDraw(int x, int y) {
             drawColoredProgressBar(x, y);
 
-            String amountText = String.format("%,d AR", amount);
-            FontRenderer fontRenderer = mc.fontRenderer;
-
-            int textWidth = fontRenderer.getStringWidth(amountText);
-            int textX = x + 84 - (textWidth / 2);
+            int textX = x + 84 - (amountTextWidth / 2);
             int textY = y + 19;
-
             fontRenderer.drawString(amountText, textX, textY, 0x000000);
 
-            textWidth = fontRenderer.getStringWidth(reagent.name);
-            textX = x + 84 - (textWidth / 2);
-            textY = y + 29;
-
-            fontRenderer.drawString(reagent.name, textX, textY, color);
+            textX = x + 84 - (nameTextWidth / 2);
+            textY += 10;
+            int color = reagent.getColourRed() << 16 | reagent.getColourGreen() << 8 | reagent.getColourBlue();
+            fontRenderer.drawString(nameText, textX, textY, color);
         }
 
         private void drawColoredProgressBar(int x, int y) {
             int arrowX = x + 25;
             int arrowY = y + 19;
-            int arrowWidth = 24;
-            int arrowHeight = 16;
 
-            int fillTime = 192;
-            int holdTime = 8;
-            int totalCycle = fillTime + holdTime;
+            int totalCycle = FILL_TIME + HOLD_TIME;
 
             int cycleTick = cycleticks % totalCycle;
 
             int fillWidth;
-            if (cycleTick < fillTime) {
-                fillWidth = cycleTick * arrowWidth / fillTime;
+            if (cycleTick < FILL_TIME) {
+                fillWidth = cycleTick * ARROW_WIDTH / FILL_TIME;
             } else {
-                fillWidth = arrowWidth;
+                fillWidth = ARROW_WIDTH;
             }
 
             TextureManager texManager = mc.getTextureManager();
@@ -94,35 +106,33 @@ public class NEICalcinatorHandler extends TemplateRecipeHandler {
 
             Tessellator tessellator = Tessellator.instance;
 
+            GL11.glPushMatrix();
+            GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            float r = ((color >> 16) & 0xFF) / 255f;
-            float g = ((color >> 8) & 0xFF) / 255f;
-            float b = (color & 0xFF) / 255f;
-
-            GL11.glColor4f(r, g, b, 1.0f);
+            GL11.glColor4ub(
+                    (byte) reagent.getColourRed(),
+                    (byte) reagent.getColourGreen(),
+                    (byte) reagent.getColourBlue(),
+                    (byte) 255);
 
             tessellator.startDrawingQuads();
-
-            tessellator.addVertexWithUV(arrowX, arrowY + arrowHeight, 0, 0, 1);
-            tessellator.addVertexWithUV(arrowX + fillWidth, arrowY + arrowHeight, 0, fillWidth / (float) arrowWidth, 1);
-            tessellator.addVertexWithUV(arrowX + fillWidth, arrowY, 0, fillWidth / (float) arrowWidth, 0);
+            tessellator.addVertexWithUV(arrowX, arrowY + ARROW_HEIGHT, 0, 0, 1);
+            tessellator
+                    .addVertexWithUV(arrowX + fillWidth, arrowY + ARROW_HEIGHT, 0, fillWidth / (float) ARROW_WIDTH, 1);
+            tessellator.addVertexWithUV(arrowX + fillWidth, arrowY, 0, fillWidth / (float) ARROW_WIDTH, 0);
             tessellator.addVertexWithUV(arrowX, arrowY, 0, 0, 0);
-
             tessellator.draw();
 
-            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glPopAttrib();
+            GL11.glPopMatrix();
         }
 
         @Override
-        public PositionedStack getOtherStack() {
-            ItemStack[] orbStacks = NEIConfig.getBloodOrbs().stream().map(ItemStack::new).toArray(ItemStack[]::new);
-
-            PositionedStack stack = new PositionedStack(orbStacks, 32, 33, true);
-            stack.setPermutationToRender((cycleticks / 20) % orbStacks.length);
-
-            return stack;
+        public List<PositionedStack> getIngredients() {
+            return getCycledIngredients(cycleticks / 20, Collections.singletonList(this.orbs));
         }
     }
 
@@ -151,24 +161,26 @@ public class NEICalcinatorHandler extends TemplateRecipeHandler {
         ReagentStack rs = ReagentRegistry.getReagentStackForItem(result);
         if (rs != null) {
             arecipes.add(new CachedReagentInfo(rs));
-        } else { // Check reagents in crystal belljars or other reagent storages
-            NBTTagCompound tagCompound = result.getTagCompound();
-            if (tagCompound == null || tagCompound.hasNoTags()) {
-                return;
-            }
-            NBTTagList tagList = tagCompound.getTagList("reagentTanks", Constants.NBT.TAG_COMPOUND);
-            if (tagList.tagList.isEmpty()) {
-                return;
-            }
-            for (int i = 0; i < tagList.tagCount(); i++) {
-                // Get the proper size of the ReagentStack created by melting the item for this reagent
-                NBTTagCompound savedTag = tagList.getCompoundTagAt(i);
-                ReagentStack reagent = ReagentContainer.readFromNBT(savedTag).getReagent();
-                ItemStack reagentItem = ReagentRegistry.getItemForReagent(reagent.reagent);
-                ReagentStack reagentStackForItem = ReagentRegistry.getReagentStackForItem(reagentItem);
-                if (reagentStackForItem != null) {
-                    arecipes.add(new CachedReagentInfo(reagentStackForItem));
-                }
+            return;
+        }
+        // Check reagents in crystal belljars or other reagent storages
+        NBTTagCompound tagCompound = result.getTagCompound();
+        if (tagCompound == null || tagCompound.hasNoTags()) {
+            return;
+        }
+        NBTTagList tagList = tagCompound.getTagList("reagentTanks", Constants.NBT.TAG_COMPOUND);
+        if (tagList.tagList.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < tagList.tagCount(); i++) {
+            // Get the proper size of the ReagentStack created by melting the item for this reagent
+            NBTTagCompound savedTag = tagList.getCompoundTagAt(i);
+            ReagentStack reagent = ReagentContainer.readFromNBT(savedTag).getReagent();
+            if (reagent == null) continue;
+            ItemStack reagentItem = ReagentRegistry.getItemForReagent(reagent.reagent);
+            ReagentStack reagentStackForItem = ReagentRegistry.getReagentStackForItem(reagentItem);
+            if (reagentStackForItem != null) {
+                arecipes.add(new CachedReagentInfo(reagentStackForItem));
             }
         }
     }
@@ -191,7 +203,7 @@ public class NEICalcinatorHandler extends TemplateRecipeHandler {
 
     @Override
     public void loadTransferRects() {
-        transferRects.add(new RecipeTransferRect(new Rectangle(54, 23, 23, 16), "alchemicalwizardry.calcinator"));
+        transferRects.add(new RecipeTransferRect(new Rectangle(55, 18, 24, 17), "alchemicalwizardry.calcinator"));
     }
 
     @Override
