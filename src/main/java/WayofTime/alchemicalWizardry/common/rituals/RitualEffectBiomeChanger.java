@@ -39,7 +39,7 @@ public class RitualEffectBiomeChanger extends RitualEffect {
         String owner = ritualStone.getOwner();
 
         int cooldown = ritualStone.getCooldown();
-        World world = ritualStone.getWorld();
+        var world = ritualStone.getWorld();
         int x = ritualStone.getXCoord();
         int y = ritualStone.getYCoord();
         int z = ritualStone.getZCoord();
@@ -63,7 +63,7 @@ public class RitualEffectBiomeChanger extends RitualEffect {
         int range = 10;
 
         if (currentEssence < this.getCostPerRefresh()) {
-            EntityPlayer entityOwner = SpellHelper.getPlayerForUsername(owner);
+            var entityOwner = SpellHelper.getPlayerForUsername(owner);
 
             if (entityOwner == null) {
                 return;
@@ -114,21 +114,20 @@ public class RitualEffectBiomeChanger extends RitualEffect {
             float acceptableRange = 0.0999f;
             int biomeSkip = 0;
 
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    if (i == 0 && j == 0) {
+            for (int xo = -1; xo <= 1; xo++) {
+                for (int zo = -1; zo <= 1; zo++) {
+                    if (xo == 0 && zo == 0) {
                         continue;
                     }
 
                     boolean isItemConsumed = false;
-                    TileEntity tileEntity = world.getTileEntity(x + i, y, z + j);
+                    TileEntity tileEntity = world.getTileEntity(x + xo, y, z + zo);
 
-                    if (!(tileEntity instanceof TEPlinth)) {
+                    if (!(tileEntity instanceof TEPlinth tilePlinth)) {
                         continue;
                     }
 
-                    TEPlinth tilePlinth = (TEPlinth) tileEntity;
-                    ItemStack itemStack = tilePlinth.getStackInSlot(0);
+                    var itemStack = tilePlinth.getStackInSlot(0);
 
                     if (itemStack != null) {
                         Item itemTest = itemStack.getItem();
@@ -186,8 +185,8 @@ public class RitualEffectBiomeChanger extends RitualEffect {
 
                     if (isItemConsumed) {
                         tilePlinth.setInventorySlotContents(0, null);
-                        world.markBlockForUpdate(x + i, y, z + j);
-                        world.addWeatherEffect(new EntityLightningBolt(world, x + i, y + 1, z + j));
+                        world.markBlockForUpdate(x + xo, y, z + zo);
+                        world.addWeatherEffect(new EntityLightningBolt(world, x + xo, y + 1, z + zo));
                     }
                 }
             }
