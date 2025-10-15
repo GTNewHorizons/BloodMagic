@@ -5,6 +5,7 @@ import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.getBloodOrbs;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -29,15 +30,14 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
 
     public class CachedAlchemyRecipe extends CachedRecipe {
 
-        ArrayList<ItemStack> orbs;
-        PositionedStack output;
-        List<PositionedStack> inputs;
-        int lp;
+        private final PositionedStack orbs;
+        private final PositionedStack output;
+        private final List<PositionedStack> inputs;
+        private final int lp;
 
         public CachedAlchemyRecipe(AlchemyRecipe recipe, ItemStack orb) {
             this(recipe);
-            this.orbs = new ArrayList<>();
-            orbs.add(orb);
+            this.orbs.setPermutationToRender(orb);
         }
 
         public CachedAlchemyRecipe(AlchemyRecipe recipe) {
@@ -51,12 +51,13 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
             this.inputs = inputs;
             this.output = new PositionedStack(recipe.getResult(), 76, 25);
             this.lp = recipe.getAmountNeeded() * 100;
-            this.orbs = new ArrayList<>();
+            List<ItemStack> orbStacks = new ArrayList<>();
             for (Item orb : getBloodOrbs()) {
                 if (((IBloodOrb) orb).getOrbLevel() >= recipe.getOrbLevel()) {
-                    orbs.add(new ItemStack(orb));
+                    orbStacks.add(new ItemStack(orb));
                 }
             }
+            orbs = new PositionedStack(orbStacks, 136, 47);
         }
 
         @Override
@@ -70,12 +71,8 @@ public class NEIAlchemyRecipeHandler extends TemplateRecipeHandler {
         }
 
         @Override
-        public PositionedStack getOtherStack() {
-            if (orbs == null || orbs.isEmpty()) return null;
-            PositionedStack stack = new PositionedStack(orbs, 136, 47, false);
-            stack.setPermutationToRender((cycleticks / 48) % orbs.size());
-            stack.setMaxSize(1);
-            return stack;
+        public List<PositionedStack> getOtherStacks() {
+            return getCycledIngredients(cycleticks / 20, Collections.singletonList(orbs));
         }
     }
 
