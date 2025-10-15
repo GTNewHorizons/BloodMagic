@@ -141,9 +141,6 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                                 } else if (item == (Blocks.lapis_block)) {
                                     targetRainfall += 0.4f;
                                     isItemConsumed = true;
-                                } else if (item == (Blocks.sand)) {
-                                    targetRainfall -= 0.1f;
-                                    isItemConsumed = true;
                                 } else if (item == (Blocks.sandstone)) {
                                     targetRainfall -= 0.2f;
                                     isItemConsumed = true;
