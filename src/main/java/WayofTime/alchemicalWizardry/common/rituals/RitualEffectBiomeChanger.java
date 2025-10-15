@@ -1,5 +1,19 @@
 package WayofTime.alchemicalWizardry.common.rituals;
 
+import static net.minecraft.init.Blocks.coal_block;
+import static net.minecraft.init.Blocks.ice;
+import static net.minecraft.init.Blocks.lapis_block;
+import static net.minecraft.init.Blocks.netherrack;
+import static net.minecraft.init.Blocks.sand;
+import static net.minecraft.init.Blocks.sandstone;
+import static net.minecraft.init.Blocks.snow;
+import static net.minecraft.init.Blocks.wool;
+import static net.minecraft.init.Items.coal;
+import static net.minecraft.init.Items.dye;
+import static net.minecraft.init.Items.lava_bucket;
+import static net.minecraft.init.Items.snowball;
+import static net.minecraft.init.Items.water_bucket;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -119,7 +133,6 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                 for (int zo = -1; zo <= 1; zo++) {
                     if (xo == 0 && zo == 0) continue;
 
-                    boolean isItemConsumed = false;
                     TileEntity tileEntity = world.getTileEntity(x + xo, y, z + zo);
                     if (!(tileEntity instanceof TEPlinth tilePlinth)) continue;
 
@@ -129,51 +142,22 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                     var item = itemStack.getItem();
                     if (item == null) continue;
 
-                    if (item instanceof ItemBlock itemBlock) {
-                        var block = itemBlock.field_150939_a;
-                        if (block == (Blocks.sand)) {
-                            targetRainfall -= 0.1f;
-                            isItemConsumed = true;
-                        } else if (block == (Blocks.lapis_block)) {
-                            targetRainfall += 0.4f;
-                            isItemConsumed = true;
-                        } else if (block == (Blocks.sandstone)) {
-                            targetRainfall -= 0.2f;
-                            isItemConsumed = true;
-                        } else if (block == (Blocks.netherrack)) {
-                            targetRainfall -= 0.4f;
-                            isItemConsumed = true;
-                        } else if (block == (Blocks.coal_block)) {
-                            targetTemp += 0.2f;
-                            isItemConsumed = true;
-                        } else if (block == (Blocks.ice)) {
-                            targetTemp -= 0.4f;
-                            isItemConsumed = true;
-                        } else if (block == (Blocks.snow)) {
-                            targetTemp -= 0.2f;
-                            isItemConsumed = true;
-                        } else if (block == (Blocks.wool)) {
-                            int skip = itemStack.getItemDamage() + 1;
-                            biomeSkip += skip;
-                            isItemConsumed = true;
-                        }
-                    } else {
-                        if (item.equals(Items.dye) && itemStack.getItemDamage() == 4) {
-                            targetRainfall += 0.1f;
-                            isItemConsumed = true;
-                        } else if (item.equals(Items.lava_bucket)) {
-                            targetTemp += 0.4f;
-                            isItemConsumed = true;
-                        } else if (item.equals(Items.water_bucket)) {
-                            targetRainfall += 0.2f;
-                            isItemConsumed = true;
-                        } else if (item.equals(Items.coal)) {
-                            targetTemp += 0.1f;
-                            isItemConsumed = true;
-                        } else if (item.equals(Items.snowball)) {
-                            targetTemp -= 0.1f;
-                            isItemConsumed = true;
-                        }
+                    boolean isItemConsumed = true;
+                    switch (item) {
+                        case ItemBlock ib when ib.field_150939_a == sand -> targetRainfall -= 0.1f;
+                        case ItemBlock ib when ib.field_150939_a == lapis_block -> targetRainfall += 0.4f;
+                        case ItemBlock ib when ib.field_150939_a == sandstone -> targetRainfall -= 0.2f;
+                        case ItemBlock ib when ib.field_150939_a == netherrack -> targetRainfall -= 0.4f;
+                        case ItemBlock ib when ib.field_150939_a == coal_block -> targetTemp += 0.2f;
+                        case ItemBlock ib when ib.field_150939_a == ice -> targetTemp -= 0.4f;
+                        case ItemBlock ib when ib.field_150939_a == snow -> targetTemp -= 0.2f;
+                        case ItemBlock ib when ib.field_150939_a == wool -> biomeSkip += itemStack.getItemDamage() + 1;
+                        case Item i when i == dye && itemStack.getItemDamage() == 4 -> targetRainfall += 0.1f;
+                        case Item i when i == lava_bucket -> targetTemp += 0.4f;
+                        case Item i when i == water_bucket -> targetRainfall += 0.2f;
+                        case Item i when i == coal -> targetTemp += 0.1f;
+                        case Item i when i == snowball -> targetTemp -= 0.1f;
+                        default -> isItemConsumed = false;
                     }
 
                     if (isItemConsumed) {
