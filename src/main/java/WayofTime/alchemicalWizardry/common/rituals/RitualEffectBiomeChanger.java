@@ -126,52 +126,54 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                     var itemStack = tilePlinth.getStackInSlot(0);
                     if (itemStack == null) continue;
 
-                    Item itemTest = itemStack.getItem();
-                    if (itemTest == null) continue;
+                    var item = itemStack.getItem();
+                    if (item == null) continue;
 
-                    if (itemTest instanceof ItemBlock) {
-                        Block item = ((ItemBlock) itemTest).field_150939_a;
-                        if (item == (Blocks.sand)) {
+                    if (item instanceof ItemBlock itemBlock) {
+                        var block = itemBlock.field_150939_a;
+                        if (block == (Blocks.sand)) {
                             targetRainfall -= 0.1f;
                             isItemConsumed = true;
-                        } else if (item == (Blocks.lapis_block)) {
+                        } else if (block == (Blocks.lapis_block)) {
                             targetRainfall += 0.4f;
                             isItemConsumed = true;
-                        } else if (item == (Blocks.sandstone)) {
+                        } else if (block == (Blocks.sandstone)) {
                             targetRainfall -= 0.2f;
                             isItemConsumed = true;
-                        } else if (item == (Blocks.netherrack)) {
+                        } else if (block == (Blocks.netherrack)) {
                             targetRainfall -= 0.4f;
                             isItemConsumed = true;
-                        } else if (item == (Blocks.coal_block)) {
+                        } else if (block == (Blocks.coal_block)) {
                             targetTemp += 0.2f;
                             isItemConsumed = true;
-                        } else if (item == (Blocks.ice)) {
+                        } else if (block == (Blocks.ice)) {
                             targetTemp -= 0.4f;
                             isItemConsumed = true;
-                        } else if (item == (Blocks.snow)) {
+                        } else if (block == (Blocks.snow)) {
                             targetTemp -= 0.2f;
                             isItemConsumed = true;
-                        } else if (item == (Blocks.wool)) {
+                        } else if (block == (Blocks.wool)) {
                             int skip = itemStack.getItemDamage() + 1;
                             biomeSkip += skip;
                             isItemConsumed = true;
                         }
-                    } else if (itemTest.equals(Items.dye) && itemStack.getItemDamage() == 4) {
-                        targetRainfall += 0.1f;
-                        isItemConsumed = true;
-                    } else if (itemTest.equals(Items.lava_bucket)) {
-                        targetTemp += 0.4f;
-                        isItemConsumed = true;
-                    } else if (itemTest.equals(Items.water_bucket)) {
-                        targetRainfall += 0.2f;
-                        isItemConsumed = true;
-                    } else if (itemTest.equals(Items.coal)) {
-                        targetTemp += 0.1f;
-                        isItemConsumed = true;
-                    } else if (itemTest.equals(Items.snowball)) {
-                        targetTemp -= 0.1f;
-                        isItemConsumed = true;
+                    } else {
+                        if (item.equals(Items.dye) && itemStack.getItemDamage() == 4) {
+                            targetRainfall += 0.1f;
+                            isItemConsumed = true;
+                        } else if (item.equals(Items.lava_bucket)) {
+                            targetTemp += 0.4f;
+                            isItemConsumed = true;
+                        } else if (item.equals(Items.water_bucket)) {
+                            targetRainfall += 0.2f;
+                            isItemConsumed = true;
+                        } else if (item.equals(Items.coal)) {
+                            targetTemp += 0.1f;
+                            isItemConsumed = true;
+                        } else if (item.equals(Items.snowball)) {
+                            targetTemp -= 0.1f;
+                            isItemConsumed = true;
+                        }
                     }
 
                     if (isItemConsumed) {
