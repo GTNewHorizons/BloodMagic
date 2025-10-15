@@ -109,8 +109,8 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                 tryEnqueue.accept(curX, curZ - 1);
             }
 
-            float temperature = 0.5f;
-            float humidity = 0.5f;
+            float targetTemp = 0.5f;
+            float targetRainfall = 0.5f;
             float acceptableRange = 0.0999f;
             int biomeSkip = 0;
 
@@ -136,28 +136,28 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                             if (itemTest instanceof ItemBlock) {
                                 Block item = ((ItemBlock) itemTest).field_150939_a;
                                 if (item == (Blocks.sand)) {
-                                    humidity -= 0.1f;
+                                    targetRainfall -= 0.1f;
                                     isItemConsumed = true;
                                 } else if (item == (Blocks.lapis_block)) {
-                                    humidity += 0.4f;
+                                    targetRainfall += 0.4f;
                                     isItemConsumed = true;
                                 } else if (item == (Blocks.sand)) {
-                                    humidity -= 0.1f;
+                                    targetRainfall -= 0.1f;
                                     isItemConsumed = true;
                                 } else if (item == (Blocks.sandstone)) {
-                                    humidity -= 0.2f;
+                                    targetRainfall -= 0.2f;
                                     isItemConsumed = true;
                                 } else if (item == (Blocks.netherrack)) {
-                                    humidity -= 0.4f;
+                                    targetRainfall -= 0.4f;
                                     isItemConsumed = true;
                                 } else if (item == (Blocks.coal_block)) {
-                                    temperature += 0.2f;
+                                    targetTemp += 0.2f;
                                     isItemConsumed = true;
                                 } else if (item == (Blocks.ice)) {
-                                    temperature -= 0.4f;
+                                    targetTemp -= 0.4f;
                                     isItemConsumed = true;
                                 } else if (item == (Blocks.snow)) {
-                                    temperature -= 0.2f;
+                                    targetTemp -= 0.2f;
                                     isItemConsumed = true;
                                 } else if (item == (Blocks.wool)) {
                                     int skip = itemStack.getItemDamage() + 1;
@@ -165,19 +165,19 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                                     isItemConsumed = true;
                                 }
                             } else if (itemTest.equals(Items.dye) && itemStack.getItemDamage() == 4) {
-                                humidity += 0.1f;
+                                targetRainfall += 0.1f;
                                 isItemConsumed = true;
                             } else if (itemTest.equals(Items.lava_bucket)) {
-                                temperature += 0.4f;
+                                targetTemp += 0.4f;
                                 isItemConsumed = true;
                             } else if (itemTest.equals(Items.water_bucket)) {
-                                humidity += 0.2f;
+                                targetRainfall += 0.2f;
                                 isItemConsumed = true;
                             } else if (itemTest.equals(Items.coal)) {
-                                temperature += 0.1f;
+                                targetTemp += 0.1f;
                                 isItemConsumed = true;
                             } else if (itemTest.equals(Items.snowball)) {
-                                temperature -= 0.1f;
+                                targetTemp -= 0.1f;
                                 isItemConsumed = true;
                             }
                         }
@@ -203,10 +203,14 @@ public class RitualEffectBiomeChanger extends RitualEffect {
 
                 float temp = biome.temperature;
                 float rainfall = biome.rainfall;
-                temperature = Math.min(2.0f, Math.max(0.0f, temperature));
-                humidity = Math.min(2.0f, Math.max(0.0f, humidity));
+                targetTemp = Math.min(2.0f, Math.max(0.0f, targetTemp));
+                targetRainfall = Math.min(2.0f, Math.max(0.0f, targetRainfall));
 
-                if (Math.abs(rainfall - humidity) < acceptableRange && Math.abs(temperature - temp) < acceptableRange) {
+                // If the biome's values are within acceptable limits...
+                final boolean rainfallGood = Math.abs(rainfall - targetRainfall) < acceptableRange;
+                final boolean tempGood = Math.abs(temp - targetTemp) < acceptableRange;
+                if (rainfallGood && tempGood) {
+                    // Use it/use a skip
                     biomeID = biome.biomeID;
                     if (biomeSkip == 0) {
                         break;
@@ -221,8 +225,8 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                 biomeID = 1;
             }
 
+            // Get the chunks to modify...
             List<Chunk> chunkList = new ArrayList<>();
-
             for (int chunkX = (x - range) >> 4; chunkX <= (x + range) >> 4; ++chunkX) {
                 for (int chunkZ = (z - range) >> 4; chunkZ <= (z + range) >> 4; ++chunkZ) {
                     chunkList.add(world.getChunkFromChunkCoords(chunkX, chunkZ));
@@ -234,6 +238,7 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                 BitSet mask = new BitSet();
                 boolean changed = false;
 
+                // Iterate over every position, and change it if needed.
                 for (int cZ = 0; cZ < 16; ++cZ) {
                     int offsetZ = (chunk.zPosition << 4 | cZ) - (z - range);
                     if (0 <= offsetZ && offsetZ < 2 * range + 1) {
