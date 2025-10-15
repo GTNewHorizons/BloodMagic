@@ -132,11 +132,9 @@ public class RitualEffectBiomeChanger extends RitualEffect {
             for (int xo = -1; xo <= 1; xo++) {
                 for (int zo = -1; zo <= 1; zo++) {
                     if (xo == 0 && zo == 0) continue;
+                    if (!(world.getTileEntity(x + xo, y, z + zo) instanceof TEPlinth plinth)) continue;
 
-                    TileEntity tileEntity = world.getTileEntity(x + xo, y, z + zo);
-                    if (!(tileEntity instanceof TEPlinth tilePlinth)) continue;
-
-                    var itemStack = tilePlinth.getStackInSlot(0);
+                    var itemStack = plinth.getStackInSlot(0);
                     if (itemStack == null) continue;
 
                     var item = itemStack.getItem();
@@ -161,7 +159,7 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                         }
                     }
 
-                    tilePlinth.setInventorySlotContents(0, null);
+                    plinth.setInventorySlotContents(0, null);
                     world.markBlockForUpdate(x + xo, y, z + zo);
                     world.addWeatherEffect(new EntityLightningBolt(world, x + xo, y + 1, z + zo));
                 }
