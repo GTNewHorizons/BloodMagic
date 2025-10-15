@@ -129,54 +129,56 @@ public class RitualEffectBiomeChanger extends RitualEffect {
 
                     var itemStack = tilePlinth.getStackInSlot(0);
 
-                    if (itemStack != null) {
-                        Item itemTest = itemStack.getItem();
+                    if (itemStack == null) {
+                        continue;
+                    }
 
-                        if (itemTest != null) {
-                            if (itemTest instanceof ItemBlock) {
-                                Block item = ((ItemBlock) itemTest).field_150939_a;
-                                if (item == (Blocks.sand)) {
-                                    targetRainfall -= 0.1f;
-                                    isItemConsumed = true;
-                                } else if (item == (Blocks.lapis_block)) {
-                                    targetRainfall += 0.4f;
-                                    isItemConsumed = true;
-                                } else if (item == (Blocks.sandstone)) {
-                                    targetRainfall -= 0.2f;
-                                    isItemConsumed = true;
-                                } else if (item == (Blocks.netherrack)) {
-                                    targetRainfall -= 0.4f;
-                                    isItemConsumed = true;
-                                } else if (item == (Blocks.coal_block)) {
-                                    targetTemp += 0.2f;
-                                    isItemConsumed = true;
-                                } else if (item == (Blocks.ice)) {
-                                    targetTemp -= 0.4f;
-                                    isItemConsumed = true;
-                                } else if (item == (Blocks.snow)) {
-                                    targetTemp -= 0.2f;
-                                    isItemConsumed = true;
-                                } else if (item == (Blocks.wool)) {
-                                    int skip = itemStack.getItemDamage() + 1;
-                                    biomeSkip += skip;
-                                    isItemConsumed = true;
-                                }
-                            } else if (itemTest.equals(Items.dye) && itemStack.getItemDamage() == 4) {
-                                targetRainfall += 0.1f;
+                    Item itemTest = itemStack.getItem();
+
+                    if (itemTest != null) {
+                        if (itemTest instanceof ItemBlock) {
+                            Block item = ((ItemBlock) itemTest).field_150939_a;
+                            if (item == (Blocks.sand)) {
+                                targetRainfall -= 0.1f;
                                 isItemConsumed = true;
-                            } else if (itemTest.equals(Items.lava_bucket)) {
-                                targetTemp += 0.4f;
+                            } else if (item == (Blocks.lapis_block)) {
+                                targetRainfall += 0.4f;
                                 isItemConsumed = true;
-                            } else if (itemTest.equals(Items.water_bucket)) {
-                                targetRainfall += 0.2f;
+                            } else if (item == (Blocks.sandstone)) {
+                                targetRainfall -= 0.2f;
                                 isItemConsumed = true;
-                            } else if (itemTest.equals(Items.coal)) {
-                                targetTemp += 0.1f;
+                            } else if (item == (Blocks.netherrack)) {
+                                targetRainfall -= 0.4f;
                                 isItemConsumed = true;
-                            } else if (itemTest.equals(Items.snowball)) {
-                                targetTemp -= 0.1f;
+                            } else if (item == (Blocks.coal_block)) {
+                                targetTemp += 0.2f;
+                                isItemConsumed = true;
+                            } else if (item == (Blocks.ice)) {
+                                targetTemp -= 0.4f;
+                                isItemConsumed = true;
+                            } else if (item == (Blocks.snow)) {
+                                targetTemp -= 0.2f;
+                                isItemConsumed = true;
+                            } else if (item == (Blocks.wool)) {
+                                int skip = itemStack.getItemDamage() + 1;
+                                biomeSkip += skip;
                                 isItemConsumed = true;
                             }
+                        } else if (itemTest.equals(Items.dye) && itemStack.getItemDamage() == 4) {
+                            targetRainfall += 0.1f;
+                            isItemConsumed = true;
+                        } else if (itemTest.equals(Items.lava_bucket)) {
+                            targetTemp += 0.4f;
+                            isItemConsumed = true;
+                        } else if (itemTest.equals(Items.water_bucket)) {
+                            targetRainfall += 0.2f;
+                            isItemConsumed = true;
+                        } else if (itemTest.equals(Items.coal)) {
+                            targetTemp += 0.1f;
+                            isItemConsumed = true;
+                        } else if (itemTest.equals(Items.snowball)) {
+                            targetTemp -= 0.1f;
+                            isItemConsumed = true;
                         }
                     }
 
