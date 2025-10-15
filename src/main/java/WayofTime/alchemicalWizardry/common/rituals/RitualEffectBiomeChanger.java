@@ -140,9 +140,6 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                     if (itemStack == null) continue;
 
                     var item = itemStack.getItem();
-                    if (item == null) continue;
-
-                    boolean isItemConsumed = true;
                     switch (item) {
                         case ItemBlock ib when ib.field_150939_a == lapis_block -> targetRainfall += 0.4f;
                         case ItemBlock ib when ib.field_150939_a == sand -> targetRainfall -= 0.1f;
@@ -157,14 +154,16 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                         case Item i when i == lava_bucket -> targetTemp += 0.4f;
                         case Item i when i == coal -> targetTemp += 0.1f;
                         case Item i when i == snowball -> targetTemp -= 0.1f;
-                        default -> isItemConsumed = false;
+                        case null -> { continue; }
+                        default -> {
+                            // The item is unsuitable, next!
+                            continue;
+                        }
                     }
 
-                    if (isItemConsumed) {
-                        tilePlinth.setInventorySlotContents(0, null);
-                        world.markBlockForUpdate(x + xo, y, z + zo);
-                        world.addWeatherEffect(new EntityLightningBolt(world, x + xo, y + 1, z + zo));
-                    }
+                    tilePlinth.setInventorySlotContents(0, null);
+                    world.markBlockForUpdate(x + xo, y, z + zo);
+                    world.addWeatherEffect(new EntityLightningBolt(world, x + xo, y + 1, z + zo));
                 }
             }
 
