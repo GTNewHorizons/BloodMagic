@@ -281,7 +281,7 @@ public class RitualEffectBiomeChanger extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> biomeChangerRitual = new ArrayList();
+        var biomeChangerRitual = new ArrayList<RitualComponent>();
         biomeChangerRitual.add(new RitualComponent(1, 0, -2, RitualComponent.AIR));
         biomeChangerRitual.add(new RitualComponent(1, 0, -3, RitualComponent.AIR));
         biomeChangerRitual.add(new RitualComponent(2, 0, -1, RitualComponent.AIR));
