@@ -38,8 +38,4 @@ public class Reagent {
         return colourIntensity;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof Reagent && this == o && name.equals(((Reagent) o).name);
-    }
 }
