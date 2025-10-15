@@ -144,17 +144,17 @@ public class RitualEffectBiomeChanger extends RitualEffect {
 
                     boolean isItemConsumed = true;
                     switch (item) {
-                        case ItemBlock ib when ib.field_150939_a == sand -> targetRainfall -= 0.1f;
                         case ItemBlock ib when ib.field_150939_a == lapis_block -> targetRainfall += 0.4f;
+                        case ItemBlock ib when ib.field_150939_a == sand -> targetRainfall -= 0.1f;
                         case ItemBlock ib when ib.field_150939_a == sandstone -> targetRainfall -= 0.2f;
                         case ItemBlock ib when ib.field_150939_a == netherrack -> targetRainfall -= 0.4f;
                         case ItemBlock ib when ib.field_150939_a == coal_block -> targetTemp += 0.2f;
-                        case ItemBlock ib when ib.field_150939_a == ice -> targetTemp -= 0.4f;
                         case ItemBlock ib when ib.field_150939_a == snow -> targetTemp -= 0.2f;
+                        case ItemBlock ib when ib.field_150939_a == ice -> targetTemp -= 0.4f;
                         case ItemBlock ib when ib.field_150939_a == wool -> biomeSkip += itemStack.getItemDamage() + 1;
+                        case Item i when i == water_bucket -> targetRainfall += 0.2f;
                         case Item i when i == dye && itemStack.getItemDamage() == 4 -> targetRainfall += 0.1f;
                         case Item i when i == lava_bucket -> targetTemp += 0.4f;
-                        case Item i when i == water_bucket -> targetRainfall += 0.2f;
                         case Item i when i == coal -> targetTemp += 0.1f;
                         case Item i when i == snowball -> targetTemp -= 0.1f;
                         default -> isItemConsumed = false;
