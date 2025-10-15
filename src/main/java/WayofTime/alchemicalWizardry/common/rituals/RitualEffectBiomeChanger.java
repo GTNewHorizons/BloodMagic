@@ -188,8 +188,6 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                 }
             }
 
-            boolean wantsSnow = false;
-            boolean wantsRain = true;
             int biomeID = 1;
             BiomeGenBase[] biomeList = BiomeGenBase.getBiomeGenArray();
 
