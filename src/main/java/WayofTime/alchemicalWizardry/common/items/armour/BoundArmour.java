@@ -33,6 +33,8 @@ import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.api.hazards.Hazard;
+import gregtech.api.hazards.IHazardProtector;
 import thaumcraft.api.IGoggles;
 import thaumcraft.api.IRunicArmor;
 import thaumcraft.api.nodes.IRevealer;
@@ -40,9 +42,10 @@ import thaumcraft.api.nodes.IRevealer;
 @Optional.InterfaceList(
         value = { @Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"),
                 @Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft"),
-                @Interface(iface = "thaumcraft.api.IRunicArmor", modid = "Thaumcraft") })
-public class BoundArmour extends ItemArmor
-        implements IAlchemyGoggles, ISpecialArmor, IBindable, IRevealer, IGoggles, IRunicArmor, ILPGauge {
+                @Interface(iface = "thaumcraft.api.IRunicArmor", modid = "Thaumcraft"),
+                @Interface(iface = "gregtech.api.hazards.IHazardProtector", modid = "gregtech_nh") })
+public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialArmor, IBindable, IRevealer, IGoggles,
+        IRunicArmor, ILPGauge, IHazardProtector {
 
     private static int invSize = 9;
 
@@ -750,5 +753,12 @@ public class BoundArmour extends ItemArmor
         }
 
         return false;
+    }
+
+    /// GT5 Hazmat protection
+    @Optional.Method(modid = "gregtech_nh")
+    @Override
+    public boolean protectsAgainst(ItemStack itemStack, Hazard hazard) {
+        return true;
     }
 }
