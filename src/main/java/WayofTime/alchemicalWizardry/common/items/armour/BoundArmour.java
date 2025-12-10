@@ -25,6 +25,7 @@ import WayofTime.alchemicalWizardry.ModItems;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.IAlchemyGoggles;
 import WayofTime.alchemicalWizardry.api.items.interfaces.ArmourUpgrade;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
 import WayofTime.alchemicalWizardry.api.items.interfaces.ILPGauge;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 import WayofTime.alchemicalWizardry.common.items.sigil.SigilDivination;
@@ -605,29 +606,17 @@ public class BoundArmour extends ItemArmor
         }
 
         for (ItemStack item : inv) {
-            if (item == null) {
+            if (item == null || !(item.getItem() instanceof IBloodOrb orb)) {
                 continue;
             }
 
-            if (item.getItem().equals(ModItems.weakBloodOrb)) {
-                return 0.75f;
-            }
-
-            if (item.getItem().equals(ModItems.apprenticeBloodOrb)) {
-                return 0.50f;
-            }
-
-            if (item.getItem().equals(ModItems.magicianBloodOrb)) {
-                return 0.25f;
-            }
-
-            if (item.getItem().equals(ModItems.masterBloodOrb)) {
-                return 0.0f;
-            }
-
-            if (item.getItem().equals(ModItems.archmageBloodOrb)) {
-                return 0.0f;
-            }
+            return switch (orb.getOrbLevel()) {
+                case 1 -> 0.75f;
+                case 2 -> 0.50f;
+                case 3 -> 0.25f;
+                case 4, 5, 6 -> 0;
+                default -> 1;
+            };
         }
 
         return 1.0f;
