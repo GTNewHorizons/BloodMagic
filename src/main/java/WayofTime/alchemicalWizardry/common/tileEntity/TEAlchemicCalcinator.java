@@ -318,7 +318,9 @@ public class TEAlchemicCalcinator extends TEReagentConduit implements IInventory
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
-        return true;
+        if (itemStack == null) return false;
+        return (slot == 0 && itemStack.getItem() instanceof IBloodOrb)
+                || (slot == 1 && ReagentRegistry.getReagentStackForItem(itemStack) != null);
     }
 
     @Override

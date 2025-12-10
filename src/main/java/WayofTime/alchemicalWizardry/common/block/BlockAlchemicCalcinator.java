@@ -16,6 +16,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentRegistry;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IReagentManipulator;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEAlchemicCalcinator;
@@ -87,11 +89,9 @@ public class BlockAlchemicCalcinator extends BlockContainer {
         Random rand = new Random();
         TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-        if (!(tileEntity instanceof IInventory)) {
+        if (!(tileEntity instanceof IInventory inventory)) {
             return;
         }
-
-        IInventory inventory = (IInventory) tileEntity;
 
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack item = inventory.getStackInSlot(i);
@@ -139,18 +139,17 @@ public class BlockAlchemicCalcinator extends BlockContainer {
 
             if (playerItem.getItem() instanceof IBloodOrb) {
                 if (tileEntity.getStackInSlot(0) == null) {
+                    IBindable.checkAndSetItemOwner(playerItem, player);
                     ItemStack newItem = playerItem.copy();
                     newItem.stackSize = 1;
                     --playerItem.stackSize;
                     tileEntity.setInventorySlotContents(0, newItem);
                 }
-            } else if (tileEntity.getStackInSlot(1) == null) {
-                ItemStack newItem = playerItem.copy();
-                newItem.stackSize = 1;
-                --playerItem.stackSize;
-                tileEntity.setInventorySlotContents(1, newItem);
-            }
-
+            } else if (tileEntity.getStackInSlot(1) == null
+                    && ReagentRegistry.getReagentStackForItem(playerItem) != null) {
+                        tileEntity.setInventorySlotContents(1, playerItem);
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                    }
         } else {
             if (tileEntity.getStackInSlot(1) != null) {
                 player.inventory.addItemStackToInventory(tileEntity.getStackInSlot(1));
