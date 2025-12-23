@@ -14,7 +14,6 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.transpose
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.Objects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
@@ -120,116 +119,116 @@ public class AltarStructure {
     }
 
     @Desugar
-        private static final class AltarMultiblockInfoContainer
-                implements IMultiblockInfoContainer<TEAltar> {
+    private static final class AltarMultiblockInfoContainer implements IMultiblockInfoContainer<TEAltar> {
+
         private final IStructureDefinition<TEAltar> structureAltar;
 
         private AltarMultiblockInfoContainer(IStructureDefinition<TEAltar> structureAltar) {
             this.structureAltar = structureAltar;
         }
 
-            @Override
-            public void construct(ItemStack triggerStack, boolean hintsOnly, TEAltar ctx, ExtendedFacing aSide) {
-                int tier = triggerStack.stackSize;
-                if (tier > 6) {
-                    tier = 6;
-                }
-                for (int i = 1; i <= tier; i++) {
-                    this.structureAltar.buildOrHints(
-                            ctx,
-                            triggerStack,
-                            "tier" + i,
-                            ctx.getWorldObj(),
-                            ExtendedFacing.DEFAULT,
-                            ctx.xCoord,
-                            ctx.yCoord,
-                            ctx.zCoord,
-                            TIER_OFFSET[i - 1][0],
-                            TIER_OFFSET[i - 1][1],
-                            TIER_OFFSET[i - 1][2],
-                            hintsOnly);
-                }
+        @Override
+        public void construct(ItemStack triggerStack, boolean hintsOnly, TEAltar ctx, ExtendedFacing aSide) {
+            int tier = triggerStack.stackSize;
+            if (tier > 6) {
+                tier = 6;
             }
-
-            @Override
-            public int survivalConstruct(ItemStack triggerStack, int elementBudge, ISurvivalBuildEnvironment env,
-                                         TEAltar altar, ExtendedFacing aSide) {
-                int built = 0;
-                int tier = triggerStack.stackSize;
-                if (tier > 6) {
-                    tier = 6;
-                }
-                if (altar.getTier() >= tier) return -1;
-
-                for (int i = 1; i <= tier; i++) {
-                    built += this.structureAltar.survivalBuild(
-                            altar,
-                            triggerStack,
-                            "tier" + i,
-                            altar.getWorldObj(),
-                            ExtendedFacing.DEFAULT,
-                            altar.xCoord,
-                            altar.yCoord,
-                            altar.zCoord,
-                            TIER_OFFSET[i - 1][0],
-                            TIER_OFFSET[i - 1][1],
-                            TIER_OFFSET[i - 1][2],
-                            elementBudge,
-                            env,
-                            false);
-                }
-                return built;
+            for (int i = 1; i <= tier; i++) {
+                this.structureAltar.buildOrHints(
+                        ctx,
+                        triggerStack,
+                        "tier" + i,
+                        ctx.getWorldObj(),
+                        ExtendedFacing.DEFAULT,
+                        ctx.xCoord,
+                        ctx.yCoord,
+                        ctx.zCoord,
+                        TIER_OFFSET[i - 1][0],
+                        TIER_OFFSET[i - 1][1],
+                        TIER_OFFSET[i - 1][2],
+                        hintsOnly);
             }
-
-            @SuppressWarnings("unchecked")
-            @Override
-            public String[] getDescription(ItemStack stackSize) {
-                ArrayList<String> out = new ArrayList<>();
-                out.add(StatCollector.translateToLocal("structurelib.bloodmagic.altar.1"));
-                out.add(StatCollector.translateToLocal("structurelib.bloodmagic.altar.2"));
-
-                int[] pillarTiers = {3, 4, 6};
-                List<BlockStack>[] pillarLists = new List[]{AlchemicalWizardry.thirdTierPillars,
-                        AlchemicalWizardry.fourthTierPillars, AlchemicalWizardry.sixthTierPillars};
-                ArrayList<Integer> pillars = new ArrayList<>();
-
-                for (int i = 0; i < pillarTiers.length; i++) {
-                    if (pillarLists[i].isEmpty()) {
-                        pillars.add(pillarTiers[i]);
-                    }
-                }
-
-                if (!pillars.isEmpty()) {
-                    out.add(
-                            StatCollector.translateToLocalFormatted(
-                                    "structurelib.bloodmagic.altar.3",
-                                    Joiner.on(", ").join(pillars)));
-                }
-
-                int[] capTiers = {3, 4, 6};
-                List<BlockStack>[] capLists = new List[]{AlchemicalWizardry.thirdTierCaps,
-                        AlchemicalWizardry.fourthTierCaps, AlchemicalWizardry.sixthTierCaps};
-                ArrayList<Integer> caps = new ArrayList<>();
-
-                for (int i = 0; i < capTiers.length; i++) {
-                    if (capLists[i].isEmpty()) {
-                        caps.add(capTiers[i]);
-                    }
-                }
-
-                if (!caps.isEmpty()) {
-                    out.add(
-                            StatCollector.translateToLocalFormatted(
-                                    "structurelib.bloodmagic.altar.4",
-                                    Joiner.on(", ").join(caps)));
-                }
-
-                if (AlchemicalWizardry.fifthTierBeacons.isEmpty()) { // T5 Beacon
-                    out.add(StatCollector.translateToLocal("structurelib.bloodmagic.altar.5"));
-                }
-
-                return out.toArray(new String[0]);
-            }
-
         }
+
+        @Override
+        public int survivalConstruct(ItemStack triggerStack, int elementBudge, ISurvivalBuildEnvironment env,
+                TEAltar altar, ExtendedFacing aSide) {
+            int built = 0;
+            int tier = triggerStack.stackSize;
+            if (tier > 6) {
+                tier = 6;
+            }
+            if (altar.getTier() >= tier) return -1;
+
+            for (int i = 1; i <= tier; i++) {
+                built += this.structureAltar.survivalBuild(
+                        altar,
+                        triggerStack,
+                        "tier" + i,
+                        altar.getWorldObj(),
+                        ExtendedFacing.DEFAULT,
+                        altar.xCoord,
+                        altar.yCoord,
+                        altar.zCoord,
+                        TIER_OFFSET[i - 1][0],
+                        TIER_OFFSET[i - 1][1],
+                        TIER_OFFSET[i - 1][2],
+                        elementBudge,
+                        env,
+                        false);
+            }
+            return built;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public String[] getDescription(ItemStack stackSize) {
+            ArrayList<String> out = new ArrayList<>();
+            out.add(StatCollector.translateToLocal("structurelib.bloodmagic.altar.1"));
+            out.add(StatCollector.translateToLocal("structurelib.bloodmagic.altar.2"));
+
+            int[] pillarTiers = { 3, 4, 6 };
+            List<BlockStack>[] pillarLists = new List[] { AlchemicalWizardry.thirdTierPillars,
+                    AlchemicalWizardry.fourthTierPillars, AlchemicalWizardry.sixthTierPillars };
+            ArrayList<Integer> pillars = new ArrayList<>();
+
+            for (int i = 0; i < pillarTiers.length; i++) {
+                if (pillarLists[i].isEmpty()) {
+                    pillars.add(pillarTiers[i]);
+                }
+            }
+
+            if (!pillars.isEmpty()) {
+                out.add(
+                        StatCollector.translateToLocalFormatted(
+                                "structurelib.bloodmagic.altar.3",
+                                Joiner.on(", ").join(pillars)));
+            }
+
+            int[] capTiers = { 3, 4, 6 };
+            List<BlockStack>[] capLists = new List[] { AlchemicalWizardry.thirdTierCaps,
+                    AlchemicalWizardry.fourthTierCaps, AlchemicalWizardry.sixthTierCaps };
+            ArrayList<Integer> caps = new ArrayList<>();
+
+            for (int i = 0; i < capTiers.length; i++) {
+                if (capLists[i].isEmpty()) {
+                    caps.add(capTiers[i]);
+                }
+            }
+
+            if (!caps.isEmpty()) {
+                out.add(
+                        StatCollector.translateToLocalFormatted(
+                                "structurelib.bloodmagic.altar.4",
+                                Joiner.on(", ").join(caps)));
+            }
+
+            if (AlchemicalWizardry.fifthTierBeacons.isEmpty()) { // T5 Beacon
+                out.add(StatCollector.translateToLocal("structurelib.bloodmagic.altar.5"));
+            }
+
+            return out.toArray(new String[0]);
+        }
+
+    }
 }
