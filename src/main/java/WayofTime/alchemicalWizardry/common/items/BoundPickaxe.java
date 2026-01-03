@@ -3,6 +3,7 @@ package WayofTime.alchemicalWizardry.common.items;
 import java.util.ArrayList;
 import java.util.List;
 
+import gregtech.common.blocks.GTBlockOre;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -118,8 +119,15 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
                                     .canSilkHarvest(par2World, par3EntityPlayer, posX + i, posY + j, posZ + k, meta)) {
                                 dropMultiset.add(new ItemType(block, meta));
                             } else {
-                                ArrayList<ItemStack> itemDropList = block
-                                        .getDrops(par2World, posX + i, posY + j, posZ + k, meta, fortuneLvl);
+                                ArrayList<ItemStack> itemDropList;
+                                if (AlchemicalWizardry.isGregTechLoaded && block instanceof GTBlockOre) {
+                                    itemDropList = ((GTBlockOre) block)
+                                            .getDropsFortune(par2World, posX + i, posY + j, posZ + k, meta, fortuneLvl, par3EntityPlayer);
+                                }
+                                else{
+                                    itemDropList = block
+                                            .getDrops(par2World, posX + i, posY + j, posZ + k, meta, fortuneLvl);
+                                }
 
                                 if (itemDropList != null) {
                                     for (ItemStack stack : itemDropList)
