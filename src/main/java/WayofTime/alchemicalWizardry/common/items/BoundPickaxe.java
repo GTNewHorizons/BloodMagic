@@ -122,7 +122,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
                                 ArrayList<ItemStack> itemDropList;
                                 if (AlchemicalWizardry.isGregTechLoaded && block instanceof GTBlockOre) {
                                     itemDropList = ((GTBlockOre) block)
-                                            .getDropsFortune(par2World, posX + i, posY + j, posZ + k, meta, fortuneLvl, par3EntityPlayer);
+                                            .getDropsForPlayer(par2World, posX + i, posY + j, posZ + k, meta, fortuneLvl, par3EntityPlayer);
                                 }
                                 else{
                                     itemDropList = block
