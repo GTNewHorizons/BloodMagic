@@ -28,6 +28,7 @@ import WayofTime.alchemicalWizardry.common.ItemType;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import gregtech.common.blocks.GTBlockOre;
 
 public class BoundPickaxe extends ItemPickaxe implements IBindable {
 
@@ -118,8 +119,20 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
                                     .canSilkHarvest(par2World, par3EntityPlayer, posX + i, posY + j, posZ + k, meta)) {
                                 dropMultiset.add(new ItemType(block, meta));
                             } else {
-                                ArrayList<ItemStack> itemDropList = block
-                                        .getDrops(par2World, posX + i, posY + j, posZ + k, meta, fortuneLvl);
+                                ArrayList<ItemStack> itemDropList;
+                                if (AlchemicalWizardry.isGregTechLoaded && block instanceof GTBlockOre) {
+                                    itemDropList = ((GTBlockOre) block).getDropsForPlayer(
+                                            par2World,
+                                            posX + i,
+                                            posY + j,
+                                            posZ + k,
+                                            meta,
+                                            fortuneLvl,
+                                            par3EntityPlayer);
+                                } else {
+                                    itemDropList = block
+                                            .getDrops(par2World, posX + i, posY + j, posZ + k, meta, fortuneLvl);
+                                }
 
                                 if (itemDropList != null) {
                                     for (ItemStack stack : itemDropList)
