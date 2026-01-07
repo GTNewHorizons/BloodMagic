@@ -314,7 +314,8 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
                     currenttip.add(
                             StatCollector.translateToLocalFormatted(
                                     "nei.recipe.meteor.diameter",
-                                    2 * cachedRecipe.radiusInfo.getRadius() + 1));
+                                    2 * cachedRecipe.radiusInfo.getRadius() + 1) + " with centerblock");
+
                 } else if (ritualInfo.getRect(gui).contains(mousePos)) {
                     ritualInfo.onHover(currenttip);
                 } else if (reagentInfo.getRect(gui).contains(mousePos)) {
