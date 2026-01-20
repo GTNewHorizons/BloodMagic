@@ -174,9 +174,9 @@ item.itemFluidSigil.name=
 itemGroup.tabBloodMagic=Blood Magic
 
 #Extra Strings
-gui.blockWritingTable.title=
-gui.demonChest.title=
-gui.bloodTeleposer.title=
+gui.blockWritingTable.title=AAlchemisches Chemieset
+gui.demonChest.title=Demon's Chest
+gui.bloodTeleposer.title=Teleposer
 bm.string.consume=Verbrauch
 bm.string.drain=Entzug
 bm.string.tier=Stufe
