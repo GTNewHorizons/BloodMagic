@@ -22,7 +22,7 @@ public class GuiWritingTable extends GuiContainer {
     protected void drawGuiContainerForegroundLayer(int param1, int param2) {
         // draw text and stuff here
         // the parameters for drawString are: string, x, y, color
-        fontRendererObj.drawString("Alchemic Chemistry Set", 8, 6, 4210752);
+        fontRendererObj.drawString(StatCollector.translateToLocal("gui.blockWritingTable.title"), 8, 6, 4210752);
         // draws "Inventory" or your regional equivalent
         fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, 130, 4210752);
     }

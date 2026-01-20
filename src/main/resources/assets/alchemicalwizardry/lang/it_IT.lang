@@ -174,8 +174,12 @@ item.itemFluidSigil.name=
 itemGroup.tabBloodMagic=Magia del Sangue
 
 #Extra Strings
+gui.blockWritingTable.title=Set da Alchimista
+gui.demonChest.title=Demon's Chest
+gui.bloodTeleposer.title=Teleposer
 bm.string.consume=Utilizzo
 bm.string.drain=Drenaggio
 bm.string.tier=Livello
 bm.string.crafting.orb.shaped=Creazione di un Glodo Formato
 bm.string.crafting.orb.shapeless=Creazione di un Globo Informe
+text.recipe.alchemicCalcinator.reagent=%s AR

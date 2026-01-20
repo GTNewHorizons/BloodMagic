@@ -251,6 +251,9 @@ item.bloodMagicIncenseItem.Purpura.name=紫香粉末
 itemGroup.tabBloodMagic=血魔法
 
 #Extra Strings
+gui.blockWritingTable.title=炼金术台
+gui.demonChest.title=恶魔的箱子
+gui.bloodTeleposer.title=传送器
 bm.string.consume=使用
 bm.string.drain=消耗
 bm.string.tier=层数
@@ -261,6 +264,7 @@ text.recipe.altar=血之祭坛
 text.recipe.altar.tier=层数: %s
 text.recipe.altar.bloodRequired=LP: %s
 text.recipe.shapedOrb=合适宝珠合成
+text.recipe.alchemicCalcinator.reagent=%s AR
 nei.recipe.meteor.category=陨星仪式
 nei.recipe.meteor.cost=消耗: %s LP
 nei.recipe.meteor.radius=半径: %s

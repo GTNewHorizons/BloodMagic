@@ -204,11 +204,15 @@ item.transcendentBloodOrb.name=Orbe Sanguinaire Transcendante
 itemGroup.tabBloodMagic=Blood Magic
 
 #Extra Strings
+gui.blockWritingTable.title=
+gui.demonChest.title=
+gui.bloodTeleposer.title=
 bm.string.consume=Exaction
 bm.string.drain=Ponction Veineuse
 bm.string.tier=Tiers
 bm.string.crafting.orb.shaped=Fabrication Orbée Formée
 bm.string.crafting.orb.shapeless=Fabrication Orbée Déformée
+text.recipe.alchemicCalcinator.reagent=%s AR
 
 #Entities
 entity.AWWayofTime.EarthElemental.name=Elémenterrestre

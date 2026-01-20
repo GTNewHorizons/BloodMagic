@@ -174,8 +174,12 @@ item.itemFluidSigil.name=
 itemGroup.tabBloodMagic=Blood Magic
 
 #Extra Strings
+gui.blockWritingTable.title=
+gui.demonChest.title=
+gui.bloodTeleposer.title=
 bm.string.consume=Verbrauch
 bm.string.drain=Entzug
 bm.string.tier=Stufe
 bm.string.crafting.orb.shaped=Geformte Orb-Fertigung
 bm.string.crafting.orb.shapeless=Formfreie Orb-Fertigung
+text.recipe.alchemicCalcinator.reagent=%s AR
