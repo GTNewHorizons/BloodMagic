@@ -21,7 +21,7 @@ public class GuiTeleposer extends GuiContainer {
     @Override
     protected void drawGuiContainerForegroundLayer(int param1, int param2) {
         // the parameters for drawString are: string, x, y, color
-        fontRendererObj.drawString("Teleposer", 64, 5, 4210752);
+        fontRendererObj.drawString(StatCollector.translateToLocal("gui.bloodTeleposer.title"), 64, 5, 4210752);
         // draws "Inventory" or your regional equivalent
         fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, 29, 4210752);
     }

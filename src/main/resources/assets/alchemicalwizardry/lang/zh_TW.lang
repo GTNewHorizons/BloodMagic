@@ -247,6 +247,9 @@ item.bloodMagicIncenseItem.Purpura.name=Purpura
 itemGroup.tabBloodMagic=血魔法
 
 #Extra Strings
+gui.blockWritingTable.title=煉金術台
+gui.demonChest.title=Demon's Chest
+gui.bloodTeleposer.title=傳送器
 bm.string.consume=使用
 bm.string.drain=消耗
 bm.string.tier=層數
@@ -256,6 +259,7 @@ text.recipe.altar=Blood Altar
 text.recipe.altar.tier=Tier: %s
 text.recipe.altar.bloodRequired=LP: %s
 text.recipe.shapedOrb=Shaped Orb Recipe
+text.recipe.alchemicCalcinator.reagent=%s AR
 
 #Entities
 entity.AWWayofTime.EarthElemental.name=土之元素精靈

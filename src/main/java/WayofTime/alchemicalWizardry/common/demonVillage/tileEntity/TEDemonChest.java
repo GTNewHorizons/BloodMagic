@@ -3,6 +3,7 @@ package WayofTime.alchemicalWizardry.common.demonVillage.tileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.StatCollector;
 
 import WayofTime.alchemicalWizardry.api.Int3;
 
@@ -12,7 +13,7 @@ public class TEDemonChest extends TileEntityChest implements ITilePortalNode {
 
     @Override
     public String getInventoryName() {
-        return "Demon's Chest";
+        return StatCollector.translateToLocal("gui.demonChest.title");
     }
 
     @Override

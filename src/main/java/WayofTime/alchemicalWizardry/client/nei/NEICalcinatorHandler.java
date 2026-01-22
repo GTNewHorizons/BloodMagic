@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants;
 
 import org.lwjgl.opengl.GL11;
@@ -53,7 +54,9 @@ public class NEICalcinatorHandler extends TemplateRecipeHandler {
             ItemStack[] orbStacks = NEIConfig.getBloodOrbs().stream().map(ItemStack::new).toArray(ItemStack[]::new);
             this.orbs = new PositionedStack(orbStacks, 32, 33);
 
-            this.amountText = String.format("%,d AR", amount);
+            String formattedAmount = String.format("%,d", amount);
+            this.amountText = StatCollector
+                    .translateToLocalFormatted("text.recipe.alchemicCalcinator.reagent", formattedAmount);
             this.amountTextWidth = fontRenderer.getStringWidth(amountText);
 
             this.nameText = this.reagent.name;

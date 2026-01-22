@@ -235,6 +235,9 @@ item.boundBootsWater.name=Водные омега ботинки
 itemGroup.tabBloodMagic=Blood Magic
 
 #Extra Strings
+gui.blockWritingTable.title=Алхимическая и химическая установка
+gui.demonChest.title=Сундук демона
+gui.bloodTeleposer.title=Телепозер
 bm.string.consume=Потребление
 bm.string.drain=Опустошение
 bm.string.tier=Уровень
@@ -244,6 +247,7 @@ text.recipe.altar=Кровавый алтарь
 text.recipe.altar.tier=Уровень: %s
 text.recipe.altar.bloodRequired=LP: %s
 text.recipe.shapedOrb=Форменный рецепт шара
+text.recipe.alchemicCalcinator.reagent=%s AR
 
 #Entities
 entity.AWWayofTime.EarthElemental.name=Элементаль земли
