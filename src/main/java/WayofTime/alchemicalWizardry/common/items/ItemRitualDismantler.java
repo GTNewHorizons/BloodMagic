@@ -36,7 +36,7 @@ public class ItemRitualDismantler extends EnergyItems {
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List par3List, boolean x) {
-        par3List.add(StatCollector.translateToLocal("tooltip.dismatler.desc"));
+        par3List.add(StatCollector.translateToLocal("tooltip.dismantler.desc"));
         addBindingInformation(stack, par3List);
     }
 

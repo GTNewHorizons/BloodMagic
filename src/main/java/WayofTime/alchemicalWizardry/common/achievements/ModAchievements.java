@@ -62,7 +62,7 @@ public class ModAchievements {
         energyBazooka = new AchievementsMod("energyBazooka", -3, 2, ModItems.energyBazooka, archmageOrb);
         demons = new AchievementsMod("demons", 0, 3, new ItemStack(ModItems.baseItems, 1, 29), archmageOrb)
                 .setSpecial();
-        transcendentOrb = new AchievementsMod("trancsendentOrb", 0, 5, ModItems.transcendentBloodOrb, demons);
+        transcendentOrb = new AchievementsMod("transcendentOrb", 0, 5, ModItems.transcendentBloodOrb, demons);
 
         alchemicalWizardryPage = new AchievementPage(
                 "Blood Magic",
