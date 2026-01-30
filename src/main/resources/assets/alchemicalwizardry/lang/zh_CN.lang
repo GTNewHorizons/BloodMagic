@@ -476,7 +476,7 @@ tooltip.ritualdiviner.ritualtunedto=仪式朝向:
 tooltip.ritualdiviner.waterstones=水之仪式石:
 tooltip.ritualdiviner.dawnstones=破晓仪式石:
 tooltip.ritualdiviner.totalStones=仪式石总数:
-tooltip.dismatler.desc=你可以把这个颠倒过来?
+tooltip.dismantler.desc=你可以把这个颠倒过来?
 tooltip.sacrificialdagger.desc1=手指感到一股轻微的排失似的发痒
 tooltip.sacrificialdagger.desc2=只是刺一下手指
 tooltip.sacrificialdagger.desc3=你就能获得力量...
@@ -599,8 +599,8 @@ achievement.alchemicalwizardry:energyBazooka=BOOM!!!
 achievement.alchemicalwizardry:energyBazooka.desc=制作强大的能量火箭筒!!
 achievement.alchemicalwizardry:demons=恶魔猎手
 achievement.alchemicalwizardry:demons.desc=杀死恶魔
-achievement.alchemicalwizardry:trancsendentOrb=强上加强
-achievement.alchemicalwizardry:trancsendentOrb.desc=捡起卓越气血宝珠
+achievement.alchemicalwizardry:transcendentOrb=强上加强
+achievement.alchemicalwizardry:transcendentOrb.desc=捡起卓越气血宝珠
 
 #G-API Downloading
 bm.versioning.getGAPI=["[BM] 您没有安装Guide-API! 安装它以解锁此书! [",{"text":"Download","color":"red","hoverEvent":{"action":"show_text","value":{"text":"Click this to auto-magically download the latest version","color":"red"}},"clickEvent":{"action":"run_command","value":"/bloodmagic-download-g-api"}},"]"]
