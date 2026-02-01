@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -66,7 +67,10 @@ public class CostInfo extends BMNEIWidget {
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
 
-        drawCenteredText(x, y, String.format("%,d", cost));
+        drawCenteredText(
+                x,
+                y,
+                StatCollector.translateToLocalFormatted("nei.recipe.meteor.cost.gui", String.format("%,d", cost)));
     }
 
 }
