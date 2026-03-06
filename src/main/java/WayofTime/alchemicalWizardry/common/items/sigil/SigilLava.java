@@ -53,10 +53,7 @@ public class SigilLava extends ItemBucket implements ArmourUpgrade, ISigil {
 
     @Override
     public ItemStack getContainerItem(ItemStack itemStack) {
-        ItemStack copiedStack = itemStack.copy();
-        copiedStack.setItemDamage(copiedStack.getItemDamage() + getEnergyUsed());
-        copiedStack.stackSize = 1;
-        return copiedStack;
+        return itemStack;
     }
 
     @Override

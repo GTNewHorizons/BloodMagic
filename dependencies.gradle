@@ -35,7 +35,6 @@ dependencies {
     
     compileOnly("com.github.GTNewHorizons:Chisel:2.17.11-GTNH:api") {transitive = false }
 
-    compileOnly("com.github.GTNewHorizons:ZenScript:1.0.0-GTNH") {transitive = false }
     compileOnly("com.github.GTNewHorizons:CraftTweaker:3.4.2:dev") {transitive = false }
 
     compileOnly("thaumcraft:Thaumcraft:1.7.10-4.2.3.5:dev") {transitive = false }
