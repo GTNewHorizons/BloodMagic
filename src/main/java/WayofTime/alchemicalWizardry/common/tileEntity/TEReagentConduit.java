@@ -417,17 +417,31 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
         readClientNBT(packet.func_148857_g());
     }
 
-    public boolean addReagentDestinationViaOffset(Reagent reagent, int xOffset, int yOffset, int zOffset) {
-        int totalConnections = 0;
-
-        for (Entry<Reagent, List<Int3>> entry : this.reagentTargetList.entrySet()) {
-            if (entry.getValue() != null) {
-                totalConnections += entry.getValue().size();
+    public int getTotalConnections() {
+        int total = 0;
+        for (List<Int3> list : this.reagentTargetList.values()) {
+            if (list != null) {
+                total += list.size();
             }
         }
+        return total;
+    }
 
-        if (totalConnections >= this.maxConnextions) {
-            // Send message that it cannot be done? Maybe add a Player instance
+    public boolean hasReagentDestination(Reagent reagent, int x, int y, int z) {
+        int xOffset = x - this.xCoord;
+        int yOffset = y - this.yCoord;
+        int zOffset = z - this.zCoord;
+        if (this.reagentTargetList.containsKey(reagent)) {
+            List<Int3> coords = this.reagentTargetList.get(reagent);
+            if (coords != null) {
+                return coords.contains(new Int3(xOffset, yOffset, zOffset));
+            }
+        }
+        return false;
+    }
+
+    public boolean addReagentDestinationViaOffset(Reagent reagent, int xOffset, int yOffset, int zOffset) {
+        if (getTotalConnections() >= this.maxConnextions) {
             return false;
         }
 
@@ -444,6 +458,9 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
                 newCoordList.add(newCoord);
                 this.reagentTargetList.put(reagent, newCoordList);
             } else {
+                if (coordList.contains(newCoord)) {
+                    return false;
+                }
                 coordList.add(newCoord);
             }
 
