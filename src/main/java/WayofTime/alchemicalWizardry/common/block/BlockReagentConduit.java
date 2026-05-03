@@ -1,13 +1,21 @@
 package WayofTime.alchemicalWizardry.common.block;
 
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.api.Int3;
+import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IReagentManipulator;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEReagentConduit;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -41,6 +49,37 @@ public class BlockReagentConduit extends BlockContainer {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float what,
             float these, float are) {
+        if (!world.isRemote) {
+            ItemStack held = player.getHeldItem();
+            if (held == null || !(held.getItem() instanceof IReagentManipulator)) {
+                TileEntity tile = world.getTileEntity(x, y, z);
+                if (tile instanceof TEReagentConduit) {
+                    TEReagentConduit relay = (TEReagentConduit) tile;
+                    if (relay.reagentTargetList.isEmpty()) {
+                        player.addChatComponentMessage(
+                                new ChatComponentTranslation("message.reagentconduit.noconnections"));
+                    } else {
+                        player.addChatComponentMessage(
+                                new ChatComponentTranslation("message.reagentconduit.connections"));
+                        for (Map.Entry<Reagent, List<Int3>> entry : relay.reagentTargetList.entrySet()) {
+                            Reagent reagent = entry.getKey();
+                            List<Int3> offsets = entry.getValue();
+                            if (offsets == null) continue;
+                            for (Int3 offset : offsets) {
+                                player.addChatComponentMessage(
+                                        new ChatComponentTranslation(
+                                                "message.reagentconduit.connection.entry",
+                                                reagent.name,
+                                                x + offset.xCoord,
+                                                y + offset.yCoord,
+                                                z + offset.zCoord));
+                            }
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
         return super.onBlockActivated(world, x, y, z, player, side, what, these, are);
     }
 
