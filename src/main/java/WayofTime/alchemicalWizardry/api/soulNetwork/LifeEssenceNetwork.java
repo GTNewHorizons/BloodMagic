@@ -19,8 +19,7 @@ public class LifeEssenceNetwork extends net.minecraft.world.WorldSavedData {
     @Override
     public void readFromNBT(NBTTagCompound nbttagcompound) {
         currentEssence = nbttagcompound.getInteger("currentEssence");
-        maxEssence = nbttagcompound.hasKey("maxEssence") ? nbttagcompound.getInteger("maxEssence")
-                : SoulNetworkHandler.getMaximumForOrbTier(maxOrb); // seamless migration from old data
+        maxEssence = nbttagcompound.getInteger("maxEssence");
         maxOrb = nbttagcompound.getInteger("maxOrb");
     }
 
