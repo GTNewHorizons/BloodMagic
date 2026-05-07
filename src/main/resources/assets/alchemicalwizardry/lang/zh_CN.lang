@@ -389,7 +389,7 @@ commands.soulnetwork.noPlayer=没有指定玩家
 commands.soulnetwork.noCommand=命令不够详细
 commands.soulnetwork.notACommand=这不是有效的命令
 commands.soulnetwork.fillMax.success=成功填满 %s 的气血宝珠!
-commands.soulnetwork.create.success=成功创建 %s 的灵魂网络(气血宝珠等级: %d)
+commands.soulnetwork.create.success=成功创建 %s 的灵魂网络(容量: %d)
 
 #Tooltips
 tooltip.activationcrystal.creativeonly=创造模式独有 - 激活任何仪式

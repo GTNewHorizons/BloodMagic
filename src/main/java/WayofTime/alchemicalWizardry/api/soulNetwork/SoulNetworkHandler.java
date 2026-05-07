@@ -376,12 +376,11 @@ public class SoulNetworkHandler {
     }
 
     public static boolean checkAndSetItemPlayer(ItemStack item, EntityPlayer player) {
-        if (item.getItem() instanceof IBloodOrb) {
+        if (item.getItem() instanceof IBloodOrb orb) {
             String currentOwner = item.hasTagCompound() ? item.getTagCompound().getString("ownerName") : "";
             String thisPlayer = getUsername(player);
             if (currentOwner.isEmpty() || currentOwner.equals(thisPlayer)) {
-                int orbCap = ((IBloodOrb) item.getItem()).getMaxEssence();
-                setMaxEssenceToMax(thisPlayer, orbCap);
+                setMaxEssenceToMax(thisPlayer, orb.getMaxEssence());
             }
         }
 

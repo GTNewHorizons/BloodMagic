@@ -85,9 +85,8 @@ public class SubCommandNetwork extends SubCommandBase {
                         if (args.length == 3) {
                             if (isInteger(args[2])) {
                                 int amount = Integer.parseInt(args[2]);
-                                int maxOrb = SoulNetworkHandler
-                                        .getMaximumForOrbTier(SoulNetworkHandler.getCurrentMaxOrb(givenName));
-                                SoulNetworkHandler.addCurrentEssenceToMaximum(givenName, amount, maxOrb);
+                                int maxEssence = SoulNetworkHandler.getMaxEssence(givenName);
+                                SoulNetworkHandler.addCurrentEssenceToMaximum(givenName, amount, maxEssence);
                                 displaySuccessString(commandSender, "commands.network.add.success", amount, givenName);
                             } else {
                                 displayErrorString(commandSender, "commands.error.arg.invalid");
@@ -152,9 +151,8 @@ public class SubCommandNetwork extends SubCommandBase {
                         }
 
                         if (args.length > 1) {
-                            int maxOrb = SoulNetworkHandler
-                                    .getMaximumForOrbTier(SoulNetworkHandler.getCurrentMaxOrb(givenName));
-                            SoulNetworkHandler.setCurrentEssence(givenName, maxOrb);
+                            int maxEssence = SoulNetworkHandler.getMaxEssence(givenName);
+                            SoulNetworkHandler.setCurrentEssence(givenName, maxEssence);
                             displaySuccessString(commandSender, "commands.network.cap.success", givenName);
                         }
 

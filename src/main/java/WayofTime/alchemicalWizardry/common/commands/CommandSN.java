@@ -69,15 +69,15 @@ public class CommandSN extends CommandBase {
                 func_152373_a(icommandsender, this, "commands.soulnetwork.get.success", currentEssence, owner);
             } else if ("fillMax".equalsIgnoreCase(astring[1])) {
                 int currentEssence = SoulNetworkHandler.getCurrentEssence(owner);
-                int orbTier = SoulNetworkHandler.getCurrentMaxOrb(owner);
-                int maxForOrb = SoulNetworkHandler.getMaximumForOrbTier(orbTier);
-                int fillAmount = maxForOrb - currentEssence;
+                int maxForUser = SoulNetworkHandler.getMaxEssence(owner);
+                int fillAmount = maxForUser - currentEssence;
                 SoulNetworkHandler.addCurrentEssenceToMaximum(owner, fillAmount, fillAmount);
                 func_152373_a(icommandsender, this, "commands.soulnetwork.fillMax.success", owner);
             } else if ("create".equalsIgnoreCase(astring[1])) {
-                int orbTier = parseIntBounded(icommandsender, astring[2], 1, 6);
-                SoulNetworkHandler.setMaxOrbToMax(proxyPlayerName.getDisplayName(), orbTier);
-                func_152373_a(icommandsender, this, "commands.soulnetwork.create.success", owner, orbTier);
+                int desiredCapacity = parseInt(icommandsender, astring[2]);
+                SoulNetworkHandler.setMaxEssenceToMax(proxyPlayerName.getDisplayName(), desiredCapacity);
+                int actualCapacity = SoulNetworkHandler.getMaxEssence(proxyPlayerName.getDisplayName());
+                func_152373_a(icommandsender, this, "commands.soulnetwork.create.success", owner, actualCapacity);
             } else {
                 throw new CommandException("commands.soulnetwork.notACommand");
             }
