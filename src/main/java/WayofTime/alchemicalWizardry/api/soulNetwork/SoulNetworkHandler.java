@@ -15,6 +15,7 @@ import WayofTime.alchemicalWizardry.api.event.ItemBindEvent;
 import WayofTime.alchemicalWizardry.api.event.ItemDrainInContainerEvent;
 import WayofTime.alchemicalWizardry.api.event.ItemDrainNetworkEvent;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.Event.Result;
@@ -36,6 +37,10 @@ public class SoulNetworkHandler {
         return syphonFromNetwork(event.ownerNetwork, event.drainAmount) >= damageToBeDone;
     }
 
+    /**
+     * @deprecated Use {@link #getMaxEssence(String ownerName)} to get maximum soul network capacity
+     */
+    @Deprecated
     public static int getCurrentMaxOrb(String ownerName) {
         MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (mcServer == null) {
@@ -53,6 +58,28 @@ public class SoulNetworkHandler {
         return data.maxOrb;
     }
 
+    public static int getMaxEssence(String ownerName) {
+        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (mcServer == null) {
+            return 0;
+        }
+
+        World world = mcServer.worldServers[0];
+        LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, ownerName);
+
+        if (data == null) {
+            data = new LifeEssenceNetwork(ownerName);
+            world.setItemData(ownerName, data);
+        }
+
+        return data.maxEssence;
+    }
+
+    /**
+     * @deprecated Use {@link #setMaxEssenceToMax(String ownerName, int maxEssence)} to set maximum soul network
+     *             capacity
+     */
+    @Deprecated
     public static void setMaxOrbToMax(String ownerName, int maxOrb) {
         MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (mcServer == null) {
@@ -71,6 +98,28 @@ public class SoulNetworkHandler {
         data.markDirty();
     }
 
+    public static void setMaxEssenceToMax(String ownerName, int maxEssence) {
+        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (mcServer == null) {
+            return;
+        }
+
+        World world = mcServer.worldServers[0];
+        LifeEssenceNetwork data = (LifeEssenceNetwork) world.loadItemData(LifeEssenceNetwork.class, ownerName);
+
+        if (data == null) {
+            data = new LifeEssenceNetwork(ownerName);
+            world.setItemData(ownerName, data);
+        }
+
+        data.maxEssence = Math.max(maxEssence, data.maxEssence);
+        data.markDirty();
+    }
+
+    /**
+     * @deprecated Use {@link #getMaxEssence(String ownerName)} to get maximum soul network capacity
+     */
+    @Deprecated
     public static int getMaximumForOrbTier(int maxOrb) {
         switch (maxOrb) {
             case 1:
@@ -327,6 +376,14 @@ public class SoulNetworkHandler {
     }
 
     public static boolean checkAndSetItemPlayer(ItemStack item, EntityPlayer player) {
+        if (item.getItem() instanceof IBloodOrb orb) {
+            String currentOwner = item.hasTagCompound() ? item.getTagCompound().getString("ownerName") : "";
+            String thisPlayer = getUsername(player);
+            if (currentOwner.isEmpty() || currentOwner.equals(thisPlayer)) {
+                setMaxEssenceToMax(thisPlayer, orb.getMaxEssence());
+            }
+        }
+
         if (item.hasTagCompound() && !item.getTagCompound().getString("ownerName").equals("")) return true;
 
         ItemBindEvent event = new ItemBindEvent(player, SoulNetworkHandler.getUsername(player), item);
