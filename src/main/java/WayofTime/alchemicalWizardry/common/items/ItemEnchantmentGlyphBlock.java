@@ -13,22 +13,11 @@ public class ItemEnchantmentGlyphBlock extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack itemstack) {
-        String name;
-
-        switch (itemstack.getItemDamage()) {
-            case 0:
-                name = "enchantability";
-                break;
-
-            case 1:
-                name = "enchantmentLevel";
-                break;
-
-            default:
-                name = "broken";
-        }
-
-        return getUnlocalizedName() + "." + name;
+        return getUnlocalizedName() + "." + switch (itemstack.getItemDamage()) {
+            case 0 -> "enchantability";
+            case 1 -> "enchantmentLevel";
+            default -> "broken";
+        };
     }
 
     @Override

@@ -12,6 +12,7 @@ public class SummoningFallenAngel extends SummoningHelper {
         super(id);
     }
 
+    @Override
     public EntityLivingBase getEntity(World worldObj) {
         return new EntityFallenAngel(worldObj);
     }

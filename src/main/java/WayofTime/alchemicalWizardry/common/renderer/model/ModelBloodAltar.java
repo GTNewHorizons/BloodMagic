@@ -19,7 +19,7 @@ public class ModelBloodAltar extends ModelBase {
     private static final ResourceLocation altar_texture = new ResourceLocation(
             "alchemicalwizardry:textures/models/altar.png");
 
-    private IModelCustom modelBloodAltar;
+    private final IModelCustom modelBloodAltar;
 
     public ModelBloodAltar() {
         modelBloodAltar = AdvancedModelLoader
@@ -58,10 +58,10 @@ public class ModelBloodAltar extends ModelBase {
     public void renderBloodLevel(IIcon icon) {
         Tessellator tessellator = Tessellator.instance;
 
-        double minU = (double) icon.getInterpolatedU(0);
-        double maxU = (double) icon.getInterpolatedU(16);
-        double minV = (double) icon.getInterpolatedV(0);
-        double maxV = (double) icon.getInterpolatedV(16);
+        double minU = icon.getInterpolatedU(0);
+        double maxU = icon.getInterpolatedU(16);
+        double minV = icon.getInterpolatedV(0);
+        double maxV = icon.getInterpolatedV(16);
 
         tessellator.startDrawingQuads();
         tessellator.setNormal(0, 1, 0);

@@ -12,20 +12,19 @@ public interface ISigil extends IBindable {
      * Toggles the state of the sigil. Returns true if the sigil is active after the toggle or false if it is inactive
      * after the toggle.
      */
-    default boolean toggleSigil(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        IBindable.setActive(par1ItemStack, !IBindable.isActive(par1ItemStack));
+    default boolean toggleSigil(ItemStack item, World world, EntityPlayer player) {
+        IBindable.setActive(item, !IBindable.isActive(item));
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode
-                && !EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, this.drainCost())) {
-            IBindable.setActive(par1ItemStack, false);
+        if (!player.capabilities.isCreativeMode && !EnergyItems.syphonBatteries(item, player, this.drainCost())) {
+            IBindable.setActive(item, false);
         }
 
-        if (IBindable.isActive(par1ItemStack)) {
-            par1ItemStack.setItemDamage(1);
-            this.setDrainTick(par1ItemStack, par2World);
+        if (IBindable.isActive(item)) {
+            item.setItemDamage(1);
+            this.setDrainTick(item, world);
             return true;
         } else {
-            par1ItemStack.setItemDamage(par1ItemStack.getMaxDamage());
+            item.setItemDamage(item.getMaxDamage());
             return false;
         }
     }

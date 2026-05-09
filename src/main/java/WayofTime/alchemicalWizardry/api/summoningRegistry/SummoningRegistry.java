@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 
 public class SummoningRegistry {
 
-    public static List<SummoningRegistryComponent> summoningList = new ArrayList();
+    public static List<SummoningRegistryComponent> summoningList = new ArrayList<>();
 
     public static void registerSummon(SummoningHelper s, ItemStack[] ring1, ItemStack[] ring2, ItemStack[] ring3,
             int amountUsed, int bloodOrbLevel) {

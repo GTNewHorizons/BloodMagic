@@ -19,17 +19,17 @@ public class TEOrientable extends TileEntity implements IOrientable {
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readFromNBT(par1NBTTagCompound);
-        this.setInputDirection(ForgeDirection.getOrientation(par1NBTTagCompound.getInteger("inputFace")));
-        this.setOutputDirection(ForgeDirection.getOrientation(par1NBTTagCompound.getInteger("outputFace")));
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
+        this.setInputDirection(ForgeDirection.getOrientation(tag.getInteger("inputFace")));
+        this.setOutputDirection(ForgeDirection.getOrientation(tag.getInteger("outputFace")));
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setInteger("inputFace", TEOrientable.getIntForForgeDirection(this.getInputDirection()));
-        par1NBTTagCompound.setInteger("outputFace", TEOrientable.getIntForForgeDirection(this.getOutputDirection()));
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
+        tag.setInteger("inputFace", TEOrientable.getIntForForgeDirection(this.getInputDirection()));
+        tag.setInteger("outputFace", TEOrientable.getIntForForgeDirection(this.getOutputDirection()));
     }
 
     @Override
@@ -53,28 +53,13 @@ public class TEOrientable extends TileEntity implements IOrientable {
     }
 
     public static int getIntForForgeDirection(ForgeDirection direction) {
-        switch (direction) {
-            case DOWN:
-                return 0;
-
-            case UP:
-                return 1;
-
-            case NORTH:
-                return 2;
-
-            case SOUTH:
-                return 3;
-
-            case WEST:
-                return 4;
-
-            case EAST:
-                return 5;
-
-            default:
-                return 0;
-        }
+        return switch (direction) {
+            case NORTH -> 2;
+            case SOUTH -> 3;
+            case WEST -> 4;
+            case EAST -> 5;
+            default -> 0;
+        };
     }
 
     @Override
@@ -83,10 +68,7 @@ public class TEOrientable extends TileEntity implements IOrientable {
     }
 
     public boolean isSideRendered(ForgeDirection side) {
-        if (side.equals(this.getInputDirection()) || side.equals(this.getOutputDirection())) {
-            return true;
-        }
-        return false;
+        return side.equals(this.getInputDirection()) || side.equals(this.getOutputDirection());
     }
 
     public String getResourceLocationForMeta(int meta) {

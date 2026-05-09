@@ -89,7 +89,7 @@ public class RitualEffectLifeConduit extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> conduitRitual = new ArrayList();
+        ArrayList<RitualComponent> conduitRitual = new ArrayList<>();
 
         conduitRitual.add(new RitualComponent(-1, 0, -1, RitualComponent.FIRE));
         conduitRitual.add(new RitualComponent(-1, 0, 1, RitualComponent.FIRE));

@@ -6,10 +6,10 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class AlchemyRecipe {
 
-    private ItemStack output;
-    private ItemStack[] recipe;
-    private int bloodOrbLevel;
-    private int amountNeeded;
+    private final ItemStack output;
+    private final ItemStack[] recipe;
+    private final int bloodOrbLevel;
+    private final int amountNeeded;
 
     public AlchemyRecipe(ItemStack output, int amountNeeded, ItemStack[] recipe, int bloodOrbLevel) {
         this.output = output;

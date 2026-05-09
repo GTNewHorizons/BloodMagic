@@ -55,8 +55,7 @@ public class RitualDivinerRender {
         double posZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.partialTicks;
 
         if (player.inventory.getCurrentItem() != null
-                && player.inventory.getCurrentItem().getItem() instanceof ItemRitualDiviner) {
-            ItemRitualDiviner ritualDiviner = (ItemRitualDiviner) player.inventory.getCurrentItem().getItem();
+                && player.inventory.getCurrentItem().getItem() instanceof ItemRitualDiviner ritualDiviner) {
             int direction = ritualDiviner.getDirection(player.inventory.getCurrentItem());
             RitualEffect ritualEffect = getEffectFromString(
                     ritualDiviner.getCurrentRitual(player.inventory.getCurrentItem()));
@@ -72,7 +71,7 @@ public class RitualDivinerRender {
                 Vector3 vX = vec3.add(
                         new Vector3(
                                 ritualComponent.getX(direction),
-                                ritualComponent.getY(),
+                                ritualComponent.y(),
                                 ritualComponent.getZ(direction)));
                 double minX = vX.x - posX;
                 double minY = vX.y - posY;
@@ -82,7 +81,7 @@ public class RitualDivinerRender {
                     RenderFakeBlocks.drawFakeBlock(
                             vX,
                             ModBlocks.ritualStone,
-                            ritualComponent.getStoneType(),
+                            ritualComponent.stoneType(),
                             minX,
                             minY,
                             minZ,

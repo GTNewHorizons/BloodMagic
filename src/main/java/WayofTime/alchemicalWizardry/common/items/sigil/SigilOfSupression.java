@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
@@ -32,8 +31,8 @@ public class SigilOfSupression extends EnergyItems implements ArmourUpgrade, ISi
     @SideOnly(Side.CLIENT)
     private IIcon passiveIcon;
 
-    private int radius = 5;
-    private int refresh = 100;
+    private final int radius = 5;
+    private final int refresh = 100;
 
     public SigilOfSupression() {
         super();
@@ -43,9 +42,9 @@ public class SigilOfSupression extends EnergyItems implements ArmourUpgrade, ISi
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.sigilofsupression.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.sigilofsupression.desc"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
@@ -76,68 +75,62 @@ public class SigilOfSupression extends EnergyItems implements ArmourUpgrade, ISi
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)
-                || SpellHelper.isFakePlayer(par2World, par3EntityPlayer)) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || SpellHelper.isFakePlayer(world, player)) {
+            return item;
         }
 
-        if (par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+        if (player.isSneaking()) {
+            return item;
         }
 
-        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
+        toggleSigil(item, world, player);
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5) {
-        if (!(par3Entity instanceof EntityPlayer)) {
+    public void onUpdate(ItemStack item, World world, Entity entity, int slot, boolean held) {
+        if (!(entity instanceof EntityPlayer player)) {
             return;
         }
 
-        if (SpellHelper.isFakePlayer(par2World, (EntityPlayer) par3Entity)) {
+        if (SpellHelper.isFakePlayer(world, player)) {
             return;
         }
 
-        EntityPlayer par3EntityPlayer = (EntityPlayer) par3Entity;
-
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
+        if (!IBindable.isActive(item) || (world.isRemote)) {
+            return;
         }
+        Vec3 blockVec = SpellHelper.getEntityBlockVector(player);
+        int x = (int) blockVec.xCoord;
+        int y = (int) blockVec.yCoord;
+        int z = (int) blockVec.zCoord;
 
-        if (IBindable.isActive(par1ItemStack) && (!par2World.isRemote)) {
-            Vec3 blockVec = SpellHelper.getEntityBlockVector(par3EntityPlayer);
-            int x = (int) blockVec.xCoord;
-            int y = (int) blockVec.yCoord;
-            int z = (int) blockVec.zCoord;
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                for (int k = -radius; k <= radius; k++) {
+                    if (i * i + j * j + k * k >= (radius + 0.50f) * (radius + 0.50f)) {
+                        continue;
+                    }
 
-            for (int i = -radius; i <= radius; i++) {
-                for (int j = -radius; j <= radius; j++) {
-                    for (int k = -radius; k <= radius; k++) {
-                        if (i * i + j * j + k * k >= (radius + 0.50f) * (radius + 0.50f)) {
-                            continue;
+                    Block block = world.getBlock(x + i, y + j, z + k);
+
+                    if (SpellHelper.isBlockFluid(block)) {
+                        if (world.getTileEntity(x + i, y + j, z + k) != null) {
+                            world.setBlockToAir(x + i, y + j, z + k);
                         }
-
-                        Block block = par2World.getBlock(x + i, y + j, z + k);
-
-                        if (SpellHelper.isBlockFluid(block)) {
-                            if (par2World.getTileEntity(x + i, y + j, z + k) != null) {
-                                par2World.setBlockToAir(x + i, y + j, z + k);
-                            }
-                            TESpectralContainer.createSpectralBlockAtLocation(par2World, x + i, y + j, z + k, refresh);
-                        } else {
-                            TileEntity tile = par2World.getTileEntity(x + i, y + j, z + k);
-                            if (tile instanceof TESpectralContainer) {
-                                ((TESpectralContainer) tile).resetDuration(refresh);
-                            }
+                        TESpectralContainer.createSpectralBlockAtLocation(world, x + i, y + j, z + k, refresh);
+                    } else {
+                        TileEntity tile = world.getTileEntity(x + i, y + j, z + k);
+                        if (tile instanceof TESpectralContainer container) {
+                            container.resetDuration(refresh);
                         }
                     }
                 }
             }
         }
-        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
+        checkPassiveDrain(item, world, player);
     }
 
     @Override

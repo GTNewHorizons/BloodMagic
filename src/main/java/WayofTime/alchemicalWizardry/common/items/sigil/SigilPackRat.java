@@ -7,7 +7,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -38,9 +37,9 @@ public class SigilPackRat extends EnergyItems implements IHolding, ArmourUpgrade
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.packratsigil.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.packratsigil.desc"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
@@ -71,43 +70,31 @@ public class SigilPackRat extends EnergyItems implements IHolding, ArmourUpgrade
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
+        toggleSigil(item, world, player);
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5) {
-        if (!(par3Entity instanceof EntityPlayer) || par2World.isRemote) {
+    public void onUpdate(ItemStack item, World world, Entity entity, int slot, boolean held) {
+        if (!(entity instanceof EntityPlayer player) || world.isRemote) {
             return;
         }
 
-        EntityPlayer par3EntityPlayer = (EntityPlayer) par3Entity;
-
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        if (IBindable.isActive(par1ItemStack)) {
-            ItemStack stack = CompressionRegistry
-                    .compressInventory(par3EntityPlayer.inventory.mainInventory, par2World);
+        if (IBindable.isActive(item)) {
+            ItemStack stack = CompressionRegistry.compressInventory(player.inventory.mainInventory, world);
             if (stack != null) {
-                EntityItem entityItem = new EntityItem(
-                        par2World,
-                        par3EntityPlayer.posX,
-                        par3EntityPlayer.posY,
-                        par3EntityPlayer.posZ,
-                        stack);
-                par2World.spawnEntityInWorld(entityItem);
+                EntityItem entityItem = new EntityItem(world, player.posX, player.posY, player.posZ, stack);
+                world.spawnEntityInWorld(entityItem);
             }
         }
 
-        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
+        checkPassiveDrain(item, world, player);
     }
 
     @Override

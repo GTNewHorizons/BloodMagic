@@ -5,14 +5,13 @@ import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-import WayofTime.alchemicalWizardry.common.entity.mob.EntityFallenAngel;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderFallenAngel extends RenderLiving {
 
-    private static final ResourceLocation field_110833_a = new ResourceLocation(
+    private static final ResourceLocation WINGED_ANGEL = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/WingedAngel.png");
 
@@ -20,11 +19,8 @@ public class RenderFallenAngel extends RenderLiving {
         super(par1ModelBase, par2);
     }
 
-    public ResourceLocation func_110832_a(EntityFallenAngel par1EntityFallenAngel) {
-        return field_110833_a;
-    }
-
-    public ResourceLocation getEntityTexture(Entity par1Entity) {
-        return this.func_110832_a((EntityFallenAngel) par1Entity);
+    @Override
+    public ResourceLocation getEntityTexture(Entity entity) {
+        return WINGED_ANGEL;
     }
 }

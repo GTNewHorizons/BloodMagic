@@ -19,16 +19,16 @@ public interface IBindable {
      * Used by bound tools and the energy blaster/bazooka to check if they should skip their right click function.
      * Drains the soul network by the amount returned by rightClickCost.
      */
-    default boolean checkRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (toggle(par1ItemStack, par2World, par3EntityPlayer)) {
+    default boolean checkRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (toggle(item, world, player)) {
             return true;
         }
 
-        if (par2World.isRemote) {
+        if (world.isRemote) {
             return true;
         }
 
-        if (!isActive(par1ItemStack) || SpellHelper.isFakePlayer(par2World, par3EntityPlayer)) {
+        if (!isActive(item) || SpellHelper.isFakePlayer(world, player)) {
             return true;
         }
 
@@ -36,12 +36,11 @@ public interface IBindable {
             return true;
         }
 
-        if (par3EntityPlayer.isPotionActive(AlchemicalWizardry.customPotionInhibit)) {
+        if (player.isPotionActive(AlchemicalWizardry.customPotionInhibit)) {
             return true;
         }
 
-        if (!(par3EntityPlayer.capabilities.isCreativeMode
-                || EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, rightClickCost()))) {
+        if (!(player.capabilities.isCreativeMode || EnergyItems.syphonBatteries(item, player, rightClickCost()))) {
             return true;
         }
 
@@ -51,45 +50,45 @@ public interface IBindable {
     /**
      * Adds the active state and owner information to an item if it has the relevant tags.
      */
-    default void addBindingInformation(ItemStack par1ItemStack, List par3List) {
-        NBTTagCompound itemTag = getTag(par1ItemStack);
+    default void addBindingInformation(ItemStack item, List<String> tooltip) {
+        NBTTagCompound itemTag = getTag(item);
         if (itemTag.getBoolean("isActive")) {
-            par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.activated"));
+            tooltip.add(StatCollector.translateToLocal("tooltip.sigil.state.activated"));
         } else if (itemTag.hasKey("isActive")) { // Only if present and set to false rather than not present at all
-            par3List.add(StatCollector.translateToLocal("tooltip.sigil.state.deactivated"));
+            tooltip.add(StatCollector.translateToLocal("tooltip.sigil.state.deactivated"));
         }
 
-        if (!itemTag.getString("ownerName").equals("")) {
-            par3List.add(
+        if (!itemTag.getString("ownerName").isEmpty()) {
+            tooltip.add(
                     StatCollector.translateToLocal("tooltip.owner.currentowner") + " "
                             + itemTag.getString("ownerName"));
         }
     }
 
-    static void setActive(ItemStack par1ItemStack, boolean state) {
-        NBTTagCompound itemTag = getTag(par1ItemStack);
+    static void setActive(ItemStack item, boolean state) {
+        NBTTagCompound itemTag = getTag(item);
         itemTag.setBoolean("isActive", state);
     }
 
-    static boolean isActive(ItemStack par1ItemStack) {
-        NBTTagCompound itemTag = getTag(par1ItemStack);
+    static boolean isActive(ItemStack item) {
+        NBTTagCompound itemTag = getTag(item);
         return itemTag.getBoolean("isActive");
     }
 
-    static NBTTagCompound getTag(ItemStack par1ItemStack) {
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
+    static NBTTagCompound getTag(ItemStack item) {
+        NBTTagCompound itemTag = item.getTagCompound();
 
         if (itemTag == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-            itemTag = par1ItemStack.getTagCompound();
+            item.setTagCompound(new NBTTagCompound());
+            itemTag = item.getTagCompound();
         }
         return itemTag;
     }
 
-    default boolean toggle(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            setActive(par1ItemStack, !isActive(par1ItemStack));
-            setDrainTick(par1ItemStack, par2World);
+    default boolean toggle(ItemStack item, World world, EntityPlayer player) {
+        if (!checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            setActive(item, !isActive(item));
+            setDrainTick(item, world);
             return true;
         }
         return false;
@@ -99,11 +98,11 @@ public interface IBindable {
      * Checks if the current tick is the proper tick to do a passive drain based on getDrainTicks. If it is, it runs
      * doPassiveDrain and returns true. Otherwise, returns false.
      */
-    default boolean checkPassiveDrain(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        NBTTagCompound itemTag = getTag(par1ItemStack);
-        if (par2World.getTotalWorldTime() % this.drainTicks() == itemTag.getInteger("worldTimeDelay")
+    default boolean checkPassiveDrain(ItemStack item, World world, EntityPlayer player) {
+        NBTTagCompound itemTag = getTag(item);
+        if (world.getTotalWorldTime() % this.drainTicks() == itemTag.getInteger("worldTimeDelay")
                 && itemTag.getBoolean("isActive")) {
-            this.doPassiveDrain(par1ItemStack, par3EntityPlayer);
+            this.doPassiveDrain(item, player);
             return true;
         }
         return false;
@@ -112,10 +111,10 @@ public interface IBindable {
     /**
      * The action to take when checkPassiveDrain is run on the proper tick based on getDrainTicks.
      */
-    default void doPassiveDrain(ItemStack par1ItemStack, EntityPlayer par3EntityPlayer) {
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, drainCost())) {
-                setActive(par1ItemStack, false);
+    default void doPassiveDrain(ItemStack item, EntityPlayer player) {
+        if (!player.capabilities.isCreativeMode) {
+            if (!EnergyItems.syphonBatteries(item, player, drainCost())) {
+                setActive(item, false);
             }
         }
     }
@@ -123,9 +122,8 @@ public interface IBindable {
     /**
      * Sets the drain tick delay based on the current world age and getDrainTicks().
      */
-    default void setDrainTick(ItemStack par1ItemStack, World par2World) {
-        getTag(par1ItemStack)
-                .setInteger("worldTimeDelay", (int) (par2World.getTotalWorldTime() - 1) % this.drainTicks());
+    default void setDrainTick(ItemStack item, World world) {
+        getTag(item).setInteger("worldTimeDelay", (int) (world.getTotalWorldTime() - 1) % this.drainTicks());
     }
 
     static boolean checkAndSetItemOwner(ItemStack item, EntityPlayer player) {

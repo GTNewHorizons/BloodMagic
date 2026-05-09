@@ -27,15 +27,16 @@ public class OrbOfTesting extends EnergyItems {
         this.itemIcon = iconRegister.registerIcon("AlchemicalWizardry:Untitled");
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!par3EntityPlayer.shouldHeal()) {
-            return par1ItemStack;
+    @Override
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!player.shouldHeal()) {
+            return item;
         }
 
-        if (syphonBatteries(par1ItemStack, par3EntityPlayer, this.getEnergyUsed())) {
-            par3EntityPlayer.heal(1);
+        if (syphonBatteries(item, player, this.getEnergyUsed())) {
+            player.heal(1);
         }
 
-        return par1ItemStack;
+        return item;
     }
 }

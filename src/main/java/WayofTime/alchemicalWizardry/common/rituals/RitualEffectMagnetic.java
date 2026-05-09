@@ -93,7 +93,7 @@ public class RitualEffectMagnetic extends RitualEffect {
             outer: for (int j = 1; j <= 3; j++) {
                 for (int i = -1; i <= 1; i++) {
                     for (int k = -1; k <= 1; k++) {
-                        if ((!replace) && world.isAirBlock(x + i, y + j, z + k)) {
+                        if (world.isAirBlock(x + i, y + j, z + k)) {
                             xRep = x + i;
                             yRep = y + j;
                             zRep = z + k;
@@ -165,7 +165,6 @@ public class RitualEffectMagnetic extends RitualEffect {
 
                 j = y - 1;
                 this.setLastPosition(ritualStone.getCustomRitualTag(), new Int3(i, j, k));
-                return;
             }
         }
     }
@@ -191,7 +190,7 @@ public class RitualEffectMagnetic extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> magneticRitual = new ArrayList();
+        ArrayList<RitualComponent> magneticRitual = new ArrayList<>();
         magneticRitual.add(new RitualComponent(1, 0, 1, RitualComponent.EARTH));
         magneticRitual.add(new RitualComponent(1, 0, -1, RitualComponent.EARTH));
         magneticRitual.add(new RitualComponent(-1, 0, 1, RitualComponent.EARTH));

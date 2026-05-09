@@ -31,7 +31,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
 
-    private int capacity = 128 * 1000;
+    private final int capacity = 128 * 1000;
     private static final int STATE_SYPHON = 0;
     private static final int STATE_FORCE_SYPHON = 1;
     private static final int STATE_PLACE = 2;
@@ -48,39 +48,30 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.fluidsigil.desc"));
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.desc"));
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            switch (this.getActionState(par1ItemStack)) {
-                case STATE_SYPHON:
-                    par3List.add(StatCollector.translateToLocal("tooltip.fluidsigil.syphoningmode"));
-                    break;
-                case STATE_FORCE_SYPHON:
-                    par3List.add(StatCollector.translateToLocal("tooltip.fluidsigil.forcesyphonmode"));
-                    break;
-                case STATE_PLACE:
-                    par3List.add(StatCollector.translateToLocal("tooltip.fluidsigil.fluidplacementmode"));
-                    break;
-                case STATE_INPUT_TANK:
-                    par3List.add(StatCollector.translateToLocal("tooltip.fluidsigil.filltankmode"));
-                    break;
-                case STATE_DRAIN_TANK:
-                    par3List.add(StatCollector.translateToLocal("tooltip.fluidsigil.draintankmode"));
-                    break;
-                case STATE_BEAST_DRAIN:
-                    par3List.add(StatCollector.translateToLocal("tooltip.fluidsigil.beastmode"));
-                    break;
+        if (!(item.getTagCompound() == null)) {
+            switch (this.getActionState(item)) {
+                case STATE_SYPHON -> tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.syphoningmode"));
+                case STATE_FORCE_SYPHON -> tooltip
+                        .add(StatCollector.translateToLocal("tooltip.fluidsigil.forcesyphonmode"));
+                case STATE_PLACE -> tooltip
+                        .add(StatCollector.translateToLocal("tooltip.fluidsigil.fluidplacementmode"));
+                case STATE_INPUT_TANK -> tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.filltankmode"));
+                case STATE_DRAIN_TANK -> tooltip
+                        .add(StatCollector.translateToLocal("tooltip.fluidsigil.draintankmode"));
+                case STATE_BEAST_DRAIN -> tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.beastmode"));
             }
 
-            FluidStack fluid = this.getFluid(par1ItemStack);
+            FluidStack fluid = this.getFluid(item);
             if (fluid != null && fluid.amount > 0) {
                 String str = fluid.getFluid().getName();
                 int amount = fluid.amount;
 
-                par3List.add("" + amount + "mB of " + str);
+                tooltip.add(amount + "mB of " + str);
             } else {
-                par3List.add("Empty");
+                tooltip.add("Empty");
             }
         }
     }
@@ -92,29 +83,23 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (par3EntityPlayer.isSneaking()) {
-            int curState = this.cycleActionState(par1ItemStack);
-            this.sendMessageViaState(curState, par3EntityPlayer);
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (player.isSneaking()) {
+            int curState = this.cycleActionState(item);
+            this.sendMessageViaState(curState, player);
+            return item;
         }
 
-        switch (this.getActionState(par1ItemStack)) {
-            case STATE_SYPHON:
-                return this.fillItemFromWorld(par1ItemStack, par2World, par3EntityPlayer, false);
-            case STATE_FORCE_SYPHON:
-                return this.fillItemFromWorld(par1ItemStack, par2World, par3EntityPlayer, true);
-            case STATE_PLACE:
-                return this.emptyItemToWorld(par1ItemStack, par2World, par3EntityPlayer);
-            case STATE_INPUT_TANK:
-                return this.fillSelectedTank(par1ItemStack, par2World, par3EntityPlayer);
-            case STATE_DRAIN_TANK:
-                return this.drainSelectedTank(par1ItemStack, par2World, par3EntityPlayer);
-            case STATE_BEAST_DRAIN:
-                return this.fillItemFromBeastWorld(par1ItemStack, par2World, par3EntityPlayer, true);
-        }
+        return switch (this.getActionState(item)) {
+            case STATE_SYPHON -> this.fillItemFromWorld(item, world, player, false);
+            case STATE_FORCE_SYPHON -> this.fillItemFromWorld(item, world, player, true);
+            case STATE_PLACE -> this.emptyItemToWorld(item, world, player);
+            case STATE_INPUT_TANK -> this.fillSelectedTank(item, world, player);
+            case STATE_DRAIN_TANK -> this.drainSelectedTank(item, world, player);
+            case STATE_BEAST_DRAIN -> this.fillItemFromBeastWorld(item, world, player, true);
+            default -> item;
+        };
 
-        return par1ItemStack;
     }
 
     public int getActionState(ItemStack item) {
@@ -151,24 +136,12 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
         if (player.worldObj.isRemote) {
             ChatComponentText cmc = new ChatComponentText("");
             switch (state) {
-                case STATE_SYPHON:
-                    cmc.appendText("Now in Syphoning Mode");
-                    break;
-                case STATE_FORCE_SYPHON:
-                    cmc.appendText("Now in Force-syphon Mode");
-                    break;
-                case STATE_PLACE:
-                    cmc.appendText("Now in Fluid Placement Mode");
-                    break;
-                case STATE_INPUT_TANK:
-                    cmc.appendText("Now in Fill Tank Mode");
-                    break;
-                case STATE_DRAIN_TANK:
-                    cmc.appendText("Now in Drain Tank Mode");
-                    break;
-                case STATE_BEAST_DRAIN:
-                    cmc.appendText("Now in Beast Mode");
-                    break;
+                case STATE_SYPHON -> cmc.appendText("Now in Syphoning Mode");
+                case STATE_FORCE_SYPHON -> cmc.appendText("Now in Force-syphon Mode");
+                case STATE_PLACE -> cmc.appendText("Now in Fluid Placement Mode");
+                case STATE_INPUT_TANK -> cmc.appendText("Now in Fill Tank Mode");
+                case STATE_DRAIN_TANK -> cmc.appendText("Now in Drain Tank Mode");
+                case STATE_BEAST_DRAIN -> cmc.appendText("Now in Beast Mode");
             }
             player.addChatComponentMessage(cmc);
         }
@@ -180,279 +153,200 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
         }
         int range = 5;
 
-        float f = 1.0F;
         boolean flag = true;
         MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, flag);
 
-        if (movingobjectposition == null) {
+        if (movingobjectposition == null
+                || movingobjectposition.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
             return container;
-        } else {
-            if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                int x = movingobjectposition.blockX;
-                int y = movingobjectposition.blockY;
-                int z = movingobjectposition.blockZ;
+        }
+        int x = movingobjectposition.blockX;
+        int y = movingobjectposition.blockY;
+        int z = movingobjectposition.blockZ;
 
-                if (!world.canMineBlock(player, x, y, z)) {
-                    return container;
+        if (!world.canMineBlock(player, x, y, z)) {
+            return container;
+        }
+
+        if (!player.canPlayerEdit(x, y, z, movingobjectposition.sideHit, container)) {
+            return container;
+        }
+
+        boolean[][][] boolList = new boolean[range * 2 + 1][range * 2 + 1][range * 2 + 1];
+
+        for (int i = 0; i < 2 * range + 1; i++) {
+            for (int j = 0; j < 2 * range + 1; j++) {
+                for (int k = 0; k < 2 * range + 1; k++) {
+                    boolList[i][j][k] = false;
                 }
+            }
+        }
 
-                if (!player.canPlayerEdit(x, y, z, movingobjectposition.sideHit, container)) {
-                    return container;
-                }
+        List<Int3> positionList = new ArrayList<>();
 
-                boolean[][][] boolList = new boolean[range * 2 + 1][range * 2 + 1][range * 2 + 1];
+        boolList[range][range][range] = true;
+        positionList.add(new Int3(range, range, range));
+        boolean isReady = false;
 
-                for (int i = 0; i < 2 * range + 1; i++) {
-                    for (int j = 0; j < 2 * range + 1; j++) {
-                        for (int k = 0; k < 2 * range + 1; k++) {
-                            boolList[i][j][k] = false;
-                        }
-                    }
-                }
+        while (!isReady) {
+            isReady = true;
 
-                List<Int3> positionList = new ArrayList();
+            for (int i = 0; i < 2 * range + 1; i++) {
+                for (int j = 0; j < 2 * range + 1; j++) {
+                    for (int k = 0; k < 2 * range + 1; k++) {
+                        if (boolList[i][j][k]) {
+                            if (i - 1 >= 0 && !boolList[i - 1][j][k]) {
+                                Block block = world.getBlock(x - range + i - 1, y - range + j, z - range + k);
+                                Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
 
-                boolList[range][range][range] = true;
-                positionList.add(new Int3(range, range, range));
-                boolean isReady = false;
+                                if (fluid != null) {
+                                    boolList[i - 1][j][k] = true;
+                                    positionList.add(new Int3(i - 1, j, k));
+                                    isReady = false;
+                                }
+                            }
 
-                while (!isReady) {
-                    isReady = true;
+                            if (j - 1 >= 0 && !boolList[i][j - 1][k]) {
+                                Block block = world.getBlock(x - range + i, y - range + j - 1, z - range + k);
+                                Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
 
-                    for (int i = 0; i < 2 * range + 1; i++) {
-                        for (int j = 0; j < 2 * range + 1; j++) {
-                            for (int k = 0; k < 2 * range + 1; k++) {
-                                if (boolList[i][j][k]) {
-                                    if (i - 1 >= 0 && !boolList[i - 1][j][k]) {
-                                        Block block = world.getBlock(x - range + i - 1, y - range + j, z - range + k);
-                                        Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
+                                if (fluid != null) {
+                                    boolList[i][j - 1][k] = true;
+                                    positionList.add(new Int3(i, j - 1, k));
+                                    isReady = false;
+                                }
+                            }
 
-                                        if (fluid != null) {
-                                            boolList[i - 1][j][k] = true;
-                                            positionList.add(new Int3(i - 1, j, k));
-                                            isReady = false;
-                                        }
-                                    }
+                            if (k - 1 >= 0 && !boolList[i][j][k - 1]) {
+                                Block block = world.getBlock(x - range + i, y - range + j, z - range + k - 1);
+                                Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
 
-                                    if (j - 1 >= 0 && !boolList[i][j - 1][k]) {
-                                        Block block = world.getBlock(x - range + i, y - range + j - 1, z - range + k);
-                                        Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
+                                if (fluid != null) {
+                                    boolList[i][j][k - 1] = true;
+                                    positionList.add(new Int3(i, j, k - 1));
+                                    isReady = false;
+                                }
+                            }
 
-                                        if (fluid != null) {
-                                            boolList[i][j - 1][k] = true;
-                                            positionList.add(new Int3(i, j - 1, k));
-                                            isReady = false;
-                                        }
-                                    }
+                            if (i + 1 <= 2 * range && !boolList[i + 1][j][k]) {
+                                Block block = world.getBlock(x - range + i + 1, y - range + j, z - range + k);
+                                Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
 
-                                    if (k - 1 >= 0 && !boolList[i][j][k - 1]) {
-                                        Block block = world.getBlock(x - range + i, y - range + j, z - range + k - 1);
-                                        Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
+                                if (fluid != null) {
+                                    boolList[i + 1][j][k] = true;
+                                    positionList.add(new Int3(i + 1, j, k));
+                                    isReady = false;
+                                }
+                            }
 
-                                        if (fluid != null) {
-                                            boolList[i][j][k - 1] = true;
-                                            positionList.add(new Int3(i, j, k - 1));
-                                            isReady = false;
-                                        }
-                                    }
+                            if (j + 1 <= 2 * range && !boolList[i][j + 1][k]) {
+                                Block block = world.getBlock(x - range + i, y - range + j + 1, z - range + k);
+                                Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
 
-                                    if (i + 1 <= 2 * range && !boolList[i + 1][j][k]) {
-                                        Block block = world.getBlock(x - range + i + 1, y - range + j, z - range + k);
-                                        Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
+                                if (fluid != null) {
+                                    boolList[i][j + 1][k] = true;
+                                    positionList.add(new Int3(i, j + 1, k));
+                                    isReady = false;
+                                }
+                            }
 
-                                        if (fluid != null) {
-                                            boolList[i + 1][j][k] = true;
-                                            positionList.add(new Int3(i + 1, j, k));
-                                            isReady = false;
-                                        }
-                                    }
+                            if (k + 1 <= 2 * range && !boolList[i][j][k + 1]) {
+                                Block block = world.getBlock(x - range + i, y - range + j, z - range + k + 1);
+                                Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
 
-                                    if (j + 1 <= 2 * range && !boolList[i][j + 1][k]) {
-                                        Block block = world.getBlock(x - range + i, y - range + j + 1, z - range + k);
-                                        Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
-
-                                        if (fluid != null) {
-                                            boolList[i][j + 1][k] = true;
-                                            positionList.add(new Int3(i, j + 1, k));
-                                            isReady = false;
-                                        }
-                                    }
-
-                                    if (k + 1 <= 2 * range && !boolList[i][j][k + 1]) {
-                                        Block block = world.getBlock(x - range + i, y - range + j, z - range + k + 1);
-                                        Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
-
-                                        if (fluid != null) {
-                                            boolList[i][j][k + 1] = true;
-                                            positionList.add(new Int3(i, j, k + 1));
-                                            isReady = false;
-                                        }
-                                    }
+                                if (fluid != null) {
+                                    boolList[i][j][k + 1] = true;
+                                    positionList.add(new Int3(i, j, k + 1));
+                                    isReady = false;
                                 }
                             }
                         }
                     }
                 }
+            }
+        }
 
-                for (Int3 pos : positionList) {
-                    int i = pos.xCoord;
-                    int j = pos.yCoord;
-                    int k = pos.zCoord;
+        for (Int3 pos : positionList) {
+            int i = pos.xCoord;
+            int j = pos.yCoord;
+            int k = pos.zCoord;
 
-                    if (!boolList[i][j][k]) {
-                        continue;
-                    }
-                    if (world.getBlock(x + i - range, y + j - range, z + k - range) != null
-                            && world.getBlock(x + i - range, y + j - range, z + k - range)
-                                    .getMaterial() instanceof MaterialLiquid) {
-                        // world.setBlockToAir(x+i-range, y+j-range, z+k-range);
-                        Block block = world.getBlock(x + i - range, y + j - range, z + k - range);
-                        if (block == null) {
-                            continue;
-                        }
-                        Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
+            if (!boolList[i][j][k]) {
+                continue;
+            }
+            if (world.getBlock(x + i - range, y + j - range, z + k - range) != null && world
+                    .getBlock(x + i - range, y + j - range, z + k - range).getMaterial() instanceof MaterialLiquid) {
+                // world.setBlockToAir(x+i-range, y+j-range, z+k-range);
+                Block block = world.getBlock(x + i - range, y + j - range, z + k - range);
+                if (block == null) {
+                    continue;
+                }
+                Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
 
-                        AlchemicalWizardry.logger
-                                .info("x: " + (i - range) + " y: " + (j - range) + " z: " + (k - range));
+                AlchemicalWizardry.logger.info("x: " + (i - range) + " y: " + (j - range) + " z: " + (k - range));
 
-                        if (fluid == null || world.getBlockMetadata(x + i - range, y + j - range, z + k - range) != 0) {
-                            continue;
-                        }
+                if (fluid == null || world.getBlockMetadata(x + i - range, y + j - range, z + k - range) != 0) {
+                    continue;
+                }
 
-                        FluidStack fillStack = new FluidStack(fluid, 1000);
+                FluidStack fillStack = new FluidStack(fluid, 1000);
 
-                        int amount = this.fill(container, fillStack, false);
+                int amount = this.fill(container, fillStack, false);
 
-                        if ((amount > 0 && forceFill) || (amount >= 1000 && !forceFill)) {
-                            {
-                                world.setBlockToAir(x + i - range, y + j - range, z + k - range);
-                            }
+                if (amount > 0 && forceFill || amount >= 1000) {
+                    world.setBlockToAir(x + i - range, y + j - range, z + k - range);
 
-                            this.fill(container, new FluidStack(fluid, 1000), true);
-                        }
-                    }
+                    this.fill(container, new FluidStack(fluid, 1000), true);
                 }
             }
-
-            return container;
         }
+
+        return container;
     }
 
     public ItemStack fillItemFromWorld(ItemStack container, World world, EntityPlayer player, boolean forceFill) {
-        float f = 1.0F;
-        boolean flag = true;
-        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, flag);
+        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, true);
 
         if (movingobjectposition == null) {
             return container;
-        } else {
-            if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                int i = movingobjectposition.blockX;
-                int j = movingobjectposition.blockY;
-                int k = movingobjectposition.blockZ;
-
-                if (!world.canMineBlock(player, i, j, k)) {
-                    return container;
-                }
-
-                if (!player.canPlayerEdit(i, j, k, movingobjectposition.sideHit, container)) {
-                    return container;
-                }
-
-                if (world.getBlock(i, j, k) != null
-                        && world.getBlock(i, j, k).getMaterial() instanceof MaterialLiquid) {
-                    Block block = world.getBlock(i, j, k);
-                    Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
-
-                    if (fluid == null) {
-                        return container;
-                    }
-
-                    FluidStack fillStack = new FluidStack(fluid, 1000);
-
-                    int amount = this.fill(container, fillStack, false);
-
-                    if ((amount > 0 && forceFill) || (amount >= 1000 && !forceFill)) {
-                        if (!player.capabilities.isCreativeMode) {
-                            world.setBlockToAir(i, j, k);
-                        }
-
-                        this.fill(container, new FluidStack(fluid, 1000), true);
-
-                        if (!player.capabilities.isCreativeMode) {} else {
-                            return container;
-                        }
-                    }
-                }
-            }
-
+        }
+        if (movingobjectposition.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
             return container;
         }
-    }
+        int i = movingobjectposition.blockX;
+        int j = movingobjectposition.blockY;
+        int k = movingobjectposition.blockZ;
 
-    public ItemStack emptyItemToWorld(ItemStack container, World world, EntityPlayer player) {
-        FluidStack simStack = this.drain(container, 1000, false);
+        if (!world.canMineBlock(player, i, j, k)) {
+            return container;
+        }
 
-        if (simStack != null && simStack.amount >= 1000) {
-            Block fluidBlock = simStack.getFluid().getBlock();
+        if (!player.canPlayerEdit(i, j, k, movingobjectposition.sideHit, container)) {
+            return container;
+        }
 
-            float f = 1.0F;
-            double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double) f;
-            double d1 = player.prevPosY + (player.posY - player.prevPosY) * (double) f
-                    + 1.62D
-                    - (double) player.yOffset;
-            double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) f;
-            boolean flag = false;
-            MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, flag);
+        if (world.getBlock(i, j, k) == null || !(world.getBlock(i, j, k).getMaterial() instanceof MaterialLiquid)) {
+            return container;
+        }
+        Block block = world.getBlock(i, j, k);
+        Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
 
-            if (movingobjectposition == null) {
-                return container;
-            } else {
-                if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                    int i = movingobjectposition.blockX;
-                    int j = movingobjectposition.blockY;
-                    int k = movingobjectposition.blockZ;
+        if (fluid == null) {
+            return container;
+        }
 
-                    if (!world.canMineBlock(player, i, j, k)) {
-                        return container;
-                    }
+        FluidStack fillStack = new FluidStack(fluid, 1000);
 
-                    if (movingobjectposition.sideHit == 0) {
-                        --j;
-                    }
+        int amount = this.fill(container, fillStack, false);
 
-                    if (movingobjectposition.sideHit == 1) {
-                        ++j;
-                    }
+        if (amount > 0 && forceFill || amount >= 1000) {
+            if (!player.capabilities.isCreativeMode) {
+                world.setBlockToAir(i, j, k);
+            }
 
-                    if (movingobjectposition.sideHit == 2) {
-                        --k;
-                    }
+            this.fill(container, new FluidStack(fluid, 1000), true);
 
-                    if (movingobjectposition.sideHit == 3) {
-                        ++k;
-                    }
-
-                    if (movingobjectposition.sideHit == 4) {
-                        --i;
-                    }
-
-                    if (movingobjectposition.sideHit == 5) {
-                        ++i;
-                    }
-
-                    if (!player.canPlayerEdit(i, j, k, movingobjectposition.sideHit, container)) {
-                        return container;
-                    }
-
-                    if (this.tryPlaceContainedLiquid(world, fluidBlock, d0, d1, d2, i, j, k)
-                            && !player.capabilities.isCreativeMode) {
-                        this.drain(container, 1000, true);
-
-                        return container;
-                    }
-                }
-
+            if (player.capabilities.isCreativeMode) {
                 return container;
             }
         }
@@ -460,39 +354,107 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
         return container;
     }
 
-    public boolean tryPlaceContainedLiquid(World par1World, Block block, double par2, double par4, double par6,
-            int par8, int par9, int par10) {
-        if (!par1World.isAirBlock(par8, par9, par10) && par1World.getBlock(par8, par9, par10).func_149730_j()) {
+    public ItemStack emptyItemToWorld(ItemStack container, World world, EntityPlayer player) {
+        FluidStack simStack = this.drain(container, 1000, false);
+
+        if (simStack == null || simStack.amount < 1000) {
+            return container;
+        }
+        Block fluidBlock = simStack.getFluid().getBlock();
+
+        float f = 1.0F;
+        double d0 = player.prevPosX + (player.posX - player.prevPosX) * (double) f;
+        double d1 = player.prevPosY + (player.posY - player.prevPosY) * (double) f + 1.62D - (double) player.yOffset;
+        double d2 = player.prevPosZ + (player.posZ - player.prevPosZ) * (double) f;
+        boolean flag = false;
+        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, flag);
+
+        if (movingobjectposition == null) {
+            return container;
+        }
+        if (movingobjectposition.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
+            return container;
+        }
+        int i = movingobjectposition.blockX;
+        int j = movingobjectposition.blockY;
+        int k = movingobjectposition.blockZ;
+
+        if (!world.canMineBlock(player, i, j, k)) {
+            return container;
+        }
+
+        if (movingobjectposition.sideHit == 0) {
+            --j;
+        }
+
+        if (movingobjectposition.sideHit == 1) {
+            ++j;
+        }
+
+        if (movingobjectposition.sideHit == 2) {
+            --k;
+        }
+
+        if (movingobjectposition.sideHit == 3) {
+            ++k;
+        }
+
+        if (movingobjectposition.sideHit == 4) {
+            --i;
+        }
+
+        if (movingobjectposition.sideHit == 5) {
+            ++i;
+        }
+
+        if (!player.canPlayerEdit(i, j, k, movingobjectposition.sideHit, container)) {
+            return container;
+        }
+
+        if (this.tryPlaceContainedLiquid(world, fluidBlock, d0, d1, d2, i, j, k)
+                && !player.capabilities.isCreativeMode) {
+            this.drain(container, 1000, true);
+
+            return container;
+        }
+
+        return container;
+
+    }
+
+    public boolean tryPlaceContainedLiquid(World world, Block block, double par2, double par4, double par6, int par8,
+            int par9, int par10) {
+        if (!world.isAirBlock(par8, par9, par10) && world.getBlock(par8, par9, par10).func_149730_j()) {
             return false;
-        } else if ((par1World.getBlock(par8, par9, par10).getMaterial() instanceof MaterialLiquid
-                && (par1World.getBlockMetadata(par8, par9, par10) == 0))) {
-                    return false;
-                } else {
-                    if ((block == Blocks.water || block == Blocks.flowing_water) && par1World.provider.isHellWorld) {
-                        par1World.playSoundEffect(
-                                par2 + 0.5D,
-                                par4 + 0.5D,
-                                par6 + 0.5D,
-                                "random.fizz",
-                                0.5F,
-                                2.6F + (par1World.rand.nextFloat() - par1World.rand.nextFloat()) * 0.8F);
+        }
+        if ((world.getBlock(par8, par9, par10).getMaterial() instanceof MaterialLiquid
+                && (world.getBlockMetadata(par8, par9, par10) == 0))) {
+            return false;
+        }
+        if ((block != Blocks.water && block != Blocks.flowing_water) || !world.provider.isHellWorld) {
+            world.setBlock(par8, par9, par10, block, 0, 3);
+        } else {
+            world.playSoundEffect(
+                    par2 + 0.5D,
+                    par4 + 0.5D,
+                    par6 + 0.5D,
+                    "random.fizz",
+                    0.5F,
+                    2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
-                        for (int l = 0; l < 8; ++l) {
-                            par1World.spawnParticle(
-                                    "largesmoke",
-                                    (double) par8 + Math.random(),
-                                    (double) par9 + Math.random(),
-                                    (double) par10 + Math.random(),
-                                    0.0D,
-                                    0.0D,
-                                    0.0D);
-                        }
-                    } else {
-                        par1World.setBlock(par8, par9, par10, block, 0, 3);
-                    }
+            for (int l = 0; l < 8; ++l) {
+                world.spawnParticle(
+                        "largesmoke",
+                        (double) par8 + Math.random(),
+                        (double) par9 + Math.random(),
+                        (double) par10 + Math.random(),
+                        0.0D,
+                        0.0D,
+                        0.0D);
+            }
+        }
 
-                    return true;
-                }
+        return true;
     }
 
     public ItemStack fillSelectedTank(ItemStack container, World world, EntityPlayer player) {
@@ -502,9 +464,7 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
             return container;
         }
 
-        float f = 1.0F;
-        boolean flag = false;
-        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, flag);
+        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, false);
 
         if (movingobjectposition == null) {
             return container;
@@ -529,9 +489,7 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
     }
 
     public ItemStack drainSelectedTank(ItemStack container, World world, EntityPlayer player) {
-        float f = 1.0F;
-        boolean flag = false;
-        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, flag);
+        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, false);
 
         if (movingobjectposition == null) {
             return container;
@@ -566,7 +524,6 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
         return container;
     }
 
-    /* IFluidContainerItem */
     @Override
     public FluidStack getFluid(ItemStack container) {
         if (container.getTagCompound() == null || !container.getTagCompound().hasKey("Fluid")) {

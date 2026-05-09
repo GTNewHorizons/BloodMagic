@@ -40,8 +40,8 @@ public class HarvestMoon {
 
     private static class Add implements IUndoableAction {
 
-        private IHarvestHandler handler;
-        private String name;
+        private final IHarvestHandler handler;
+        private final String name;
 
         public Add(Block block, int meta, ItemStack seed) {
             handler = new GenericItemStackHarvestHandler(block, meta, seed);

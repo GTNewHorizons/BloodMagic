@@ -35,7 +35,7 @@ public class TEPlinth extends TEInventory {
     private int progressInterval;
     private int progress;
 
-    public static List<PlinthComponent> pedestalPositions = new ArrayList();
+    public static List<PlinthComponent> pedestalPositions = new ArrayList<>();
 
     public TEPlinth() {
         super(sizeInv);
@@ -48,90 +48,90 @@ public class TEPlinth extends TEInventory {
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readFromNBT(par1NBTTagCompound);
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
 
-        NBTTagList ring1TagList = par1NBTTagCompound.getTagList("ring1Inv", Constants.NBT.TAG_COMPOUND);
+        NBTTagList ring1TagList = tag.getTagList("ring1Inv", Constants.NBT.TAG_COMPOUND);
 
         for (int i = 0; i < ring1TagList.tagCount(); i++) {
-            NBTTagCompound tag = ring1TagList.getCompoundTagAt(i);
-            int slot = tag.getByte("Slot");
+            NBTTagCompound items = ring1TagList.getCompoundTagAt(i);
+            int slot = items.getByte("Slot");
 
             if (slot >= 0 && slot < inv.length) {
-                ring1Inv[slot] = ItemStack.loadItemStackFromNBT(tag);
+                ring1Inv[slot] = ItemStack.loadItemStackFromNBT(items);
             }
         }
 
-        NBTTagList ring2TagList = par1NBTTagCompound.getTagList("ring2Inv", Constants.NBT.TAG_COMPOUND);
+        NBTTagList ring2TagList = tag.getTagList("ring2Inv", Constants.NBT.TAG_COMPOUND);
 
         for (int i = 0; i < ring2TagList.tagCount(); i++) {
-            NBTTagCompound tag = ring2TagList.getCompoundTagAt(i);
-            int slot = tag.getByte("Slot");
+            NBTTagCompound items = ring2TagList.getCompoundTagAt(i);
+            int slot = items.getByte("Slot");
 
             if (slot >= 0 && slot < inv.length) {
-                ring2Inv[slot] = ItemStack.loadItemStackFromNBT(tag);
+                ring2Inv[slot] = ItemStack.loadItemStackFromNBT(items);
             }
         }
 
-        NBTTagList ring3TagList = par1NBTTagCompound.getTagList("ring3Inv", Constants.NBT.TAG_COMPOUND);
+        NBTTagList ring3TagList = tag.getTagList("ring3Inv", Constants.NBT.TAG_COMPOUND);
 
         for (int i = 0; i < ring3TagList.tagCount(); i++) {
-            NBTTagCompound tag = ring3TagList.getCompoundTagAt(i);
-            int slot = tag.getByte("Slot");
+            NBTTagCompound items = ring3TagList.getCompoundTagAt(i);
+            int slot = items.getByte("Slot");
 
             if (slot >= 0 && slot < inv.length) {
-                ring3Inv[slot] = ItemStack.loadItemStackFromNBT(tag);
+                ring3Inv[slot] = ItemStack.loadItemStackFromNBT(items);
             }
         }
 
-        progress = par1NBTTagCompound.getInteger("progress");
-        progressInterval = par1NBTTagCompound.getInteger("progressInterval");
-        isActive = par1NBTTagCompound.getBoolean("isActive");
+        progress = tag.getInteger("progress");
+        progressInterval = tag.getInteger("progressInterval");
+        isActive = tag.getBoolean("isActive");
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeToNBT(par1NBTTagCompound);
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
 
         NBTTagList ring1ItemList = new NBTTagList();
 
         for (int i = 0; i < ring1Inv.length; i++) {
             if (ring1Inv[i] != null) {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setByte("Slot", (byte) i);
-                ring1Inv[i].writeToNBT(tag);
-                ring1ItemList.appendTag(tag);
+                NBTTagCompound items = new NBTTagCompound();
+                items.setByte("Slot", (byte) i);
+                ring1Inv[i].writeToNBT(items);
+                ring1ItemList.appendTag(items);
             }
         }
 
-        par1NBTTagCompound.setTag("ring1Inv", ring1ItemList);
+        tag.setTag("ring1Inv", ring1ItemList);
         NBTTagList ring2ItemList = new NBTTagList();
 
         for (int i = 0; i < ring2Inv.length; i++) {
             if (ring2Inv[i] != null) {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setByte("Slot", (byte) i);
-                ring2Inv[i].writeToNBT(tag);
-                ring2ItemList.appendTag(tag);
+                NBTTagCompound items = new NBTTagCompound();
+                items.setByte("Slot", (byte) i);
+                ring2Inv[i].writeToNBT(items);
+                ring2ItemList.appendTag(items);
             }
         }
 
-        par1NBTTagCompound.setTag("ring2Inv", ring1ItemList);
+        tag.setTag("ring2Inv", ring1ItemList);
         NBTTagList ring3ItemList = new NBTTagList();
 
         for (int i = 0; i < ring3Inv.length; i++) {
             if (ring3Inv[i] != null) {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setByte("Slot", (byte) i);
-                ring3Inv[i].writeToNBT(tag);
-                ring3ItemList.appendTag(tag);
+                NBTTagCompound items = new NBTTagCompound();
+                items.setByte("Slot", (byte) i);
+                ring3Inv[i].writeToNBT(items);
+                ring3ItemList.appendTag(items);
             }
         }
 
-        par1NBTTagCompound.setTag("ring3Inv", ring1ItemList);
-        par1NBTTagCompound.setInteger("progress", progress);
-        par1NBTTagCompound.setInteger("progressInterval", progressInterval);
-        par1NBTTagCompound.setBoolean("isActive", isActive);
+        tag.setTag("ring3Inv", ring1ItemList);
+        tag.setInteger("progress", progress);
+        tag.setInteger("progressInterval", progressInterval);
+        tag.setBoolean("isActive", isActive);
     }
 
     @Override
@@ -154,8 +154,8 @@ public class TEPlinth extends TEInventory {
         }
 
         if (!isActive()) {
-            if (getStackInSlot(0) != null && getStackInSlot(0).getItem() instanceof EnergyBattery) {
-                int bloodOrbLevel = ((EnergyBattery) getStackInSlot(0).getItem()).getOrbLevel();
+            if (getStackInSlot(0) != null && getStackInSlot(0).getItem() instanceof EnergyBattery orb) {
+                int bloodOrbLevel = orb.getOrbLevel();
 
                 if (SummoningRegistry.isRecipeValid(
                         bloodOrbLevel,
@@ -170,9 +170,11 @@ public class TEPlinth extends TEInventory {
                     isActive = true;
                     paradigm = true;
                     progress = 0;
-                    ring1Inv = src.getRingRecipeForRing(1);
-                    ring2Inv = src.getRingRecipeForRing(2);
-                    ring3Inv = src.getRingRecipeForRing(3);
+                    if (src != null) {
+                        ring1Inv = src.getRingRecipeForRing(1);
+                        ring2Inv = src.getRingRecipeForRing(2);
+                        ring3Inv = src.getRingRecipeForRing(3);
+                    }
                 } else if (SummoningRegistry.isRecipeValid(
                         bloodOrbLevel,
                         composeItemsForRingAndParadigm(1, false),
@@ -186,37 +188,27 @@ public class TEPlinth extends TEInventory {
                             isActive = true;
                             paradigm = false;
                             progress = 0;
-                            ring1Inv = src.getRingRecipeForRing(1);
-                            ring2Inv = src.getRingRecipeForRing(2);
-                            ring3Inv = src.getRingRecipeForRing(3);
+                            if (src != null) {
+                                ring1Inv = src.getRingRecipeForRing(1);
+                                ring2Inv = src.getRingRecipeForRing(2);
+                                ring3Inv = src.getRingRecipeForRing(3);
+                            }
                         } else {
                             isActive = false;
                             progress = 0;
                         }
             }
         } else {
-            if (getStackInSlot(0) != null && getStackInSlot(0).getItem() instanceof EnergyBattery) {
+            if (getStackInSlot(0) != null && getStackInSlot(0).getItem() instanceof EnergyBattery orb) {
                 if (progress % progressInterval == 0) {
                     int ring = (progress / progressInterval) / 6 + 1;
                     int slot = (progress / progressInterval) % 6;
-                    ItemStack itemStack;
-
-                    switch (ring) {
-                        case 1:
-                            itemStack = this.ring1Inv[slot];
-                            break;
-
-                        case 2:
-                            itemStack = this.ring2Inv[slot];
-                            break;
-
-                        case 3:
-                            itemStack = this.ring3Inv[slot];
-                            break;
-
-                        default:
-                            itemStack = null;
-                    }
+                    ItemStack itemStack = switch (ring) {
+                        case 1 -> this.ring1Inv[slot];
+                        case 2 -> this.ring2Inv[slot];
+                        case 3 -> this.ring3Inv[slot];
+                        default -> null;
+                    };
 
                     if (itemStack == null) {
                         progress += progressInterval;
@@ -230,7 +222,7 @@ public class TEPlinth extends TEInventory {
                 }
 
                 if (progress >= progressInterval * 18) {
-                    int bloodOrbLevel = ((EnergyBattery) getStackInSlot(0).getItem()).getOrbLevel();
+                    int bloodOrbLevel = orb.getOrbLevel();
                     EntityLivingBase entity = SummoningRegistry
                             .getEntity(worldObj, bloodOrbLevel, ring1Inv, ring2Inv, ring3Inv);
 
@@ -256,47 +248,13 @@ public class TEPlinth extends TEInventory {
         }
     }
 
-    public void deleteItemsInRing(int ring) {
-        if (paradigm) {
-            int i = 0;
-
-            for (PlinthComponent pc : pedestalPositions) {
-                if (i < 6 && pc.getRing() == ring) {
-                    TileEntity tileEntity = worldObj
-                            .getTileEntity(xCoord + pc.xOffset, yCoord + pc.yOffset, zCoord + pc.zOffset);
-
-                    if (tileEntity instanceof TEPedestal) {
-                        ((TEPedestal) tileEntity).setInventorySlotContents(0, null);
-                        worldObj.markBlockForUpdate(xCoord + pc.xOffset, yCoord + pc.yOffset, zCoord + pc.zOffset);
-                        i++;
-                    }
-                }
-            }
-        } else {
-            int i = 0;
-
-            for (PlinthComponent pc : pedestalPositions) {
-                if (i < 6 && pc.getRing() == ring) {
-                    TileEntity tileEntity = worldObj
-                            .getTileEntity(xCoord + pc.zOffset, yCoord + pc.yOffset, zCoord + pc.xOffset);
-
-                    if (tileEntity instanceof TEPedestal) {
-                        ((TEPedestal) tileEntity).setInventorySlotContents(0, null);
-                        worldObj.markBlockForUpdate(xCoord + pc.zOffset, yCoord + pc.yOffset, zCoord + pc.xOffset);
-                        i++;
-                    }
-                }
-            }
-        }
-    }
-
     public boolean deleteItemStackInRing(int ring, ItemStack itemStack) {
         if (itemStack == null) {
             return true;
         }
 
+        int i = 0;
         if (paradigm) {
-            int i = 0;
 
             for (PlinthComponent pc : pedestalPositions) {
                 if (i < 6 && pc.getRing() == ring) {
@@ -344,7 +302,6 @@ public class TEPlinth extends TEInventory {
                 }
             }
         } else {
-            int i = 0;
 
             for (PlinthComponent pc : pedestalPositions) {
                 if (i < 6 && pc.getRing() == ring) {
@@ -395,8 +352,8 @@ public class TEPlinth extends TEInventory {
     public ItemStack[] composeItemsForRingAndParadigm(int ring, boolean paradigm) {
         ItemStack[] composed = new ItemStack[6];
 
+        int i = 0;
         if (paradigm) {
-            int i = 0;
 
             for (PlinthComponent pc : pedestalPositions) {
                 if (i < 6 && pc.getRing() == ring) {
@@ -410,7 +367,6 @@ public class TEPlinth extends TEInventory {
                 }
             }
         } else {
-            int i = 0;
 
             for (PlinthComponent pc : pedestalPositions) {
                 if (i < 6 && pc.getRing() == ring) {
@@ -447,22 +403,17 @@ public class TEPlinth extends TEInventory {
         }
 
         if (intData.length == 3) {
-            for (int i = 0; i < 1; i++) {
-                if (intData[i * 3 + 2] != 0) {
-                    ItemStack is = new ItemStack(
-                            Item.getItemById(intData[i * 3]),
-                            intData[i * 3 + 2],
-                            intData[i * 3 + 1]);
-                    inv[i] = is;
-                } else {
-                    inv[i] = null;
-                }
+            if (intData[2] != 0) {
+                ItemStack is = new ItemStack(Item.getItemById(intData[0]), intData[2], intData[1]);
+                inv[0] = is;
+            } else {
+                inv[0] = null;
             }
         }
     }
 
     public int[] buildIntDataList() {
-        int[] sortList = new int[3]; // 1 * 3
+        int[] sortList = new int[3];
         int pos = 0;
 
         for (ItemStack is : inv) {

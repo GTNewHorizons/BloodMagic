@@ -37,106 +37,26 @@ public class EntityParticleBeam extends Entity implements IProjectile, IThrowabl
 
     protected int ticksInAir = 0;
     protected int maxTicksInAir = 600;
-    private int ricochetCounter = 0;
     private boolean scheduledForDeath = false;
     protected int projectileDamage;
 
-    public EntityParticleBeam(World par1World) {
-        super(par1World);
+    public EntityParticleBeam(World world) {
+        super(world);
         this.setSize(0.5F, 0.5F);
         this.maxTicksInAir = 600;
     }
 
-    public EntityParticleBeam(World par1World, double par2, double par4, double par6) {
-        super(par1World);
+    public EntityParticleBeam(World world, double x, double y, double z) {
+        super(world);
         this.setSize(0.5F, 0.5F);
-        this.setPosition(par2, par4, par6);
+        this.setPosition(x, y, z);
         yOffset = 0.0F;
         this.maxTicksInAir = 600;
-    }
-
-    public EntityParticleBeam(World par1World, EntityLivingBase par2EntityPlayer, int damage) {
-        super(par1World);
-        shootingEntity = par2EntityPlayer;
-        float par3 = 0.8F;
-        this.setSize(0.5F, 0.5F);
-        this.setLocationAndAngles(
-                par2EntityPlayer.posX,
-                par2EntityPlayer.posY + par2EntityPlayer.getEyeHeight(),
-                par2EntityPlayer.posZ,
-                par2EntityPlayer.rotationYaw,
-                par2EntityPlayer.rotationPitch);
-        posX -= MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
-        posY -= 0.2D;
-        posZ -= MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
-        this.setPosition(posX, posY, posZ);
-        yOffset = 0.0F;
-        motionX = -MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI)
-                * MathHelper.cos(rotationPitch / 180.0F * (float) Math.PI);
-        motionZ = MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI)
-                * MathHelper.cos(rotationPitch / 180.0F * (float) Math.PI);
-        motionY = -MathHelper.sin(rotationPitch / 180.0F * (float) Math.PI);
-        this.setThrowableHeading(motionX, motionY, motionZ, par3 * 1.5F, 1.0F);
-        this.projectileDamage = damage;
-        this.maxTicksInAir = 600;
-    }
-
-    public EntityParticleBeam(World par1World, EntityLivingBase par2EntityPlayer, int damage, int maxTicksInAir,
-            double posX, double posY, double posZ, float rotationYaw, float rotationPitch) {
-        super(par1World);
-        shootingEntity = par2EntityPlayer;
-        float par3 = 0.8F;
-        this.setSize(0.5F, 0.5F);
-        this.setLocationAndAngles(posX, posY, posZ, rotationYaw, rotationPitch);
-        posX -= MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
-        posY -= 0.2D;
-        posZ -= MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
-        this.setPosition(posX, posY, posZ);
-        yOffset = 0.0F;
-        motionX = -MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI)
-                * MathHelper.cos(rotationPitch / 180.0F * (float) Math.PI);
-        motionZ = MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI)
-                * MathHelper.cos(rotationPitch / 180.0F * (float) Math.PI);
-        motionY = -MathHelper.sin(rotationPitch / 180.0F * (float) Math.PI);
-        this.setThrowableHeading(motionX, motionY, motionZ, par3 * 1.5F, 1.0F);
-        this.projectileDamage = damage;
-        this.maxTicksInAir = maxTicksInAir;
-    }
-
-    public EntityParticleBeam(World par1World, EntityLivingBase par2EntityLivingBase,
-            EntityLivingBase par3EntityLivingBase, float par4, float par5, int damage, int maxTicksInAir) {
-        super(par1World);
-        this.renderDistanceWeight = 10.0D;
-        this.shootingEntity = par2EntityLivingBase;
-        this.posY = par2EntityLivingBase.posY + (double) par2EntityLivingBase.getEyeHeight() - 0.10000000149011612D;
-        double d0 = par3EntityLivingBase.posX - par2EntityLivingBase.posX;
-        double d1 = par3EntityLivingBase.boundingBox.minY + (double) (par3EntityLivingBase.height / 1.5F) - this.posY;
-        double d2 = par3EntityLivingBase.posZ - par2EntityLivingBase.posZ;
-        double d3 = (double) MathHelper.sqrt_double(d0 * d0 + d2 * d2);
-
-        if (d3 >= 1.0E-7D) {
-            float f2 = (float) (Math.atan2(d2, d0) * 180.0D / Math.PI) - 90.0F;
-            float f3 = (float) (-(Math.atan2(d1, d3) * 180.0D / Math.PI));
-            double d4 = d0 / d3;
-            double d5 = d2 / d3;
-            this.setLocationAndAngles(
-                    par2EntityLivingBase.posX + d4,
-                    this.posY,
-                    par2EntityLivingBase.posZ + d5,
-                    f2,
-                    f3);
-            this.yOffset = 0.0F;
-            float f4 = (float) d3 * 0.2F;
-            this.setThrowableHeading(d0, d1, d2, par4, par5);
-        }
-
-        this.projectileDamage = damage;
-        this.maxTicksInAir = maxTicksInAir;
     }
 
     @Override
     protected void entityInit() {
-        dataWatcher.addObject(16, Byte.valueOf((byte) 0));
+        dataWatcher.addObject(16, (byte) 0);
     }
 
     /**
@@ -164,30 +84,22 @@ public class EntityParticleBeam extends Entity implements IProjectile, IThrowabl
 
     @Override
     @SideOnly(Side.CLIENT)
-    /**
-     * Sets the position and rotation. Only difference from the other one is no bounding on the rotation. Args: posX,
-     * posY, posZ, yaw, pitch
-     */
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
-        this.setPosition(par1, par3, par5);
-        this.setRotation(par7, par8);
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int rotationIncrements) {
+        this.setPosition(x, y, z);
+        this.setRotation(yaw, pitch);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    /**
-     * Sets the velocity to the args. Args: x, y, z
-     */
-    public void setVelocity(double par1, double par3, double par5) {
-        motionX = par1;
-        motionY = par3;
-        motionZ = par5;
+    public void setVelocity(double x, double y, double z) {
+        motionX = x;
+        motionY = y;
+        motionZ = z;
 
         if (prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
-            float var7 = MathHelper.sqrt_double(par1 * par1 + par5 * par5);
-            prevRotationYaw = rotationYaw = (float) (Math.atan2(par1, par5) * 180.0D / Math.PI);
-            prevRotationPitch = rotationPitch = (float) (Math.atan2(par3, var7) * 180.0D / Math.PI);
-            prevRotationPitch = rotationPitch;
+            float var7 = MathHelper.sqrt_double(x * x + z * z);
+            prevRotationYaw = rotationYaw = (float) (Math.atan2(x, z) * 180.0D / Math.PI);
+            prevRotationPitch = rotationPitch = (float) (Math.atan2(y, var7) * 180.0D / Math.PI);
             prevRotationYaw = rotationYaw;
             this.setLocationAndAngles(posX, posY, posZ, rotationYaw, rotationPitch);
         }
@@ -207,7 +119,6 @@ public class EntityParticleBeam extends Entity implements IProjectile, IThrowabl
         posX += motionX;
         posY += motionY;
         posZ += motionZ;
-        MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
         this.setPosition(posX, posY, posZ);
 
         this.doFiringParticles();
@@ -233,48 +144,42 @@ public class EntityParticleBeam extends Entity implements IProjectile, IThrowabl
         FMLClientHandler.instance().getClient().effectRenderer.addEffect(particle);
     }
 
-    /**
-     * (abstract) Protected helper method to write subclass entity data to NBT.
-     */
     @Override
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        par1NBTTagCompound.setShort("xTile", (short) xTile);
-        par1NBTTagCompound.setShort("yTile", (short) yTile);
-        par1NBTTagCompound.setShort("zTile", (short) zTile);
-        par1NBTTagCompound.setByte("inTile", (byte) inTile);
-        par1NBTTagCompound.setByte("inData", (byte) inData);
-        par1NBTTagCompound.setByte("inGround", (byte) (inGround ? 1 : 0));
-        par1NBTTagCompound.setInteger("ticksInAir", ticksInAir);
-        par1NBTTagCompound.setInteger("maxTicksInAir", maxTicksInAir);
-        par1NBTTagCompound.setInteger("projectileDamage", this.projectileDamage);
-        par1NBTTagCompound.setFloat("colourRed", colourRed);
-        par1NBTTagCompound.setFloat("colourGreen", colourGreen);
-        par1NBTTagCompound.setFloat("colourBlue", colourBlue);
-        par1NBTTagCompound.setInteger("xDest", xDest);
-        par1NBTTagCompound.setInteger("yDest", yDest);
-        par1NBTTagCompound.setInteger("zDest", zDest);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        tag.setShort("xTile", (short) xTile);
+        tag.setShort("yTile", (short) yTile);
+        tag.setShort("zTile", (short) zTile);
+        tag.setByte("inTile", (byte) inTile);
+        tag.setByte("inData", (byte) inData);
+        tag.setByte("inGround", (byte) (inGround ? 1 : 0));
+        tag.setInteger("ticksInAir", ticksInAir);
+        tag.setInteger("maxTicksInAir", maxTicksInAir);
+        tag.setInteger("projectileDamage", this.projectileDamage);
+        tag.setFloat("colourRed", colourRed);
+        tag.setFloat("colourGreen", colourGreen);
+        tag.setFloat("colourBlue", colourBlue);
+        tag.setInteger("xDest", xDest);
+        tag.setInteger("yDest", yDest);
+        tag.setInteger("zDest", zDest);
     }
 
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
     @Override
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        xTile = par1NBTTagCompound.getShort("xTile");
-        yTile = par1NBTTagCompound.getShort("yTile");
-        zTile = par1NBTTagCompound.getShort("zTile");
-        inTile = par1NBTTagCompound.getByte("inTile") & 255;
-        inData = par1NBTTagCompound.getByte("inData") & 255;
-        inGround = par1NBTTagCompound.getByte("inGround") == 1;
-        ticksInAir = par1NBTTagCompound.getInteger("ticksInAir");
-        maxTicksInAir = par1NBTTagCompound.getInteger("maxTicksInAir");
-        projectileDamage = par1NBTTagCompound.getInteger("projectileDamage");
-        colourRed = par1NBTTagCompound.getFloat("colourRed");
-        colourGreen = par1NBTTagCompound.getFloat("colourGreen");
-        colourBlue = par1NBTTagCompound.getFloat("colourBlue");
-        xDest = par1NBTTagCompound.getInteger("xDest");
-        yDest = par1NBTTagCompound.getInteger("yDest");
-        zDest = par1NBTTagCompound.getInteger("zDest");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        xTile = tag.getShort("xTile");
+        yTile = tag.getShort("yTile");
+        zTile = tag.getShort("zTile");
+        inTile = tag.getByte("inTile") & 255;
+        inData = tag.getByte("inData") & 255;
+        inGround = tag.getByte("inGround") == 1;
+        ticksInAir = tag.getInteger("ticksInAir");
+        maxTicksInAir = tag.getInteger("maxTicksInAir");
+        projectileDamage = tag.getInteger("projectileDamage");
+        colourRed = tag.getFloat("colourRed");
+        colourGreen = tag.getFloat("colourGreen");
+        colourBlue = tag.getFloat("colourBlue");
+        xDest = tag.getInteger("xDest");
+        yDest = tag.getInteger("yDest");
+        zDest = tag.getInteger("zDest");
     }
 
     @Override
@@ -293,7 +198,7 @@ public class EntityParticleBeam extends Entity implements IProjectile, IThrowabl
             worldObj.spawnParticle(
                     string,
                     posX,
-                    posY - (string == "portal" ? 1 : 0),
+                    posY - (string.equals("portal") ? 1 : 0),
                     posZ,
                     gaussian(motionX),
                     gaussian(motionY),
@@ -311,10 +216,6 @@ public class EntityParticleBeam extends Entity implements IProjectile, IThrowabl
 
     public double gaussian(double d) {
         return d + d * ((rand.nextFloat() - 0.5D) / 4);
-    }
-
-    private int getRicochetMax() {
-        return 0;
     }
 
     @Override

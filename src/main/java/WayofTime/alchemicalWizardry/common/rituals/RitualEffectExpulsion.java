@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -142,8 +141,7 @@ public class RitualEffectExpulsion extends RitualEffect {
     }
 
     public boolean teleportRandomly(EntityLivingBase entityLiving, double distance) {
-        if (entityLiving instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) entityLiving;
+        if (entityLiving instanceof EntityPlayer player) {
             if (player.capabilities.isCreativeMode) return false;
         }
 
@@ -152,22 +150,18 @@ public class RitualEffectExpulsion extends RitualEffect {
         double z = entityLiving.posZ;
         Random rand = new Random();
         double d0 = x + (rand.nextDouble() - 0.5D) * distance;
-        double d1 = y + (double) (rand.nextInt((int) distance) - (distance) / 2);
+        double d1 = y + (rand.nextInt((int) distance) - (distance) / 2);
         double d2 = z + (rand.nextDouble() - 0.5D) * distance;
         int i = 0;
 
         while (!teleportTo(entityLiving, d0, d1, d2, x, y, z) && i < 100) {
             d0 = x + (rand.nextDouble() - 0.5D) * distance;
-            d1 = y + (double) (rand.nextInt((int) distance) - (distance) / 2);
+            d1 = y + (rand.nextInt((int) distance) - (distance) / 2);
             d2 = z + (rand.nextDouble() - 0.5D) * distance;
             i++;
         }
 
-        if (i >= 100) {
-            return false;
-        }
-
-        return true;
+        return i < 100;
     }
 
     public boolean teleportTo(EntityLivingBase entityLiving, double par1, double par3, double par5, double lastX,
@@ -178,9 +172,6 @@ public class RitualEffectExpulsion extends RitualEffect {
             return false;
         }
 
-        double d3 = lastX;
-        double d4 = lastY;
-        double d5 = lastZ;
         SpellTeleport.moveEntityViaTeleport(entityLiving, event.targetX, event.targetY, event.targetZ);
         boolean flag = false;
         int i = MathHelper.floor_double(entityLiving.posX);
@@ -214,7 +205,7 @@ public class RitualEffectExpulsion extends RitualEffect {
         }
 
         if (!flag) {
-            SpellTeleport.moveEntityViaTeleport(entityLiving, d3, d4, d5);
+            SpellTeleport.moveEntityViaTeleport(entityLiving, lastX, lastY, lastZ);
             return false;
         } else {
             short short1 = 128;
@@ -224,13 +215,13 @@ public class RitualEffectExpulsion extends RitualEffect {
                 float f = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
                 float f1 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
                 float f2 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                double d7 = d3 + (entityLiving.posX - d3) * d6
+                double d7 = lastX + (entityLiving.posX - lastX) * d6
                         + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
-                double d8 = d4 + (entityLiving.posY - d4) * d6
+                double d8 = lastY + (entityLiving.posY - lastY) * d6
                         + entityLiving.worldObj.rand.nextDouble() * (double) entityLiving.height;
-                double d9 = d5 + (entityLiving.posZ - d5) * d6
+                double d9 = lastZ + (entityLiving.posZ - lastZ) * d6
                         + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
-                entityLiving.worldObj.spawnParticle("portal", d7, d8, d9, (double) f, (double) f1, (double) f2);
+                entityLiving.worldObj.spawnParticle("portal", d7, d8, d9, f, f1, f2);
             }
             return true;
         }
@@ -238,18 +229,15 @@ public class RitualEffectExpulsion extends RitualEffect {
 
     public void moveEntityViaTeleport(EntityLivingBase entityLiving, double x, double y, double z) {
         if (entityLiving instanceof EntityPlayer) {
-            if (entityLiving != null && entityLiving instanceof EntityPlayerMP) {
-                EntityPlayerMP entityplayermp = (EntityPlayerMP) entityLiving;
+            if (entityLiving instanceof EntityPlayerMP entityplayermp) {
 
-                if (entityplayermp.worldObj == entityLiving.worldObj) {
-                    EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x, y, z, 5.0F);
+                EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x, y, z, 5.0F);
 
-                    if (!MinecraftForge.EVENT_BUS.post(event)) {
-                        if (entityLiving.isRiding()) {
-                            entityLiving.mountEntity((Entity) null);
-                        }
-                        entityLiving.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
+                if (!MinecraftForge.EVENT_BUS.post(event)) {
+                    if (entityLiving.isRiding()) {
+                        entityLiving.mountEntity(null);
                     }
+                    entityLiving.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
                 }
             }
         } else if (entityLiving != null) {
@@ -259,7 +247,7 @@ public class RitualEffectExpulsion extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> expulsionRitual = new ArrayList();
+        ArrayList<RitualComponent> expulsionRitual = new ArrayList<>();
         expulsionRitual.add(new RitualComponent(2, 0, 2, RitualComponent.EARTH));
         expulsionRitual.add(new RitualComponent(2, 0, 1, RitualComponent.EARTH));
         expulsionRitual.add(new RitualComponent(1, 0, 2, RitualComponent.EARTH));

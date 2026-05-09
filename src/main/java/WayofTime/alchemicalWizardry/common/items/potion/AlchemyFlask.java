@@ -3,7 +3,6 @@ package WayofTime.alchemicalWizardry.common.items.potion;
 import static WayofTime.alchemicalWizardry.AlchemicalWizardry.allowPotionRepair;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -49,43 +48,40 @@ public class AlchemyFlask extends Item {
         this.itemIcon = iconRegister.registerIcon("AlchemicalWizardry:PotionFlask");
     }
 
-    public static ArrayList<AlchemyPotionHelper> getEffects(ItemStack par1ItemStack) {
-        if (par1ItemStack.hasTagCompound() && par1ItemStack.getTagCompound().hasKey("CustomFlaskEffects")) {
-            ArrayList<AlchemyPotionHelper> arraylist = new ArrayList();
-            NBTTagList nbttaglist = par1ItemStack.getTagCompound()
-                    .getTagList("CustomFlaskEffects", Constants.NBT.TAG_COMPOUND);
-
-            for (int i = 0; i < nbttaglist.tagCount(); ++i) {
-                NBTTagCompound nbttagcompound = nbttaglist.getCompoundTagAt(i);
-                arraylist.add(AlchemyPotionHelper.readEffectFromNBT(nbttagcompound));
-            }
-            return arraylist;
-        } else {
+    public static ArrayList<AlchemyPotionHelper> getEffects(ItemStack item) {
+        if (!item.hasTagCompound() || !item.getTagCompound().hasKey("CustomFlaskEffects")) {
             return null;
         }
+        ArrayList<AlchemyPotionHelper> arraylist = new ArrayList<>();
+        NBTTagList nbttaglist = item.getTagCompound().getTagList("CustomFlaskEffects", Constants.NBT.TAG_COMPOUND);
+
+        for (int i = 0; i < nbttaglist.tagCount(); ++i) {
+            NBTTagCompound nbttagcompound = nbttaglist.getCompoundTagAt(i);
+            arraylist.add(AlchemyPotionHelper.readEffectFromNBT(nbttagcompound));
+        }
+        return arraylist;
     }
 
-    public static ArrayList<PotionEffect> getPotionEffects(ItemStack par1ItemStack) {
-        ArrayList<AlchemyPotionHelper> list = AlchemyFlask.getEffects(par1ItemStack);
+    public static ArrayList<PotionEffect> getPotionEffects(ItemStack item) {
+        ArrayList<AlchemyPotionHelper> list = AlchemyFlask.getEffects(item);
 
-        if (list != null) {
-            ArrayList<PotionEffect> newList = new ArrayList();
-
-            for (AlchemyPotionHelper aph : list) {
-                newList.add(aph.getPotionEffect());
-            }
-
-            return newList;
-        } else {
+        if (list == null) {
             return null;
         }
+        ArrayList<PotionEffect> newList = new ArrayList<>();
+
+        for (AlchemyPotionHelper aph : list) {
+            newList.add(aph.getPotionEffect());
+        }
+
+        return newList;
     }
 
-    public static void setEffects(ItemStack par1ItemStack, List<AlchemyPotionHelper> list) {
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
+    public static void setEffects(ItemStack item, List<AlchemyPotionHelper> list) {
+        NBTTagCompound itemTag = item.getTagCompound();
 
         if (itemTag == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
+            item.setTagCompound(new NBTTagCompound());
         }
 
         NBTTagList nbttaglist = new NBTTagList();
@@ -94,44 +90,48 @@ public class AlchemyFlask extends Item {
             nbttaglist.appendTag(AlchemyPotionHelper.setEffectToNBT(aph));
         }
 
-        par1ItemStack.getTagCompound().setTag("CustomFlaskEffects", nbttaglist);
+        item.getTagCompound().setTag("CustomFlaskEffects", nbttaglist);
     }
 
-    public ItemStack onEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            par1ItemStack.setItemDamage(par1ItemStack.getItemDamage() + 1);
+    @Override
+    public ItemStack onEaten(ItemStack item, World world, EntityPlayer player) {
+        if (!player.capabilities.isCreativeMode) {
+            item.setItemDamage(item.getItemDamage() + 1);
         }
 
-        if (!par2World.isRemote) {
-            ArrayList<AlchemyPotionHelper> list = getEffects(par1ItemStack);
+        if (world.isRemote) {
+            return item;
+        }
 
-            if (list != null) {
-                for (AlchemyPotionHelper aph : list) {
-                    PotionEffect pe = aph.getPotionEffect();
+        ArrayList<AlchemyPotionHelper> list = getEffects(item);
+        if (list == null) {
+            return item;
+        }
+        for (AlchemyPotionHelper aph : list) {
+            PotionEffect pe = aph.getPotionEffect();
 
-                    if (pe != null) {
-                        // if(pe.get)
-                        par3EntityPlayer.addPotionEffect(pe);
-                    }
-                }
+            if (pe != null) {
+                player.addPotionEffect(pe);
             }
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     /**
      * How long it takes to use or consume an item
      */
-    public int getMaxItemUseDuration(ItemStack par1ItemStack) {
+    @Override
+    public int getMaxItemUseDuration(ItemStack item) {
         return 32;
     }
 
     /**
      * returns the action that specifies what animation to play when the items is being used
      */
-    public EnumAction getItemUseAction(ItemStack par1ItemStack) {
-        if (this.isPotionThrowable(par1ItemStack)) {
+    @Override
+    public EnumAction getItemUseAction(ItemStack item) {
+        if (this.isPotionThrowable(item)) {
             return EnumAction.none;
         }
 
@@ -141,32 +141,33 @@ public class AlchemyFlask extends Item {
     /**
      * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      */
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (par1ItemStack.getItemDamage() < par1ItemStack.getMaxDamage()) {
-            if (this.isPotionThrowable(par1ItemStack)) {
-                if (!par2World.isRemote) {
-                    EntityPotion entityPotion = this.getEntityPotion(par1ItemStack, par2World, par3EntityPlayer);
+    @Override
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (item.getItemDamage() < item.getMaxDamage()) {
+            if (this.isPotionThrowable(item)) {
+                if (!world.isRemote) {
+                    EntityPotion entityPotion = this.getEntityPotion(item, world, player);
 
                     if (entityPotion != null) {
                         float velocityChange = 2.0f;
                         entityPotion.motionX *= velocityChange;
                         entityPotion.motionY *= velocityChange;
                         entityPotion.motionZ *= velocityChange;
-                        par2World.spawnEntityInWorld(entityPotion);
-                        par1ItemStack.setItemDamage(par1ItemStack.getItemDamage() + 1);
+                        world.spawnEntityInWorld(entityPotion);
+                        item.setItemDamage(item.getItemDamage() + 1);
                     }
                 }
 
-                return par1ItemStack;
+                return item;
             }
 
-            par3EntityPlayer.setItemInUse(par1ItemStack, this.getMaxItemUseDuration(par1ItemStack));
+            player.setItemInUse(item, this.getMaxItemUseDuration(item));
         }
-        return par1ItemStack;
+        return item;
     }
 
-    public void setConcentrationOfPotion(ItemStack par1ItemStack, int potionID, int concentration) {
-        ArrayList<AlchemyPotionHelper> list = getEffects(par1ItemStack);
+    public void setConcentrationOfPotion(ItemStack item, int potionID, int concentration) {
+        ArrayList<AlchemyPotionHelper> list = getEffects(item);
         if (list != null) {
             for (AlchemyPotionHelper aph : list) {
                 if (aph.getPotionID() == potionID) {
@@ -174,12 +175,12 @@ public class AlchemyFlask extends Item {
                     break;
                 }
             }
-            setEffects(par1ItemStack, list);
+            setEffects(item, list);
         }
     }
 
-    public void setDurationFactorOfPotion(ItemStack par1ItemStack, int potionID, int durationFactor) {
-        ArrayList<AlchemyPotionHelper> list = getEffects(par1ItemStack);
+    public void setDurationFactorOfPotion(ItemStack item, int potionID, int durationFactor) {
+        ArrayList<AlchemyPotionHelper> list = getEffects(item);
         if (list != null) {
             for (AlchemyPotionHelper aph : list) {
                 if (aph.getPotionID() == potionID) {
@@ -187,78 +188,65 @@ public class AlchemyFlask extends Item {
                     break;
                 }
             }
-            setEffects(par1ItemStack, list);
+            setEffects(item, list);
         }
     }
 
-    public boolean hasPotionEffect(ItemStack par1ItemStack, int potionID) {
-        return false;
-    }
-
-    public int getNumberOfPotionEffects(ItemStack par1ItemStack) {
-        if (getEffects(par1ItemStack) != null) {
-            return getEffects(par1ItemStack).size();
+    public int getNumberOfPotionEffects(ItemStack item) {
+        ArrayList<AlchemyPotionHelper> effects = getEffects(item);
+        if (effects != null) {
+            return effects.size();
         } else {
             return 0;
         }
     }
 
-    public boolean addPotionEffect(ItemStack par1ItemStack, int potionID, int tickDuration) {
-        ArrayList<AlchemyPotionHelper> list = getEffects(par1ItemStack);
+    public boolean addPotionEffect(ItemStack item, int potionID, int tickDuration) {
+        ArrayList<AlchemyPotionHelper> list = getEffects(item);
         if (list != null) {
             for (AlchemyPotionHelper aph : list) {
                 if (aph.getPotionID() == potionID) {
                     return false;
                 }
             }
-            list.add(new AlchemyPotionHelper(potionID, tickDuration, 0, 0));
-            setEffects(par1ItemStack, list);
-            return true;
         } else {
-            list = new ArrayList();
-            list.add(new AlchemyPotionHelper(potionID, tickDuration, 0, 0));
-            setEffects(par1ItemStack, list);
-            return true;
+            list = new ArrayList<>();
         }
+        list.add(new AlchemyPotionHelper(potionID, tickDuration, 0, 0));
+        setEffects(item, list);
+        return true;
     }
 
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(
+    @Override
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(
                 EnumChatFormatting.BLUE + StatCollector.translateToLocal("tooltip.alchemyflask.swigsleft")
                         + " "
-                        + (par1ItemStack.getMaxDamage() - par1ItemStack.getItemDamage())
+                        + (item.getMaxDamage() - item.getItemDamage())
                         + "/"
-                        + par1ItemStack.getMaxDamage());
+                        + item.getMaxDamage());
 
-        if (this.isPotionThrowable(par1ItemStack)) {
-            par3List.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("tooltip.alchemyflask.caution"));
+        if (this.isPotionThrowable(item)) {
+            tooltip.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("tooltip.alchemyflask.caution"));
         }
 
-        List list1 = AlchemyFlask.getPotionEffects(par1ItemStack);
-        HashMultimap hashmultimap = HashMultimap.create();
-        Iterator iterator;
+        List<PotionEffect> effects = AlchemyFlask.getPotionEffects(item);
+        HashMultimap<String, AttributeModifier> hashmultimap = HashMultimap.create();
 
-        if (list1 != null && !list1.isEmpty()) {
-            iterator = list1.iterator();
-
-            while (iterator.hasNext()) {
-                PotionEffect potioneffect = (PotionEffect) iterator.next();
+        if (effects != null && !effects.isEmpty()) {
+            for (PotionEffect potioneffect : effects) {
                 String s = StatCollector.translateToLocal(potioneffect.getEffectName()).trim();
                 Potion potion = Potion.potionTypes[potioneffect.getPotionID()];
-                Map map = potion.func_111186_k();
+                Map<IAttribute, AttributeModifier> map = potion.func_111186_k();
 
-                if (map != null && map.size() > 0) {
-                    Iterator iterator1 = map.entrySet().iterator();
-
-                    while (iterator1.hasNext()) {
-                        Entry entry = (Entry) iterator1.next();
-                        AttributeModifier attributemodifier = (AttributeModifier) entry.getValue();
+                if (map != null && !map.isEmpty()) {
+                    for (Entry<IAttribute, AttributeModifier> entry : map.entrySet()) {
+                        AttributeModifier attributemodifier = entry.getValue();
                         AttributeModifier attributemodifier1 = new AttributeModifier(
                                 attributemodifier.getName(),
                                 potion.func_111183_a(potioneffect.getAmplifier(), attributemodifier),
                                 attributemodifier.getOperation());
-                        hashmultimap
-                                .put(((IAttribute) entry.getKey()).getAttributeUnlocalizedName(), attributemodifier1);
+                        hashmultimap.put(entry.getKey().getAttributeUnlocalizedName(), attributemodifier1);
                     }
                 }
 
@@ -272,24 +260,22 @@ public class AlchemyFlask extends Item {
                 }
 
                 if (potion.isBadEffect()) {
-                    par3List.add(EnumChatFormatting.RED + s);
+                    tooltip.add(EnumChatFormatting.RED + s);
                 } else {
-                    par3List.add(EnumChatFormatting.GRAY + s);
+                    tooltip.add(EnumChatFormatting.GRAY + s);
                 }
             }
         } else {
             String s1 = StatCollector.translateToLocal("potion.empty").trim();
-            par3List.add(EnumChatFormatting.GRAY + s1);
+            tooltip.add(EnumChatFormatting.GRAY + s1);
         }
 
         if (!hashmultimap.isEmpty()) {
-            par3List.add("");
-            par3List.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("potion.effects.whenDrank"));
-            iterator = hashmultimap.entries().iterator();
+            tooltip.add("");
+            tooltip.add(EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("potion.effects.whenDrank"));
 
-            while (iterator.hasNext()) {
-                Entry entry1 = (Entry) iterator.next();
-                AttributeModifier attributemodifier2 = (AttributeModifier) entry1.getValue();
+            for (Entry<String, AttributeModifier> stringAttributeModifierEntry : hashmultimap.entries()) {
+                AttributeModifier attributemodifier2 = stringAttributeModifierEntry.getValue();
                 double d0 = attributemodifier2.getAmount();
                 double d1;
 
@@ -300,39 +286,39 @@ public class AlchemyFlask extends Item {
                 }
 
                 if (d0 > 0.0D) {
-                    par3List.add(
+                    tooltip.add(
                             EnumChatFormatting.BLUE + StatCollector.translateToLocalFormatted(
                                     "attribute.modifier.plus." + attributemodifier2.getOperation(),
-                                    new Object[] { ItemStack.field_111284_a.format(d1), StatCollector
-                                            .translateToLocal("attribute.name." + (String) entry1.getKey()) }));
+                                    new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal(
+                                            "attribute.name." + stringAttributeModifierEntry.getKey()) }));
                 } else if (d0 < 0.0D) {
                     d1 *= -1.0D;
-                    par3List.add(
+                    tooltip.add(
                             EnumChatFormatting.RED + StatCollector.translateToLocalFormatted(
                                     "attribute.modifier.take." + attributemodifier2.getOperation(),
-                                    new Object[] { ItemStack.field_111284_a.format(d1), StatCollector
-                                            .translateToLocal("attribute.name." + (String) entry1.getKey()) }));
+                                    new Object[] { ItemStack.field_111284_a.format(d1), StatCollector.translateToLocal(
+                                            "attribute.name." + stringAttributeModifierEntry.getKey()) }));
                 }
             }
         }
     }
 
-    public boolean isPotionThrowable(ItemStack par1ItemStack) {
-        return par1ItemStack.hasTagCompound() && par1ItemStack.getTagCompound().getBoolean("throwable");
+    public boolean isPotionThrowable(ItemStack item) {
+        return item.hasTagCompound() && item.getTagCompound().getBoolean("throwable");
     }
 
-    public void setIsPotionThrowable(boolean flag, ItemStack par1ItemStack) {
-        if (!par1ItemStack.hasTagCompound()) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
+    public void setIsPotionThrowable(boolean flag, ItemStack item) {
+        if (!item.hasTagCompound()) {
+            item.setTagCompound(new NBTTagCompound());
         }
 
-        par1ItemStack.getTagCompound().setBoolean("throwable", flag);
+        item.getTagCompound().setBoolean("throwable", flag);
     }
 
-    public EntityPotion getEntityPotion(ItemStack par1ItemStack, World worldObj, EntityLivingBase entityLivingBase) {
+    public EntityPotion getEntityPotion(ItemStack item, World worldObj, EntityLivingBase entityLivingBase) {
         ItemStack potionStack = new ItemStack(Items.potionitem, 1, 0);
         potionStack.setTagCompound(new NBTTagCompound());
-        ArrayList<PotionEffect> potionList = getPotionEffects(par1ItemStack);
+        ArrayList<PotionEffect> potionList = getPotionEffects(item);
 
         if (potionList == null) {
             return null;

@@ -62,11 +62,9 @@ public class BlockWritingTable extends BlockContainer {
         Random rand = new Random();
         TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-        if (!(tileEntity instanceof IInventory)) {
+        if (!(tileEntity instanceof IInventory inventory)) {
             return;
         }
-
-        IInventory inventory = (IInventory) tileEntity;
 
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack item = inventory.getStackInSlot(i);
@@ -122,14 +120,15 @@ public class BlockWritingTable extends BlockContainer {
     }
 
     @Override
-    public void addCollisionBoxesToList(World par1World, int par2, int par3, int par4, AxisAlignedBB par5AxisAlignedBB,
-            List par6List, Entity par7Entity) {
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB mask, List<AxisAlignedBB> list,
+            Entity entity) {
         this.setBlockBounds(0.4375F, 0.0F, 0.4375F, 0.5625F, 0.9375F, 0.5625F);
-        super.addCollisionBoxesToList(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+        super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
         this.setBlockBoundsForItemRender();
-        super.addCollisionBoxesToList(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+        super.addCollisionBoxesToList(world, x, y, z, mask, list, entity);
     }
 
+    @Override
     public void setBlockBoundsForItemRender() {
         this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
     }

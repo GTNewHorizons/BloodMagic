@@ -32,10 +32,10 @@ public class ArmourInhibitor extends EnergyItems {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.armorinhibitor.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.armorinhibitor.desc2"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.armorinhibitor.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.armorinhibitor.desc2"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
@@ -66,33 +66,31 @@ public class ArmourInhibitor extends EnergyItems {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        IBindable.setActive(par1ItemStack, !IBindable.isActive(par1ItemStack));
+        IBindable.setActive(item, !IBindable.isActive(item));
 
-        if (IBindable.isActive(par1ItemStack)) {
-            par1ItemStack.setItemDamage(1);
-            this.setDrainTick(par1ItemStack, par2World);
+        if (IBindable.isActive(item)) {
+            item.setItemDamage(1);
+            this.setDrainTick(item, world);
         } else {
-            par1ItemStack.setItemDamage(par1ItemStack.getMaxDamage());
+            item.setItemDamage(item.getMaxDamage());
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5) {
-        if (!(par3Entity instanceof EntityPlayer)) {
+    public void onUpdate(ItemStack item, World world, Entity entity, int slot, boolean held) {
+        if (!(entity instanceof EntityPlayer player)) {
             return;
         }
 
-        EntityPlayer par3EntityPlayer = (EntityPlayer) par3Entity;
-
-        if (IBindable.isActive(par1ItemStack)) {
-            par3EntityPlayer.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionInhibit.id, 2, 0));
+        if (IBindable.isActive(item)) {
+            player.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionInhibit.id, 2, 0));
         }
     }
 }

@@ -24,9 +24,8 @@ public class ReagentStack {
         }
 
         int amount = tag.getInteger("amount");
-        ReagentStack stack = new ReagentStack(reagent, amount);
 
-        return stack;
+        return new ReagentStack(reagent, amount);
     }
 
     public NBTTagCompound writeToNBT(NBTTagCompound tag) {
@@ -34,15 +33,6 @@ public class ReagentStack {
         tag.setInteger("amount", this.amount);
 
         return tag;
-    }
-
-    public ReagentStack splitStack(int amount) {
-        ReagentStack copyStack = this.copy();
-        int splitAmount = Math.min(amount, this.amount);
-        copyStack.amount = splitAmount;
-        this.amount -= splitAmount;
-
-        return copyStack;
     }
 
     public ReagentStack copy() {

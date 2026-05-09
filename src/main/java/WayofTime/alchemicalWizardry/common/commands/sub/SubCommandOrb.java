@@ -93,20 +93,17 @@ public class SubCommandOrb extends SubCommandBase {
         SET("commands.orb.set.help"),
         GET("commands.orb.get.help");
 
-        public String help;
+        public final String help;
 
         ValidCommands(String help) {
             this.help = help;
         }
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return false;
-        } catch (NullPointerException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return false;
         }
         // only got here if we didn't return false

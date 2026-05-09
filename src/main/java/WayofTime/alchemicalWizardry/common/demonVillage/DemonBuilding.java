@@ -20,9 +20,9 @@ public class DemonBuilding {
     public DemonBuilding(BuildingSchematic schematic) {
         this.schematic = schematic;
         this.buildingType = schematic.buildingType;
-        this.buildingTier = schematic.buildingTier;
+        this.buildingTier = 0;
         this.area = this.createGSHForSchematic(schematic);
-        this.doorGridSpace = schematic.getGridSpotOfDoor();
+        this.doorGridSpace = new Int3(0, 0, 0);
     }
 
     public String getName() {
@@ -54,25 +54,24 @@ public class DemonBuilding {
 
     public Int3 getDoorSpace(ForgeDirection dir) {
         int x;
-        int z;
-        switch (dir) {
-            case SOUTH:
+        int z = switch (dir) {
+            case SOUTH -> {
                 x = -doorGridSpace.xCoord;
-                z = -doorGridSpace.zCoord;
-                break;
-            case WEST:
+                yield -doorGridSpace.zCoord;
+            }
+            case WEST -> {
                 x = doorGridSpace.zCoord;
-                z = -doorGridSpace.xCoord;
-                break;
-            case EAST:
+                yield -doorGridSpace.xCoord;
+            }
+            case EAST -> {
                 x = -doorGridSpace.zCoord;
-                z = doorGridSpace.xCoord;
-                break;
-            default:
+                yield doorGridSpace.xCoord;
+            }
+            default -> {
                 x = doorGridSpace.xCoord;
-                z = doorGridSpace.zCoord;
-                break;
-        }
+                yield doorGridSpace.zCoord;
+            }
+        };
 
         return new Int3(x, doorGridSpace.yCoord, z);
     }

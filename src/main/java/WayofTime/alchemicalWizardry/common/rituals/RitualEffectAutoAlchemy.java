@@ -46,11 +46,10 @@ public class RitualEffectAutoAlchemy extends RitualEffect {
             int flag = 0;
 
             TileEntity topEntity = world.getTileEntity(x, y + 1, z);
-            if (!(topEntity instanceof IBloodAltar) || !(topEntity instanceof IBloodAltar)) {
+            if (!(topEntity instanceof IBloodAltar altar)) {
                 return;
             }
 
-            IBloodAltar altar = (IBloodAltar) topEntity;
             ItemStack targetStack = ((IInventory) altar).getStackInSlot(0);
             if (targetStack == null) {
                 return;
@@ -81,7 +80,7 @@ public class RitualEffectAutoAlchemy extends RitualEffect {
                     }
                 } else if (southEntity instanceof TEWritingTable) {
                     alchemyEntity = (TEWritingTable) southEntity;
-                    if (northEntity instanceof IInventory && !(northEntity instanceof TEWritingTable)) {
+                    if (northEntity instanceof IInventory) {
                         outputInv = (IInventory) northEntity;
                     }
                     if (eastEntity instanceof IInventory && !(eastEntity instanceof TEWritingTable)) {
@@ -95,28 +94,28 @@ public class RitualEffectAutoAlchemy extends RitualEffect {
                     if (westEntity instanceof IInventory && !(westEntity instanceof TEWritingTable)) {
                         outputInv = (IInventory) westEntity;
                     }
-                    if (northEntity instanceof IInventory && !(northEntity instanceof TEWritingTable)) {
+                    if (northEntity instanceof IInventory) {
                         inputInv1 = (IInventory) northEntity;
                     }
-                    if (southEntity instanceof IInventory && !(southEntity instanceof TEWritingTable)) {
+                    if (southEntity instanceof IInventory) {
                         inputInv2 = (IInventory) southEntity;
                     }
                 } else if (westEntity instanceof TEWritingTable) {
                     alchemyEntity = (TEWritingTable) westEntity;
-                    if (eastEntity instanceof IInventory && !(eastEntity instanceof TEWritingTable)) {
+                    if (eastEntity instanceof IInventory) {
                         outputInv = (IInventory) eastEntity;
                     }
-                    if (northEntity instanceof IInventory && !(northEntity instanceof TEWritingTable)) {
+                    if (northEntity instanceof IInventory) {
                         inputInv1 = (IInventory) northEntity;
                     }
-                    if (southEntity instanceof IInventory && !(southEntity instanceof TEWritingTable)) {
+                    if (southEntity instanceof IInventory) {
                         inputInv2 = (IInventory) southEntity;
                     }
                 } else {
                     return;
                 }
 
-                if (alchemyEntity != null && hasPotentia) {
+                if (hasPotentia) {
                     alchemyEntity.setAccelerationTime(5);
                     if (alchemyEntity.isWorking()) {
                         this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, true);
@@ -339,7 +338,7 @@ public class RitualEffectAutoAlchemy extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> autoAlchemyRitual = new ArrayList();
+        ArrayList<RitualComponent> autoAlchemyRitual = new ArrayList<>();
         autoAlchemyRitual.add(new RitualComponent(1, 0, 1, RitualComponent.DUSK));
         autoAlchemyRitual.add(new RitualComponent(1, 0, -1, RitualComponent.DUSK));
         autoAlchemyRitual.add(new RitualComponent(-1, 0, -1, RitualComponent.DUSK));

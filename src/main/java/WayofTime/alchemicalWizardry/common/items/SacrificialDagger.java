@@ -44,12 +44,12 @@ public class SacrificialDagger extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean adv) {
         if (AlchemicalWizardry.wimpySettings) {
-            par3List.add(StatCollector.translateToLocal("tooltip.sacrificialdagger.desc1"));
+            tooltip.add(StatCollector.translateToLocal("tooltip.sacrificialdagger.desc1"));
         } else {
-            par3List.add(StatCollector.translateToLocal("tooltip.sacrificialdagger.desc2"));
-            par3List.add(StatCollector.translateToLocal("tooltip.sacrificialdagger.desc3"));
+            tooltip.add(StatCollector.translateToLocal("tooltip.sacrificialdagger.desc2"));
+            tooltip.add(StatCollector.translateToLocal("tooltip.sacrificialdagger.desc3"));
         }
     }
 
@@ -58,11 +58,6 @@ public class SacrificialDagger extends Item {
      */
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int itemInUseCount) {
-        // if(itemInUseCount < 32)
-        // {
-        // return;
-        // }
-
         PlayerSacrificeHandler.sacrificePlayerHealth(player);
     }
 
@@ -109,9 +104,9 @@ public class SacrificialDagger extends Item {
         double posY = player.posY;
         double posZ = player.posZ;
         world.playSoundEffect(
-                (double) ((float) posX + 0.5F),
-                (double) ((float) posY + 0.5F),
-                (double) ((float) posZ + 0.5F),
+                (float) posX + 0.5F,
+                (float) posY + 0.5F,
+                (float) posZ + 0.5F,
                 "random.fizz",
                 0.5F,
                 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
@@ -170,8 +165,8 @@ public class SacrificialDagger extends Item {
                 for (int k = -2; k <= 1; k++) {
                     tileEntity = world.getTileEntity(i + x, k + y, j + z);
 
-                    if (tileEntity instanceof IBloodAltar) {
-                        return (IBloodAltar) tileEntity;
+                    if (tileEntity instanceof IBloodAltar altar) {
+                        return altar;
                     }
                 }
             }
@@ -182,8 +177,8 @@ public class SacrificialDagger extends Item {
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
-        if (!world.isRemote && entity instanceof EntityPlayer) {
-            this.setUseForSacrifice(stack, this.isPlayerPreparedForSacrifice(world, (EntityPlayer) entity));
+        if (!world.isRemote && entity instanceof EntityPlayer player) {
+            this.setUseForSacrifice(stack, this.isPlayerPreparedForSacrifice(world, player));
         }
     }
 

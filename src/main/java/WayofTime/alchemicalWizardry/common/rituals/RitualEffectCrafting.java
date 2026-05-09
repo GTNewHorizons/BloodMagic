@@ -17,7 +17,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.oredict.OreDictionary;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.Int3;
@@ -77,6 +76,7 @@ public class RitualEffectCrafting extends RitualEffect {
             ItemStack[] recipe = new ItemStack[9];
             InventoryCrafting inventory = new InventoryCrafting(new Container() {
 
+                @Override
                 public boolean canInteractWith(EntityPlayer player) {
                     return false;
                 }
@@ -116,13 +116,10 @@ public class RitualEffectCrafting extends RitualEffect {
             if (returnStack == null) {
                 tag.setBoolean("didLastCraftFail", true);
             } else {
-                boolean hasVirtus = this
-                        .canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false);
-                boolean addOutputToInputs = hasVirtus;
 
                 IInventory outputInv = null;
 
-                List<IInventory> invList = new ArrayList();
+                List<IInventory> invList = new ArrayList<>();
 
                 TileEntity northEntity = world.getTileEntity(x, y - 1, z - 2);
                 TileEntity southEntity = world.getTileEntity(x, y - 1, z + 2);
@@ -130,81 +127,74 @@ public class RitualEffectCrafting extends RitualEffect {
                 TileEntity westEntity = world.getTileEntity(x - 2, y - 1, z);
 
                 switch (direction) {
-                    case 1:
-                        if (southEntity instanceof IInventory) {
-                            outputInv = (IInventory) southEntity;
+                    case 1 -> {
+                        if (southEntity instanceof IInventory out) {
+                            outputInv = out;
                         } else {
                             return;
                         }
 
-                        if (northEntity instanceof IInventory) {
-                            invList.add((IInventory) northEntity);
+                        if (northEntity instanceof IInventory inv) {
+                            invList.add(inv);
                         }
-                        if (eastEntity instanceof IInventory) {
-                            invList.add((IInventory) eastEntity);
+                        if (eastEntity instanceof IInventory inv) {
+                            invList.add(inv);
                         }
-                        if (westEntity instanceof IInventory) {
-                            invList.add((IInventory) westEntity);
+                        if (westEntity instanceof IInventory inv) {
+                            invList.add(inv);
                         }
-
-                        break;
-
-                    case 2:
-                        if (westEntity instanceof IInventory) {
-                            outputInv = (IInventory) westEntity;
+                    }
+                    case 2 -> {
+                        if (westEntity instanceof IInventory out) {
+                            outputInv = out;
                         } else {
                             return;
                         }
 
-                        if (northEntity instanceof IInventory) {
-                            invList.add((IInventory) northEntity);
+                        if (northEntity instanceof IInventory inv) {
+                            invList.add(inv);
                         }
-                        if (eastEntity instanceof IInventory) {
-                            invList.add((IInventory) eastEntity);
+                        if (eastEntity instanceof IInventory inv) {
+                            invList.add(inv);
                         }
-                        if (southEntity instanceof IInventory) {
-                            invList.add((IInventory) southEntity);
+                        if (southEntity instanceof IInventory inv) {
+                            invList.add(inv);
                         }
-
-                        break;
-
-                    case 3:
-                        if (northEntity instanceof IInventory) {
-                            outputInv = (IInventory) northEntity;
+                    }
+                    case 3 -> {
+                        if (northEntity instanceof IInventory out) {
+                            outputInv = out;
                         } else {
                             return;
                         }
 
-                        if (eastEntity instanceof IInventory) {
-                            invList.add((IInventory) eastEntity);
+                        if (eastEntity instanceof IInventory inv) {
+                            invList.add(inv);
                         }
-                        if (southEntity instanceof IInventory) {
-                            invList.add((IInventory) southEntity);
+                        if (southEntity instanceof IInventory inv) {
+                            invList.add(inv);
                         }
-                        if (westEntity instanceof IInventory) {
-                            invList.add((IInventory) westEntity);
+                        if (westEntity instanceof IInventory inv) {
+                            invList.add(inv);
                         }
-
-                        break;
-
-                    case 4:
-                        if (eastEntity instanceof IInventory) {
-                            outputInv = (IInventory) eastEntity;
+                    }
+                    case 4 -> {
+                        if (eastEntity instanceof IInventory out) {
+                            outputInv = out;
                         } else {
                             return;
                         }
 
-                        if (northEntity instanceof IInventory) {
-                            invList.add((IInventory) northEntity);
+                        if (northEntity instanceof IInventory inv) {
+                            invList.add(inv);
                         }
-                        if (southEntity instanceof IInventory) {
-                            invList.add((IInventory) southEntity);
+                        if (southEntity instanceof IInventory inv) {
+                            invList.add(inv);
                         }
-                        if (westEntity instanceof IInventory) {
-                            invList.add((IInventory) westEntity);
+                        if (westEntity instanceof IInventory inv) {
+                            invList.add(inv);
                         }
-
-                        break;
+                    }
                 }
 
                 if (outputInv != null) {
@@ -220,11 +210,12 @@ public class RitualEffectCrafting extends RitualEffect {
                         return;
                     }
 
-                    if (addOutputToInputs) {
+                    if (this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false)) {
                         invList.add(outputInv);
                     }
 
-                    Map<Integer, Map<Integer, Integer>> syphonMap = new HashMap(); // Inventory, Slot, how much claimed
+                    Map<Integer, Map<Integer, Integer>> syphonMap = new HashMap<>(); // Inventory, Slot, how much
+                                                                                     // claimed
 
                     for (int n = 0; n < recipe.length; n++) // Look for the correct items
                     {
@@ -264,11 +255,7 @@ public class RitualEffectCrafting extends RitualEffect {
                                     // {
                                     // continue;
                                     // }
-                                    Map<Integer, Integer> slotMap = syphonMap.get(i);
-                                    if (slotMap == null) {
-                                        slotMap = new HashMap();
-                                        syphonMap.put(i, slotMap);
-                                    }
+                                    Map<Integer, Integer> slotMap = syphonMap.computeIfAbsent(i, k -> new HashMap<>());
 
                                     if (slotMap.containsKey(j)) {
                                         int syphoned = slotMap.get(j);
@@ -315,7 +302,8 @@ public class RitualEffectCrafting extends RitualEffect {
                         }
                     }
 
-                    if (addOutputToInputs && syphonMap.containsKey(invList.size())) {
+                    if (this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false)
+                            && syphonMap.containsKey(invList.size())) {
                         this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, true);
                     }
 
@@ -346,7 +334,7 @@ public class RitualEffectCrafting extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> autoCraftingRitual = new ArrayList();
+        ArrayList<RitualComponent> autoCraftingRitual = new ArrayList<>();
 
         this.addCornerRunes(autoCraftingRitual, 1, 1, RitualComponent.EARTH);
         this.addParallelRunes(autoCraftingRitual, 1, 1, RitualComponent.EARTH);
@@ -376,24 +364,15 @@ public class RitualEffectCrafting extends RitualEffect {
                 || stack1.getItemDamage() == stack2.getItemDamage();
     }
 
-    public boolean areItemStacksEqualWithWildcard(ItemStack recipeStack, ItemStack comparedStack) {
-        return recipeStack.isItemEqual(comparedStack) || (recipeStack.getItemDamage() == OreDictionary.WILDCARD_VALUE
-                && recipeStack.getItem() == comparedStack.getItem());
-    }
-
     public Int3 getSlotPositionForDirection(int slot, int direction) {
         int x = slot % 3 - 1;
         int z = slot / 3 - 1;
-        switch (direction) {
-            case 1: // NORTH-facing
-                return new Int3(x, 2, z);
-            case 2: // EAST-facing
-                return new Int3(z, 2, -x);
-            case 3: // SOUTH-facing
-                return new Int3(-x, 2, -z);
-            case 4: // WEST-facing
-                return new Int3(-z, 2, x);
-        }
-        return new Int3(0, 0, 0);
+        return switch (direction) {
+            case 1 -> new Int3(x, 2, z); // NORTH-facing
+            case 2 -> new Int3(z, 2, -x); // EAST-facing
+            case 3 -> new Int3(-x, 2, -z); // SOUTH-facing
+            case 4 -> new Int3(-z, 2, x); // WEST-facing
+            default -> new Int3(0, 0, 0);
+        };
     }
 }

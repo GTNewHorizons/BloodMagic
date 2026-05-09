@@ -48,12 +48,12 @@ public class Binding {
 
         @Override
         public String describe() {
-            return "Adding Binding Recipe for " + ((BindingRecipe) recipe).getResult().getDisplayName();
+            return "Adding Binding Recipe for " + recipe.getResult().getDisplayName();
         }
 
         @Override
         public String describeUndo() {
-            return "Removing Binding Recipe for " + ((BindingRecipe) recipe).getResult().getDisplayName();
+            return "Removing Binding Recipe for " + recipe.getResult().getDisplayName();
         }
 
         @Override

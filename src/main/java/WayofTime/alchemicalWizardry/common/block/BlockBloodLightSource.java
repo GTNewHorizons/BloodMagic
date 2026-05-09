@@ -61,11 +61,12 @@ public class BlockBloodLightSource extends Block {
     }
 
     @Override
-    public void addCollisionBoxesToList(World par1World, int par2, int par3, int par4, AxisAlignedBB par5AxisAlignedBB,
-            List par6List, Entity par7Entity) {
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB mask, List<AxisAlignedBB> list,
+            Entity entity) {
         this.setBlockBounds(0.40F, 0.40F, 0.40F, 0.60F, 0.60F, 0.60F);
     }
 
+    @Override
     public int quantityDropped(Random par1Random) {
         return 0;
     }

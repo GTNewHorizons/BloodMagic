@@ -5,9 +5,7 @@ import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-import WayofTime.alchemicalWizardry.common.entity.mob.EntityAirElemental;
 import WayofTime.alchemicalWizardry.common.entity.mob.EntityEarthElemental;
-import WayofTime.alchemicalWizardry.common.entity.mob.EntityElemental;
 import WayofTime.alchemicalWizardry.common.entity.mob.EntityFireElemental;
 import WayofTime.alchemicalWizardry.common.entity.mob.EntityHolyElemental;
 import WayofTime.alchemicalWizardry.common.entity.mob.EntityShadeElemental;
@@ -38,35 +36,28 @@ public class RenderElemental extends RenderLiving {
         super(par1ModelBase, par2);
     }
 
-    public ResourceLocation func_110832_a(EntityElemental par1EntityElemental) {
-        if (par1EntityElemental instanceof EntityAirElemental) {
-            return airBeacon;
-        }
-
-        if (par1EntityElemental instanceof EntityWaterElemental) {
+    @Override
+    public ResourceLocation getEntityTexture(Entity entity) {
+        if (entity instanceof EntityWaterElemental) {
             return waterBeacon;
         }
 
-        if (par1EntityElemental instanceof EntityEarthElemental) {
+        if (entity instanceof EntityEarthElemental) {
             return earthBeacon;
         }
 
-        if (par1EntityElemental instanceof EntityFireElemental) {
+        if (entity instanceof EntityFireElemental) {
             return fireBeacon;
         }
 
-        if (par1EntityElemental instanceof EntityShadeElemental) {
+        if (entity instanceof EntityShadeElemental) {
             return shadeBeacon;
         }
 
-        if (par1EntityElemental instanceof EntityHolyElemental) {
+        if (entity instanceof EntityHolyElemental) {
             return holyBeacon;
         }
 
         return airBeacon;
-    }
-
-    public ResourceLocation getEntityTexture(Entity par1Entity) {
-        return this.func_110832_a((EntityElemental) par1Entity);
     }
 }

@@ -1,5 +1,7 @@
 package WayofTime.alchemicalWizardry.common.demonVillage;
 
+import java.util.Objects;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.material.Material;
@@ -24,10 +26,10 @@ public class DemonVillagePath {
     public static boolean tunnelIfObstructed = false;
     public static boolean createBridgeInAirIfObstructed = false;
 
-    public DemonVillagePath(int xi, int yi, int zi, ForgeDirection dir, int length) {
-        this.xPos = xi;
-        this.yPos = yi;
-        this.zPos = zi;
+    public DemonVillagePath(int xPos, int yPos, int zPos, ForgeDirection dir, int length) {
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.zPos = zPos;
         this.dir = dir;
         this.length = length;
     }
@@ -63,7 +65,7 @@ public class DemonVillagePath {
                             length + 2 * rad,
                             true),
                     value);
-            if (TEDemonPortal.printDebug) System.out.println("" + (length + 2 * rad) + ", " + value + "");
+            if (TEDemonPortal.printDebug) System.out.println((length + 2 * rad) + ", " + value);
         }
 
         Int3 position = new Int3(xi, finalYPos, zi);
@@ -73,7 +75,7 @@ public class DemonVillagePath {
         return new Int3AndBool(position, bool);
     }
 
-    public class Int3AndBool {
+    public static class Int3AndBool {
 
         public Int3 coords;
         public boolean bool;
@@ -84,20 +86,7 @@ public class DemonVillagePath {
         }
     }
 
-    /**
-     *
-     * @param portal
-     * @param world
-     * @param clearance
-     * @param xi
-     * @param yi
-     * @param zi
-     * @param dir
-     * @param length
-     * @param doConstruct
-     * @return length if doConstruct, yi if !doConstruct
-     */
-    public int constructPartialPath(TEDemonPortal portal, World world, int clearance, int xi, int yi, int zi,
+    public int constructPartialPath(TEDemonPortal portal, World world, int clearance, int x, int y, int z,
             ForgeDirection dir, int length, boolean doConstruct) {
         for (int i = 0; i < length; i++) {
             int xOffset = i * dir.offsetX;
@@ -108,46 +97,46 @@ public class DemonVillagePath {
             for (int yOffset = 0; yOffset <= clearance; yOffset++) {
                 int sign = 1;
 
-                Block block1 = world.getBlock(xi + xOffset, yi + sign * yOffset, zi + zOffset);
-                Block highBlock1 = world.getBlock(xi + xOffset, yi + sign * yOffset + 1, zi + zOffset);
+                Block block1 = world.getBlock(x + xOffset, y + sign * yOffset, z + zOffset);
+                Block highBlock1 = world.getBlock(x + xOffset, y + sign * yOffset + 1, z + zOffset);
 
                 if ((this.forceReplaceBlock(block1))
-                        || (!block1.isReplaceable(world, xi + xOffset, yi + sign * yOffset, zi + zOffset)
+                        || (!block1.isReplaceable(world, x + xOffset, y + sign * yOffset, z + zOffset)
                                 && this.isBlockReplaceable(block1))
                                 && (this.forceCanTunnelUnder(highBlock1) || highBlock1
-                                        .isReplaceable(world, xi + xOffset, yi + sign * yOffset + 1, zi + zOffset))) {
+                                        .isReplaceable(world, x + xOffset, y + sign * yOffset + 1, z + zOffset))) {
                     if (doConstruct) {
                         world.setBlock(
-                                xi + xOffset,
-                                yi + sign * yOffset,
-                                zi + zOffset,
+                                x + xOffset,
+                                y + sign * yOffset,
+                                z + zOffset,
                                 portal.getRoadBlock(),
                                 portal.getRoadMeta(),
                                 3);
                     }
-                    yi += sign * yOffset;
+                    y += sign * yOffset;
                     completed = true;
                     break;
                 } else if (canGoDown) {
                     sign = -1;
-                    Block block2 = world.getBlock(xi + xOffset, yi + sign * yOffset, zi + zOffset);
-                    Block highBlock2 = world.getBlock(xi + xOffset, yi + sign * yOffset + 1, zi + zOffset);
+                    Block block2 = world.getBlock(x + xOffset, y + sign * yOffset, z + zOffset);
+                    Block highBlock2 = world.getBlock(x + xOffset, y + sign * yOffset + 1, z + zOffset);
 
-                    if ((this.forceReplaceBlock(block2)) || (!block2
-                            .isReplaceable(world, xi + xOffset, yi + sign * yOffset, zi + zOffset)
-                            && this.isBlockReplaceable(block2))
-                            && (this.forceCanTunnelUnder(highBlock2) || highBlock2
-                                    .isReplaceable(world, xi + xOffset, yi + sign * yOffset + 1, zi + zOffset))) {
+                    if ((this.forceReplaceBlock(block2))
+                            || (!block2.isReplaceable(world, x + xOffset, y + sign * yOffset, z + zOffset)
+                                    && this.isBlockReplaceable(block2))
+                                    && (this.forceCanTunnelUnder(highBlock2) || highBlock2
+                                            .isReplaceable(world, x + xOffset, y + sign * yOffset + 1, z + zOffset))) {
                         if (doConstruct) {
                             world.setBlock(
-                                    xi + xOffset,
-                                    yi + sign * yOffset,
-                                    zi + zOffset,
+                                    x + xOffset,
+                                    y + sign * yOffset,
+                                    z + zOffset,
                                     portal.getRoadBlock(),
                                     portal.getRoadMeta(),
                                     3);
                         }
-                        yi += sign * yOffset;
+                        y += sign * yOffset;
                         completed = true;
                         break;
                     }
@@ -157,98 +146,40 @@ public class DemonVillagePath {
             if (!completed) {
                 boolean returnAmount = true;
                 if (createBridgeInAirIfObstructed) {
-                    Block block1 = world.getBlock(xi + xOffset, yi, zi + zOffset);
+                    Block block1 = world.getBlock(x + xOffset, y, z + zOffset);
 
-                    if (block1.isReplaceable(world, xi + xOffset, yi, zi + zOffset) || !this.isBlockReplaceable(block1)
+                    if (block1.isReplaceable(world, x + xOffset, y, z + zOffset) || !this.isBlockReplaceable(block1)
                             || !this.forceReplaceBlock(block1)) {
                         returnAmount = false;
 
                         if (doConstruct) {
-                            world.setBlock(
-                                    xi + xOffset,
-                                    yi,
-                                    zi + zOffset,
-                                    portal.getRoadBlock(),
-                                    portal.getRoadMeta(),
-                                    3);
+                            world.setBlock(x + xOffset, y, z + zOffset, portal.getRoadBlock(), portal.getRoadMeta(), 3);
                         }
-                    } else {
-                        returnAmount = true;
                     }
 
                 } else if (tunnelIfObstructed) {
-                    Block block1 = world.getBlock(xi + xOffset, yi, zi + zOffset);
+                    Block block1 = world.getBlock(x + xOffset, y, z + zOffset);
 
-                    if (!block1.isReplaceable(world, xi + xOffset, yi, zi + zOffset) || this.isBlockReplaceable(block1)
+                    if (!block1.isReplaceable(world, x + xOffset, y, z + zOffset) || this.isBlockReplaceable(block1)
                             || !this.forceReplaceBlock(block1)) {
                         returnAmount = false;
 
                         if (doConstruct) {
-                            world.setBlock(
-                                    xi + xOffset,
-                                    yi,
-                                    zi + zOffset,
-                                    portal.getRoadBlock(),
-                                    portal.getRoadMeta(),
-                                    3);
-                            world.setBlockToAir(xi + xOffset, yi + 1, zi + zOffset);
-                            world.setBlockToAir(xi + xOffset, yi + 2, zi + zOffset);
-                            world.setBlockToAir(xi + xOffset, yi + 3, zi + zOffset);
+                            world.setBlock(x + xOffset, y, z + zOffset, portal.getRoadBlock(), portal.getRoadMeta(), 3);
+                            world.setBlockToAir(x + xOffset, y + 1, z + zOffset);
+                            world.setBlockToAir(x + xOffset, y + 2, z + zOffset);
+                            world.setBlockToAir(x + xOffset, y + 3, z + zOffset);
                         }
-                    } else {
-                        returnAmount = true;
                     }
                 }
 
                 if (returnAmount) {
-                    return doConstruct ? i : yi;
+                    return doConstruct ? i : y;
                 }
             }
         }
 
-        return doConstruct ? length : yi;
-    }
-
-    public Int3 getFinalLocation(World world, int clearance) {
-        int xi = xPos;
-        int yi = yPos;
-        int zi = zPos;
-
-        for (int i = 0; i < length; i++) {
-            int xOffset = i * dir.offsetX;
-            int zOffset = i * dir.offsetZ;
-
-            for (int yOffset = 0; yOffset <= clearance; yOffset++) {
-                int sign = 1;
-
-                Block block1 = world.getBlock(xi + xOffset, yi + sign * yOffset, zi + zOffset);
-                Block highBlock1 = world.getBlock(xi + xOffset, yi + sign * yOffset + 1, zi + zOffset);
-
-                if ((this.forceReplaceBlock(block1))
-                        || (!block1.isReplaceable(world, xi + xOffset, yi + sign * yOffset, zi + zOffset)
-                                && this.isBlockReplaceable(block1))
-                                && (this.forceCanTunnelUnder(highBlock1) || highBlock1
-                                        .isReplaceable(world, xi + xOffset, yi + sign * yOffset + 1, zi + zOffset))) {
-                    yi += sign * yOffset;
-                    break;
-                } else {
-                    sign = -1;
-                    Block block2 = world.getBlock(xi + xOffset, yi + sign * yOffset, zi + zOffset);
-                    Block highBlock2 = world.getBlock(xi + xOffset, yi + sign * yOffset + 1, zi + zOffset);
-
-                    if ((this.forceReplaceBlock(block2)) || (!block2
-                            .isReplaceable(world, xi + xOffset, yi + sign * yOffset, zi + zOffset)
-                            && this.isBlockReplaceable(block2))
-                            && (this.forceCanTunnelUnder(highBlock2) || highBlock2
-                                    .isReplaceable(world, xi + xOffset, yi + sign * yOffset + 1, zi + zOffset))) {
-                        yi += sign * yOffset;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return new Int3(xi, yi, zi);
+        return doConstruct ? length : y;
     }
 
     public int getRoadRadius() {
@@ -267,4 +198,60 @@ public class DemonVillagePath {
     public boolean forceCanTunnelUnder(Block block) {
         return block instanceof BlockFlower || block == Blocks.double_plant;
     }
+
+    public int xPos() {
+        return xPos;
+    }
+
+    public int yPos() {
+        return yPos;
+    }
+
+    public int zPos() {
+        return zPos;
+    }
+
+    public ForgeDirection dir() {
+        return dir;
+    }
+
+    public int length() {
+        return length;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (DemonVillagePath) obj;
+        return this.xPos == that.xPos && this.yPos == that.yPos
+                && this.zPos == that.zPos
+                && Objects.equals(this.dir, that.dir)
+                && this.length == that.length;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(xPos, yPos, zPos, dir, length);
+    }
+
+    @Override
+    public String toString() {
+        return "DemonVillagePath[" + "xPos="
+                + xPos
+                + ", "
+                + "yPos="
+                + yPos
+                + ", "
+                + "zPos="
+                + zPos
+                + ", "
+                + "dir="
+                + dir
+                + ", "
+                + "length="
+                + length
+                + ']';
+    }
+
 }

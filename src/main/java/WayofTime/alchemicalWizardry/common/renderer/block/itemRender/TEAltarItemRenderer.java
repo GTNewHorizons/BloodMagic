@@ -12,7 +12,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class TEAltarItemRenderer implements IItemRenderer {
 
-    private ModelBloodAltar modelBloodAltar;
+    private final ModelBloodAltar modelBloodAltar;
 
     public TEAltarItemRenderer() {
         modelBloodAltar = new ModelBloodAltar();

@@ -6,11 +6,11 @@ import net.minecraft.world.World;
 
 public interface ISimpleSpell {
 
-    ItemStack onOffensiveRangedRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer);
+    ItemStack onOffensiveRangedRightClick(ItemStack item, World world, EntityPlayer player);
 
-    ItemStack onOffensiveMeleeRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer);
+    ItemStack onOffensiveMeleeRightClick(ItemStack item, World world, EntityPlayer player);
 
-    ItemStack onDefensiveRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer);
+    ItemStack onDefensiveRightClick(ItemStack item, World world, EntityPlayer player);
 
-    ItemStack onEnvironmentalRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer);
+    ItemStack onEnvironmentalRightClick(ItemStack item, World world, EntityPlayer player);
 }

@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 
 public class BindingRegistry {
 
-    public static List<BindingRecipe> bindingRecipes = new LinkedList();
+    public static List<BindingRecipe> bindingRecipes = new LinkedList<>();
 
     public static void registerRecipe(ItemStack output, ItemStack input) {
         bindingRecipes.add(new BindingRecipe(output, input));

@@ -47,40 +47,33 @@ public class BlockEnchantmentGlyph extends Block implements IEnchantmentGlyph {
 
     @Override
     public int getAdditionalStabilityForFaceCount(World world, int x, int y, int z, int meta, int faceCount) {
-        switch (meta) {
-            case 0:
-                return -faceCount * 10;
-            case 1:
-                return -faceCount * 20;
-            default:
-                return -faceCount * 20;
+        if (meta == 0) {
+            return -faceCount * 10;
         }
+        return -faceCount * 20;
     }
 
     @Override
     public int getEnchantability(World world, int x, int y, int z, int meta) {
-        switch (meta) {
-            case 0:
-                return 1;
-            default:
-                return 0;
+        if (meta == 0) {
+            return 1;
         }
+        return 0;
     }
 
     @Override
     public int getEnchantmentLevel(World world, int x, int y, int z, int meta) {
-        switch (meta) {
-            case 1:
-                return 1;
-            default:
-                return 0;
+        if (meta == 1) {
+            return 1;
         }
+        return 0;
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> items) {
         for (int i = 0; i < 2; i++) {
-            par3List.add(new ItemStack(par1, 1, i));
+            items.add(new ItemStack(item, 1, i));
         }
     }
 

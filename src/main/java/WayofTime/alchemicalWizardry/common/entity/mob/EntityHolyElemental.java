@@ -16,12 +16,12 @@ public class EntityHolyElemental extends EntityElemental implements IMob {
         super(world, AlchemicalWizardry.entityHolyElementalID);
     }
 
+    @Override
     public void inflictEffectOnEntity(Entity target) {
-        if (target instanceof EntityLivingBase) {
+        if (target instanceof EntityLivingBase t) {
             target.attackEntityFrom(DamageSource.causeMobDamage(this), 15);
-            ((EntityLivingBase) target)
-                    .addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionInhibit.id, 150, 0));
-            ((EntityLivingBase) target).addPotionEffect(new PotionEffect(Potion.poison.id, 100, 1));
+            t.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionInhibit.id, 150, 0));
+            t.addPotionEffect(new PotionEffect(Potion.poison.id, 100, 1));
         }
     }
 }

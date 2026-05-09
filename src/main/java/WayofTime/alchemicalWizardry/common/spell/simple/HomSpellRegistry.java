@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 public class HomSpellRegistry {
 
-    public static List<HomSpellComponent> spellList = new ArrayList();
+    public static List<HomSpellComponent> spellList = new ArrayList<>();
 
     public static void registerBasicSpell(ItemStack item, HomSpell spell) {
         spellList.add(new HomSpellComponent(item, spell));

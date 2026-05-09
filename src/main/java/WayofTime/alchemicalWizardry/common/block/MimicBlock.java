@@ -9,7 +9,6 @@ import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -29,23 +28,22 @@ public class MimicBlock extends BlockContainer {
         setHardness(2.0F);
         setResistance(5.0F);
         this.setBlockName("blockMimic");
-        // this.setBlockBounds(0, 0, 0, 0, 0, 0);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
         TileEntity TE = world.getTileEntity(x, y, z);
-        if (!(TE instanceof TEMimicBlock)) {
+        if (!(TE instanceof TEMimicBlock mimic)) {
             return true;
         }
-        TEMimicBlock mimic = (TEMimicBlock) TE;
 
         Block block = mimic.getBlock();
 
         return block == null || block.shouldSideBeRendered(world, x, y, z, side);
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public int getRenderBlockPass() {
         return 1;
@@ -58,9 +56,6 @@ public class MimicBlock extends BlockContainer {
 
     @SideOnly(Side.CLIENT)
     @Override
-    /**
-     * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
-     */
     public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
         TileEntity TE = blockAccess.getTileEntity(x, y, z);
         TEMimicBlock mimic = (TEMimicBlock) TE;
@@ -70,6 +65,7 @@ public class MimicBlock extends BlockContainer {
         return block != null ? block.getIcon(side, meta) : this.blockIcon;
     }
 
+    @Override
     public boolean isOpaqueCube() {
         return false;
     }
@@ -105,53 +101,38 @@ public class MimicBlock extends BlockContainer {
 
     @Override
     public boolean addHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer) {
-        TileEntity tile = world.getTileEntity(target.blockX, target.blockY, target.blockZ);
+        TEMimicBlock tile = (TEMimicBlock) world.getTileEntity(target.blockX, target.blockY, target.blockZ);
+        if (tile == null) {
+            return super.addHitEffects(world, target, effectRenderer);
+        }
+        Block block = tile.getBlock();
 
-        TEMimicBlock TE = (TEMimicBlock) tile;
+        double xOffset = target.blockX
+                + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - 0.1F * 2.0F)
+                + 0.1F
+                + block.getBlockBoundsMinX();
+        double yOffset = target.blockY
+                + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - 0.1F * 2.0F)
+                + 0.1F
+                + block.getBlockBoundsMinY();
+        double zOffset = target.blockZ
+                + world.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - 0.1F * 2.0F)
+                + 0.1F
+                + block.getBlockBoundsMinZ();
 
-        if (TE != null) {
-            Block block = TE.getBlock();
-
-            double xOffset = target.blockX
-                    + world.rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - 0.1F * 2.0F)
-                    + 0.1F
-                    + block.getBlockBoundsMinX();
-            double yOffset = target.blockY
-                    + world.rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - 0.1F * 2.0F)
-                    + 0.1F
-                    + block.getBlockBoundsMinY();
-            double zOffset = target.blockZ
-                    + world.rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - 0.1F * 2.0F)
-                    + 0.1F
-                    + block.getBlockBoundsMinZ();
-
-            switch (target.sideHit) {
-                case 0:
-                    yOffset = target.blockY + block.getBlockBoundsMinY() - 0.1D;
-                    break;
-                case 1:
-                    yOffset = target.blockY + block.getBlockBoundsMaxY() + 0.1D;
-                    break;
-                case 2:
-                    zOffset = target.blockZ + block.getBlockBoundsMinZ() - 0.1D;
-                    break;
-                case 3:
-                    zOffset = target.blockZ + block.getBlockBoundsMaxZ() + 0.1D;
-                    break;
-                case 4:
-                    xOffset = target.blockX + block.getBlockBoundsMinX() - 0.1D;
-                    break;
-                case 5:
-                    xOffset = target.blockX + block.getBlockBoundsMaxX() + 0.1D;
-                    break;
-            }
-
-            MimicBlock.addHitEffect(TE, target, xOffset, yOffset, zOffset, null, effectRenderer);
-
-            return true;
+        switch (target.sideHit) {
+            case 0 -> yOffset = target.blockY + block.getBlockBoundsMinY() - 0.1D;
+            case 1 -> yOffset = target.blockY + block.getBlockBoundsMaxY() + 0.1D;
+            case 2 -> zOffset = target.blockZ + block.getBlockBoundsMinZ() - 0.1D;
+            case 3 -> zOffset = target.blockZ + block.getBlockBoundsMaxZ() + 0.1D;
+            case 4 -> xOffset = target.blockX + block.getBlockBoundsMinX() - 0.1D;
+            case 5 -> xOffset = target.blockX + block.getBlockBoundsMaxX() + 0.1D;
         }
 
-        return super.addHitEffects(world, target, effectRenderer);
+        MimicBlock.addHitEffect(tile, target, xOffset, yOffset, zOffset, effectRenderer);
+
+        return true;
+
     }
 
     @Override
@@ -179,9 +160,9 @@ public class MimicBlock extends BlockContainer {
 
     @Override
     public void velocityToAddToEntity(World world, int x, int y, int z, Entity entity, Vec3 vec) {
-        TEMimicBlock TE = (TEMimicBlock) world.getTileEntity(x, y, z);
-        if (TE != null) {
-            Block block = TE.getBlock();
+        TEMimicBlock tile = (TEMimicBlock) world.getTileEntity(x, y, z);
+        if (tile != null) {
+            Block block = tile.getBlock();
             if (block != null) {
                 block.velocityToAddToEntity(world, x, y, z, entity, vec);
             }
@@ -189,7 +170,7 @@ public class MimicBlock extends BlockContainer {
     }
 
     public static void addHitEffect(TEMimicBlock TE, MovingObjectPosition target, double x, double y, double z,
-            ItemStack itemStack, EffectRenderer effectRenderer) {
+            EffectRenderer effectRenderer) {
         EntityDiggingFX particle = new EntityDiggingFX(
                 TE.getWorldObj(),
                 x,
@@ -207,12 +188,12 @@ public class MimicBlock extends BlockContainer {
 
     @Override
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
-        TEMimicBlock TE = (TEMimicBlock) world.getTileEntity(x, y, z);
-        if (TE != null) {
-            if (TE.getBlockEffectWhileInside(entity, x, y, z)) {
+        TEMimicBlock tile = (TEMimicBlock) world.getTileEntity(x, y, z);
+        if (tile != null) {
+            if (tile.getBlockEffectWhileInside(entity, x, y, z)) {
                 return;
             } else {
-                Block block = TE.getBlock();
+                Block block = tile.getBlock();
                 if (block != null) {
                     block.onEntityCollidedWithBlock(world, x, y, z, entity);
                     return;

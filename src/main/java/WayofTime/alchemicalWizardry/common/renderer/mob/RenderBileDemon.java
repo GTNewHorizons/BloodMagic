@@ -17,11 +17,12 @@ public class RenderBileDemon extends RenderLiving {
         super(par1ModelBase, par2);
     }
 
-    public ResourceLocation func_110832_a(EntityBileDemon par1EntityBileDemon) {
+    public ResourceLocation func_110832_a(EntityBileDemon entityBileDemon) {
         return field_110833_a;
     }
 
-    public ResourceLocation getEntityTexture(Entity par1Entity) {
-        return this.func_110832_a((EntityBileDemon) par1Entity);
+    @Override
+    public ResourceLocation getEntityTexture(Entity entity) {
+        return this.func_110832_a((EntityBileDemon) entity);
     }
 }

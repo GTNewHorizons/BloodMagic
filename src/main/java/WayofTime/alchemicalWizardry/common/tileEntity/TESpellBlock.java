@@ -12,8 +12,7 @@ public abstract class TESpellBlock extends TEOrientable implements ISpellTile {
     public void modifySpellParadigm(SpellParadigm parad) {
         this.applySpellChange(parad);
         TileEntity tile = this.getTileAtOutput();
-        if (tile instanceof TESpellBlock) {
-            TESpellBlock outputBlock = (TESpellBlock) tile;
+        if (tile instanceof TESpellBlock outputBlock) {
             outputBlock.modifySpellParadigm(parad);
         }
     }

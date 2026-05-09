@@ -44,20 +44,19 @@ public class ActivationCrystal extends EnergyItems {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List,
-            boolean par4) {
-        switch (par1ItemStack.getItemDamage()) {
-            case 0 -> par3List.add(StatCollector.translateToLocal("tooltip.activationcrystal.lowlevelrituals"));
-            case 1 -> par3List.add(StatCollector.translateToLocal("tooltip.activationcrystal.powerfulrituals"));
-            case 2 -> par3List.add(StatCollector.translateToLocal("tooltip.activationcrystal.creativeonly"));
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        switch (item.getItemDamage()) {
+            case 0 -> tooltip.add(StatCollector.translateToLocal("tooltip.activationcrystal.lowlevelrituals"));
+            case 1 -> tooltip.add(StatCollector.translateToLocal("tooltip.activationcrystal.powerfulrituals"));
+            case 2 -> tooltip.add(StatCollector.translateToLocal("tooltip.activationcrystal.creativeonly"));
         }
-        addBindingInformation(par1ItemStack, par3List);
+        addBindingInformation(item, tooltip);
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
-        return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        IBindable.checkAndSetItemOwner(item, player);
+        return item;
     }
 
     public int getCrystalLevel(ItemStack itemStack) {
@@ -80,7 +79,7 @@ public class ActivationCrystal extends EnergyItems {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
+    public void getSubItems(Item id, CreativeTabs creativeTab, List<ItemStack> list) {
         for (int meta = 0; meta < ACTIVATION_CRYSTAL_NAMES.length; ++meta) {
             list.add(new ItemStack(id, 1, meta));
         }

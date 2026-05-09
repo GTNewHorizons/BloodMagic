@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityMinorDemonGrunt;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityMinorDemonGruntEarth;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityMinorDemonGruntFire;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityMinorDemonGruntIce;
@@ -33,7 +32,8 @@ public class RenderMinorDemonGrunt extends RenderLiving {
         super(par1ModelBase, par2);
     }
 
-    public ResourceLocation func_110832_a(EntityMinorDemonGrunt entity) {
+    @Override
+    public ResourceLocation getEntityTexture(Entity entity) {
         if (entity instanceof EntityMinorDemonGruntFire) {
             return fireTexture;
         } else if (entity instanceof EntityMinorDemonGruntWind) {
@@ -45,9 +45,5 @@ public class RenderMinorDemonGrunt extends RenderLiving {
         }
 
         return normalTexture;
-    }
-
-    public ResourceLocation getEntityTexture(Entity entity) {
-        return this.func_110832_a((EntityMinorDemonGrunt) entity);
     }
 }

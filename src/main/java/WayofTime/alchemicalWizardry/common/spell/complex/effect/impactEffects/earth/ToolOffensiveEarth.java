@@ -21,7 +21,7 @@ public class ToolOffensiveEarth extends ItemManipulator {
 
     @Override
     public List<ItemStack> handleItemsOnBlockBroken(ItemStack toolStack, List<ItemStack> itemList) {
-        List<ItemStack> newList = new LinkedList();
+        List<ItemStack> newList = new LinkedList<>();
 
         for (ItemStack stack : itemList) {
             if (stack != null && stack.getItem() instanceof ItemBlock

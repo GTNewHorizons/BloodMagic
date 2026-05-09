@@ -52,9 +52,9 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
     public TEReagentConduit(int numberOfTanks, int size) {
         super(numberOfTanks, size);
 
-        destinationList = new LinkedList();
-        reagentTargetList = new HashMap();
-        reagentTankDesignationList = new HashMap();
+        destinationList = new LinkedList<>();
+        reagentTargetList = new HashMap<>();
+        reagentTankDesignationList = new HashMap<>();
     }
 
     public Int3 getColour() {
@@ -98,9 +98,9 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
 
         NBTTagList tagList = new NBTTagList();
 
-        for (int i = 0; i < destinationList.size(); i++) {
+        for (ColourAndCoords colourAndCoords : destinationList) {
             NBTTagCompound savedTag = new NBTTagCompound();
-            tagList.appendTag(destinationList.get(i).writeToNBT(savedTag));
+            tagList.appendTag(colourAndCoords.writeToNBT(savedTag));
         }
 
         tag.setTag("destinationList", tagList);
@@ -150,7 +150,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
 
         NBTTagList tagList = tag.getTagList("destinationList", Constants.NBT.TAG_COMPOUND);
 
-        destinationList = new LinkedList();
+        destinationList = new LinkedList<>();
 
         for (int i = 0; i < tagList.tagCount(); i++) {
             NBTTagCompound savedTag = tagList.getCompoundTagAt(i);
@@ -158,7 +158,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
             destinationList.add(ColourAndCoords.readFromNBT(savedTag));
         }
 
-        reagentTargetList = new HashMap();
+        reagentTargetList = new HashMap<>();
 
         NBTTagList reagentTagList = tag.getTagList("reagentTargetList", Constants.NBT.TAG_COMPOUND);
 
@@ -167,7 +167,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
 
             Reagent reagent = ReagentRegistry.getReagentForKey(savedTag.getString("reagent"));
 
-            List<Int3> coordList = new LinkedList();
+            List<Int3> coordList = new LinkedList<>();
 
             NBTTagList coordinateList = savedTag.getTagList("coordinateList", Constants.NBT.TAG_COMPOUND);
 
@@ -178,7 +178,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
             reagentTargetList.put(reagent, coordList);
         }
 
-        reagentTankDesignationList = new HashMap();
+        reagentTankDesignationList = new HashMap<>();
 
         NBTTagList tankDesignationList = tag.getTagList("tankDesignationList", Constants.NBT.TAG_COMPOUND);
 
@@ -187,14 +187,14 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
 
             this.reagentTankDesignationList.put(
                     ReagentRegistry.getReagentForKey(savedTag.getString("reagent")),
-                    new Integer(savedTag.getInteger("integer")));
+                    savedTag.getInteger("integer"));
         }
     }
 
     public void readClientNBT(NBTTagCompound tag) {
         NBTTagList tagList = tag.getTagList("destinationList", Constants.NBT.TAG_COMPOUND);
 
-        destinationList = new LinkedList();
+        destinationList = new LinkedList<>();
 
         for (int i = 0; i < tagList.tagCount(); i++) {
             NBTTagCompound savedTag = tagList.getCompoundTagAt(i);
@@ -216,19 +216,19 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
     public void writeClientNBT(NBTTagCompound tag) {
         NBTTagList tagList = new NBTTagList();
 
-        for (int i = 0; i < destinationList.size(); i++) {
+        for (ColourAndCoords colourAndCoords : destinationList) {
             NBTTagCompound savedTag = new NBTTagCompound();
-            tagList.appendTag(destinationList.get(i).writeToNBT(savedTag));
+            tagList.appendTag(colourAndCoords.writeToNBT(savedTag));
         }
 
         tag.setTag("destinationList", tagList);
 
         NBTTagList reagentTagList = new NBTTagList();
 
-        for (int i = 0; i < this.tanks.length; i++) {
+        for (ReagentContainer tank : this.tanks) {
             NBTTagCompound savedTag = new NBTTagCompound();
-            if (this.tanks[i] != null) {
-                this.tanks[i].writeToNBT(savedTag);
+            if (tank != null) {
+                tank.writeToNBT(savedTag);
             }
             reagentTagList.appendTag(savedTag);
         }
@@ -353,7 +353,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
     }
 
     public List<ColourAndCoords> compileListForReagentTargets(Map<Reagent, List<Int3>> map) {
-        List<ColourAndCoords> list = new LinkedList();
+        List<ColourAndCoords> list = new LinkedList<>();
 
         for (Entry<Reagent, List<Int3>> entry : map.entrySet()) {
             if (entry.getValue() != null) {
@@ -440,7 +440,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
         if (this.reagentTargetList.containsKey(reagent)) {
             List<Int3> coordList = this.reagentTargetList.get(reagent);
             if (coordList == null) {
-                List<Int3> newCoordList = new LinkedList();
+                List<Int3> newCoordList = new LinkedList<>();
                 newCoordList.add(newCoord);
                 this.reagentTargetList.put(reagent, newCoordList);
             } else {
@@ -449,7 +449,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
 
             return true;
         } else {
-            List<Int3> newCoordList = new LinkedList();
+            List<Int3> newCoordList = new LinkedList<>();
             newCoordList.add(newCoord);
             this.reagentTargetList.put(reagent, newCoordList);
 

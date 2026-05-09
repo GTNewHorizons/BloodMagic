@@ -22,23 +22,23 @@ import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 
 public class SpellParadigmTool extends SpellParadigm {
 
-    private List<ILeftClickEffect> leftClickEffectList;
-    private List<IRightClickEffect> rightClickEffectList;
-    private List<IToolUpdateEffect> toolUpdateEffectList;
-    private List<IOnSummonTool> toolSummonEffectList;
-    private List<IOnBanishTool> toolBanishEffectList;
-    private List<IOnBreakBlock> breakBlockEffectList;
-    private List<IItemManipulator> itemManipulatorEffectList;
-    private List<IDigAreaEffect> digAreaEffectList;
-    private List<ISpecialDamageEffect> specialDamageEffectList;
+    private final List<ILeftClickEffect> leftClickEffectList;
+    private final List<IRightClickEffect> rightClickEffectList;
+    private final List<IToolUpdateEffect> toolUpdateEffectList;
+    private final List<IOnSummonTool> toolSummonEffectList;
+    private final List<IOnBanishTool> toolBanishEffectList;
+    private final List<IOnBreakBlock> breakBlockEffectList;
+    private final List<IItemManipulator> itemManipulatorEffectList;
+    private final List<IDigAreaEffect> digAreaEffectList;
+    private final List<ISpecialDamageEffect> specialDamageEffectList;
 
-    private HashMap<String, Integer> harvestLevel;
-    private HashMap<String, Float> digSpeed;
-    private HashMap<String, Float> maxDamageHash;
-    private HashMap<String, Float> critChanceHash;
-    private HashMap<String, Integer> durationHash;
+    private final HashMap<String, Integer> harvestLevel;
+    private final HashMap<String, Float> digSpeed;
+    private final HashMap<String, Float> maxDamageHash;
+    private final HashMap<String, Float> critChanceHash;
+    private final HashMap<String, Integer> durationHash;
 
-    private HashMap<String, String> toolInfoString;
+    private final HashMap<String, String> toolInfoString;
 
     private int fortuneLevel;
     private boolean silkTouch;
@@ -48,31 +48,31 @@ public class SpellParadigmTool extends SpellParadigm {
     public static Item customTool;
 
     public SpellParadigmTool() {
-        this.leftClickEffectList = new LinkedList();
-        this.rightClickEffectList = new LinkedList();
-        this.toolUpdateEffectList = new LinkedList();
-        this.toolSummonEffectList = new LinkedList();
-        this.toolBanishEffectList = new LinkedList();
-        this.breakBlockEffectList = new LinkedList();
-        this.itemManipulatorEffectList = new LinkedList();
-        this.digAreaEffectList = new LinkedList();
-        this.specialDamageEffectList = new LinkedList();
-        this.durationHash = new HashMap();
+        this.leftClickEffectList = new LinkedList<>();
+        this.rightClickEffectList = new LinkedList<>();
+        this.toolUpdateEffectList = new LinkedList<>();
+        this.toolSummonEffectList = new LinkedList<>();
+        this.toolBanishEffectList = new LinkedList<>();
+        this.breakBlockEffectList = new LinkedList<>();
+        this.itemManipulatorEffectList = new LinkedList<>();
+        this.digAreaEffectList = new LinkedList<>();
+        this.specialDamageEffectList = new LinkedList<>();
+        this.durationHash = new HashMap<>();
 
-        this.toolInfoString = new HashMap();
-        this.critChanceHash = new HashMap();
+        this.toolInfoString = new HashMap<>();
+        this.critChanceHash = new HashMap<>();
 
-        this.harvestLevel = new HashMap();
+        this.harvestLevel = new HashMap<>();
         this.harvestLevel.put("pickaxe", -1);
         this.harvestLevel.put("shovel", -1);
         this.harvestLevel.put("axe", -1);
 
-        this.digSpeed = new HashMap();
+        this.digSpeed = new HashMap<>();
         this.digSpeed.put("pickaxe", 1.0f);
         this.digSpeed.put("shovel", 1.0f);
         this.digSpeed.put("axe", 1.0f);
 
-        this.maxDamageHash = new HashMap();
+        this.maxDamageHash = new HashMap<>();
         this.maxDamageHash.put("default", 5.0f);
 
         this.fortuneLevel = 0;
@@ -104,7 +104,6 @@ public class SpellParadigmTool extends SpellParadigm {
     }
 
     /**
-     * @param crystalStack
      * @return stack containing the new multitool
      */
     public ItemStack prepareTool(ItemStack crystalStack, World world) {
@@ -145,11 +144,7 @@ public class SpellParadigmTool extends SpellParadigm {
 
         itemTool.setCritChance(toolStack, this.getCritChance() / 100f);
 
-        List<String> toolStringList = new LinkedList();
-
-        for (String str : this.toolInfoString.values()) {
-            toolStringList.add(str);
-        }
+        List<String> toolStringList = new LinkedList<>(this.toolInfoString.values());
 
         itemTool.setToolListString(toolStack, toolStringList);
 
@@ -256,7 +251,7 @@ public class SpellParadigmTool extends SpellParadigm {
         return total;
     }
 
-    public int onRightClickAir(ItemStack toolStack, World world, EntityPlayer player) {
+    public int onRightClickAir(ItemStack toolStack, EntityPlayer player) {
         int total = 0;
         for (IRightClickEffect effect : this.rightClickEffectList) {
             total += effect.onRightClickAir(toolStack, player);
@@ -265,10 +260,10 @@ public class SpellParadigmTool extends SpellParadigm {
         return total;
     }
 
-    public int onUpdate(ItemStack toolStack, World world, Entity par3Entity, int invSlot, boolean inHand) {
+    public int onUpdate(ItemStack toolStack, World world, Entity entity, int invSlot, boolean inHand) {
         int total = 0;
         for (IToolUpdateEffect effect : this.toolUpdateEffectList) {
-            total += effect.onUpdate(toolStack, world, par3Entity, invSlot, inHand);
+            total += effect.onUpdate(toolStack, world, entity, invSlot, inHand);
         }
 
         return total;
@@ -306,8 +301,7 @@ public class SpellParadigmTool extends SpellParadigm {
         List<ItemStack> heldList = items;
 
         for (IItemManipulator eff : this.itemManipulatorEffectList) {
-            List<ItemStack> newHeldList = eff.handleItemsOnBlockBroken(toolStack, heldList);
-            heldList = newHeldList;
+            heldList = eff.handleItemsOnBlockBroken(toolStack, heldList);
         }
 
         return heldList;
@@ -404,7 +398,7 @@ public class SpellParadigmTool extends SpellParadigm {
     }
 
     public float getAddedDamageForEntity(Entity entity) {
-        HashMap<String, Float> hash = new HashMap();
+        HashMap<String, Float> hash = new HashMap<>();
 
         for (ISpecialDamageEffect effect : this.specialDamageEffectList) {
             hash.put(effect.getKey(), effect.getDamageForEntity(entity));

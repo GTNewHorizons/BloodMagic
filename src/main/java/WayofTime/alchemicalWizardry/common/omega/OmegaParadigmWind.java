@@ -47,6 +47,4 @@ public class OmegaParadigmWind extends OmegaParadigm {
         return true;
     }
 
-    @Override
-    public void onOmegaKeyPressed(EntityPlayer player, ItemStack stack) {}
 }

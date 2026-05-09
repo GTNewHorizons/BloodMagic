@@ -95,7 +95,7 @@ public class RitualEffectJumping extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> jumpingRitual = new ArrayList();
+        ArrayList<RitualComponent> jumpingRitual = new ArrayList<>();
 
         for (int i = -1; i <= 1; i++) {
             jumpingRitual.add(new RitualComponent(1, i, 1, RitualComponent.AIR));

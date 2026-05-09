@@ -95,14 +95,9 @@ public class RitualEffectDemonPortal extends RitualEffect {
     public boolean checkCreatePortal(IMasterRitualStone ritualStone) {
         TileEntity entity = ritualStone.getWorld()
                 .getTileEntity(ritualStone.getXCoord(), ritualStone.getYCoord() + 1, ritualStone.getZCoord());
-        if (entity instanceof IBloodAltar) {
-            IBloodAltar altar = (IBloodAltar) entity;
-            if (altar.hasDemonBlood() && ritualStone.getWorld()
-                    .isAirBlock(ritualStone.getXCoord(), ritualStone.getYCoord() + 2, ritualStone.getZCoord())) {
-                return true;
-            }
-        }
-        return false;
+        return entity instanceof IBloodAltar altar && altar.hasDemonBlood()
+                && ritualStone.getWorld()
+                        .isAirBlock(ritualStone.getXCoord(), ritualStone.getYCoord() + 2, ritualStone.getZCoord());
     }
 
     @Override
@@ -149,7 +144,7 @@ public class RitualEffectDemonPortal extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> demonRitual = new ArrayList();
+        ArrayList<RitualComponent> demonRitual = new ArrayList<>();
         this.addParallelRunes(demonRitual, 3, 0, RitualComponent.FIRE);
         this.addParallelRunes(demonRitual, 5, 0, RitualComponent.FIRE);
         this.addCornerRunes(demonRitual, 2, 0, RitualComponent.AIR);

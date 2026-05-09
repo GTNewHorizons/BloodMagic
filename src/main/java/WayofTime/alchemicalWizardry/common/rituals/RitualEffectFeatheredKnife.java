@@ -82,7 +82,7 @@ public class RitualEffectFeatheredKnife extends RitualEffect {
                         && this.canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, false);
                 double threshold = hasSanctus ? 0.7d : 0.3d;
 
-                if ((hasMagicales && player == ownerPlayer) || !hasMagicales) {
+                if (!hasMagicales || player == ownerPlayer) {
                     if (!SpellHelper.isFakePlayer(world, player)) {
                         if (player.getHealth() / player.getMaxHealth() > threshold) {
                             player.setHealth(player.getHealth() - 1);
@@ -124,7 +124,7 @@ public class RitualEffectFeatheredKnife extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> featheredKnifeRitual = new ArrayList();
+        ArrayList<RitualComponent> featheredKnifeRitual = new ArrayList<>();
         featheredKnifeRitual.add(new RitualComponent(1, 0, 0, RitualComponent.DUSK));
         featheredKnifeRitual.add(new RitualComponent(-1, 0, 0, RitualComponent.DUSK));
         featheredKnifeRitual.add(new RitualComponent(0, 0, 1, RitualComponent.DUSK));

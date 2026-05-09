@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 public class AlchemicalPotionCreationHandler {
 
-    public static ArrayList<AlchemyPotionHandlerComponent> registeredPotionEffects = new ArrayList();
+    public static ArrayList<AlchemyPotionHandlerComponent> registeredPotionEffects = new ArrayList<>();
 
     public static void addPotion(ItemStack itemStack, int potionID, int tickDuration) {
         registeredPotionEffects.add(new AlchemyPotionHandlerComponent(itemStack, potionID, tickDuration));
@@ -15,7 +15,7 @@ public class AlchemicalPotionCreationHandler {
     public static int getPotionIDForStack(ItemStack itemStack) {
         for (AlchemyPotionHandlerComponent aphc : registeredPotionEffects) {
             if (aphc.compareItemStack(itemStack)) {
-                return aphc.getPotionID();
+                return aphc.potionID();
             }
         }
 
@@ -26,7 +26,7 @@ public class AlchemicalPotionCreationHandler {
         {
             for (AlchemyPotionHandlerComponent aphc : registeredPotionEffects) {
                 if (aphc.compareItemStack(itemStack)) {
-                    return aphc.getTickDuration();
+                    return aphc.tickDuration();
                 }
             }
 

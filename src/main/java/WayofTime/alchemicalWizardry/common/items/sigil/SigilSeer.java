@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -33,24 +32,15 @@ public class SigilSeer extends Item implements IHolding, ArmourUpgrade, ISigil {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.seersigil.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.seersigil.desc"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.worldObj.isRemote) {
-            return par1ItemStack;
-        }
-
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-
-        if (itemTag == null || itemTag.getString("ownerName").equals("")) {
-            return par1ItemStack;
-        }
-
-        return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        IBindable.checkAndSetItemOwner(item, player);
+        return item;
     }
 
     @Override

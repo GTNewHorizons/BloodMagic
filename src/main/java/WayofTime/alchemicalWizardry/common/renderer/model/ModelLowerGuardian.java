@@ -134,6 +134,7 @@ public class ModelLowerGuardian extends ModelBase {
         hornAppendage4.mirror = false;
     }
 
+    @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         super.render(entity, f, f1, f2, f3, f4, f5);
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
@@ -160,8 +161,9 @@ public class ModelLowerGuardian extends ModelBase {
         model.rotateAngleZ = z;
     }
 
-    public void setLivingAnimations(EntityLivingBase par1EntityLivingBase, float par2, float par3, float par4) {
-        EntityLowerGuardian entityLowerGuardian = (EntityLowerGuardian) par1EntityLivingBase;
+    @Override
+    public void setLivingAnimations(EntityLivingBase entity, float par2, float par3, float par4) {
+        EntityLowerGuardian entityLowerGuardian = (EntityLowerGuardian) entity;
         int i = entityLowerGuardian.getAttackTimer();
 
         if (i > 0) {
@@ -175,6 +177,7 @@ public class ModelLowerGuardian extends ModelBase {
         return (Math.abs(par1 % par2 - par2 * 0.5F) - par2 * 0.25F) / (par2 * 0.25F);
     }
 
+    @Override
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         this.Head.rotateAngleX = f4 / (180F / (float) Math.PI);

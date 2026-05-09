@@ -2,17 +2,10 @@ package WayofTime.alchemicalWizardry.common.demonVillage;
 
 import net.minecraft.world.World;
 
-public class DemonCrosspath {
+import com.github.bsideup.jabel.Desugar;
 
-    private int xCoord;
-    private int yLevel;
-    private int zCoord;
-
-    public DemonCrosspath(int xCoord, int yLevel, int zCoord) {
-        this.xCoord = xCoord;
-        this.yLevel = yLevel;
-        this.zCoord = zCoord;
-    }
+@Desugar
+public record DemonCrosspath(int xCoord, int yLevel, int zCoord) {
 
     public void createCrosspath(World world) {}
 }

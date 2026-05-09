@@ -1,5 +1,6 @@
 package WayofTime.alchemicalWizardry.common;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
@@ -9,9 +10,9 @@ public class EntityAITargetAggroCloaking extends EntityAITargetAggro {
 
     int cloakLevel; // Level of cloaking that the owner demon is fooled by
 
-    public EntityAITargetAggroCloaking(EntityDemon par1EntityDemon, Class par2Class, int par3, boolean par4,
-            int cloak) {
-        super(par1EntityDemon, par2Class, par3, par4);
+    public EntityAITargetAggroCloaking(EntityDemon entityDemon, Class<? extends Entity> entityClass, int par3,
+            boolean par4, int cloak) {
+        super(entityDemon, entityClass, par3, par4);
         this.cloakLevel = cloak;
     }
 

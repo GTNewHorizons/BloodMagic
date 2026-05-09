@@ -13,30 +13,13 @@ public class ItemSpellParadigmBlock extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack itemstack) {
-        String name;
-
-        switch (itemstack.getItemDamage()) {
-            case 0: {
-                name = "projectile";
-                break;
-            }
-
-            case 1: {
-                name = "self";
-                break;
-            }
-
-            case 2:
-                name = "melee";
-                break;
-
-            case 3:
-                name = "tool";
-                break;
-
-            default:
-                name = "broken";
-        }
+        String name = switch (itemstack.getItemDamage()) {
+            case 0 -> "projectile";
+            case 1 -> "self";
+            case 2 -> "melee";
+            case 3 -> "tool";
+            default -> "broken";
+        };
 
         return getUnlocalizedName() + "." + name;
     }

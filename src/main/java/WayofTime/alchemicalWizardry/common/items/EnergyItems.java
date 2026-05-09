@@ -41,9 +41,9 @@ public class EnergyItems extends Item implements IBindable {
             double posY = player.posY;
             double posZ = player.posZ;
             world.playSoundEffect(
-                    (double) ((float) posX + 0.5F),
-                    (double) ((float) posY + 0.5F),
-                    (double) ((float) posZ + 0.5F),
+                    (float) posX + 0.5F,
+                    (float) posY + 0.5F,
+                    (float) posZ + 0.5F,
                     "random.fizz",
                     0.5F,
                     2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
@@ -75,39 +75,36 @@ public class EnergyItems extends Item implements IBindable {
     public static boolean syphonBatteries(ItemStack ist, EntityPlayer player, int damageToBeDone) {
         if (!player.worldObj.isRemote) {
             return SoulNetworkHandler.syphonAndDamageFromNetwork(ist, player, damageToBeDone);
-        } else {
-            World world = player.worldObj;
-            if (world != null) {
-                double posX = player.posX;
-                double posY = player.posY;
-                double posZ = player.posZ;
-
-                SpellHelper.sendIndexedParticleToAllAround(
-                        world,
-                        posX,
-                        posY,
-                        posZ,
-                        20,
-                        world.provider.dimensionId,
-                        4,
-                        posX,
-                        posY,
-                        posZ);
-                world.playSoundEffect(
-                        ((float) player.posX + 0.5F),
-                        ((float) player.posY + 0.5F),
-                        ((float) player.posZ + 0.5F),
-                        "random.fizz",
-                        0.5F,
-                        2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
-            }
         }
+        World world = player.worldObj;
+        double posX = player.posX;
+        double posY = player.posY;
+        double posZ = player.posZ;
+
+        SpellHelper.sendIndexedParticleToAllAround(
+                world,
+                posX,
+                posY,
+                posZ,
+                20,
+                world.provider.dimensionId,
+                4,
+                posX,
+                posY,
+                posZ);
+        world.playSoundEffect(
+                ((float) player.posX + 0.5F),
+                ((float) player.posY + 0.5F),
+                ((float) player.posZ + 0.5F),
+                "random.fizz",
+                0.5F,
+                2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
         return true;
     }
 
     @Deprecated
     public static boolean syphonWhileInContainer(ItemStack ist, int damageToBeDone) {
-        if (ist.getTagCompound() != null && !(ist.getTagCompound().getString("ownerName").equals(""))) {
+        if (ist.getTagCompound() != null && !(ist.getTagCompound().getString("ownerName").isEmpty())) {
             String ownerName = ist.getTagCompound().getString("ownerName");
 
             if (MinecraftServer.getServer() == null) {

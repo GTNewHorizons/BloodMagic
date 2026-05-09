@@ -23,15 +23,14 @@ public class SigilAir extends EnergyItems implements ArmourUpgrade, ISigil {
     public SigilAir() {
         super();
         this.maxStackSize = 1;
-        // setMaxDamage(1000);
         setEnergyUsed(AlchemicalWizardry.sigilAirCost);
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.airsigil.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.airsigil.desc"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
@@ -41,50 +40,50 @@ public class SigilAir extends EnergyItems implements ArmourUpgrade, ISigil {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (par2World.isRemote && this.isItemUnusable(par1ItemStack)) {
-            return par1ItemStack;
+        if (world.isRemote && this.isItemUnusable(item)) {
+            return item;
         }
 
-        Vec3 vec = par3EntityPlayer.getLookVec();
+        Vec3 vec = player.getLookVec();
         double wantedVelocity = 1.7;
 
-        if (par3EntityPlayer.isPotionActive(AlchemicalWizardry.customPotionBoost)) {
-            int i = par3EntityPlayer.getActivePotionEffect(AlchemicalWizardry.customPotionBoost).getAmplifier();
+        if (player.isPotionActive(AlchemicalWizardry.customPotionBoost)) {
+            int i = player.getActivePotionEffect(AlchemicalWizardry.customPotionBoost).getAmplifier();
             wantedVelocity += (1 + i) * (0.35);
         }
 
-        par3EntityPlayer.motionX = vec.xCoord * wantedVelocity;
-        par3EntityPlayer.motionY = vec.yCoord * wantedVelocity;
-        par3EntityPlayer.motionZ = vec.zCoord * wantedVelocity;
-        par2World.playSoundEffect(
-                (double) ((float) par3EntityPlayer.posX + 0.5F),
-                (double) ((float) par3EntityPlayer.posY + 0.5F),
-                (double) ((float) par3EntityPlayer.posZ + 0.5F),
+        player.motionX = vec.xCoord * wantedVelocity;
+        player.motionY = vec.yCoord * wantedVelocity;
+        player.motionZ = vec.zCoord * wantedVelocity;
+        world.playSoundEffect(
+                (float) player.posX + 0.5F,
+                (float) player.posY + 0.5F,
+                (float) player.posZ + 0.5F,
                 "random.fizz",
                 0.5F,
-                2.6F + (par2World.rand.nextFloat() - par2World.rand.nextFloat()) * 0.8F);
-        par3EntityPlayer.fallDistance = 0;
+                2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+        player.fallDistance = 0;
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, getEnergyUsed())) {
-                if (!par2World.isRemote) {
-                    this.setIsItemUnusable(par1ItemStack, true);
+        if (!player.capabilities.isCreativeMode) {
+            if (!EnergyItems.syphonBatteries(item, player, getEnergyUsed())) {
+                if (!world.isRemote) {
+                    this.setIsItemUnusable(item, true);
                 }
             } else {
-                if (!par2World.isRemote) {
-                    this.setIsItemUnusable(par1ItemStack, false);
+                if (!world.isRemote) {
+                    this.setIsItemUnusable(item, false);
                 }
             }
         } else {
-            return par1ItemStack;
+            return item;
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     public boolean isItemUnusable(ItemStack stack) {
@@ -109,19 +108,16 @@ public class SigilAir extends EnergyItems implements ArmourUpgrade, ISigil {
 
     @Override
     public void onArmourUpdate(World world, EntityPlayer player, ItemStack thisItemStack) {
-        // TODO Auto-generated method stub
         player.fallDistance = 0;
     }
 
     @Override
     public boolean isUpgrade() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     public int getEnergyForTenSeconds() {
-        // TODO Auto-generated method stub
         return 50;
     }
 }

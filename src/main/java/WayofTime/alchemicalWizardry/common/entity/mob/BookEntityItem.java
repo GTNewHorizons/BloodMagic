@@ -8,17 +8,16 @@ import net.minecraft.world.World;
 
 public class BookEntityItem extends EntityItem {
 
-    public BookEntityItem(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public BookEntityItem(World world, double par2, double par4, double par6) {
+        super(world, par2, par4, par6);
         this.isImmuneToFire = true;
         this.lifespan = 72000;
     }
 
-    public BookEntityItem(World par1World, double par2, double par4, double par6, ItemStack par8ItemStack) {
-        this(par1World, par2, par4, par6);
-        this.setEntityItemStack(par8ItemStack);
-        this.lifespan = (par8ItemStack.getItem() == null ? 6000
-                : par8ItemStack.getItem().getEntityLifespan(par8ItemStack, par1World));
+    public BookEntityItem(World world, double x, double y, double z, ItemStack item) {
+        this(world, x, y, z);
+        this.setEntityItemStack(item);
+        this.lifespan = (item.getItem() == null ? 6000 : item.getItem().getEntityLifespan(item, world));
         this.isImmuneToFire = true;
     }
 
@@ -43,7 +42,6 @@ public class BookEntityItem extends EntityItem {
 
     @Override
     public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
-        if (par1DamageSource.getDamageType().equals("outOfWorld")) return true;
-        return false;
+        return par1DamageSource.getDamageType().equals("outOfWorld");
     }
 }

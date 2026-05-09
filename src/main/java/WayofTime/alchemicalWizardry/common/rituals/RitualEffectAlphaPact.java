@@ -13,7 +13,6 @@ import WayofTime.alchemicalWizardry.api.rituals.IMasterRitualStone;
 import WayofTime.alchemicalWizardry.api.rituals.LocalRitualStorage;
 import WayofTime.alchemicalWizardry.api.rituals.RitualComponent;
 import WayofTime.alchemicalWizardry.api.rituals.RitualEffect;
-import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityMinorDemonGrunt;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.IHoardDemon;
 
@@ -23,9 +22,7 @@ public class RitualEffectAlphaPact extends RitualEffect {
 
     @Override
     public void performEffect(IMasterRitualStone ritualStone) {
-        String owner = ritualStone.getOwner();
 
-        int currentEssence = SoulNetworkHandler.getCurrentEssence(owner);
         World world = ritualStone.getWorld();
         int x = ritualStone.getXCoord();
         int y = ritualStone.getYCoord();
@@ -36,33 +33,28 @@ public class RitualEffectAlphaPact extends RitualEffect {
         }
 
         LocalRitualStorage stor = ritualStone.getLocalStorage();
-        if (stor instanceof LocalStorageAlphaPact) {
-            LocalStorageAlphaPact storage = (LocalStorageAlphaPact) stor;
+        if (stor instanceof LocalStorageAlphaPact storage) {
 
-            Object[] demonList = storage.hoardList.toArray();
+            Object[] demonList = LocalStorageAlphaPact.hoardList.toArray();
 
             for (Object demon : demonList) {
-                if (demon instanceof EntityLivingBase) {
-                    if (!((EntityLivingBase) demon).isEntityAlive()) {
-                        System.out.println(storage.hoardList.remove(demon));
+                if (demon instanceof EntityLivingBase entity) {
+                    if (!entity.isEntityAlive()) {
+                        System.out.println(LocalStorageAlphaPact.hoardList.remove(demon));
                     }
                 }
             }
 
-            System.out.println("Hi!");
-
-            int summons = 0;
-
             int horizontalRange = 25;
             int verticalRange = 20;
 
-            if (storage.hoardList.isEmpty()) {
+            if (LocalStorageAlphaPact.hoardList.isEmpty()) {
                 IHoardDemon demon = this.getRandomDemonForStage(world, x, y, z, horizontalRange, verticalRange);
                 if (demon instanceof EntityLivingBase) {
                     world.spawnEntityInWorld((EntityLivingBase) demon);
                     storage.thrallDemon(demon);
                 }
-            } else {}
+            }
         }
     }
 
@@ -73,7 +65,7 @@ public class RitualEffectAlphaPact extends RitualEffect {
         boolean isGood = false;
         for (int n = 0; n < 100; n++) {
             double newX = x + (rand.nextInt(horizontalRange) - horizontalRange) + 0.5;
-            double newY = y + (double) (rand.nextInt((int) verticalRange));
+            double newY = y + (double) (rand.nextInt(verticalRange));
             double newZ = z + (rand.nextInt(horizontalRange) - horizontalRange) + 0.5;
 
             entityLiving.posX = newX;
@@ -107,7 +99,7 @@ public class RitualEffectAlphaPact extends RitualEffect {
             }
         }
 
-        if (isGood = false) {
+        if (!isGood) {
             return null;
         }
 
@@ -123,13 +115,14 @@ public class RitualEffectAlphaPact extends RitualEffect {
         return 1;
     }
 
+    @Override
     public LocalRitualStorage getNewLocalStorage() {
         return new LocalStorageAlphaPact();
     }
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> omegaRitual = new ArrayList();
+        ArrayList<RitualComponent> omegaRitual = new ArrayList<>();
 
         this.addCornerRunes(omegaRitual, 1, 0, RitualComponent.BLANK);
         this.addOffsetRunes(omegaRitual, 2, 1, 0, RitualComponent.FIRE);

@@ -12,18 +12,22 @@ public class CommandUnbind extends CommandBase {
 
     public CommandUnbind() {}
 
+    @Override
     public String getCommandName() {
         return "unbind";
     }
 
+    @Override
     public int getRequiredPermissionLevel() {
         return 2;
     }
 
+    @Override
     public String getCommandUsage(ICommandSender icommandsender) {
         return "commands.unbind.usage";
     }
 
+    @Override
     public void processCommand(ICommandSender iCommandSender, String[] astring) {
         EntityPlayerMP entityplayermp = getCommandSenderAsPlayer(iCommandSender);
         ItemStack item = entityplayermp.getCurrentEquippedItem();

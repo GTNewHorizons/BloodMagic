@@ -15,8 +15,8 @@ import net.minecraft.util.StatCollector;
 
 public abstract class SubCommandBase implements ISubCommand {
 
-    private ICommand parent;
-    private String name;
+    private final ICommand parent;
+    private final String name;
 
     public SubCommandBase(ICommand parent, String name) {
         this.parent = parent;

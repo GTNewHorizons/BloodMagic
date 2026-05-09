@@ -18,14 +18,14 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class RenderCrystalBelljar extends TileEntitySpecialRenderer {
 
-    private ModelCrystalBelljar modelConduit = new ModelCrystalBelljar();
+    private final ModelCrystalBelljar modelConduit = new ModelCrystalBelljar();
 
-    private ResourceLocation resourceLocation = new ResourceLocation("alchemicalwizardry:textures/models/Reagent.png");
+    private final ResourceLocation resourceLocation = new ResourceLocation(
+            "alchemicalwizardry:textures/models/Reagent.png");
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double d0, double d1, double d2, float f) {
-        if (tileEntity instanceof TEBellJar) {
-            TEBellJar tileAltar = (TEBellJar) tileEntity;
+        if (tileEntity instanceof TEBellJar tileAltar) {
             GL11.glPushMatrix();
             GL11.glTranslatef((float) d0 + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
             ResourceLocation test = new ResourceLocation("alchemicalwizardry:textures/models/CrystalBelljar.png");

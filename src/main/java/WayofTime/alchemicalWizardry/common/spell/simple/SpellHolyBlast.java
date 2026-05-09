@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common.spell.simple;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -26,60 +25,54 @@ public class SpellHolyBlast extends HomSpell {
     }
 
     @Override
-    public ItemStack onOffensiveRangedRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveRangedRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveRangedEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveRangedEnergy());
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        world.playSoundAtEntity(player, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
-        if (!par2World.isRemote) {
-            par2World.spawnEntityInWorld(new HolyProjectile(par2World, par3EntityPlayer, 8));
+        if (!world.isRemote) {
+            world.spawnEntityInWorld(new HolyProjectile(world, player, 8));
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onOffensiveMeleeRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveMeleeRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveMeleeEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveMeleeEnergy());
         }
 
         int distance = 2;
-        double yaw = par3EntityPlayer.rotationYaw / 180 * Math.PI;
-        double pitch = par3EntityPlayer.rotationPitch / 180 * Math.PI;
-        double xCoord = par3EntityPlayer.posX + Math.sin(yaw) * Math.cos(pitch) * (-distance);
-        double yCoord = par3EntityPlayer.posY + par3EntityPlayer.getEyeHeight() + Math.sin(-pitch) * distance;
-        double zCoord = par3EntityPlayer.posZ + Math.cos(yaw) * Math.cos(pitch) * distance;
+        double yaw = player.rotationYaw / 180 * Math.PI;
+        double pitch = player.rotationPitch / 180 * Math.PI;
+        double xCoord = player.posX + Math.sin(yaw) * Math.cos(pitch) * (-distance);
+        double yCoord = player.posY + player.getEyeHeight() + Math.sin(-pitch) * distance;
+        double zCoord = player.posZ + Math.cos(yaw) * Math.cos(pitch) * distance;
         float d0 = 0.5f;
         AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
-                par3EntityPlayer.posX - 0.5 + Math.sin(yaw) * Math.cos(pitch) * (-distance),
-                par3EntityPlayer.posY + par3EntityPlayer.getEyeHeight() + Math.sin(-pitch) * distance,
-                par3EntityPlayer.posZ - 0.5 + Math.cos(yaw) * Math.cos(pitch) * distance,
-                par3EntityPlayer.posX + Math.sin(yaw) * Math.cos(pitch) * (-distance) + 0.5,
-                par3EntityPlayer.posY + par3EntityPlayer.getEyeHeight() + Math.sin(-pitch) * distance + 1,
-                par3EntityPlayer.posZ + Math.cos(yaw) * Math.cos(pitch) * distance + 0.5).expand(d0, d0, d0);
-        List list = par3EntityPlayer.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
-        Iterator iterator = list.iterator();
+                player.posX - 0.5 + Math.sin(yaw) * Math.cos(pitch) * (-distance),
+                player.posY + player.getEyeHeight() + Math.sin(-pitch) * distance,
+                player.posZ - 0.5 + Math.cos(yaw) * Math.cos(pitch) * distance,
+                player.posX + Math.sin(yaw) * Math.cos(pitch) * (-distance) + 0.5,
+                player.posY + player.getEyeHeight() + Math.sin(-pitch) * distance + 1,
+                player.posZ + Math.cos(yaw) * Math.cos(pitch) * distance + 0.5).expand(d0, d0, d0);
+        List<EntityLivingBase> list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
-        while (iterator.hasNext()) {
-            EntityLivingBase entityLiving = (EntityLivingBase) iterator.next();
+        for (EntityLivingBase entityLiving : list) {
 
             if (entityLiving instanceof EntityPlayer) {
-                if (entityLiving.equals(par3EntityPlayer)) {
+                if (entityLiving.equals(player)) {
                     continue;
                 }
             }
@@ -89,19 +82,19 @@ public class SpellHolyBlast extends HomSpell {
             if (entityLiving.isEntityUndead()) {
                 i = 3;
             }
-            entityLiving.attackEntityFrom(DamageSource.causePlayerDamage(par3EntityPlayer), 5 * i);
+            entityLiving.attackEntityFrom(DamageSource.causePlayerDamage(player), 5 * i);
         }
 
-        par2World.createExplosion(par3EntityPlayer, xCoord, yCoord, zCoord, (float) (1), false);
+        world.createExplosion(player, xCoord, yCoord, zCoord, (float) (1), false);
 
         for (int i = 0; i < 5; i++) {
             SpellHelper.sendParticleToAllAround(
-                    par2World,
+                    world,
                     xCoord,
                     yCoord,
                     zCoord,
                     30,
-                    par2World.provider.dimensionId,
+                    world.provider.dimensionId,
                     "mobSpell",
                     xCoord + itemRand.nextFloat() - itemRand.nextFloat(),
                     yCoord + itemRand.nextFloat() - itemRand.nextFloat(),
@@ -111,65 +104,63 @@ public class SpellHolyBlast extends HomSpell {
                     1.0F);
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onDefensiveRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onDefensiveRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getDefensiveEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getDefensiveEnergy());
         }
 
-        if (!par2World.isRemote) {
+        if (!world.isRemote) {
             for (int i = 0; i < 360; i += 18) {
-                par2World.spawnEntityInWorld(
+                world.spawnEntityInWorld(
                         new HolyProjectile(
-                                par2World,
-                                par3EntityPlayer,
+                                world,
+                                player,
                                 8,
                                 3,
-                                par3EntityPlayer.posX,
-                                par3EntityPlayer.posY + (par3EntityPlayer.height / 2),
-                                par3EntityPlayer.posZ,
+                                player.posX,
+                                player.posY + (player.height / 2),
+                                player.posZ,
                                 i,
                                 0));
             }
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onEnvironmentalRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onEnvironmentalRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getEnvironmentalEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getEnvironmentalEnergy());
         }
 
         int d0 = 3;
         AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
-                par3EntityPlayer.posX,
-                par3EntityPlayer.posY,
-                par3EntityPlayer.posZ,
-                (par3EntityPlayer.posX + 1),
-                (par3EntityPlayer.posY + 2),
-                (par3EntityPlayer.posZ + 1)).expand(d0, d0, d0);
-        List list = par3EntityPlayer.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
-        Iterator iterator = list.iterator();
+                player.posX,
+                player.posY,
+                player.posZ,
+                (player.posX + 1),
+                (player.posY + 2),
+                (player.posZ + 1)).expand(d0, d0, d0);
+        List list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
-        while (iterator.hasNext()) {
-            EntityLivingBase entityLiving = (EntityLivingBase) iterator.next();
+        for (Object o : list) {
+            EntityLivingBase entityLiving = (EntityLivingBase) o;
 
             if (entityLiving instanceof EntityPlayer) {
-                if (entityLiving.equals(par3EntityPlayer)) {
+                if (entityLiving.equals(player)) {
                     continue;
                 }
             }
@@ -179,28 +170,22 @@ public class SpellHolyBlast extends HomSpell {
             if (entityLiving.isEntityUndead()) {
                 i = 3;
             }
-            entityLiving.attackEntityFrom(DamageSource.causePlayerDamage(par3EntityPlayer), 5 * i);
+            entityLiving.attackEntityFrom(DamageSource.causePlayerDamage(player), 5 * i);
         }
 
-        par2World.createExplosion(
-                par3EntityPlayer,
-                par3EntityPlayer.posX,
-                par3EntityPlayer.posY,
-                par3EntityPlayer.posZ,
-                (float) (2),
-                false);
-        double xCoord = par3EntityPlayer.posX;
-        double yCoord = par3EntityPlayer.posY;
-        double zCoord = par3EntityPlayer.posZ;
+        world.createExplosion(player, player.posX, player.posY, player.posZ, (float) (2), false);
+        double xCoord = player.posX;
+        double yCoord = player.posY;
+        double zCoord = player.posZ;
 
         for (int i = 0; i < 20; i++) {
             SpellHelper.sendParticleToAllAround(
-                    par2World,
+                    world,
                     xCoord,
                     yCoord,
                     zCoord,
                     30,
-                    par2World.provider.dimensionId,
+                    world.provider.dimensionId,
                     "mobSpell",
                     xCoord + itemRand.nextFloat() - itemRand.nextFloat(),
                     yCoord + itemRand.nextFloat() - itemRand.nextFloat(),
@@ -210,6 +195,6 @@ public class SpellHolyBlast extends HomSpell {
                     1.0F);
         }
 
-        return par1ItemStack;
+        return item;
     }
 }

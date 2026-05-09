@@ -19,18 +19,18 @@ public class EnergyBazooka extends EnergyBlast {
     public EnergyBazooka(int tier) {
         super(tier);
         switch (this.tier) {
-            case 1:
+            case 1 -> {
                 this.setEnergyUsed(AlchemicalWizardry.energyBazookaLPPerShot);
                 this.damage = AlchemicalWizardry.energyBazookaDamage;
-                break;
-            case 2:
+            }
+            case 2 -> {
                 this.setEnergyUsed(AlchemicalWizardry.energyBazookaSecondTierLPPerShot);
                 this.damage = AlchemicalWizardry.energyBazookaSecondTierDamage;
-                break;
-            case 3:
+            }
+            case 3 -> {
                 this.setEnergyUsed(AlchemicalWizardry.energyBazookaThirdTierLPPerShot);
                 this.damage = AlchemicalWizardry.energyBazookaThirdTierDamage;
-                break;
+            }
         }
     }
 
@@ -45,69 +45,59 @@ public class EnergyBazooka extends EnergyBlast {
     }
 
     @Override
-    public void shoot(World par2World, EntityPlayer par3EntityPlayer) {
-        par2World.spawnEntityInWorld(new EntityEnergyBazookaMainProjectile(par2World, par3EntityPlayer, this.damage));
+    public void shoot(World world, EntityPlayer player) {
+        world.spawnEntityInWorld(new EntityEnergyBazookaMainProjectile(world, player, this.damage));
 
-        Vec3 vec = par3EntityPlayer.getLookVec();
+        Vec3 vec = player.getLookVec();
         double wantedVelocity = this.tier * 2.0D;
-        par3EntityPlayer.motionX = -vec.xCoord * wantedVelocity;
-        par3EntityPlayer.motionY = -vec.yCoord * wantedVelocity;
-        par3EntityPlayer.motionZ = -vec.zCoord * wantedVelocity;
-        par2World.playSoundEffect(
-                par3EntityPlayer.posX + 0.5F,
-                par3EntityPlayer.posY + 0.5F,
-                par3EntityPlayer.posZ + 0.5F,
+        player.motionX = -vec.xCoord * wantedVelocity;
+        player.motionY = -vec.yCoord * wantedVelocity;
+        player.motionZ = -vec.zCoord * wantedVelocity;
+        world.playSoundEffect(
+                player.posX + 0.5F,
+                player.posY + 0.5F,
+                player.posZ + 0.5F,
                 "random.fizz",
                 0.5F,
-                2.6F + (par2World.rand.nextFloat() - par2World.rand.nextFloat()) * 0.8F);
-        par3EntityPlayer.fallDistance = 0;
+                2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+        player.fallDistance = 0;
     }
 
     @Override
     public int getShotDelay() {
-        switch (this.tier) {
-            case 1:
-                return AlchemicalWizardry.energyBazookaMaxDelay;
-            case 2:
-                return AlchemicalWizardry.energyBazookaSecondTierMaxDelay;
-            case 3:
-                return AlchemicalWizardry.energyBazookaThirdTierMaxDelay;
-        }
-        return 1;
+        return switch (this.tier) {
+            case 1 -> AlchemicalWizardry.energyBazookaMaxDelay;
+            case 2 -> AlchemicalWizardry.energyBazookaSecondTierMaxDelay;
+            case 3 -> AlchemicalWizardry.energyBazookaThirdTierMaxDelay;
+            default -> 1;
+        };
     }
 
     @Override
     public int drainTicks() {
-        switch (this.tier) {
-            case 1:
-                return AlchemicalWizardry.energyBazookaMaxDelayAfterActivation;
-            case 2:
-                return AlchemicalWizardry.energyBazookaSecondTierMaxDelayAfterActivation;
-            case 3:
-                return AlchemicalWizardry.energyBazookaThirdTierMaxDelayAfterActivation;
-        }
-        return 1;
+        return switch (this.tier) {
+            case 1 -> AlchemicalWizardry.energyBazookaMaxDelayAfterActivation;
+            case 2 -> AlchemicalWizardry.energyBazookaSecondTierMaxDelayAfterActivation;
+            case 3 -> AlchemicalWizardry.energyBazookaThirdTierMaxDelayAfterActivation;
+            default -> 1;
+        };
     }
 
     @Override
     public int drainCost() {
-        switch (this.tier) {
-            case 1:
-                return AlchemicalWizardry.energyBazookaLPPerActivation;
-            case 2:
-                return AlchemicalWizardry.energyBazookaSecondTierLPPerActivation;
-            case 3:
-                return AlchemicalWizardry.energyBazookaThirdTierLPPerActivation;
-        }
-        return 0;
+        return switch (this.tier) {
+            case 1 -> AlchemicalWizardry.energyBazookaLPPerActivation;
+            case 2 -> AlchemicalWizardry.energyBazookaSecondTierLPPerActivation;
+            case 3 -> AlchemicalWizardry.energyBazookaThirdTierLPPerActivation;
+            default -> 0;
+        };
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.energybazooka.desc"));
-        par3List.add(StatCollector.translateToLocal("tooltip.alchemy.damage") + " " + this.damage);
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.energybazooka.desc"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.damage") + " " + this.damage);
+        addBindingInformation(item, tooltip);
     }
 }

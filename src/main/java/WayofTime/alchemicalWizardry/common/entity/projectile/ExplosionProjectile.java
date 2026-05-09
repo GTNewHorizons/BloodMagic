@@ -11,35 +11,19 @@ public class ExplosionProjectile extends EnergyBlastProjectile {
 
     protected boolean causesEnvDamage;
 
-    public ExplosionProjectile(World par1World) {
-        super(par1World);
+    public ExplosionProjectile(World world) {
+        super(world);
     }
 
-    public ExplosionProjectile(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
-    }
-
-    public ExplosionProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage, boolean flag) {
-        super(par1World, par2EntityPlayer, damage);
+    public ExplosionProjectile(World world, EntityLivingBase player, int damage, boolean flag) {
+        super(world, player, damage);
         causesEnvDamage = flag;
     }
 
-    public ExplosionProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage, int maxTicksInAir,
-            double posX, double posY, double posZ, float rotationYaw, float rotationPitch, boolean flag) {
-        super(par1World, par2EntityPlayer, damage, maxTicksInAir, posX, posY, posZ, rotationYaw, rotationPitch);
+    public ExplosionProjectile(World world, EntityLivingBase shooter, EntityLivingBase target, float par4, float par5,
+            int damage, int maxTicksInAir, boolean flag) {
+        super(world, shooter, target, par4, par5, damage, maxTicksInAir);
         causesEnvDamage = flag;
-    }
-
-    public ExplosionProjectile(World par1World, EntityLivingBase par2EntityLivingBase,
-            EntityLivingBase par3EntityLivingBase, float par4, float par5, int damage, int maxTicksInAir,
-            boolean flag) {
-        super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5, damage, maxTicksInAir);
-        causesEnvDamage = flag;
-    }
-
-    @Override
-    public DamageSource getDamageSource() {
-        return DamageSource.causeMobDamage(shootingEntity);
     }
 
     @Override
@@ -60,13 +44,13 @@ public class ExplosionProjectile extends EnergyBlastProjectile {
     }
 
     @Override
-    public void onImpact(Entity mop) {
-        if (mop == shootingEntity && ticksInAir > 3) {
+    public void onImpact(Entity target) {
+        if (target == shootingEntity && ticksInAir > 3) {
             shootingEntity.attackEntityFrom(DamageSource.causeMobDamage(shootingEntity), 1);
             this.setDead();
         } else {
-            if (mop instanceof EntityLivingBase) {
-                doDamage(projectileDamage, mop);
+            if (target instanceof EntityLivingBase) {
+                doDamage(projectileDamage, target);
             }
         }
 
@@ -88,17 +72,14 @@ public class ExplosionProjectile extends EnergyBlastProjectile {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setBoolean("causesEnvDamage", causesEnvDamage);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setBoolean("causesEnvDamage", causesEnvDamage);
     }
 
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
     @Override
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        causesEnvDamage = par1NBTTagCompound.getBoolean("causesEnvDamage");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        causesEnvDamage = tag.getBoolean("causesEnvDamage");
     }
 }

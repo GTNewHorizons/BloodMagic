@@ -2,7 +2,6 @@ package WayofTime.alchemicalWizardry.common.items.armour;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ public abstract class OmegaArmour extends BoundArmour {
     protected boolean storeYLevel = false;
     protected boolean storeSeesSky = false;
 
-    protected List<Enchantment> illegalEnchantmentList = new LinkedList();
+    protected List<Enchantment> illegalEnchantmentList = new LinkedList<>();
 
     public float reagentDrainPerDamage = 0.1f;
 
@@ -64,11 +63,6 @@ public abstract class OmegaArmour extends BoundArmour {
     @Override
     public boolean isAffectedBySoulHarden() {
         return false;
-    }
-
-    @Override
-    public double getBaseArmourReduction() {
-        return 0.9;
     }
 
     @Override
@@ -141,9 +135,9 @@ public abstract class OmegaArmour extends BoundArmour {
         IBindable.checkAndSetItemOwner(omegaStack, SoulNetworkHandler.getOwnerName(boundStack));
         this.setItemEnchantability(omegaStack, Math.min(enchantability, 70));
 
-        EnchantmentHelper.setEnchantments(new HashMap(), omegaStack);
+        EnchantmentHelper.setEnchantments(new HashMap<>(), omegaStack);
 
-        List enchantList = new ArrayList();
+        List enchantList = new ArrayList<>();
 
         int adjustedEnchantLevel = Math.min(enchantmentLevel, 30);
         int additionalPasses = enchantmentLevel - adjustedEnchantLevel;
@@ -155,13 +149,13 @@ public abstract class OmegaArmour extends BoundArmour {
             }
         }
 
-        Map<Enchantment, Map<Integer, Integer>> map = new HashMap();
+        Map<Enchantment, Map<Integer, Integer>> map = new HashMap<>();
 
         for (Object obj : enchantList) {
             EnchantmentData enchantmentdata = (EnchantmentData) obj;
 
             if (!map.containsKey(enchantmentdata.enchantmentobj)) {
-                map.put(enchantmentdata.enchantmentobj, new HashMap());
+                map.put(enchantmentdata.enchantmentobj, new HashMap<>());
             }
 
             Map<Integer, Integer> numMap = map.get(enchantmentdata.enchantmentobj);
@@ -178,7 +172,7 @@ public abstract class OmegaArmour extends BoundArmour {
             }
         }
 
-        List newEnchantList = new ArrayList();
+        List newEnchantList = new ArrayList<>();
 
         for (Entry<Enchantment, Map<Integer, Integer>> entry : map.entrySet()) {
             Enchantment ench = entry.getKey();
@@ -226,10 +220,8 @@ public abstract class OmegaArmour extends BoundArmour {
             newEnchantList.add(new EnchantmentData(ench, enchantValues.length - 1));
         }
 
-        Iterator iterator = newEnchantList.iterator();
-
-        while (iterator.hasNext()) {
-            EnchantmentData enchantmentdata = (EnchantmentData) iterator.next();
+        for (Object o : newEnchantList) {
+            EnchantmentData enchantmentdata = (EnchantmentData) o;
 
             {
                 omegaStack.addEnchantment(enchantmentdata.enchantmentobj, enchantmentdata.enchantmentLevel);
@@ -266,9 +258,8 @@ public abstract class OmegaArmour extends BoundArmour {
         }
 
         NBTTagCompound tag = omegaTag.getCompoundTag("armour");
-        ItemStack armourStack = ItemStack.loadItemStackFromNBT(tag);
 
-        return armourStack;
+        return ItemStack.loadItemStackFromNBT(tag);
     }
 
     @Override

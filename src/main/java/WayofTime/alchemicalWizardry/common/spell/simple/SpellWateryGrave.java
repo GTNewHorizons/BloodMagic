@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common.spell.simple;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -29,81 +28,75 @@ public class SpellWateryGrave extends HomSpell {
     }
 
     @Override
-    public ItemStack onOffensiveRangedRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveRangedRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveRangedEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveRangedEnergy());
         }
 
-        par2World.spawnEntityInWorld(new WaterProjectile(par2World, par3EntityPlayer, 8));
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-        return par1ItemStack;
+        world.spawnEntityInWorld(new WaterProjectile(world, player, 8));
+        world.playSoundAtEntity(player, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        return item;
     }
 
     @Override
-    public ItemStack onOffensiveMeleeRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveMeleeRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveMeleeEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveMeleeEnergy());
         }
 
-        if (!par2World.isRemote) {
+        if (!world.isRemote) {
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    par2World.spawnEntityInWorld(
+                    world.spawnEntityInWorld(
                             new WaterProjectile(
-                                    par2World,
-                                    par3EntityPlayer,
+                                    world,
+                                    player,
                                     3,
                                     3,
-                                    par3EntityPlayer.posX,
-                                    par3EntityPlayer.posY + par3EntityPlayer.getEyeHeight(),
-                                    par3EntityPlayer.posZ,
-                                    par3EntityPlayer.rotationYaw + i * 10F,
-                                    par3EntityPlayer.rotationPitch + j * 5F));
+                                    player.posX,
+                                    player.posY + player.getEyeHeight(),
+                                    player.posZ,
+                                    player.rotationYaw + i * 10F,
+                                    player.rotationPitch + j * 5F));
                 }
             }
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onDefensiveRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onDefensiveRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getDefensiveEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getDefensiveEnergy());
         }
 
         int d0 = 3;
         AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
-                par3EntityPlayer.posX,
-                par3EntityPlayer.posY,
-                par3EntityPlayer.posZ,
-                (par3EntityPlayer.posX + 1),
-                (par3EntityPlayer.posY + 2),
-                (par3EntityPlayer.posZ + 1)).expand(d0, d0, d0);
-        List list = par3EntityPlayer.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
-        Iterator iterator = list.iterator();
+                player.posX,
+                player.posY,
+                player.posZ,
+                (player.posX + 1),
+                (player.posY + 2),
+                (player.posZ + 1)).expand(d0, d0, d0);
+        List<EntityLivingBase> list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
-        while (iterator.hasNext()) {
-            EntityLivingBase entityLiving = (EntityLivingBase) iterator.next();
+        for (EntityLivingBase entityLiving : list) {
 
             if (entityLiving instanceof EntityPlayer) {
-                if (entityLiving.equals(par3EntityPlayer)) {
+                if (entityLiving.equals(player)) {
                     continue;
                 }
             }
@@ -118,18 +111,18 @@ public class SpellWateryGrave extends HomSpell {
             entityLiving.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionDrowning.id, 100, x - 1));
         }
 
-        double xCoord = par3EntityPlayer.posX;
-        double yCoord = par3EntityPlayer.posY;
-        double zCoord = par3EntityPlayer.posZ;
+        double xCoord = player.posX;
+        double yCoord = player.posY;
+        double zCoord = player.posZ;
 
         for (int i = 0; i < 20; i++) {
             SpellHelper.sendParticleToAllAround(
-                    par2World,
+                    world,
                     xCoord,
                     yCoord,
                     zCoord,
                     30,
-                    par2World.provider.dimensionId,
+                    world.provider.dimensionId,
                     "mobSpell",
                     xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
                     yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
@@ -139,51 +132,43 @@ public class SpellWateryGrave extends HomSpell {
                     1.0F);
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onEnvironmentalRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onEnvironmentalRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getEnvironmentalEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getEnvironmentalEnergy());
         }
 
         int range = 2;
 
-        if (!par2World.isRemote) {
+        if (!world.isRemote) {
             for (int i = -range; i <= range; i++) {
                 for (int j = -range; j <= range; j++) {
-                    if (par2World.isAirBlock(
-                            (int) par3EntityPlayer.posX + i,
-                            (int) par3EntityPlayer.posY,
-                            (int) par3EntityPlayer.posZ + j)) {
-                        par2World.setBlock(
-                                (int) par3EntityPlayer.posX + i,
-                                (int) par3EntityPlayer.posY,
-                                (int) par3EntityPlayer.posZ + j,
-                                Blocks.water);
+                    if (world.isAirBlock((int) player.posX + i, (int) player.posY, (int) player.posZ + j)) {
+                        world.setBlock((int) player.posX + i, (int) player.posY, (int) player.posZ + j, Blocks.water);
                     }
                 }
             }
         }
 
-        double xCoord = par3EntityPlayer.posX;
-        double yCoord = par3EntityPlayer.posY;
-        double zCoord = par3EntityPlayer.posZ;
+        double xCoord = player.posX;
+        double yCoord = player.posY;
+        double zCoord = player.posZ;
 
         for (int i = 0; i < 16; i++) {
             SpellHelper.sendParticleToAllAround(
-                    par2World,
+                    world,
                     xCoord,
                     yCoord,
                     zCoord,
                     30,
-                    par2World.provider.dimensionId,
+                    world.provider.dimensionId,
                     "mobSpell",
                     xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
                     yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
@@ -193,6 +178,6 @@ public class SpellWateryGrave extends HomSpell {
                     1.0F);
         }
 
-        return par1ItemStack;
+        return item;
     }
 }

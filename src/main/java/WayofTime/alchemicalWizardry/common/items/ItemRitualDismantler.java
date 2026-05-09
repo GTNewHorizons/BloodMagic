@@ -35,9 +35,9 @@ public class ItemRitualDismantler extends EnergyItems {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List par3List, boolean x) {
-        par3List.add(StatCollector.translateToLocal("tooltip.dismantler.desc"));
-        addBindingInformation(stack, par3List);
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.dismantler.desc"));
+        addBindingInformation(stack, tooltip);
     }
 
     @Override
@@ -51,42 +51,37 @@ public class ItemRitualDismantler extends EnergyItems {
             int z) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-        if (tileEntity instanceof TEMasterStone) {
-            TEMasterStone masterStone = (TEMasterStone) tileEntity;
-            int direction = masterStone.getDirection();
+        if (!(tileEntity instanceof TEMasterStone masterStone)) {
+            return false;
+        }
+        int direction = masterStone.getDirection();
 
-            String ritualName = Rituals.checkValidRitual(world, x, y, z);
-            List<RitualComponent> ritualList = Rituals.getRitualList(ritualName);
-            if (ritualList == null) {
-                return false;
-            }
+        String ritualName = Rituals.checkValidRitual(world, x, y, z);
+        List<RitualComponent> ritualList = Rituals.getRitualList(ritualName);
+        if (ritualList == null) {
+            return false;
+        }
 
-            for (RitualComponent rc : ritualList) {
-                if (!world.isAirBlock(x + rc.getX(direction), y + rc.getY(), z + rc.getZ(direction)) && world.getBlock(
-                        x + rc.getX(direction),
-                        y + rc.getY(),
-                        z + rc.getZ(direction)) instanceof RitualStone) {
-                    if (EnergyItems.syphonBatteries(stack, player, getEnergyUsed())
-                            || player.capabilities.isCreativeMode) {
-                        world.setBlockToAir(x + rc.getX(direction), y + rc.getY(), z + rc.getZ(direction));
-                        EntityItem entityItem = new EntityItem(
-                                world,
-                                player.posX,
-                                player.posY,
-                                player.posZ,
-                                new ItemStack(ModBlocks.ritualStone));
-                        if (world.isRemote) {
-                            world.playAuxSFX(2005, x, y + 1, z, 0);
-                        } else {
-                            world.spawnEntityInWorld(entityItem);
-                        }
+        for (RitualComponent rc : ritualList) {
+            if (!world.isAirBlock(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction)) && world
+                    .getBlock(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction)) instanceof RitualStone) {
+                if (EnergyItems.syphonBatteries(stack, player, getEnergyUsed()) || player.capabilities.isCreativeMode) {
+                    world.setBlockToAir(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction));
+                    EntityItem entityItem = new EntityItem(
+                            world,
+                            player.posX,
+                            player.posY,
+                            player.posZ,
+                            new ItemStack(ModBlocks.ritualStone));
+                    if (world.isRemote) {
+                        world.playAuxSFX(2005, x, y + 1, z, 0);
+                    } else {
+                        world.spawnEntityInWorld(entityItem);
                     }
                 }
             }
-
-            return true;
         }
 
-        return false;
+        return true;
     }
 }

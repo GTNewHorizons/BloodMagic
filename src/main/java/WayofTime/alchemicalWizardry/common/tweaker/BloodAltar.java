@@ -53,12 +53,12 @@ public class BloodAltar {
 
         @Override
         public String describe() {
-            return "Adding Blood Altar Recipe for " + ((AltarRecipe) recipe).getResult().getDisplayName();
+            return "Adding Blood Altar Recipe for " + recipe.getResult().getDisplayName();
         }
 
         @Override
         public String describeUndo() {
-            return "Removing Blood Altar Recipe for " + ((AltarRecipe) recipe).getResult().getDisplayName();
+            return "Removing Blood Altar Recipe for " + recipe.getResult().getDisplayName();
         }
 
         @Override

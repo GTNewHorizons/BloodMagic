@@ -11,7 +11,7 @@ import WayofTime.alchemicalWizardry.common.spell.simple.HomSpellRegistry;
 
 public class TEHomHeart extends TileEntity {
 
-    public boolean canCastSpell(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
+    public boolean canCastSpell(ItemStack item, World world, EntityPlayer player) {
         return true;
     }
 
@@ -19,44 +19,39 @@ public class TEHomHeart extends TileEntity {
         HomSpell spell = getSpell();
 
         if (spell != null) {
-            switch (getModifiedParadigm()) {
-                case 0:
-                    return spell.getOffensiveRangedEnergy();
-
-                case 1:
-                    return spell.getOffensiveMeleeEnergy();
-
-                case 2:
-                    return spell.getDefensiveEnergy();
-
-                case 3:
-                    return spell.getEnvironmentalEnergy();
-            }
+            return switch (getModifiedParadigm()) {
+                case 0 -> spell.getOffensiveRangedEnergy();
+                case 1 -> spell.getOffensiveMeleeEnergy();
+                case 2 -> spell.getDefensiveEnergy();
+                case 3 -> spell.getEnvironmentalEnergy();
+                default -> throw new IllegalStateException("Unexpected value: " + getModifiedParadigm());
+            };
         }
 
         return 0;
     }
 
-    public int castSpell(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
+    public int castSpell(ItemStack item, World world, EntityPlayer player) {
         HomSpell spell = getSpell();
 
         if (spell != null) {
             switch (getModifiedParadigm()) {
-                case 0:
-                    spell.onOffensiveRangedRightClick(par1ItemStack, par2World, par3EntityPlayer);
+                case 0 -> {
+                    spell.onOffensiveRangedRightClick(item, world, player);
                     return spell.getOffensiveRangedEnergy();
-
-                case 1:
-                    spell.onOffensiveMeleeRightClick(par1ItemStack, par2World, par3EntityPlayer);
+                }
+                case 1 -> {
+                    spell.onOffensiveMeleeRightClick(item, world, player);
                     return spell.getOffensiveMeleeEnergy();
-
-                case 2:
-                    spell.onDefensiveRightClick(par1ItemStack, par2World, par3EntityPlayer);
+                }
+                case 2 -> {
+                    spell.onDefensiveRightClick(item, world, player);
                     return spell.getDefensiveEnergy();
-
-                case 3:
-                    spell.onEnvironmentalRightClick(par1ItemStack, par2World, par3EntityPlayer);
+                }
+                case 3 -> {
+                    spell.onEnvironmentalRightClick(item, world, player);
                     return spell.getEnvironmentalEnergy();
+                }
             }
         }
 
@@ -108,15 +103,11 @@ public class TEHomHeart extends TileEntity {
 
         tileEntity = worldObj.getTileEntity(xCoord, yCoord, zCoord + 1);
 
-        if (tileEntity instanceof TEAltar) {
-            ItemStack itemStack = ((TEAltar) tileEntity).getStackInSlot(0);
+        if (tileEntity instanceof TEAltar altar) {
+            ItemStack itemStack = altar.getStackInSlot(0);
 
             if (itemStack != null) {
-                HomSpell spell = HomSpellRegistry.getSpellForItemStack(itemStack);
-
-                if (spell != null) {
-                    return spell;
-                }
+                return HomSpellRegistry.getSpellForItemStack(itemStack);
             }
         }
 
@@ -128,22 +119,16 @@ public class TEHomHeart extends TileEntity {
 
         TileEntity tileEntity = worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
 
-        if (tileEntity instanceof TileEntitySkull) {
-            int skullType = ((TileEntitySkull) tileEntity).func_145904_a();
+        if (tileEntity instanceof TileEntitySkull skull) {
+            int skullType = skull.func_145904_a();
 
-            switch (skullType) {
-                case 0:
-                    return 0;
-
-                case 1:
-                    return 1;
-
-                case 2:
-                    return 2;
-
-                case 4:
-                    return 3;
-            }
+            return switch (skullType) {
+                case 0 -> 0;
+                case 1 -> 1;
+                case 2 -> 2;
+                case 4 -> 3;
+                default -> -1;
+            };
         }
 
         return -1;

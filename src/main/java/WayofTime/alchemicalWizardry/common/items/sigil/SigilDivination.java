@@ -41,75 +41,72 @@ public class SigilDivination extends Item implements ArmourUpgrade, IReagentMani
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.divinationsigil.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.divinationsigil.desc2"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.divinationsigil.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.divinationsigil.desc2"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        IBindable.checkAndSetItemOwner(item, player);
 
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.worldObj.isRemote) {
-            return par1ItemStack;
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.worldObj.isRemote) {
+            return item;
         }
 
-        if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, 0)) {
-            return par1ItemStack;
+        if (!EnergyItems.syphonBatteries(item, player, 0)) {
+            return item;
         }
 
-        String ownerName = IBindable.getOwnerName(par1ItemStack);
+        String ownerName = IBindable.getOwnerName(item);
 
-        MovingObjectPosition movingobjectposition = this
-                .getMovingObjectPositionFromPlayer(par2World, par3EntityPlayer, false);
+        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, false);
 
         if (movingobjectposition == null) {
-            tellEssence(par3EntityPlayer, ownerName);
-            return par1ItemStack;
+            tellEssence(player, ownerName);
+            return item;
         } else {
             if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
                 int x = movingobjectposition.blockX;
                 int y = movingobjectposition.blockY;
                 int z = movingobjectposition.blockZ;
 
-                TileEntity tile = par2World.getTileEntity(x, y, z);
+                TileEntity tile = world.getTileEntity(x, y, z);
 
-                if (!(tile instanceof IReagentHandler)) {
-                    tellEssence(par3EntityPlayer, ownerName);
-                    return par1ItemStack;
+                if (!(tile instanceof IReagentHandler relay)) {
+                    tellEssence(player, ownerName);
+                    return item;
                 }
-
-                IReagentHandler relay = (IReagentHandler) tile;
 
                 ReagentContainerInfo[] infoList = relay.getContainerInfo(ForgeDirection.UNKNOWN);
                 if (infoList != null) {
                     for (ReagentContainerInfo info : infoList) {
                         if (info != null && info.reagent != null && info.reagent.reagent != null) {
-                            tellReagent(par3EntityPlayer, info);
+                            tellReagent(player, info);
                         }
                     }
                 }
             }
         }
 
-        return par1ItemStack;
+        return item;
     }
 
-    private static void tellReagent(EntityPlayer par3EntityPlayer, ReagentContainerInfo info) {
-        par3EntityPlayer.addChatComponentMessage(
+    private static void tellReagent(EntityPlayer player, ReagentContainerInfo info) {
+        player.addChatComponentMessage(
                 new ChatComponentText(
                         StatCollector.translateToLocalFormatted(
                                 "message.divinationsigil.reagent",
                                 ReagentRegistry.getKeyForReagent(info.reagent.reagent))));
-        par3EntityPlayer.addChatComponentMessage(
+        player.addChatComponentMessage(
                 new ChatComponentText(
                         StatCollector
                                 .translateToLocalFormatted("message.divinationsigil.amount", info.reagent.amount)));
     }
 
-    private static void tellEssence(EntityPlayer par3EntityPlayer, String ownerName) {
-        par3EntityPlayer.addChatMessage(
+    private static void tellEssence(EntityPlayer player, String ownerName) {
+        player.addChatMessage(
                 new ChatComponentText(
                         StatCollector.translateToLocalFormatted(
                                 "message.divinationsigil.currentessence",

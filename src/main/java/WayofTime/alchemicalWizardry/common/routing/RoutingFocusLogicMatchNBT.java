@@ -11,6 +11,7 @@ import WayofTime.alchemicalWizardry.api.RoutingFocusLogic;
 
 public class RoutingFocusLogicMatchNBT extends RoutingFocusLogic {
 
+    @Override
     public boolean getDefaultMatch(ItemStack keyStack, ItemStack checkedStack) {
         return (keyStack != null && keyStack.getItem() != null
                 && checkedStack != null

@@ -117,7 +117,7 @@ public class RitualEffectLava extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> lavaRitual = new ArrayList();
+        ArrayList<RitualComponent> lavaRitual = new ArrayList<>();
         lavaRitual.add(new RitualComponent(1, 0, 0, 2));
         lavaRitual.add(new RitualComponent(-1, 0, 0, 2));
         lavaRitual.add(new RitualComponent(0, 0, 1, 2));

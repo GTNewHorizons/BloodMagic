@@ -1,7 +1,6 @@
 package WayofTime.alchemicalWizardry.common.rituals;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -43,20 +42,10 @@ public class RitualEffectBinding extends RitualEffect {
             entityOwner.addPotionEffect(new PotionEffect(Potion.confusion.id, 80));
         } else {
             if (ritualStone.getVar1() == 0) {
-                int d0 = 0;
-                AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
-                        (double) x,
-                        (double) y + 1,
-                        (double) z,
-                        (double) (x + 1),
-                        (double) (y + 2),
-                        (double) (z + 1)).expand(d0, d0, d0);
-                List list = world.getEntitiesWithinAABB(EntityItem.class, axisalignedbb);
-                Iterator iterator = list.iterator();
-                EntityItem item;
+                AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(x, (double) y + 1, z, x + 1, y + 2, z + 1);
+                List<EntityItem> list = world.getEntitiesWithinAABB(EntityItem.class, axisalignedbb);
 
-                while (iterator.hasNext()) {
-                    item = (EntityItem) iterator.next();
+                for (EntityItem item : list) {
                     ItemStack itemStack = item.getEntityItem();
 
                     if (itemStack == null) {
@@ -97,37 +86,14 @@ public class RitualEffectBinding extends RitualEffect {
                     int lightningPoint = world.rand.nextInt(8);
 
                     switch (lightningPoint) {
-                        case 0:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x + 4, y + 3, z));
-                            break;
-
-                        case 1:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x - 4, y + 3, z));
-                            break;
-
-                        case 2:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x, y + 3, z + 4));
-                            break;
-
-                        case 3:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x, y + 3, z - 4));
-                            break;
-
-                        case 4:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x + 3, y + 3, z + 3));
-                            break;
-
-                        case 5:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x - 3, y + 3, z + 3));
-                            break;
-
-                        case 6:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x + 3, y + 3, z - 3));
-                            break;
-
-                        case 7:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x - 3, y + 3, z - 3));
-                            break;
+                        case 0 -> world.addWeatherEffect(new EntityLightningBolt(world, x + 4, y + 3, z));
+                        case 1 -> world.addWeatherEffect(new EntityLightningBolt(world, x - 4, y + 3, z));
+                        case 2 -> world.addWeatherEffect(new EntityLightningBolt(world, x, y + 3, z + 4));
+                        case 3 -> world.addWeatherEffect(new EntityLightningBolt(world, x, y + 3, z - 4));
+                        case 4 -> world.addWeatherEffect(new EntityLightningBolt(world, x + 3, y + 3, z + 3));
+                        case 5 -> world.addWeatherEffect(new EntityLightningBolt(world, x - 3, y + 3, z + 3));
+                        case 6 -> world.addWeatherEffect(new EntityLightningBolt(world, x + 3, y + 3, z - 3));
+                        case 7 -> world.addWeatherEffect(new EntityLightningBolt(world, x - 3, y + 3, z - 3));
                     }
                 }
 
@@ -158,7 +124,7 @@ public class RitualEffectBinding extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> boundSoulRitual = new ArrayList();
+        ArrayList<RitualComponent> boundSoulRitual = new ArrayList<>();
         boundSoulRitual.add(new RitualComponent(3, 0, 0, 2));
         boundSoulRitual.add(new RitualComponent(-3, 0, 0, 2));
         boundSoulRitual.add(new RitualComponent(0, 0, 3, 2));

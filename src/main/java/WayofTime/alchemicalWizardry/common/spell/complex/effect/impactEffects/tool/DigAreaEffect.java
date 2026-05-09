@@ -57,13 +57,13 @@ public class DigAreaEffect implements IDigAreaEffect {
             hlvl = localBlock.getHarvestLevel(localMeta);
         int toolLevel = itemTool.getHarvestLevel(container, toolClass);
 
-        float localHardness = localBlock == null ? Float.MAX_VALUE : localBlock.getBlockHardness(world, x, y, z);
+        float localHardness = localBlock.getBlockHardness(world, x, y, z);
 
         if (hlvl <= toolLevel && localHardness - this.getHardnessDifference() <= blockHardness) {
             boolean cancelHarvest = false;
 
             if (!cancelHarvest) {
-                if (localBlock != null && !(localHardness < 0)) {
+                if (!(localHardness < 0)) {
                     boolean isEffective = false;
 
                     String localToolClass = itemTool.getToolClassForMaterial(localBlock.getMaterial());

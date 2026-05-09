@@ -3,17 +3,10 @@ package WayofTime.alchemicalWizardry.api.alchemy;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class AlchemyPotionHandlerComponent {
+import com.github.bsideup.jabel.Desugar;
 
-    private ItemStack itemStack;
-    private int potionID;
-    private int tickDuration;
-
-    public AlchemyPotionHandlerComponent(ItemStack itemStack, int potionID, int tickDuration) {
-        this.itemStack = itemStack;
-        this.potionID = potionID;
-        this.tickDuration = tickDuration;
-    }
+@Desugar
+public record AlchemyPotionHandlerComponent(ItemStack itemStack, int potionID, int tickDuration) {
 
     public boolean compareItemStack(ItemStack comparedStack) {
         if (comparedStack != null && itemStack != null) {
@@ -29,17 +22,5 @@ public class AlchemyPotionHandlerComponent {
         }
 
         return false;
-    }
-
-    public ItemStack getItemStack() {
-        return itemStack;
-    }
-
-    public int getPotionID() {
-        return this.potionID;
-    }
-
-    public int getTickDuration() {
-        return this.tickDuration;
     }
 }

@@ -57,29 +57,27 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.attunedcrystal.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.attunedcrystal.desc2"));
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.attunedcrystal.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.attunedcrystal.desc2"));
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            Reagent reagent = this.getReagent(par1ItemStack);
+        if (!(item.getTagCompound() == null)) {
+            Reagent reagent = this.getReagent(item);
             if (reagent != null) {
-                par3List.add(StatCollector.translateToLocal("tooltip.reagent.selectedreagent") + " " + reagent.name);
+                tooltip.add(StatCollector.translateToLocal("tooltip.reagent.selectedreagent") + " " + reagent.name);
             }
 
-            if (this.getHasSavedCoordinates(par1ItemStack)) {
-                par3List.add("");
-                Int3 coords = this.getCoordinates(par1ItemStack);
-                par3List.add(
+            if (this.getHasSavedCoordinates(item)) {
+                tooltip.add("");
+                Int3 coords = this.getCoordinates(item);
+                tooltip.add(
                         StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
                                 + coords.xCoord
                                 + ", "
                                 + coords.yCoord
                                 + ", "
                                 + coords.zCoord);
-                par3List.add(
-                        StatCollector.translateToLocal("tooltip.alchemy.dimension") + " "
-                                + getDimension(par1ItemStack));
+                tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimension(item));
             }
         }
     }
@@ -154,31 +152,18 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
 
                 TileEntity tile = world.getTileEntity(x, y, z);
 
-                if (!(tile instanceof IReagentHandler)) {
+                if (!(tile instanceof IReagentHandler relay)) {
                     return itemStack;
                 }
-
-                IReagentHandler relay = (IReagentHandler) tile;
 
                 if (player.isSneaking()) {
                     ReagentContainerInfo[] infos = relay.getContainerInfo(ForgeDirection.UNKNOWN);
                     if (infos != null) {
-                        List<Reagent> reagentList = new LinkedList();
-                        for (ReagentContainerInfo info : infos) {
-                            if (info != null) {
-                                ReagentStack reagentStack = info.reagent;
-                                if (reagentStack != null) {
-                                    Reagent reagent = reagentStack.reagent;
-                                    if (reagent != null) {
-                                        reagentList.add(reagent);
-                                    }
-                                }
-                            }
-                        }
+                        List<Reagent> reagentList = getReagents(infos);
 
                         Reagent pastReagent = this.getReagent(itemStack);
 
-                        if (reagentList.size() <= 0) {
+                        if (reagentList.isEmpty()) {
                             return itemStack;
                         }
 
@@ -210,7 +195,7 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
                         }
 
                         TileEntity pastTile = world.getTileEntity(coords.xCoord, coords.yCoord, coords.zCoord);
-                        if (!(pastTile instanceof TEReagentConduit)) {
+                        if (!(pastTile instanceof TEReagentConduit pastRelay)) {
                             player.addChatComponentMessage(
                                     new ChatComponentTranslation("message.attunedcrystal.error.cannotfind"));
                             return itemStack;
@@ -221,8 +206,6 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
                         if (reagent == null) {
                             return itemStack;
                         }
-
-                        TEReagentConduit pastRelay = (TEReagentConduit) pastTile;
 
                         if (player.isSneaking()) {
                             pastRelay.removeReagentDestinationViaActual(reagent, x, y, z);
@@ -251,6 +234,22 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
         }
 
         return itemStack;
+    }
+
+    public static List<Reagent> getReagents(ReagentContainerInfo[] infos) {
+        List<Reagent> reagentList = new LinkedList<>();
+        for (ReagentContainerInfo info : infos) {
+            if (info != null) {
+                ReagentStack reagentStack = info.reagent;
+                if (reagentStack != null) {
+                    Reagent reagent = reagentStack.reagent;
+                    if (reagent != null) {
+                        reagentList.add(reagent);
+                    }
+                }
+            }
+        }
+        return reagentList;
     }
 
     public void setCoordinates(ItemStack stack, Int3 coords) {

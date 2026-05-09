@@ -24,15 +24,6 @@ public class OmegaParadigmEarth extends OmegaParadigm {
     }
 
     @Override
-    public float getCostPerTickOfUse(EntityPlayer player) {
-        // if(player.isBurning())
-        // {
-        // return 0.5f;
-        // }
-        return 1;
-    }
-
-    @Override
     public void onUpdate(World world, EntityPlayer player, ItemStack stack) {
         if (world.getWorldTime() % 100 == 0 && !world.isRemote) {
             if (player.posY < 50 && player.getHealth() < player.getMaxHealth()) {
@@ -50,6 +41,4 @@ public class OmegaParadigmEarth extends OmegaParadigm {
         return true;
     }
 
-    @Override
-    public void onOmegaKeyPressed(EntityPlayer player, ItemStack stack) {}
 }

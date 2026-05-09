@@ -2,6 +2,8 @@ package WayofTime.alchemicalWizardry.api.spell;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+
 /**
  * New wrapper class to enclose the ComplexSpellEffect
  */
@@ -60,7 +62,7 @@ public class SpellEffect {
             return;
         }
 
-        Class paraClass = parad.getClass();
+        Class<? extends SpellParadigm> paraClass = parad.getClass();
 
         ComplexSpellEffect effect = SpellEffectRegistry
                 .getSpellEffect(paraClass, type, modifier, powerEnhancement, potencyEnhancement, costEnhancement);
@@ -75,7 +77,7 @@ public class SpellEffect {
             return 0;
         }
 
-        Class paraClass = parad.getClass();
+        Class<? extends SpellParadigm> paraClass = parad.getClass();
 
         ComplexSpellEffect effect = SpellEffectRegistry
                 .getSpellEffect(paraClass, type, modifier, powerEnhancement, potencyEnhancement, costEnhancement);
@@ -102,29 +104,23 @@ public class SpellEffect {
 
     public static SpellEffect getEffectFromTag(NBTTagCompound tag) {
         try {
-            Class clazz = Class.forName(tag.getString("Class"));
-            if (clazz != null) {
-                try {
-                    Object obj = clazz.newInstance();
-                    if (obj instanceof SpellEffect) {
-                        SpellEffect eff = (SpellEffect) obj;
+            Class<?> clazz = Class.forName(tag.getString("Class"));
+            try {
+                Object obj = clazz.newInstance();
+                if (obj instanceof SpellEffect eff) {
+                    eff.type = SpellEffectRegistry.getTypeForKey(tag.getString("type"));
+                    eff.modifier = SpellEffectRegistry.getModifierForKey(tag.getString("modifier"));
+                    eff.powerEnhancement = tag.getInteger("power");
+                    eff.costEnhancement = tag.getInteger("cost");
+                    eff.potencyEnhancement = tag.getInteger("potency");
 
-                        eff.type = SpellEffectRegistry.getTypeForKey(tag.getString("type"));
-                        eff.modifier = SpellEffectRegistry.getModifierForKey(tag.getString("modifier"));
-                        eff.powerEnhancement = tag.getInteger("power");
-                        eff.costEnhancement = tag.getInteger("cost");
-                        eff.potencyEnhancement = tag.getInteger("potency");
-
-                        return eff;
-                    }
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    return eff;
                 }
+            } catch (InstantiationException | IllegalAccessException e) {
+                AlchemicalWizardry.logger.error(e);
             }
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            AlchemicalWizardry.logger.error(e);
         }
         return null;
     }

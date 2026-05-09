@@ -1,6 +1,7 @@
 package WayofTime.alchemicalWizardry.common.spell.complex.effect;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -100,9 +101,7 @@ public class SpellHelper {
             }
 
             ItemStack heldStack = player.getHeldItem();
-            if (heldStack != null && heldStack.getItem() instanceof IReagentManipulator) {
-                return true;
-            }
+            return heldStack != null && heldStack.getItem() instanceof IReagentManipulator;
         }
 
         return false;
@@ -122,9 +121,7 @@ public class SpellHelper {
 
             ItemStack heldStack = player.getHeldItem();
 
-            if (heldStack != null && heldStack.getItem() instanceof SigilDivination) {
-                return true;
-            }
+            return heldStack != null && heldStack.getItem() instanceof SigilDivination;
         }
 
         return false;
@@ -175,7 +172,8 @@ public class SpellHelper {
         int posY = (int) entity.posY;
         int posZ = (int) Math.round(entity.posZ - 0.5f);
 
-        return entity.getLookVec().createVectorHelper(posX, posY, posZ);
+        entity.getLookVec();
+        return Vec3.createVectorHelper(posX, posY, posZ);
     }
 
     public static ForgeDirection getDirectionForLookVector(Vec3 lookVec) {
@@ -333,7 +331,7 @@ public class SpellHelper {
         return !world.isRemote && isFakePlayer(player);
     }
 
-    private static final Pattern FAKE_PLAYER_PATTERN = Pattern.compile("^(?:\\[.*\\])|(?:ComputerCraft)$");
+    private static final Pattern FAKE_PLAYER_PATTERN = Pattern.compile("^\\[.*]|ComputerCraft$");
 
     public static boolean isFakePlayer(EntityPlayer player) {
         return player instanceof FakePlayer || FAKE_PLAYER_PATTERN.matcher(SpellHelper.getUsername(player)).matches();
@@ -387,7 +385,7 @@ public class SpellHelper {
 
             ArrayList<ItemStack> items = OreDictionary.getOres(dustName);
 
-            if (items != null && items.size() >= 1) {
+            if (items != null && !items.isEmpty()) {
                 return (items.get(0).copy());
             }
         }
@@ -409,30 +407,19 @@ public class SpellHelper {
     }
 
     public static String getNumeralForInt(int num) {
-        switch (num) {
-            case 1:
-                return "I";
-            case 2:
-                return "II";
-            case 3:
-                return "III";
-            case 4:
-                return "IV";
-            case 5:
-                return "V";
-            case 6:
-                return "VI";
-            case 7:
-                return "VII";
-            case 8:
-                return "VIII";
-            case 9:
-                return "IX";
-            case 10:
-                return "X";
-            default:
-                return "";
-        }
+        return switch (num) {
+            case 1 -> "I";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            case 5 -> "V";
+            case 6 -> "VI";
+            case 7 -> "VII";
+            case 8 -> "VIII";
+            case 9 -> "IX";
+            case 10 -> "X";
+            default -> "";
+        };
     }
 
     /**
@@ -629,15 +616,13 @@ public class SpellHelper {
 
         boolean[] canBeInserted = new boolean[inventory.getSizeInventory()];
 
-        if (inventory instanceof ISidedInventory) {
-            int[] array = ((ISidedInventory) inventory).getAccessibleSlotsFromSide(dir.ordinal());
+        if (inventory instanceof ISidedInventory inv) {
+            int[] array = inv.getAccessibleSlotsFromSide(dir.ordinal());
             for (int in : array) {
-                canBeInserted[in] = ((ISidedInventory) inventory).canInsertItem(in, stack, dir.ordinal());
+                canBeInserted[in] = inv.canInsertItem(in, stack, dir.ordinal());
             }
         } else {
-            for (int i = 0; i < canBeInserted.length; i++) {
-                canBeInserted[i] = true;
-            }
+            Arrays.fill(canBeInserted, true);
         }
 
         int numberMatching = 0;
@@ -684,15 +669,13 @@ public class SpellHelper {
     public static int getNumberOfItemsInInventory(IInventory inventory, ForgeDirection dir) {
         boolean[] canBeInserted = new boolean[inventory.getSizeInventory()];
 
-        if (inventory instanceof ISidedInventory) {
-            int[] array = ((ISidedInventory) inventory).getAccessibleSlotsFromSide(dir.ordinal());
+        if (inventory instanceof ISidedInventory inv) {
+            int[] array = inv.getAccessibleSlotsFromSide(dir.ordinal());
             for (int in : array) {
                 canBeInserted[in] = true;
             }
         } else {
-            for (int i = 0; i < canBeInserted.length; i++) {
-                canBeInserted[i] = true;
-            }
+            Arrays.fill(canBeInserted, true);
         }
 
         int amountOfItems = 0;
@@ -739,10 +722,8 @@ public class SpellHelper {
                     return player;
                 } else {
                     WorldServer world = (WorldServer) entity.worldObj;
-                    if (entity != null) {
-                        entity.setPosition(x, y, z);
-                        entity.timeUntilPortal = 150;
-                    }
+                    entity.setPosition(x, y, z);
+                    entity.timeUntilPortal = 150;
                     world.resetUpdateEntityTick();
                     entity.worldObj.playSoundEffect(x, y, z, "mob.endermen.portal", 1.0F, 1.0F);
                     return entity;

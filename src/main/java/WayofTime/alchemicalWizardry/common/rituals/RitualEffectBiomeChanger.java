@@ -123,11 +123,10 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                     boolean isItemConsumed = false;
                     TileEntity tileEntity = world.getTileEntity(x + i, y, z + j);
 
-                    if (!(tileEntity instanceof TEPlinth)) {
+                    if (!(tileEntity instanceof TEPlinth tilePlinth)) {
                         continue;
                     }
 
-                    TEPlinth tilePlinth = (TEPlinth) tileEntity;
                     ItemStack itemStack = tilePlinth.getStackInSlot(0);
 
                     if (itemStack != null) {
@@ -141,9 +140,6 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                                     isItemConsumed = true;
                                 } else if (item == (Blocks.lapis_block)) {
                                     humidity += 0.4f;
-                                    isItemConsumed = true;
-                                } else if (item == (Blocks.sand)) {
-                                    humidity -= 0.1f;
                                     isItemConsumed = true;
                                 } else if (item == (Blocks.sandstone)) {
                                     humidity -= 0.2f;
@@ -277,7 +273,7 @@ public class RitualEffectBiomeChanger extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> biomeChangerRitual = new ArrayList();
+        ArrayList<RitualComponent> biomeChangerRitual = new ArrayList<>();
         biomeChangerRitual.add(new RitualComponent(1, 0, -2, RitualComponent.AIR));
         biomeChangerRitual.add(new RitualComponent(1, 0, -3, RitualComponent.AIR));
         biomeChangerRitual.add(new RitualComponent(2, 0, -1, RitualComponent.AIR));

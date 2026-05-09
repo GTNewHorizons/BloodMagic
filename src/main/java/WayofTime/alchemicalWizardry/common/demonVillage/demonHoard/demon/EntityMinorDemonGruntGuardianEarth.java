@@ -8,47 +8,31 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.common.entity.projectile.EnergyBlastProjectile;
 import WayofTime.alchemicalWizardry.common.entity.projectile.ExplosionProjectile;
 
 public class EntityMinorDemonGruntGuardianEarth extends EntityMinorDemonGruntGuardian {
 
-    public EntityMinorDemonGruntGuardianEarth(World par1World) {
-        super(par1World);
+    public EntityMinorDemonGruntGuardianEarth(World world) {
+        super(world);
         this.setDemonID(AlchemicalWizardry.entityMinorDemonGruntGuardianEarthID);
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        int i = this.isTamed() ? 25 : 25;
-
-        if (par1Entity instanceof IHoardDemon && ((IHoardDemon) par1Entity).isSamePortal(this)) {
+    public boolean attackEntityAsMob(Entity entity) {
+        if (friendlyDemon(entity)) {
             return false;
         }
 
-        if (par1Entity instanceof EntityLivingBase) {
-            ((EntityLivingBase) par1Entity).addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 200, 4));
+        if (entity instanceof EntityLivingBase e) {
+            e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 200, 4));
         }
 
-        return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) i);
+        return entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) 25);
     }
 
-    /**
-     * Attack the specified entity using a ranged attack.
-     */
     @Override
-    public void attackEntityWithRangedAttack(EntityLivingBase par1EntityLivingBase, float par2) {
-        if (par1EntityLivingBase instanceof IHoardDemon && ((IHoardDemon) par1EntityLivingBase).isSamePortal(this)) {
-            return;
-        }
-        ExplosionProjectile hol = new ExplosionProjectile(
-                worldObj,
-                this,
-                par1EntityLivingBase,
-                1.8f,
-                0f,
-                20,
-                600,
-                false);
-        this.worldObj.spawnEntityInWorld(hol);
+    protected EnergyBlastProjectile attackProjectile(EntityLivingBase target) {
+        return new ExplosionProjectile(worldObj, this, target, 1.8f, 0f, 20, 600, false);
     }
 }

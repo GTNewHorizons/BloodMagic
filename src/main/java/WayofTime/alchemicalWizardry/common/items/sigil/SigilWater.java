@@ -30,7 +30,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class SigilWater extends ItemBucket implements ArmourUpgrade, ISigil {
 
-    private Block isFull = Blocks.water;
     private int energyUsed;
 
     public SigilWater() {
@@ -59,14 +58,12 @@ public class SigilWater extends ItemBucket implements ArmourUpgrade, ISigil {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.watersigil.desc"));
-        addBindingInformation(stack, par3List);
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.watersigil.desc"));
+        addBindingInformation(stack, tooltip);
     }
 
-    /**
-     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     */
+    @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         return stack;
     }
@@ -125,66 +122,56 @@ public class SigilWater extends ItemBucket implements ArmourUpgrade, ISigil {
                 return false;
             }
 
-            if (this.canPlaceContainedLiquid(world, x, y, z, x, y, z)
+            if (this.canPlaceContainedLiquid(world, x, y, z)
                     && EnergyItems.syphonBatteries(stack, player, getEnergyUsed())) {
-                return this.tryPlaceContainedLiquid(world, x, y, z, x, y, z);
+                return this.tryPlaceContainedLiquid(world, x, y, z);
             }
         }
 
         return false;
     }
 
-    /**
-     * Attempts to place the liquid contained inside the bucket.
-     */
-    public boolean tryPlaceContainedLiquid(World par1World, double par2, double par4, double par6, int par8, int par9,
-            int par10) {
-        if (!par1World.isAirBlock(par8, par9, par10) && par1World.getBlock(par8, par9, par10).getMaterial().isSolid()) {
+    public boolean tryPlaceContainedLiquid(World world, int x, int y, int z) {
+        if (!world.isAirBlock(x, y, z) && world.getBlock(x, y, z).getMaterial().isSolid()) {
             return false;
-        } else if ((par1World.getBlock(par8, par9, par10) == Blocks.water
-                || par1World.getBlock(par8, par9, par10) == Blocks.flowing_water)
-                && par1World.getBlockMetadata(par8, par9, par10) == 0) {
-                    return false;
-                } else {
-                    if (par1World.provider.isHellWorld) {
-                        par1World.playSoundEffect(
-                                par2 + 0.5D,
-                                par4 + 0.5D,
-                                par6 + 0.5D,
-                                "random.fizz",
-                                0.5F,
-                                2.6F + (par1World.rand.nextFloat() - par1World.rand.nextFloat()) * 0.8F);
+        }
+        if ((world.getBlock(x, y, z) == Blocks.water || world.getBlock(x, y, z) == Blocks.flowing_water)
+                && world.getBlockMetadata(x, y, z) == 0) {
+            return false;
+        }
+        if (world.provider.isHellWorld) {
+            world.playSoundEffect(
+                    x + 0.5D,
+                    y + 0.5D,
+                    z + 0.5D,
+                    "random.fizz",
+                    0.5F,
+                    2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
-                        for (int l = 0; l < 8; ++l) {
-                            par1World.spawnParticle(
-                                    "largesmoke",
-                                    (double) par8 + Math.random(),
-                                    (double) par9 + Math.random(),
-                                    (double) par10 + Math.random(),
-                                    0.0D,
-                                    0.0D,
-                                    0.0D);
-                        }
-                    } else {
-                        par1World.setBlock(par8, par9, par10, this.isFull, 0, 3);
-                        par1World.markBlockForUpdate(par8, par9, par10);
-                    }
+            for (int l = 0; l < 8; ++l) {
+                world.spawnParticle(
+                        "largesmoke",
+                        (double) x + Math.random(),
+                        (double) y + Math.random(),
+                        (double) z + Math.random(),
+                        0.0D,
+                        0.0D,
+                        0.0D);
+            }
+        } else {
+            world.setBlock(x, y, z, Blocks.water, 0, 3);
+            world.markBlockForUpdate(x, y, z);
+        }
 
-                    return true;
-                }
+        return true;
     }
 
-    public boolean canPlaceContainedLiquid(World par1World, double par2, double par4, double par6, int par8, int par9,
-            int par10) {
-        if (!par1World.isAirBlock(par8, par9, par10) && par1World.getBlock(par8, par9, par10).getMaterial().isSolid()) {
+    public boolean canPlaceContainedLiquid(World world, int x, int y, int z) {
+        Block block = world.getBlock(x, y, z);
+        if (!world.isAirBlock(x, y, z) && block.getMaterial().isSolid()) {
             return false;
-        } else if ((par1World.getBlock(par8, par9, par10) == Blocks.water
-                || par1World.getBlock(par8, par9, par10) == Blocks.flowing_water)
-                && par1World.getBlockMetadata(par8, par9, par10) == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
+        }
+        return (block != Blocks.water && block != Blocks.flowing_water) || world.getBlockMetadata(x, y, z) != 0;
     }
 
     protected void setEnergyUsed(int par1int) {

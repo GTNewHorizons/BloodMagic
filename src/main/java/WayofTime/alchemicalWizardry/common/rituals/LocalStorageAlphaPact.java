@@ -9,13 +9,13 @@ import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.IHoardD
 
 public class LocalStorageAlphaPact extends LocalRitualStorage {
 
-    public static Set<IHoardDemon> hoardList = new HashSet();
+    public static Set<IHoardDemon> hoardList = new HashSet<>();
 
     public void thrallDemon(IHoardDemon demon) {
         if (demon instanceof IHoardDemon) {
-            boolean enthrall = ((IHoardDemon) demon).thrallDemon(new Int3(this.xCoord, this.yCoord, this.zCoord));
+            boolean enthrall = demon.thrallDemon(new Int3(this.xCoord, this.yCoord, this.zCoord));
             if (enthrall) {
-                this.hoardList.add((IHoardDemon) demon);
+                hoardList.add(demon);
             }
         }
     }

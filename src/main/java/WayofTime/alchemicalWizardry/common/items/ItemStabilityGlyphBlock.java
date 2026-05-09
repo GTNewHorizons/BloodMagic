@@ -14,14 +14,10 @@ public class ItemStabilityGlyphBlock extends ItemBlock {
     @Override
     public String getUnlocalizedName(ItemStack itemstack) {
         String name;
-
-        switch (itemstack.getItemDamage()) {
-            case 0:
-                name = "stability1";
-                break;
-
-            default:
-                name = "broken";
+        if (itemstack.getItemDamage() == 0) {
+            name = "stability1";
+        } else {
+            name = "broken";
         }
 
         return getUnlocalizedName() + "." + name;

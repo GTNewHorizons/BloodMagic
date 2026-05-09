@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 
 public abstract class SpellParadigm {
 
-    protected List<SpellEffect> bufferedEffectList = new LinkedList();
+    protected List<SpellEffect> bufferedEffectList = new LinkedList<>();
 
     public void addBufferedEffect(SpellEffect effect) {
         if (effect != null) {

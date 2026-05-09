@@ -24,7 +24,7 @@ public class SoulNetworkHandler {
 
     public static boolean syphonFromNetworkWhileInContainer(ItemStack ist, int damageToBeDone) {
         String ownerName = "";
-        if (ist.getTagCompound() != null && !(ist.getTagCompound().getString("ownerName").equals(""))) {
+        if (ist.getTagCompound() != null && !(ist.getTagCompound().getString("ownerName").isEmpty())) {
             ownerName = ist.getTagCompound().getString("ownerName");
         }
 
@@ -121,26 +121,19 @@ public class SoulNetworkHandler {
      */
     @Deprecated
     public static int getMaximumForOrbTier(int maxOrb) {
-        switch (maxOrb) {
-            case 1:
-                return 5000;
-            case 2:
-                return 25000;
-            case 3:
-                return 150000;
-            case 4:
-                return 1000000;
-            case 5:
-                return 10000000;
-            case 6:
-                return 30000000;
-            default:
-                return 1;
-        }
+        return switch (maxOrb) {
+            case 1 -> 5000;
+            case 2 -> 25000;
+            case 3 -> 150000;
+            case 4 -> 1000000;
+            case 5 -> 10000000;
+            case 6 -> 30000000;
+            default -> 1;
+        };
     }
 
     public static int syphonFromNetwork(ItemStack ist, int damageToBeDone) {
-        if (ist.getTagCompound() != null && !(ist.getTagCompound().getString("ownerName").equals(""))) {
+        if (ist.getTagCompound() != null && !(ist.getTagCompound().getString("ownerName").isEmpty())) {
             String ownerName = ist.getTagCompound().getString("ownerName");
 
             return syphonFromNetwork(ownerName, damageToBeDone);
@@ -177,7 +170,7 @@ public class SoulNetworkHandler {
      *
      * @param ist    Owned itemStack
      * @param player Player using the item
-     * @param drain
+     * @param drain  The amount of LP to drain
      * @return True if the action should be executed and false if it should not. Always returns false if client-sided.
      */
     public static boolean syphonAndDamageFromNetwork(ItemStack ist, EntityPlayer player, int drain) {
@@ -185,7 +178,7 @@ public class SoulNetworkHandler {
             return false;
         }
 
-        if (ist.getTagCompound() != null && !(ist.getTagCompound().getString("ownerName").equals(""))) {
+        if (ist.getTagCompound() != null && !(ist.getTagCompound().getString("ownerName").isEmpty())) {
             String ownerName = ist.getTagCompound().getString("ownerName");
 
             ItemDrainNetworkEvent event = new ItemDrainNetworkEvent(player, ownerName, ist, drain);
@@ -217,15 +210,13 @@ public class SoulNetworkHandler {
         }
 
         World world = player.worldObj;
-        if (world != null) {
-            world.playSoundEffect(
-                    (double) ((float) player.posX + 0.5F),
-                    (double) ((float) player.posY + 0.5F),
-                    (double) ((float) player.posZ + 0.5F),
-                    "random.fizz",
-                    0.5F,
-                    2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
-        }
+        world.playSoundEffect(
+                (float) player.posX + 0.5F,
+                (float) player.posY + 0.5F,
+                (float) player.posZ + 0.5F,
+                "random.fizz",
+                0.5F,
+                2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
         int amount = SoulNetworkHandler.syphonFromNetwork(ownerName, damageToBeDone);
 
@@ -235,7 +226,7 @@ public class SoulNetworkHandler {
     }
 
     public static boolean canSyphonFromOnlyNetwork(ItemStack ist, int damageToBeDone) {
-        if (ist.getTagCompound() != null && !(ist.getTagCompound().getString("ownerName").equals(""))) {
+        if (ist.getTagCompound() != null && !(ist.getTagCompound().getString("ownerName").isEmpty())) {
             String ownerName = ist.getTagCompound().getString("ownerName");
 
             return canSyphonFromOnlyNetwork(ownerName, damageToBeDone);
@@ -299,9 +290,6 @@ public class SoulNetworkHandler {
     /**
      * A method to add to an owner's network up to a maximum value.
      *
-     * @param ownerName
-     * @param addedEssence
-     * @param maximum
      * @return amount added to the network
      */
     public static int addCurrentEssenceToMaximum(String ownerName, int addedEssence, int maximum) {
@@ -384,7 +372,7 @@ public class SoulNetworkHandler {
             }
         }
 
-        if (item.hasTagCompound() && !item.getTagCompound().getString("ownerName").equals("")) return true;
+        if (item.hasTagCompound() && !item.getTagCompound().getString("ownerName").isEmpty()) return true;
 
         ItemBindEvent event = new ItemBindEvent(player, SoulNetworkHandler.getUsername(player), item);
 
@@ -416,7 +404,7 @@ public class SoulNetworkHandler {
     }
 
     public static void causeNauseaToPlayer(ItemStack stack) {
-        if (stack.getTagCompound() != null && !(stack.getTagCompound().getString("ownerName").equals(""))) {
+        if (stack.getTagCompound() != null && !(stack.getTagCompound().getString("ownerName").isEmpty())) {
             String ownerName = stack.getTagCompound().getString("ownerName");
 
             SoulNetworkHandler.causeNauseaToPlayer(ownerName);

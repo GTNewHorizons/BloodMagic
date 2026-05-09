@@ -21,7 +21,7 @@ import WayofTime.alchemicalWizardry.common.omega.OmegaRegistry;
 
 public class TEMimicBlock extends TileEntity {
 
-    private ItemStack[] inv;
+    private final ItemStack[] inv;
     public Reagent reagent;
 
     private int ticksRemaining;
@@ -46,40 +46,40 @@ public class TEMimicBlock extends TileEntity {
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readFromNBT(par1NBTTagCompound);
-        NBTTagList tagList = par1NBTTagCompound.getTagList("Inventory", Constants.NBT.TAG_COMPOUND);
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
+        NBTTagList tagList = tag.getTagList("Inventory", Constants.NBT.TAG_COMPOUND);
 
         for (int i = 0; i < tagList.tagCount(); i++) {
-            NBTTagCompound tag = tagList.getCompoundTagAt(i);
-            int slot = tag.getByte("Slot");
+            NBTTagCompound slot = tagList.getCompoundTagAt(i);
+            int s = slot.getByte("Slot");
 
-            if (slot >= 0 && slot < inv.length) {
-                inv[slot] = ItemStack.loadItemStackFromNBT(tag);
+            if (s >= 0 && s < inv.length) {
+                inv[s] = ItemStack.loadItemStackFromNBT(slot);
             }
         }
 
-        ticksRemaining = par1NBTTagCompound.getInteger("ticksRemaining");
-        reagent = ReagentRegistry.getReagentForKey(par1NBTTagCompound.getString("reagent"));
+        ticksRemaining = tag.getInteger("ticksRemaining");
+        reagent = ReagentRegistry.getReagentForKey(tag.getString("reagent"));
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeToNBT(par1NBTTagCompound);
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
         NBTTagList itemList = new NBTTagList();
 
         for (int i = 0; i < inv.length; i++) {
             if (inv[i] != null) {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setByte("Slot", (byte) i);
-                inv[i].writeToNBT(tag);
-                itemList.appendTag(tag);
+                NBTTagCompound slot = new NBTTagCompound();
+                slot.setByte("Slot", (byte) i);
+                inv[i].writeToNBT(slot);
+                itemList.appendTag(slot);
             }
         }
 
-        par1NBTTagCompound.setTag("Inventory", itemList);
-        par1NBTTagCompound.setInteger("ticksRemaining", ticksRemaining);
-        par1NBTTagCompound.setString("reagent", ReagentRegistry.getKeyForReagent(reagent));
+        tag.setTag("Inventory", itemList);
+        tag.setInteger("ticksRemaining", ticksRemaining);
+        tag.setString("reagent", ReagentRegistry.getKeyForReagent(reagent));
     }
 
     @Override

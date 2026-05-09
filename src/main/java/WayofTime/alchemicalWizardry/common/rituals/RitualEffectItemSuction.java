@@ -58,15 +58,13 @@ public class RitualEffectItemSuction extends RitualEffect {
             int count = 0;
 
             if (itemDropList != null) {
-                int invSize = tileEntity.getSizeInventory();
 
                 for (EntityItem itemEntity : itemDropList) {
                     hasReductus = hasReductus
                             && this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
-                    if (hasReductus && itemEntity.age < this.timeDelayMin) {
+                    if (hasReductus && itemEntity.age < timeDelayMin) {
                         continue;
                     }
-                    ItemStack item = itemEntity.getEntityItem();
                     ItemStack copyStack = itemEntity.getEntityItem().copy();
 
                     int pastAmount = copyStack.stackSize;
@@ -103,7 +101,7 @@ public class RitualEffectItemSuction extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> suctionRitual = new ArrayList();
+        ArrayList<RitualComponent> suctionRitual = new ArrayList<>();
         suctionRitual.add(new RitualComponent(2, 0, 0, RitualComponent.AIR));
         suctionRitual.add(new RitualComponent(-2, 0, 0, RitualComponent.AIR));
         suctionRitual.add(new RitualComponent(0, 0, 2, RitualComponent.AIR));

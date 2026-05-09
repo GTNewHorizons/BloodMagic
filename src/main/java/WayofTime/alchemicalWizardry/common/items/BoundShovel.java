@@ -8,8 +8,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
@@ -21,7 +19,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
 import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multimap;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
@@ -33,7 +30,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BoundShovel extends ItemSpade implements IBindable {
 
     public float efficiencyOnProperMaterial = 12.0F;
-    public float damageVsEntity;
     public int rightClickCost = 10000;
 
     @SideOnly(Side.CLIENT)
@@ -47,8 +43,6 @@ public class BoundShovel extends ItemSpade implements IBindable {
     public BoundShovel() {
         super(AlchemicalWizardry.bloodBoundToolMaterial);
         this.maxStackSize = 1;
-        this.efficiencyOnProperMaterial = 12.0F;
-        this.damageVsEntity = 5;
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         setEnergyUsed(5);
         setHarvestLevel("shovel", 7);
@@ -68,9 +62,9 @@ public class BoundShovel extends ItemSpade implements IBindable {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.boundshovel.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.boundshovel.desc"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
@@ -91,70 +85,72 @@ public class BoundShovel extends ItemSpade implements IBindable {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer)) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (checkRightClick(item, world, player)) {
+            return item;
         }
 
-        Vec3 blockVec = SpellHelper.getEntityBlockVector(par3EntityPlayer);
+        Vec3 blockVec = SpellHelper.getEntityBlockVector(player);
         int posX = (int) (blockVec.xCoord);
         int posY = (int) (blockVec.yCoord);
         int posZ = (int) (blockVec.zCoord);
-        boolean silkTouch = EnchantmentHelper.getSilkTouchModifier(par3EntityPlayer);
-        int fortuneLvl = EnchantmentHelper.getFortuneModifier(par3EntityPlayer);
+        boolean silkTouch = EnchantmentHelper.getSilkTouchModifier(player);
+        int fortuneLvl = EnchantmentHelper.getFortuneModifier(player);
 
         HashMultiset<ItemType> dropMultiset = HashMultiset.create();
 
         for (int i = -5; i <= 5; i++) {
             for (int j = 0; j <= 10; j++) {
                 for (int k = -5; k <= 5; k++) {
-                    Block block = par2World.getBlock(posX + i, posY + j, posZ + k);
-                    int meta = par2World.getBlockMetadata(posX + i, posY + j, posZ + k);
+                    int x = posX + i;
+                    int y = posY + j;
+                    int z = posZ + k;
+                    Block block = world.getBlock(x, y, z);
+                    int meta = world.getBlockMetadata(x, y, z);
 
-                    if (block != null) {
-                        float str = func_150893_a(par1ItemStack, block);
+                    if (block == null || block.getBlockHardness(world, x, y, z) == -1
+                            || !world.canMineBlock(player, x, y, z)) {
+                        continue;
+                    }
 
-                        if (str > 1.1f && par2World.canMineBlock(par3EntityPlayer, posX + i, posY + j, posZ + k)) {
-                            if (silkTouch && block
-                                    .canSilkHarvest(par2World, par3EntityPlayer, posX + i, posY + j, posZ + k, meta)) {
-                                dropMultiset.add(new ItemType(block, meta));
-                            } else {
-                                ArrayList<ItemStack> itemDropList = block
-                                        .getDrops(par2World, posX + i, posY + j, posZ + k, meta, fortuneLvl);
+                    // getStrVsBlock
+                    if (func_150893_a(item, block) <= 1f) {
+                        continue;
+                    }
+                    if (silkTouch && block.canSilkHarvest(world, player, x, y, z, meta)) {
+                        dropMultiset.add(new ItemType(block, meta));
+                    } else {
+                        ArrayList<ItemStack> itemDropList = block.getDrops(world, x, y, z, meta, fortuneLvl);
 
-                                if (itemDropList != null) {
-                                    for (ItemStack stack : itemDropList)
-                                        dropMultiset.add(ItemType.fromStack(stack), stack.stackSize);
-                                }
-                            }
-
-                            par2World.setBlockToAir(posX + i, posY + j, posZ + k);
+                        if (itemDropList != null) {
+                            for (ItemStack stack : itemDropList)
+                                dropMultiset.add(ItemType.fromStack(stack), stack.stackSize);
                         }
                     }
+
+                    world.setBlockToAir(x, y, z);
                 }
             }
         }
 
-        BoundPickaxe.dropMultisetStacks(dropMultiset, par2World, posX, posY + par3EntityPlayer.getEyeHeight(), posZ);
+        BoundPickaxe.dropMultisetStacks(dropMultiset, world, posX, posY + player.getEyeHeight(), posZ);
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5) {
-        if (!(par3Entity instanceof EntityPlayer)) {
+    public void onUpdate(ItemStack item, World world, Entity entity, int slot, boolean held) {
+        if (!(entity instanceof EntityPlayer player)) {
             return;
         }
 
-        EntityPlayer par3EntityPlayer = (EntityPlayer) par3Entity;
-
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
+        if (item.getTagCompound() == null) {
+            item.setTagCompound(new NBTTagCompound());
         }
 
-        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
+        checkPassiveDrain(item, world, player);
 
-        par1ItemStack.setItemDamage(0);
+        item.setItemDamage(0);
     }
 
     /**
@@ -162,56 +158,41 @@ public class BoundShovel extends ItemSpade implements IBindable {
      * sword
      */
     @Override
-    public float func_150893_a(ItemStack par1ItemStack, Block par2Block) {
-        if (!IBindable.isActive(par1ItemStack)) {
+    public float func_150893_a(ItemStack item, Block block) {
+        if (!IBindable.isActive(item)) {
             return 0.0F;
         }
 
-        return super.func_150893_a(par1ItemStack, par2Block);
+        return super.func_150893_a(item, block);
     }
 
     /**
      * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise
      * the damage on the stack.
      */
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLivingBase,
-            EntityLivingBase par3EntityLivingBase) {
-        return IBindable.isActive(par1ItemStack);
+    @Override
+    public boolean hitEntity(ItemStack item, EntityLivingBase target, EntityLivingBase attacker) {
+        return IBindable.isActive(item);
     }
 
-    public boolean onBlockDestroyed(ItemStack par1ItemStack, World par2World, int par3, int par4, int par5, int par6,
-            EntityLivingBase par7EntityLivingBase) {
+    @Override
+    public boolean onBlockDestroyed(ItemStack item, World world, Block block, int x, int y, int z,
+            EntityLivingBase user) {
         return true;
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
 
-    /**
-     * Returns True is the item is renderer in full 3D when hold.
-     */
     public boolean isFull3D() {
         return true;
     }
 
-    /**
-     * Return the enchantability factor of the item, most of the time is based on material.
-     */
+    @Override
     public int getItemEnchantability() {
         return 30;
     }
 
-    @Override
-    public Multimap getItemAttributeModifiers() {
-        Multimap multimap = super.getItemAttributeModifiers();
-        multimap.put(
-                SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
-                new AttributeModifier(field_111210_e, "Tool modifier", (double) this.damageVsEntity, 0));
-        return multimap;
-    }
-
-    /**
-     * FORGE: Overridden to allow custom tool effectiveness
-     */
     @Override
     public float getDigSpeed(ItemStack stack, Block block, int meta) {
         if (!IBindable.isActive(stack)) {

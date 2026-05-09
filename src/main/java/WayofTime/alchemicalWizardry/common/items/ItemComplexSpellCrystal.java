@@ -32,56 +32,50 @@ public class ItemComplexSpellCrystal extends EnergyItems {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.complexspellcrystal.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.complexspellcrystal.desc"));
+        addBindingInformation(item, tooltip);
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            NBTTagCompound itemTag = par1ItemStack.getTagCompound();
+        if (!(item.getTagCompound() == null)) {
+            NBTTagCompound itemTag = item.getTagCompound();
 
-            par3List.add(
+            tooltip.add(
                     StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
                             + itemTag.getInteger("xCoord")
                             + ", "
                             + itemTag.getInteger("yCoord")
                             + ", "
                             + itemTag.getInteger("zCoord"));
-            par3List.add(
-                    StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimensionID(par1ItemStack));
+            tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimensionID(item));
         }
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par2World.isRemote) {
-            World world = DimensionManager.getWorld(getDimensionID(par1ItemStack));
+        if (world.isRemote) {
+            return item;
+        }
+        World dim = DimensionManager.getWorld(getDimensionID(item));
+        if (dim == null) {
+            return item;
+        }
+        NBTTagCompound itemTag = item.getTagCompound();
+        TileEntity tileEntity = dim.getTileEntity(
+                itemTag.getInteger("xCoord"),
+                itemTag.getInteger("yCoord"),
+                itemTag.getInteger("zCoord"));
 
-            if (world != null) {
-                NBTTagCompound itemTag = par1ItemStack.getTagCompound();
-                TileEntity tileEntity = world.getTileEntity(
-                        itemTag.getInteger("xCoord"),
-                        itemTag.getInteger("yCoord"),
-                        itemTag.getInteger("zCoord"));
-
-                if (tileEntity instanceof TESpellParadigmBlock) {
-                    TESpellParadigmBlock tileParad = (TESpellParadigmBlock) tileEntity;
-
-                    tileParad.castSpell(par2World, par3EntityPlayer, par1ItemStack);
-                } else {
-                    return par1ItemStack;
-                }
-            } else {
-                return par1ItemStack;
-            }
+        if (tileEntity instanceof TESpellParadigmBlock tileParad) {
+            tileParad.castSpell(world, player, item);
         } else {
-            return par1ItemStack;
+            return item;
         }
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-        return par1ItemStack;
+        world.playSoundAtEntity(player, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        return item;
     }
 
     public int getDimensionID(ItemStack itemStack) {

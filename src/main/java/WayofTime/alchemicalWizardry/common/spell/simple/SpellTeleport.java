@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common.spell.simple;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -30,61 +29,57 @@ public class SpellTeleport extends HomSpell {
     }
 
     @Override
-    public ItemStack onOffensiveRangedRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveRangedRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveRangedEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveRangedEnergy());
         }
 
-        par2World.spawnEntityInWorld(new TeleportProjectile(par2World, par3EntityPlayer, 8, true));
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-        return par1ItemStack;
+        world.spawnEntityInWorld(new TeleportProjectile(world, player, 8, true));
+        world.playSoundAtEntity(player, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        return item;
     }
 
     @Override
-    public ItemStack onOffensiveMeleeRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveMeleeRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveMeleeEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveMeleeEnergy());
         }
 
-        par2World.spawnEntityInWorld(new TeleportProjectile(par2World, par3EntityPlayer, 8, false));
-        return par1ItemStack;
+        world.spawnEntityInWorld(new TeleportProjectile(world, player, 8, false));
+        return item;
     }
 
     @Override
-    public ItemStack onDefensiveRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onDefensiveRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getDefensiveEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getDefensiveEnergy());
         }
 
-        double xCoord = par3EntityPlayer.posX;
-        double yCoord = par3EntityPlayer.posY;
-        double zCoord = par3EntityPlayer.posZ;
-        SpellTeleport.teleportRandomly(par3EntityPlayer, 128);
+        double xCoord = player.posX;
+        double yCoord = player.posY;
+        double zCoord = player.posZ;
+        SpellTeleport.teleportRandomly(player, 128);
 
         for (int i = 0; i < 20; i++) {
             SpellHelper.sendParticleToAllAround(
-                    par2World,
+                    world,
                     xCoord,
                     yCoord,
                     zCoord,
                     30,
-                    par2World.provider.dimensionId,
+                    world.provider.dimensionId,
                     "portal",
                     xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
                     yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
@@ -94,37 +89,35 @@ public class SpellTeleport extends HomSpell {
                     itemRand.nextFloat());
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onEnvironmentalRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onEnvironmentalRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getEnvironmentalEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getEnvironmentalEnergy());
         }
 
-        if (!par2World.isRemote) {
+        if (!world.isRemote) {
             int d0 = 3;
             AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
-                    par3EntityPlayer.posX,
-                    par3EntityPlayer.posY,
-                    par3EntityPlayer.posZ,
-                    (par3EntityPlayer.posX + 1),
-                    (par3EntityPlayer.posY + 2),
-                    (par3EntityPlayer.posZ + 1)).expand(d0, d0, d0);
-            List list = par3EntityPlayer.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
-            Iterator iterator = list.iterator();
+                    player.posX,
+                    player.posY,
+                    player.posZ,
+                    (player.posX + 1),
+                    (player.posY + 2),
+                    (player.posZ + 1)).expand(d0, d0, d0);
+            List list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
-            while (iterator.hasNext()) {
-                EntityLivingBase entityLiving = (EntityLivingBase) iterator.next();
+            for (Object o : list) {
+                EntityLivingBase entityLiving = (EntityLivingBase) o;
 
                 if (entityLiving instanceof EntityPlayer) {
-                    if (entityLiving.equals(par3EntityPlayer)) {
+                    if (entityLiving.equals(player)) {
                         continue;
                     }
                 }
@@ -132,18 +125,18 @@ public class SpellTeleport extends HomSpell {
             }
         }
 
-        double xCoord = par3EntityPlayer.posX;
-        double yCoord = par3EntityPlayer.posY;
-        double zCoord = par3EntityPlayer.posZ;
+        double xCoord = player.posX;
+        double yCoord = player.posY;
+        double zCoord = player.posZ;
 
         for (int i = 0; i < 32; i++) {
             SpellHelper.sendParticleToAllAround(
-                    par2World,
+                    world,
                     xCoord,
                     yCoord,
                     zCoord,
                     30,
-                    par2World.provider.dimensionId,
+                    world.provider.dimensionId,
                     "portal",
                     xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
                     yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
@@ -153,7 +146,7 @@ public class SpellTeleport extends HomSpell {
                     itemRand.nextFloat());
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     public static boolean teleportRandomly(EntityLivingBase entityLiving, double distance) {
@@ -173,11 +166,7 @@ public class SpellTeleport extends HomSpell {
             i++;
         }
 
-        if (i >= 100) {
-            return false;
-        }
-
-        return true;
+        return i < 100;
     }
 
     private static boolean teleportTo(EntityLivingBase entityLiving, double par1, double par3, double par5,
@@ -237,7 +226,7 @@ public class SpellTeleport extends HomSpell {
                         + entityLiving.worldObj.rand.nextDouble() * (double) entityLiving.height;
                 double d9 = lastZ + (entityLiving.posZ - lastZ) * d6
                         + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
-                entityLiving.worldObj.spawnParticle("portal", d7, d8, d9, (double) f, (double) f1, (double) f2);
+                entityLiving.worldObj.spawnParticle("portal", d7, d8, d9, f, f1, f2);
             }
             return true;
         }
@@ -245,17 +234,14 @@ public class SpellTeleport extends HomSpell {
 
     public static void moveEntityViaTeleport(EntityLivingBase entityLiving, double x, double y, double z) {
         if (entityLiving instanceof EntityPlayer) {
-            if (entityLiving != null && entityLiving instanceof EntityPlayerMP) {
-                EntityPlayerMP entityplayermp = (EntityPlayerMP) entityLiving;
-                if (entityplayermp.worldObj == entityLiving.worldObj) {
-                    EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x, y, z, 5.0F);
+            if (entityLiving instanceof EntityPlayerMP entityplayermp) {
+                EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x, y, z, 5.0F);
 
-                    if (!MinecraftForge.EVENT_BUS.post(event)) {
-                        if (entityLiving.isRiding()) {
-                            entityLiving.mountEntity(null);
-                        }
-                        entityLiving.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
+                if (!MinecraftForge.EVENT_BUS.post(event)) {
+                    if (entityLiving.isRiding()) {
+                        entityLiving.mountEntity(null);
                     }
+                    entityLiving.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
                 }
             }
         } else if (entityLiving != null) {

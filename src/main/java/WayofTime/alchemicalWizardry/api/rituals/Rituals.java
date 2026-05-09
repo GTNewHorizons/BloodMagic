@@ -27,8 +27,8 @@ public class Rituals {
 
     public final MRSRenderer customRenderer;
 
-    public static Map<String, Rituals> ritualMap = new HashMap();
-    public static List<String> keyList = new LinkedList();
+    public static Map<String, Rituals> ritualMap = new HashMap<>();
+    public static List<String> keyList = new LinkedList<>();
 
     public Rituals(int crystalLevel, int actCost, RitualEffect effect, String name, MRSRenderer renderer) {
         this.crystalLevel = crystalLevel;
@@ -83,11 +83,9 @@ public class Rituals {
 
     public void removeRitualFromList() {
         if (ritualMap.containsValue(this)) {
-            ritualMap.remove(ritualMap.remove(this.name));
+            ritualMap.remove(this.name);
         }
-        if (keyList.contains(this.name)) {
-            keyList.remove(this.name);
-        }
+        keyList.remove(this.name);
     }
 
     public static String checkValidRitual(World world, int x, int y, int z) {
@@ -132,17 +130,17 @@ public class Rituals {
         TileEntity te;
 
         for (RitualComponent rc : ritual) {
-            test = world.getBlock(x + rc.getX(direction), y + rc.getY(), z + rc.getZ(direction));
-            te = world.getTileEntity(x + rc.getX(direction), y + rc.getY(), z + rc.getZ(direction));
+            test = world.getBlock(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction));
+            te = world.getTileEntity(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction));
 
             if (!(test instanceof IRitualStone && ((IRitualStone) test).isRuneType(
                     world,
                     x + rc.getX(direction),
                     y,
                     z + rc.getZ(direction),
-                    world.getBlockMetadata(x + rc.getX(direction), y + rc.getY(), z + rc.getZ(direction)),
-                    rc.getStoneType()))
-                    && !(te instanceof ITileRitualStone && ((ITileRitualStone) te).isRuneType(rc.getStoneType()))) {
+                    world.getBlockMetadata(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction)),
+                    rc.stoneType()))
+                    && !(te instanceof ITileRitualStone && ((ITileRitualStone) te).isRuneType(rc.stoneType()))) {
                 return false;
             }
         }
@@ -287,7 +285,7 @@ public class Rituals {
         String firstKey = "";
 
         for (String str : keyList) {
-            if (firstKey.equals("")) {
+            if (firstKey.isEmpty()) {
                 firstKey = str;
             }
             if (hasSpotted) {

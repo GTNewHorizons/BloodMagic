@@ -35,17 +35,14 @@ public class BlockCrystal extends Block {
         this.brickIcon = iconRegister.registerIcon("AlchemicalWizardry:ShardClusterBrick");
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-
-    /**
-     * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
-     */
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubBlocks(Item item, CreativeTabs par2CreativeTabs, List<ItemStack> items) {
         if (this.equals(ModBlocks.blockCrystal)) {
-            par3List.add(new ItemStack(par1, 1, 0));
-            par3List.add(new ItemStack(par1, 1, 1));
+            items.add(new ItemStack(item, 1, 0));
+            items.add(new ItemStack(item, 1, 1));
         } else {
-            super.getSubBlocks(par1, par2CreativeTabs, par3List);
+            super.getSubBlocks(item, par2CreativeTabs, items);
         }
     }
 

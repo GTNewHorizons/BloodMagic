@@ -6,8 +6,8 @@ import net.minecraft.potion.PotionEffect;
 
 public class AlchemyPotionHelper {
 
-    private int potionID;
-    private int tickDuration;
+    private final int potionID;
+    private final int tickDuration;
     private int concentration;
     private int durationFactor;
 

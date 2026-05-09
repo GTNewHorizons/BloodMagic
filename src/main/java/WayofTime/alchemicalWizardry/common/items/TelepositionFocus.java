@@ -33,26 +33,25 @@ public class TelepositionFocus extends EnergyItems {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List,
-            boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.telepositionfocus.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.telepositionfocus.desc"));
+        addBindingInformation(item, tooltip);
 
-        NBTTagCompound itemTag = IBindable.getTag(par1ItemStack);
-        par3List.add(
+        NBTTagCompound itemTag = IBindable.getTag(item);
+        tooltip.add(
                 StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
                         + itemTag.getInteger("xCoord")
                         + ", "
                         + itemTag.getInteger("yCoord")
                         + ", "
                         + itemTag.getInteger("zCoord"));
-        par3List.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimensionID(par1ItemStack));
+        tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimensionID(item));
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
-        return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        IBindable.checkAndSetItemOwner(item, player);
+        return item;
     }
 
     public int getDimensionID(ItemStack itemStack) {

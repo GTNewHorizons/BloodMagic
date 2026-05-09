@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 public class HarvestRegistry {
 
-    public static List<IHarvestHandler> handlerList = new ArrayList();
+    public static List<IHarvestHandler> handlerList = new ArrayList<>();
 
     public static void registerHarvestHandler(IHarvestHandler handler) {
         handlerList.add(handler);

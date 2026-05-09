@@ -57,48 +57,26 @@ public class BloodRune extends Block {
     }
 
     public int getRuneEffect(int metaData) {
-        switch (metaData) {
-            case 0:
-                return 0;
-
-            case 1: // Altar Capacity rune
-                return 5;
-
-            case 2: // Filling/emptying rune
-                return 6;
-
-            case 3: // Orb Capacity rune
-                return 7;
-
-            case 4: // Better Capacity rune
-                return 8;
-
-            case 5: // Acceleration rune
-                return 9;
-
-            case 6: // Quickness Rune
-                return 10;
-        }
-
-        return 0;
+        return switch (metaData) {
+            case 1 -> 5; // Altar Capacity rune
+            case 2 -> 6; // Filling/emptying rune
+            case 3 -> 7; // Orb Capacity rune
+            case 4 -> 8; // Better Capacity rune
+            case 5 -> 9; // Acceleration rune
+            case 6 -> 10; // Quickness Rune
+            default -> 0;
+        };
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-
-    /**
-     * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
-     */
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> items) {
         if (this.equals(ModBlocks.bloodRune)) {
-            par3List.add(new ItemStack(par1, 1, 0));
-            par3List.add(new ItemStack(par1, 1, 1));
-            par3List.add(new ItemStack(par1, 1, 2));
-            par3List.add(new ItemStack(par1, 1, 3));
-            par3List.add(new ItemStack(par1, 1, 4));
-            par3List.add(new ItemStack(par1, 1, 5));
-            par3List.add(new ItemStack(par1, 1, 6));
+            for (int i = 0; i < 7; i++) {
+                items.add(new ItemStack(item, 1, i));
+            }
         } else {
-            super.getSubBlocks(par1, par2CreativeTabs, par3List);
+            super.getSubBlocks(item, tab, items);
         }
     }
 

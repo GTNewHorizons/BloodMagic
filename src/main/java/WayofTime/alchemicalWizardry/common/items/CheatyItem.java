@@ -35,29 +35,27 @@ public class CheatyItem extends Item implements IBindable {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.mode.creative"));
-        par3List.add(StatCollector.translateToLocal("tooltip.cheatyitem.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.cheatyitem.desc2"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.mode.creative"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.cheatyitem.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.cheatyitem.desc2"));
+        addBindingInformation(item, tooltip);
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        World world = par3EntityPlayer.worldObj;
-
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)
-                || par3EntityPlayer instanceof FakePlayer) {
-            return par1ItemStack;
+    @Override
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player instanceof FakePlayer) {
+            return item;
         }
 
         if (world != null) {
-            double posX = par3EntityPlayer.posX;
-            double posY = par3EntityPlayer.posY;
-            double posZ = par3EntityPlayer.posZ;
+            double posX = player.posX;
+            double posY = player.posY;
+            double posZ = player.posZ;
             world.playSoundEffect(
-                    (double) ((float) posX + 0.5F),
-                    (double) ((float) posY + 0.5F),
-                    (double) ((float) posZ + 0.5F),
+                    (float) posX + 0.5F,
+                    (float) posY + 0.5F,
+                    (float) posZ + 0.5F,
                     "random.fizz",
                     0.5F,
                     2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
@@ -74,75 +72,22 @@ public class CheatyItem extends Item implements IBindable {
                     posZ);
         }
 
-        if (par3EntityPlayer.worldObj.isRemote) {
-            return par1ItemStack;
+        if (player.worldObj.isRemote) {
+            return item;
         }
 
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
+        NBTTagCompound itemTag = item.getTagCompound();
 
-        if (itemTag == null || itemTag.getString("ownerName").equals("")) {
-            return par1ItemStack;
+        if (itemTag == null || itemTag.getString("ownerName").isEmpty()) {
+            return item;
         }
 
-        if (par3EntityPlayer.isSneaking()) {
+        if (player.isSneaking()) {
             SoulNetworkHandler.setCurrentEssence(itemTag.getString("ownerName"), 0);
         } else {
             SoulNetworkHandler.addCurrentEssenceToMaximum(itemTag.getString("ownerName"), 1000000, Integer.MAX_VALUE);
         }
-        return par1ItemStack;
-    }
-
-    /*
-     * @return the damage that was not deducted
-     */
-    public int damageItem(ItemStack par1ItemStack, int par2int) {
-        if (par2int == 0) {
-            return 0;
-        }
-
-        int before = this.getDamage(par1ItemStack);
-        this.setDamage(par1ItemStack, this.getDamage(par1ItemStack) + par2int);
-        return par2int - (this.getDamage(par1ItemStack) - before);
-    }
-
-    protected void damagePlayer(World world, EntityPlayer player, int damage) {
-        if (world != null) {
-            double posX = player.posX;
-            double posY = player.posY;
-            double posZ = player.posZ;
-            world.playSoundEffect(
-                    (double) ((float) posX + 0.5F),
-                    (double) ((float) posY + 0.5F),
-                    (double) ((float) posZ + 0.5F),
-                    "random.fizz",
-                    0.5F,
-                    2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
-            float f = 1.0F;
-            float f1 = f * 0.6F + 0.4F;
-            float f2 = f * f * 0.7F - 0.5F;
-            float f3 = f * f * 0.6F - 0.7F;
-
-            for (int l = 0; l < 8; ++l) {
-                world.spawnParticle(
-                        "reddust",
-                        posX + Math.random() - Math.random(),
-                        posY + Math.random() - Math.random(),
-                        posZ + Math.random() - Math.random(),
-                        f1,
-                        f2,
-                        f3);
-            }
-        }
-
-        if (!player.capabilities.isCreativeMode) {
-            for (int i = 0; i < damage; i++) {
-                player.setHealth((player.getHealth() - 1));
-            }
-        }
-
-        if (player.getHealth() <= 0) {
-            player.inventory.dropAllItems();
-        }
+        return item;
     }
 
     @Override
@@ -155,14 +100,14 @@ public class CheatyItem extends Item implements IBindable {
         return true;
     }
 
-    public int getCurrentEssence(ItemStack par1ItemStack) {
-        if (par1ItemStack == null) {
+    public int getCurrentEssence(ItemStack item) {
+        if (item == null) {
             return 0;
         }
 
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
+        NBTTagCompound itemTag = item.getTagCompound();
 
-        if (itemTag == null || itemTag.getString("ownerName").equals("")) {
+        if (itemTag == null || itemTag.getString("ownerName").isEmpty()) {
             return 0;
         }
 
@@ -175,8 +120,7 @@ public class CheatyItem extends Item implements IBindable {
             worldSave.setItemData(owner, data);
         }
 
-        int currentEssence = data.currentEssence;
-        return (currentEssence);
+        return (data.currentEssence);
     }
 
     @Override

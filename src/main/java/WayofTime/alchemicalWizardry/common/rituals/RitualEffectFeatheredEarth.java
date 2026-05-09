@@ -95,7 +95,7 @@ public class RitualEffectFeatheredEarth extends RitualEffect // Nullifies all fa
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> featheredEarthRitual = new ArrayList();
+        ArrayList<RitualComponent> featheredEarthRitual = new ArrayList<>();
         featheredEarthRitual.add(new RitualComponent(1, 0, 0, RitualComponent.DUSK));
         featheredEarthRitual.add(new RitualComponent(-1, 0, 0, RitualComponent.DUSK));
         featheredEarthRitual.add(new RitualComponent(0, 0, 1, RitualComponent.DUSK));

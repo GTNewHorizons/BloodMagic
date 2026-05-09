@@ -33,6 +33,7 @@ public class RitualEffectWater extends RitualEffect {
     public static final int reductusDrain = 2;
     public static final int crystallosDrain = 10;
 
+    @Override
     public void performEffect(IMasterRitualStone ritualStone) {
         String owner = ritualStone.getOwner();
 
@@ -71,8 +72,7 @@ public class RitualEffectWater extends RitualEffect {
             int range = 10;
             List<Entity> list = SpellHelper.getEntitiesInRange(world, x + 0.5, y + 0.5, z + 0.5, range, range);
             for (Entity entity : list) {
-                if (entity instanceof EntityLivingBase) {
-                    EntityLivingBase livingEntity = (EntityLivingBase) entity;
+                if (entity instanceof EntityLivingBase livingEntity) {
 
                     if (livingEntity == SpellHelper.getPlayerForUsername(owner)) {
                         continue;
@@ -168,13 +168,14 @@ public class RitualEffectWater extends RitualEffect {
         }
     }
 
+    @Override
     public int getCostPerRefresh() {
         return AlchemicalWizardry.ritualCostWater[1];
     }
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> waterRitual = new ArrayList();
+        ArrayList<RitualComponent> waterRitual = new ArrayList<>();
         waterRitual.add(new RitualComponent(-1, 0, 1, 1));
         waterRitual.add(new RitualComponent(-1, 0, -1, 1));
         waterRitual.add(new RitualComponent(1, 0, -1, 1));

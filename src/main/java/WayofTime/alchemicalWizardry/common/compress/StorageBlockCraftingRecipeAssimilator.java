@@ -102,7 +102,7 @@ public class StorageBlockCraftingRecipeAssimilator {
 
                     // check if the packing recipe accepts the unpacked item stack
 
-                    matched = recipePack.recipe.matches(inventory, world);
+                    matched = recipePack.recipe.matches(inventory, null);
                 }
 
                 if (matched) {
@@ -111,7 +111,7 @@ public class StorageBlockCraftingRecipeAssimilator {
                     ItemStack packOutput = recipePack.recipe.getRecipeOutput();
                     inventoryUnpack.setInventorySlotContents(0, packOutput.copy());
 
-                    if (recipeUnpack.matches(inventoryUnpack, world)) {
+                    if (recipeUnpack.matches(inventoryUnpack, null)) {
                         ret.add(recipePack.recipe);
                         AlchemicalWizardry.logger
                                 .info("Adding the following recipe to the Compression Handler: " + packOutput);
@@ -124,7 +124,6 @@ public class StorageBlockCraftingRecipeAssimilator {
         return ret;
     }
 
-    @SuppressWarnings("unchecked")
     private List<IRecipe> getCraftingRecipes() {
         return CraftingManager.getInstance().getRecipeList();
     }
@@ -178,7 +177,7 @@ public class StorageBlockCraftingRecipeAssimilator {
      * Determine the item stacks from the provided inputs which are suitable for every input element.
      *
      * @param inputs List of all inputs, null elements are being ignored.
-     * @return List List of all options.
+     * @return List of all options.
      */
     @SuppressWarnings("unchecked")
     private List<ItemStack> getIdenticalInputs(List<?> inputs) {
@@ -240,9 +239,9 @@ public class StorageBlockCraftingRecipeAssimilator {
             AlchemicalWizardry.logger
                     .error("A mod in this instance has registered an item with a null input. Known problem mods are:");
 
-            String err = "";
-            for (String problem : problemMods) err += (err.length() > 0 ? ", " : "") + problem;
-            AlchemicalWizardry.logger.error(err);
+            StringBuilder err = new StringBuilder();
+            for (String problem : problemMods) err.append(err.length() > 0 ? ", " : "").append(problem);
+            AlchemicalWizardry.logger.error(err.toString());
 
             return false;
         }

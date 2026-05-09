@@ -52,7 +52,7 @@ public class SubCommandNetwork extends SubCommandBase {
 
             try {
                 switch (ValidCommands.valueOf(args[0].toUpperCase(Locale.ENGLISH))) {
-                    case SYPHON: {
+                    case SYPHON -> {
                         if (displayHelp) {
                             displayHelpString(commandSender, ValidCommands.SYPHON.help);
                             break;
@@ -74,9 +74,8 @@ public class SubCommandNetwork extends SubCommandBase {
                             displayErrorString(commandSender, "commands.error.arg.missing");
                         }
 
-                        break;
                     }
-                    case ADD: {
+                    case ADD -> {
                         if (displayHelp) {
                             displayHelpString(commandSender, ValidCommands.ADD.help);
                             break;
@@ -95,9 +94,8 @@ public class SubCommandNetwork extends SubCommandBase {
                             displayErrorString(commandSender, "commands.error.arg.missing");
                         }
 
-                        break;
                     }
-                    case SET: {
+                    case SET -> {
                         if (displayHelp) {
                             displayHelpString(commandSender, ValidCommands.SET.help);
                             break;
@@ -115,9 +113,8 @@ public class SubCommandNetwork extends SubCommandBase {
                             displayErrorString(commandSender, "commands.error.arg.missing");
                         }
 
-                        break;
                     }
-                    case GET: {
+                    case GET -> {
                         if (displayHelp) {
                             displayHelpString(commandSender, ValidCommands.GET.help);
                             break;
@@ -129,9 +126,8 @@ public class SubCommandNetwork extends SubCommandBase {
                                                 + SoulNetworkHandler.getCurrentEssence(givenName)
                                                 + "LP"));
 
-                        break;
                     }
-                    case FILL: {
+                    case FILL -> {
                         if (displayHelp) {
                             displayHelpString(commandSender, ValidCommands.FILL.help, Integer.MAX_VALUE);
                             break;
@@ -142,9 +138,8 @@ public class SubCommandNetwork extends SubCommandBase {
                             displaySuccessString(commandSender, "commands.network.fill.success", givenName);
                         }
 
-                        break;
                     }
-                    case CAP: {
+                    case CAP -> {
                         if (displayHelp) {
                             displayHelpString(commandSender, ValidCommands.CAP.help);
                             break;
@@ -156,7 +151,6 @@ public class SubCommandNetwork extends SubCommandBase {
                             displaySuccessString(commandSender, "commands.network.cap.success", givenName);
                         }
 
-                        break;
                     }
                 }
             } catch (IllegalArgumentException e) {
@@ -174,20 +168,17 @@ public class SubCommandNetwork extends SubCommandBase {
         FILL("commands.network.fill.help"),
         CAP("commands.network.cap.help");
 
-        public String help;
+        public final String help;
 
         ValidCommands(String help) {
             this.help = help;
         }
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return false;
-        } catch (NullPointerException e) {
+        } catch (NumberFormatException | NullPointerException e) {
             return false;
         }
         // only got here if we didn't return false

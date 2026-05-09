@@ -53,14 +53,14 @@ public class ItemIncense extends Item implements IIncense {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
-        list.add(StatCollector.translateToLocal("tooltip.alchemy.usedinincense"));
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.usedinincense"));
     }
 
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
         int meta = MathHelper.clamp_int(itemStack.getItemDamage(), 0, ITEM_NAMES.length - 1);
-        return ("" + "item.bloodMagicIncenseItem." + ITEM_NAMES[meta]);
+        return ("item.bloodMagicIncenseItem." + ITEM_NAMES[meta]);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ItemIncense extends Item implements IIncense {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
+    public void getSubItems(Item id, CreativeTabs creativeTab, List<ItemStack> list) {
         for (int meta = 0; meta < ITEM_NAMES.length; ++meta) {
             list.add(new ItemStack(id, 1, meta));
         }

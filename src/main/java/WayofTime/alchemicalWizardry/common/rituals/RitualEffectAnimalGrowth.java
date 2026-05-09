@@ -40,17 +40,11 @@ public class RitualEffectAnimalGrowth extends RitualEffect {
 
         double range = 2;
 
-        AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
-                (double) x,
-                (double) y + 1,
-                (double) z,
-                (double) (x + 1),
-                (double) (y + 3),
-                (double) (z + 1)).expand(range, 0, range);
+        AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(x, (double) y + 1, z, x + 1, y + 3, z + 1)
+                .expand(range, 0, range);
         List<EntityAgeable> list = world.getEntitiesWithinAABB(EntityAgeable.class, axisalignedbb);
 
         int entityCount = 0;
-        boolean flag = false;
 
         if (currentEssence < this.getCostPerRefresh() * list.size()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
@@ -65,8 +59,7 @@ public class RitualEffectAnimalGrowth extends RitualEffect {
                 } else {
                     hasReductus = hasReductus
                             && this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
-                    if (hasReductus && entity instanceof EntityAnimal && entity.getGrowingAge() > 0) {
-                        EntityAnimal animal = (EntityAnimal) entity;
+                    if (hasReductus && entity instanceof EntityAnimal animal && entity.getGrowingAge() > 0) {
                         entity.setGrowingAge(Math.max(0, animal.getGrowingAge() - 20 * 2));
                         this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, true);
                         entityCount++;
@@ -100,7 +93,6 @@ public class RitualEffectAnimalGrowth extends RitualEffect {
 
                     hasVirtus = hasVirtus
                             && this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false);
-                    boolean hasLP = SoulNetworkHandler.canSyphonFromOnlyNetwork(owner, breedingCost);
 
                     for (int i = 0; i < inventory.getSizeInventory(); i++) {
                         ItemStack stack = inventory.getStackInSlot(i);
@@ -125,7 +117,7 @@ public class RitualEffectAnimalGrowth extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> animalGrowthRitual = new ArrayList();
+        ArrayList<RitualComponent> animalGrowthRitual = new ArrayList<>();
         animalGrowthRitual.add(new RitualComponent(0, 0, 2, RitualComponent.DUSK));
         animalGrowthRitual.add(new RitualComponent(2, 0, 0, RitualComponent.DUSK));
         animalGrowthRitual.add(new RitualComponent(0, 0, -2, RitualComponent.DUSK));

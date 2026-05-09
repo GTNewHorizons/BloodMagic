@@ -4,7 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -14,28 +13,13 @@ public class LightningBoltProjectile extends EnergyBlastProjectile {
 
     private boolean causeLightning;
 
-    public LightningBoltProjectile(World par1World) {
-        super(par1World);
+    public LightningBoltProjectile(World world) {
+        super(world);
     }
 
-    public LightningBoltProjectile(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
-    }
-
-    public LightningBoltProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage, boolean flag) {
-        super(par1World, par2EntityPlayer, damage);
-        causeLightning = flag;
-    }
-
-    public LightningBoltProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage, int maxTicksInAir,
-            double posX, double posY, double posZ, float rotationYaw, float rotationPitch, boolean flag) {
-        super(par1World, par2EntityPlayer, damage, maxTicksInAir, posX, posY, posZ, rotationYaw, rotationPitch);
-        causeLightning = flag;
-    }
-
-    @Override
-    public DamageSource getDamageSource() {
-        return DamageSource.causeMobDamage(shootingEntity);
+    public LightningBoltProjectile(World world, EntityLivingBase player, int damage, boolean causeLightning) {
+        super(world, player, damage);
+        this.causeLightning = causeLightning;
     }
 
     @Override
@@ -56,20 +40,16 @@ public class LightningBoltProjectile extends EnergyBlastProjectile {
     }
 
     @Override
-    public void onImpact(Entity mop) {
-        if (mop == shootingEntity && ticksInAir > 3) {
+    public void onImpact(Entity target) {
+        if (target == shootingEntity && ticksInAir > 3) {
             this.setDead();
         } else {
-            if (mop instanceof EntityLivingBase) {
+            if (target instanceof EntityLivingBase) {
                 if (causeLightning) {
                     this.worldObj.addWeatherEffect(
-                            new EntityLightningBolt(
-                                    this.worldObj,
-                                    ((EntityLivingBase) mop).posX,
-                                    ((EntityLivingBase) mop).posY,
-                                    ((EntityLivingBase) mop).posZ));
+                            new EntityLightningBolt(this.worldObj, target.posX, target.posY, target.posZ));
                 } else {
-                    doDamage(projectileDamage, mop);
+                    doDamage(projectileDamage, target);
                 }
             }
         }
@@ -111,14 +91,14 @@ public class LightningBoltProjectile extends EnergyBlastProjectile {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
-        par1NBTTagCompound.setBoolean("causeLightning", causeLightning);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
+        tag.setBoolean("causeLightning", causeLightning);
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
-        causeLightning = par1NBTTagCompound.getBoolean("causeLightning");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
+        causeLightning = tag.getBoolean("causeLightning");
     }
 }

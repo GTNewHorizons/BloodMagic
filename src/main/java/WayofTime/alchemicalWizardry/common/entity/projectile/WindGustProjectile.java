@@ -2,7 +2,6 @@ package WayofTime.alchemicalWizardry.common.entity.projectile;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -10,31 +9,17 @@ import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 
 public class WindGustProjectile extends EnergyBlastProjectile {
 
-    public WindGustProjectile(World par1World) {
-        super(par1World);
+    public WindGustProjectile(World world) {
+        super(world);
     }
 
-    public WindGustProjectile(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public WindGustProjectile(World world, EntityLivingBase player, int damage) {
+        super(world, player, damage);
     }
 
-    public WindGustProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage) {
-        super(par1World, par2EntityPlayer, damage);
-    }
-
-    public WindGustProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage, int maxTicksInAir,
-            double posX, double posY, double posZ, float rotationYaw, float rotationPitch) {
-        super(par1World, par2EntityPlayer, damage, maxTicksInAir, posX, posY, posZ, rotationYaw, rotationPitch);
-    }
-
-    public WindGustProjectile(World par1World, EntityLivingBase par2EntityLivingBase,
-            EntityLivingBase par3EntityLivingBase, float par4, float par5, int damage, int maxTicksInAir) {
-        super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5, damage, maxTicksInAir);
-    }
-
-    @Override
-    public DamageSource getDamageSource() {
-        return DamageSource.causeMobDamage(shootingEntity);
+    public WindGustProjectile(World world, EntityLivingBase shooter, EntityLivingBase target, float par4, float par5,
+            int damage, int maxTicksInAir) {
+        super(world, shooter, target, par4, par5, damage, maxTicksInAir);
     }
 
     @Override
@@ -45,21 +30,19 @@ public class WindGustProjectile extends EnergyBlastProjectile {
             }
 
             this.onImpact(mop.entityHit);
-        } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {}
+        }
 
         this.setDead();
     }
 
     @Override
-    public void onImpact(Entity mop) {
-        if (mop == shootingEntity && ticksInAir > 3) {
+    public void onImpact(Entity target) {
+        if (target == shootingEntity && ticksInAir > 3) {
             this.setDead();
-        } else {
-            if (mop instanceof EntityLivingBase) {
-                ((EntityLivingBase) mop).motionX = this.motionX * 0.25 * this.projectileDamage;
-                ((EntityLivingBase) mop).motionY = 1.5;
-                ((EntityLivingBase) mop).motionZ = this.motionZ * 0.25 * this.projectileDamage;
-            }
+        } else if (target instanceof EntityLivingBase) {
+            target.motionX = this.motionX * 0.25 * this.projectileDamage;
+            target.motionY = 1.5;
+            target.motionZ = this.motionZ * 0.25 * this.projectileDamage;
         }
 
         spawnHitParticles("magicCrit", 8);

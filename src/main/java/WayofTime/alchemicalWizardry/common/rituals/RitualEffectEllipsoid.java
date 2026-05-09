@@ -60,14 +60,13 @@ public class RitualEffectEllipsoid extends RitualEffect {
             entityOwner.addPotionEffect(new PotionEffect(Potion.confusion.id, 80));
         } else {
             tile = world.getTileEntity(x, y - 1, z);
-            if (!(tile instanceof IInventory)) {
+            if (!(tile instanceof IInventory inv)) {
                 return;
             }
 
             ItemBlock placedBlock = null;
             ItemStack stack = null;
             int slot = 0;
-            IInventory inv = (IInventory) tile;
 
             while (slot < inv.getSizeInventory()) {
                 stack = inv.getStackInSlot(slot);
@@ -84,7 +83,7 @@ public class RitualEffectEllipsoid extends RitualEffect {
                 slot++;
             }
 
-            if (placedBlock == null || stack == null || slot >= inv.getSizeInventory()) {
+            if (placedBlock == null || slot >= inv.getSizeInventory()) {
                 return;
             }
 
@@ -147,9 +146,9 @@ public class RitualEffectEllipsoid extends RitualEffect {
 
                             if (placedBlock.placeBlockAt(stack, null, world, x + i, y + j, z + k, 0, 0, 0, 0, j1)) {
                                 world.playSoundEffect(
-                                        (double) (x + i + 0.5F),
-                                        (double) (y + j + 0.5F),
-                                        (double) (z + k + 0.5F),
+                                        x + i + 0.5F,
+                                        y + j + 0.5F,
+                                        z + k + 0.5F,
                                         placedBlock.field_150939_a.stepSound.func_150496_b(),
                                         (placedBlock.field_150939_a.stepSound.getVolume() + 1.0F) / 2.0F,
                                         placedBlock.field_150939_a.stepSound.getPitch() * 0.8F);
@@ -189,7 +188,7 @@ public class RitualEffectEllipsoid extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> ellipsoidRitual = new ArrayList();
+        ArrayList<RitualComponent> ellipsoidRitual = new ArrayList<>();
 
         ellipsoidRitual.add(new RitualComponent(-1, 0, -1, RitualComponent.DUSK));
         ellipsoidRitual.add(new RitualComponent(-1, 0, 1, RitualComponent.DUSK));

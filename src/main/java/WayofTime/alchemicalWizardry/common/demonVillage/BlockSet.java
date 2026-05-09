@@ -1,6 +1,7 @@
 package WayofTime.alchemicalWizardry.common.demonVillage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -38,7 +39,7 @@ public class BlockSet {
     public BlockSet(String blockid) {
         this.blockid = blockid;
         this.metadata = new int[4];
-        positions = new ArrayList();
+        positions = new ArrayList<>();
     }
 
     public BlockSet(Block block) {
@@ -47,9 +48,7 @@ public class BlockSet {
 
     public BlockSet(Block block, int meta) {
         this(block);
-        for (int i = 0; i < metadata.length; i++) {
-            metadata[i] = meta;
-        }
+        Arrays.fill(metadata, meta);
         if (block instanceof BlockStairs) {
             int[] northSet = new int[] { 2, 3, 0, 1 };
             int[] eastSet = new int[] { 1, 0, 2, 3 };
@@ -61,30 +60,14 @@ public class BlockSet {
             int[] westUpSet = new int[] { 4, 5, 7, 6 };
 
             switch (meta) {
-                case 0:
-                    metadata = westSet;
-                    break;
-                case 1:
-                    metadata = eastSet;
-                    break;
-                case 2:
-                    metadata = northSet;
-                    break;
-                case 3:
-                    metadata = southSet;
-                    break;
-                case 4:
-                    metadata = westUpSet;
-                    break;
-                case 5:
-                    metadata = eastUpSet;
-                    break;
-                case 6:
-                    metadata = northUpSet;
-                    break;
-                case 7:
-                    metadata = southUpSet;
-                    break;
+                case 0 -> metadata = westSet;
+                case 1 -> metadata = eastSet;
+                case 2 -> metadata = northSet;
+                case 3 -> metadata = southSet;
+                case 4 -> metadata = westUpSet;
+                case 5 -> metadata = eastUpSet;
+                case 6 -> metadata = northUpSet;
+                case 7 -> metadata = southUpSet;
             }
         } else if (block instanceof BlockLadder) {
             int[] northSet = new int[] { 3, 2, 5, 4 };
@@ -93,18 +76,10 @@ public class BlockSet {
             int[] westSet = new int[] { 5, 4, 2, 3 };
 
             switch (meta) {
-                case 3:
-                    metadata = northSet;
-                    break;
-                case 4:
-                    metadata = eastSet;
-                    break;
-                case 2:
-                    metadata = southSet;
-                    break;
-                case 5:
-                    metadata = westSet;
-                    break;
+                case 3 -> metadata = northSet;
+                case 4 -> metadata = eastSet;
+                case 2 -> metadata = southSet;
+                case 5 -> metadata = westSet;
             }
         } else if (block instanceof BlockTrapDoor) {
             int div = meta / 4;
@@ -115,18 +90,10 @@ public class BlockSet {
             int[] westSet = new int[] { 3 + div * 4, 2 + div * 4, div * 4, 1 + div * 4 }; // Third one: 0 +
 
             switch (mod) {
-                case 0:
-                    metadata = southSet;
-                    break;
-                case 1:
-                    metadata = northSet;
-                    break;
-                case 2:
-                    metadata = eastSet;
-                    break;
-                case 3:
-                    metadata = westSet;
-                    break;
+                case 0 -> metadata = southSet;
+                case 1 -> metadata = northSet;
+                case 2 -> metadata = eastSet;
+                case 3 -> metadata = westSet;
             }
         } else if (block instanceof BlockTorch) {
             int[] northSet = new int[] { 3, 4, 1, 2 };
@@ -135,18 +102,10 @@ public class BlockSet {
             int[] westSet = new int[] { 1, 2, 4, 3 };
 
             switch (meta) {
-                case 1:
-                    metadata = westSet;
-                    break;
-                case 2:
-                    metadata = eastSet;
-                    break;
-                case 3:
-                    metadata = northSet;
-                    break;
-                case 4:
-                    metadata = southSet;
-                    break;
+                case 1 -> metadata = westSet;
+                case 2 -> metadata = eastSet;
+                case 3 -> metadata = northSet;
+                case 4 -> metadata = southSet;
             }
         } else if (block instanceof BlockDoor) {
             int[] northSet = new int[] { 3, 1, 2, 0 };
@@ -155,18 +114,10 @@ public class BlockSet {
             int[] westSet = new int[] { 2, 0, 1, 3 };
 
             switch (meta) {
-                case 0:
-                    metadata = eastSet;
-                    break;
-                case 1:
-                    metadata = southSet;
-                    break;
-                case 2:
-                    metadata = westSet;
-                    break;
-                case 3:
-                    metadata = northSet;
-                    break;
+                case 0 -> metadata = eastSet;
+                case 1 -> metadata = southSet;
+                case 2 -> metadata = westSet;
+                case 3 -> metadata = northSet;
             }
         } else if (block instanceof BlockRedstoneComparator) {
             int div = meta / 4;
@@ -177,18 +128,10 @@ public class BlockSet {
             int[] westSet = new int[] { 3 + div * 4, 1 + div * 4, 2 + div * 4, div * 4 }; // Last one: 0 +
 
             switch (mod) {
-                case 0:
-                    metadata = northSet;
-                    break;
-                case 1:
-                    metadata = eastSet;
-                    break;
-                case 2:
-                    metadata = southSet;
-                    break;
-                case 3:
-                    metadata = westSet;
-                    break;
+                case 0 -> metadata = northSet;
+                case 1 -> metadata = eastSet;
+                case 2 -> metadata = southSet;
+                case 3 -> metadata = westSet;
             }
         } else if (block instanceof BlockRedstoneRepeater) {
             int div = meta / 4;
@@ -199,18 +142,10 @@ public class BlockSet {
             int[] westSet = new int[] { 3 + div * 4, 1 + div * 4, 2 + div * 4, div * 4 }; // Last one: 0 +
 
             switch (mod) {
-                case 0:
-                    metadata = northSet;
-                    break;
-                case 1:
-                    metadata = eastSet;
-                    break;
-                case 2:
-                    metadata = southSet;
-                    break;
-                case 3:
-                    metadata = westSet;
-                    break;
+                case 0 -> metadata = northSet;
+                case 1 -> metadata = eastSet;
+                case 2 -> metadata = southSet;
+                case 3 -> metadata = westSet;
             }
         }
     }
@@ -250,18 +185,13 @@ public class BlockSet {
             return 0;
         }
 
-        switch (dir) {
-            case NORTH:
-                return metadata[0];
-            case SOUTH:
-                return metadata[1];
-            case WEST:
-                return metadata[2];
-            case EAST:
-                return metadata[3];
-            default:
-                return 0;
-        }
+        return switch (dir) {
+            case NORTH -> metadata[0];
+            case SOUTH -> metadata[1];
+            case WEST -> metadata[2];
+            case EAST -> metadata[3];
+            default -> 0;
+        };
     }
 
     public void buildAtIndex(TEDemonPortal teDemonPortal, World world, int xCoord, int yCoord, int zCoord,
@@ -278,23 +208,20 @@ public class BlockSet {
         int meta = this.getMetaForDirection(dir);
 
         switch (dir) {
-            case NORTH:
-                break;
-            case SOUTH:
+            case SOUTH -> {
                 xOff *= -1;
                 zOff *= -1;
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 int temp = zOff;
                 zOff = xOff * -1;
                 xOff = temp;
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 int temp2 = zOff * -1;
                 zOff = xOff;
                 xOff = temp2;
-                break;
-            default:
+            }
         }
 
         world.setBlock(xCoord + xOff, yCoord + yOff, zCoord + zOff, block, meta, 3);

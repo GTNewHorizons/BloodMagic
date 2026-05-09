@@ -56,6 +56,7 @@ public class ItemSanguineArmour extends ItemArmor
         this.bootsIcon = iconRegister.registerIcon("AlchemicalWizardry:SanguineBoots");
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int par1) {
         if (this.equals(ModItems.sanguineHelmet)) {
@@ -95,14 +96,14 @@ public class ItemSanguineArmour extends ItemArmor
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean adv) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean adv) {
         if (this.armorType == 0) {
-            list.add(StatCollector.translateToLocal("tooltip.sanguinearmor.desc1"));
+            tooltip.add(StatCollector.translateToLocal("tooltip.sanguinearmor.desc1"));
         } else {
-            list.add(StatCollector.translateToLocal("tooltip.sanguinearmor.desc2"));
+            tooltip.add(StatCollector.translateToLocal("tooltip.sanguinearmor.desc2"));
         }
 
-        list.add(
+        tooltip.add(
                 EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocalFormatted(
                         "tooltip.sanguinearmor.visdisc",
                         getVisDiscount(stack, player, null)));

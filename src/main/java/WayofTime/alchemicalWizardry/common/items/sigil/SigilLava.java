@@ -2,11 +2,9 @@ package WayofTime.alchemicalWizardry.common.items.sigil;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -23,18 +21,12 @@ import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.items.interfaces.ArmourUpgrade;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.items.interfaces.ISigil;
-import WayofTime.alchemicalWizardry.common.items.EnergyBattery;
 import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 import WayofTime.alchemicalWizardry.common.tileEntity.TESocket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class SigilLava extends ItemBucket implements ArmourUpgrade, ISigil {
-
-    /**
-     * field for checking if the bucket has been filled.
-     */
-    private Block isFull = Blocks.lava;
 
     private int energyUsed;
 
@@ -57,15 +49,16 @@ public class SigilLava extends ItemBucket implements ArmourUpgrade, ISigil {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.lavasigil.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.lavasigil.desc2"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.lavasigil.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.lavasigil.desc2"));
+        addBindingInformation(item, tooltip);
     }
 
     /**
      * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      */
+    @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         return stack;
     }
@@ -82,12 +75,12 @@ public class SigilLava extends ItemBucket implements ArmourUpgrade, ISigil {
         }
 
         TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile instanceof IFluidHandler) {
+        if (tile instanceof IFluidHandler handler) {
             FluidStack fluid = new FluidStack(FluidRegistry.LAVA, 1000);
-            int amount = ((IFluidHandler) tile).fill(ForgeDirection.getOrientation(side), fluid, false);
+            int amount = handler.fill(ForgeDirection.getOrientation(side), fluid, false);
 
             if (amount > 0 && EnergyItems.syphonBatteries(stack, player, getEnergyUsed())) {
-                ((IFluidHandler) tile).fill(ForgeDirection.getOrientation(side), fluid, true);
+                handler.fill(ForgeDirection.getOrientation(side), fluid, true);
             }
 
             return false;
@@ -95,39 +88,37 @@ public class SigilLava extends ItemBucket implements ArmourUpgrade, ISigil {
             return false;
         }
 
-        {
-            if (side == 0) {
-                --y;
-            }
+        if (side == 0) {
+            --y;
+        }
 
-            if (side == 1) {
-                ++y;
-            }
+        if (side == 1) {
+            ++y;
+        }
 
-            if (side == 2) {
-                --z;
-            }
+        if (side == 2) {
+            --z;
+        }
 
-            if (side == 3) {
-                ++z;
-            }
+        if (side == 3) {
+            ++z;
+        }
 
-            if (side == 4) {
-                --x;
-            }
+        if (side == 4) {
+            --x;
+        }
 
-            if (side == 5) {
-                ++x;
-            }
+        if (side == 5) {
+            ++x;
+        }
 
-            if (!player.canPlayerEdit(x, y, z, side, stack)) {
-                return false;
-            }
+        if (!player.canPlayerEdit(x, y, z, side, stack)) {
+            return false;
+        }
 
-            if (this.canPlaceContainedLiquid(world, x, y, z, x, y, z)
-                    && EnergyItems.syphonBatteries(stack, player, getEnergyUsed())) {
-                return this.tryPlaceContainedLiquid(world, x, y, z, x, y, z);
-            }
+        if (this.canPlaceContainedLiquid(world, x, y, z)
+                && EnergyItems.syphonBatteries(stack, player, getEnergyUsed())) {
+            return this.tryPlaceContainedLiquid(world, x, y, z);
         }
 
         return false;
@@ -136,64 +127,33 @@ public class SigilLava extends ItemBucket implements ArmourUpgrade, ISigil {
     /**
      * Attempts to place the liquid contained inside the bucket.
      */
-    public boolean tryPlaceContainedLiquid(World par1World, double par2, double par4, double par6, int par8, int par9,
-            int par10) {
-        if (!par1World.isAirBlock(par8, par9, par10) && par1World.getBlock(par8, par9, par10).getMaterial().isSolid()) {
+    @Override
+    public boolean tryPlaceContainedLiquid(World world, int x, int y, int z) {
+        if (!world.isAirBlock(x, y, z) && world.getBlock(x, y, z).getMaterial().isSolid()) {
             return false;
-        } else if ((par1World.getBlock(par8, par9, par10) == Blocks.lava
-                || par1World.getBlock(par8, par9, par10) == Blocks.flowing_lava)
-                && par1World.getBlockMetadata(par8, par9, par10) == 0) {
-                    return false;
-                } else {
-                    par1World.setBlock(par8, par9, par10, this.isFull, 0, 3);
-                    return true;
-                }
+        }
+        if ((world.getBlock(x, y, z) == Blocks.lava || world.getBlock(x, y, z) == Blocks.flowing_lava)
+                && world.getBlockMetadata(x, y, z) == 0) {
+            return false;
+        }
+        world.setBlock(x, y, z, Blocks.lava, 0, 3);
+        return true;
     }
 
-    public boolean canPlaceContainedLiquid(World par1World, double par2, double par4, double par6, int par8, int par9,
-            int par10) {
-        if (!par1World.isAirBlock(par8, par9, par10) && par1World.getBlock(par8, par9, par10).getMaterial().isSolid()) {
+    public boolean canPlaceContainedLiquid(World world, int x, int y, int z) {
+        if (!world.isAirBlock(x, y, z) && world.getBlock(x, y, z).getMaterial().isSolid()) {
             return false;
-        } else if ((par1World.getBlock(par8, par9, par10) == Blocks.lava
-                || par1World.getBlock(par8, par9, par10) == Blocks.flowing_lava)
-                && par1World.getBlockMetadata(par8, par9, par10) == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
+        }
+        return (world.getBlock(x, y, z) != Blocks.lava && world.getBlock(x, y, z) != Blocks.flowing_lava)
+                || world.getBlockMetadata(x, y, z) != 0;
     }
 
-    protected void setEnergyUsed(int par1int) {
-        this.energyUsed = par1int;
+    protected void setEnergyUsed(int energy) {
+        this.energyUsed = energy;
     }
 
     protected int getEnergyUsed() {
         return this.energyUsed;
-    }
-
-    protected boolean syphonBatteries(ItemStack ist, EntityPlayer player, int damageToBeDone) {
-        if (!player.capabilities.isCreativeMode) {
-            boolean usedBattery = false;
-            IInventory inventory = player.inventory;
-
-            for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
-                ItemStack stack = inventory.getStackInSlot(slot);
-
-                if (stack == null) {
-                    continue;
-                }
-                if (stack.getItem() instanceof EnergyBattery && !usedBattery) {
-                    if (stack.getItemDamage() <= stack.getMaxDamage() - damageToBeDone) {
-                        stack.setItemDamage(stack.getItemDamage() + damageToBeDone);
-                        usedBattery = true;
-                    }
-                }
-            }
-
-            return usedBattery;
-        } else {
-            return true;
-        }
     }
 
     @Override

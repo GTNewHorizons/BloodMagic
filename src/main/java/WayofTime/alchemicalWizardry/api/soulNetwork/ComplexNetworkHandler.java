@@ -24,7 +24,7 @@ import com.mojang.authlib.GameProfile;
 public class ComplexNetworkHandler {
 
     public static String fileName = "config/BloodMagic/soulnetworkKeys";
-    static HashMap<UUID, String> keyMap = new HashMap();
+    static HashMap<UUID, String> keyMap = new HashMap<>();
 
     public static UUID getUUIDFromPlayer(EntityPlayer player) {
         return player.getPersistentID();
@@ -90,13 +90,12 @@ public class ComplexNetworkHandler {
 
             try {
                 br = new BufferedReader(new FileReader(save));
-                HashMap schema = gson.fromJson(br, keyMap.getClass());
 
-                keyMap = schema;
+                keyMap = gson.fromJson(br, keyMap.getClass());
 
                 if (keyMap != null) {
                     for (Entry<UUID, String> entry : keyMap.entrySet()) {
-                        System.out.println("" + entry.getValue() + " gave: " + entry.getKey());
+                        System.out.println(entry.getValue() + " gave: " + entry.getKey());
                     }
                 }
             } catch (FileNotFoundException e) {

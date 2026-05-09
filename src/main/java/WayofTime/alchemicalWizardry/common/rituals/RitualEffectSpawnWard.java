@@ -34,11 +34,10 @@ public class RitualEffectSpawnWard extends RitualEffect {
 
             int dimension = world.provider.dimensionId;
 
-            if (AlchemicalWizardryEventHooks.respawnMap.containsKey(new Integer(dimension))) {
-                List<CoordAndRange> list = AlchemicalWizardryEventHooks.respawnMap.get(new Integer(dimension));
+            if (AlchemicalWizardryEventHooks.respawnMap.containsKey(dimension)) {
+                List<CoordAndRange> list = AlchemicalWizardryEventHooks.respawnMap.get(dimension);
                 if (list != null) {
                     if (!list.contains(new CoordAndRange(x, y, z, horizRange, vertRange))) {
-                        boolean hasFoundAndRemoved = false;
                         for (CoordAndRange coords : list) {
                             int xLocation = coords.xCoord;
                             int yLocation = coords.yCoord;
@@ -46,21 +45,20 @@ public class RitualEffectSpawnWard extends RitualEffect {
 
                             if (xLocation == x && yLocation == y && zLocation == z) {
                                 list.remove(coords);
-                                hasFoundAndRemoved = true;
                                 break;
                             }
                         }
                         list.add(new CoordAndRange(x, y, z, horizRange, vertRange));
                     }
                 } else {
-                    list = new LinkedList();
+                    list = new LinkedList<>();
                     list.add(new CoordAndRange(x, y, z, horizRange, vertRange));
-                    AlchemicalWizardryEventHooks.respawnMap.put(new Integer(dimension), list);
+                    AlchemicalWizardryEventHooks.respawnMap.put(dimension, list);
                 }
             } else {
-                List<CoordAndRange> list = new LinkedList();
+                List<CoordAndRange> list = new LinkedList<>();
                 list.add(new CoordAndRange(x, y, z, horizRange, vertRange));
-                AlchemicalWizardryEventHooks.respawnMap.put(new Integer(dimension), list);
+                AlchemicalWizardryEventHooks.respawnMap.put(dimension, list);
             }
 
             SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
@@ -74,7 +72,7 @@ public class RitualEffectSpawnWard extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> wardRitualRitual = new ArrayList();
+        ArrayList<RitualComponent> wardRitualRitual = new ArrayList<>();
 
         for (int i = 2; i <= 4; i++) {
             if (i <= 3) {

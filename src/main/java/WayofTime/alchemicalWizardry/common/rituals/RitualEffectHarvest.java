@@ -92,7 +92,7 @@ public class RitualEffectHarvest extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> harvestRitual = new ArrayList();
+        ArrayList<RitualComponent> harvestRitual = new ArrayList<>();
 
         harvestRitual.add(new RitualComponent(1, 0, 1, RitualComponent.DUSK));
         harvestRitual.add(new RitualComponent(1, 0, -1, RitualComponent.DUSK));

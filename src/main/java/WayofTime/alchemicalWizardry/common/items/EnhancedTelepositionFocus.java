@@ -25,18 +25,18 @@ public class EnhancedTelepositionFocus extends TelepositionFocus {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.enhancedtelepfocus.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.enhancedtelepfocus.desc"));
+        addBindingInformation(item, tooltip);
 
-        NBTTagCompound itemTag = IBindable.getTag(par1ItemStack);
-        par3List.add(
+        NBTTagCompound itemTag = IBindable.getTag(item);
+        tooltip.add(
                 StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
                         + itemTag.getInteger("xCoord")
                         + ", "
                         + itemTag.getInteger("yCoord")
                         + ", "
                         + itemTag.getInteger("zCoord"));
-        par3List.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimensionID(par1ItemStack));
+        tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimensionID(item));
     }
 }

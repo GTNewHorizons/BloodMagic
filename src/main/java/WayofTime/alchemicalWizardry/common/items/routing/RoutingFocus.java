@@ -74,12 +74,11 @@ public class RoutingFocus extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List,
-            boolean par4) {
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> par3List, boolean adv) {
         par3List.add(StatCollector.translateToLocal(this.getFocusDescription()));
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            NBTTagCompound itemTag = par1ItemStack.getTagCompound();
+        if (!(item.getTagCompound() == null)) {
+            NBTTagCompound itemTag = item.getTagCompound();
 
             par3List.add(
                     StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
@@ -91,8 +90,7 @@ public class RoutingFocus extends Item {
             par3List.add(
                     StatCollector.translateToLocal("tooltip.alchemy.direction") + " "
                             + StatCollector.translateToLocal(
-                                    "message.ritual.side."
-                                            + this.getSetDirection(par1ItemStack).toString().toLowerCase()));
+                                    "message.ritual.side." + this.getSetDirection(item).toString().toLowerCase()));
         }
     }
 

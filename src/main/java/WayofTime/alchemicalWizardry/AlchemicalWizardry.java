@@ -65,7 +65,6 @@ import WayofTime.alchemicalWizardry.common.CommonProxy;
 import WayofTime.alchemicalWizardry.common.LifeBucketHandler;
 import WayofTime.alchemicalWizardry.common.LifeEssence;
 import WayofTime.alchemicalWizardry.common.ModLivingDropsEvent;
-import WayofTime.alchemicalWizardry.common.NewPacketHandler;
 import WayofTime.alchemicalWizardry.common.achievements.ModAchievements;
 import WayofTime.alchemicalWizardry.common.alchemy.CombinedPotionRegistry;
 import WayofTime.alchemicalWizardry.common.block.ArmourForge;
@@ -627,8 +626,6 @@ public class AlchemicalWizardry {
             serverSide = "WayofTime.alchemicalWizardry.common.CommonProxy")
     public static CommonProxy proxy;
 
-    public static final HoldingPacketHandler packetPipeline = new HoldingPacketHandler();
-
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
 
@@ -662,8 +659,8 @@ public class AlchemicalWizardry {
                         f.set(null, newPotionTypes);
                     }
                 } catch (Exception e) {
-                    System.err.println("Severe error, please report this to the mod author:");
-                    System.err.println(e);
+                    AlchemicalWizardry.logger.error("Severe error, please report this to the mod author:");
+                    AlchemicalWizardry.logger.error(e);
                 }
             }
         }
@@ -689,7 +686,6 @@ public class AlchemicalWizardry {
         Object eventHook = new AlchemicalWizardryEventHooks();
         FMLCommonHandler.instance().bus().register(eventHook);
         MinecraftForge.EVENT_BUS.register(eventHook);
-        NewPacketHandler.INSTANCE.ordinal();
         HoldingPacketHandler.init();
         ClientToServerPacketHandler.init();
         ModAchievements.init();
@@ -727,7 +723,7 @@ public class AlchemicalWizardry {
                         out.close();
                     }
                 }
-            } catch (Exception e) {}
+            } catch (Exception ignored) {}
         }
     }
 
@@ -1967,43 +1963,43 @@ public class AlchemicalWizardry {
                         new ItemStack(ModItems.standardBindingAgent),
                         1,
                         3,
-                        this.standardBindingAgentDungeonChance / 5));
+                        standardBindingAgentDungeonChance / 5));
         ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(
                 new WeightedRandomChestContent(
                         new ItemStack(ModItems.mundanePowerCatalyst),
                         1,
                         1,
-                        this.mundanePowerCatalystDungeonChance / 5));
+                        mundanePowerCatalystDungeonChance / 5));
         ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(
                 new WeightedRandomChestContent(
                         new ItemStack(ModItems.mundaneLengtheningCatalyst),
                         1,
                         1,
-                        this.mundaneLengtheningCatalystDungeonChance / 5));
+                        mundaneLengtheningCatalystDungeonChance / 5));
         ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(
                 new WeightedRandomChestContent(
                         new ItemStack(ModItems.averagePowerCatalyst),
                         1,
                         1,
-                        this.averagePowerCatalystDungeonChance / 5));
+                        averagePowerCatalystDungeonChance / 5));
         ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(
                 new WeightedRandomChestContent(
                         new ItemStack(ModItems.averageLengtheningCatalyst),
                         1,
                         1,
-                        this.averageLengtheningCatalystDungeonChance / 5));
+                        averageLengtheningCatalystDungeonChance / 5));
         ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(
                 new WeightedRandomChestContent(
                         new ItemStack(ModItems.greaterPowerCatalyst),
                         1,
                         1,
-                        this.greaterPowerCatalystDungeonChance / 5));
+                        greaterPowerCatalystDungeonChance / 5));
         ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST).addItem(
                 new WeightedRandomChestContent(
                         new ItemStack(ModItems.greaterLengtheningCatalyst),
                         1,
                         1,
-                        this.greaterLengtheningCatalystDungeonChance / 5));
+                        greaterLengtheningCatalystDungeonChance / 5));
 
         // Ore Dictionary Registration
         OreDictionary.registerOre("oreCoal", Blocks.coal_ore);

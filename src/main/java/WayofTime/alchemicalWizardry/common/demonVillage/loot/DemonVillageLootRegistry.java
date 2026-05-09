@@ -12,7 +12,7 @@ import WayofTime.alchemicalWizardry.ModItems;
 
 public class DemonVillageLootRegistry {
 
-    public static ArrayList<WeightedRandomChestContent> list1 = new ArrayList();
+    public static ArrayList<WeightedRandomChestContent> list1 = new ArrayList<>();
 
     public static void init() {
         String[] tier1Strings = new String[] { ChestGenHooks.DUNGEON_CHEST, ChestGenHooks.PYRAMID_DESERT_CHEST };

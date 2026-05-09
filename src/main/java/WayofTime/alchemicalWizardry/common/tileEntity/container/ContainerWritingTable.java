@@ -45,7 +45,7 @@ public class ContainerWritingTable extends Container {
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slot) {
         ItemStack stack = null;
-        Slot slotObject = (Slot) inventorySlots.get(slot);
+        Slot slotObject = inventorySlots.get(slot);
         if (slotObject != null && slotObject.getHasStack()) {
             ItemStack stackInSlot = slotObject.getStack();
             stack = stackInSlot.copy();

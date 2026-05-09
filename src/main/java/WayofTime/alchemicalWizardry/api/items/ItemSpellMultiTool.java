@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -35,7 +36,7 @@ public class ItemSpellMultiTool extends Item {
     private static final String harvestLevelSuffix = "harvestLvl";
     private static final String digLevelSuffix = "digLvl";
     private static final String tagName = "BloodMagicTool";
-    private Random rand = new Random();
+    private final Random rand = new Random();
 
     public ItemSpellMultiTool() {
         super();
@@ -50,32 +51,26 @@ public class ItemSpellMultiTool extends Item {
     }
 
     @Override
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLivingBase,
-            EntityLivingBase par3EntityLivingBase) {
-        float damage = this.getCustomItemAttack(par1ItemStack);
+    public boolean hitEntity(ItemStack item, EntityLivingBase target, EntityLivingBase attacker) {
+        float damage = this.getCustomItemAttack(item);
 
-        float f = (float) par3EntityLivingBase.getEntityAttribute(SharedMonsterAttributes.attackDamage)
-                .getAttributeValue();
-
-        SpellParadigmTool parad = this.loadParadigmFromStack(par1ItemStack);
+        SpellParadigmTool parad = this.loadParadigmFromStack(item);
 
         if (parad != null) {
-            parad.onLeftClickEntity(par1ItemStack, par2EntityLivingBase, par3EntityLivingBase);
+            parad.onLeftClickEntity(item, target, attacker);
+            damage += parad.getAddedDamageForEntity(target);
         }
 
-        damage += parad.getAddedDamageForEntity(par2EntityLivingBase);
-
-        if (rand.nextFloat() < this.getCritChance(par1ItemStack)) {
+        if (rand.nextFloat() < this.getCritChance(item)) {
             damage *= 1.75f;
         }
 
-        damage *= f;
+        damage *= (float) attacker.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
 
-        if (par3EntityLivingBase instanceof EntityPlayer) {
-            par2EntityLivingBase
-                    .attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) par3EntityLivingBase), damage);
+        if (attacker instanceof EntityPlayer) {
+            target.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker), damage);
         } else {
-            par2EntityLivingBase.attackEntityFrom(DamageSource.causeMobDamage(par3EntityLivingBase), damage);
+            target.attackEntityFrom(DamageSource.causeMobDamage(attacker), damage);
         }
 
         return true;
@@ -223,24 +218,24 @@ public class ItemSpellMultiTool extends Item {
         String testString = "pickaxe";
 
         Material[] matList = this.getMaterialsForToolclass(testString);
-        for (int i = 0; i < matList.length; i++) {
-            if (matList[i] == mat) {
+        for (Material material : matList) {
+            if (material == mat) {
                 return testString;
             }
         }
 
         testString = "shovel";
         matList = this.getMaterialsForToolclass(testString);
-        for (int i = 0; i < matList.length; i++) {
-            if (matList[i] == mat) {
+        for (Material material : matList) {
+            if (material == mat) {
                 return testString;
             }
         }
 
         testString = "axe";
         matList = this.getMaterialsForToolclass(testString);
-        for (int i = 0; i < matList.length; i++) {
-            if (matList[i] == mat) {
+        for (Material material : matList) {
+            if (material == mat) {
                 return testString;
             }
         }
@@ -248,8 +243,9 @@ public class ItemSpellMultiTool extends Item {
         return null;
     }
 
+    @Override
     public Set<String> getToolClasses(ItemStack stack) {
-        Set<String> set = new HashSet();
+        Set<String> set = new HashSet<>();
 
         if (this.getHarvestLevel(stack, "pickaxe") > -1) {
             set.add("pickaxe");
@@ -270,10 +266,10 @@ public class ItemSpellMultiTool extends Item {
     public float getDigSpeed(ItemStack stack, Block block, int meta) {
         String toolClass = block.getHarvestTool(meta);
 
-        if (toolClass == null || toolClass.equals("")) {
+        if (toolClass == null || toolClass.isEmpty()) {
             toolClass = getToolClassOfMaterial(block.getMaterial());
 
-            if (toolClass == "") {
+            if (toolClass.isEmpty()) {
                 return 1.0f;
             }
         }
@@ -330,11 +326,6 @@ public class ItemSpellMultiTool extends Item {
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack) {
-        return false;
-    }
-
-    @Override
     public void onUpdate(ItemStack toolStack, World world, Entity par3Entity, int par4, boolean par5) {
         if (world.isRemote) {
             return;
@@ -371,7 +362,7 @@ public class ItemSpellMultiTool extends Item {
         if (mop != null && mop.typeOfHit.equals(MovingObjectPosition.MovingObjectType.BLOCK)) {
             cost = parad.onRightClickBlock(par1ItemStack, par3EntityPlayer, par2World, mop);
         } else {
-            cost = parad.onRightClickAir(par1ItemStack, par2World, par3EntityPlayer);
+            cost = parad.onRightClickAir(par1ItemStack, par3EntityPlayer);
         }
 
         if (cost > 0) {
@@ -382,23 +373,21 @@ public class ItemSpellMultiTool extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add("A mace filled with ancient alchemy");
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add("A mace filled with ancient alchemy");
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            if (!par1ItemStack.getTagCompound().getString("ownerName").equals("")) {
-                par3List.add("Current owner: " + par1ItemStack.getTagCompound().getString("ownerName"));
+        if (!(item.getTagCompound() == null)) {
+            if (!item.getTagCompound().getString("ownerName").isEmpty()) {
+                tooltip.add("Current owner: " + item.getTagCompound().getString("ownerName"));
             }
 
-            for (String str : this.getToolListString(par1ItemStack)) {
-                par3List.add(str);
-            }
+            tooltip.addAll(this.getToolListString(item));
 
-            par3List.add("");
-            float damage = this.getCustomItemAttack(par1ItemStack);
-            par3List.add("\u00A79+" + ((int) (damage * 10)) / 10.0f + " " + "Attack Damage");
-            float critChance = ((int) (this.getCritChance(par1ItemStack) * 1000)) / 10.0f;
-            par3List.add("\u00A79+" + critChance + "% " + "Crit Chance");
+            tooltip.add("");
+            float damage = this.getCustomItemAttack(item);
+            tooltip.add(EnumChatFormatting.BLUE + "+" + ((int) (damage * 10)) / 10.0f + " " + "Attack Damage");
+            float critChance = ((int) (this.getCritChance(item) * 1000)) / 10.0f;
+            tooltip.add(EnumChatFormatting.BLUE + "+" + critChance + "% " + "Crit Chance");
         }
     }
 
@@ -519,25 +508,24 @@ public class ItemSpellMultiTool extends Item {
     public void setDuration(ItemStack container, World world, int duration) {
         if (world.isRemote) {
             return;
+        }
+        World overWorld = DimensionManager.getWorld(0);
+        long worldtime = overWorld.getTotalWorldTime();
+
+        if (container.hasTagCompound()) {
+            NBTTagCompound tag = container.getTagCompound().getCompoundTag(tagName);
+
+            tag.setLong("duration", Math.max(duration + worldtime, worldtime));
+
+            container.getTagCompound().setTag(tagName, tag);
         } else {
-            World overWorld = DimensionManager.getWorld(0);
-            long worldtime = overWorld.getTotalWorldTime();
+            container.setTagCompound(new NBTTagCompound());
 
-            if (container.hasTagCompound()) {
-                NBTTagCompound tag = container.getTagCompound().getCompoundTag(tagName);
+            NBTTagCompound tag = container.getTagCompound().getCompoundTag(tagName);
 
-                tag.setLong("duration", Math.max(duration + worldtime, worldtime));
+            tag.setLong("duration", Math.max(duration + worldtime, worldtime));
 
-                container.getTagCompound().setTag(tagName, tag);
-            } else {
-                container.setTagCompound(new NBTTagCompound());
-
-                NBTTagCompound tag = container.getTagCompound().getCompoundTag(tagName);
-
-                tag.setLong("duration", Math.max(duration + worldtime, worldtime));
-
-                container.getTagCompound().setTag(tagName, tag);
-            }
+            container.getTagCompound().setTag(tagName, tag);
         }
     }
 
@@ -586,9 +574,9 @@ public class ItemSpellMultiTool extends Item {
 
         NBTTagList tagList = tagiest.getTagList("Effects", Constants.NBT.TAG_COMPOUND);
 
-        List<SpellEffect> spellEffectList = new LinkedList();
+        List<SpellEffect> spellEffectList = new LinkedList<>();
         for (int i = 0; i < tagList.tagCount(); i++) {
-            NBTTagCompound tag = (NBTTagCompound) tagList.getCompoundTagAt(i);
+            NBTTagCompound tag = tagList.getCompoundTagAt(i);
 
             SpellEffect eff = SpellEffect.getEffectFromTag(tag);
             if (eff != null) {
@@ -667,9 +655,9 @@ public class ItemSpellMultiTool extends Item {
 
         NBTTagList tagList = tagiest.getTagList("ToolTips", Constants.NBT.TAG_COMPOUND);
 
-        List<String> toolTipList = new LinkedList();
+        List<String> toolTipList = new LinkedList<>();
         for (int i = 0; i < tagList.tagCount(); i++) {
-            NBTTagCompound tag = (NBTTagCompound) tagList.getCompoundTagAt(i);
+            NBTTagCompound tag = tagList.getCompoundTagAt(i);
 
             String str = tag.getString("tip");
             if (str != null) {

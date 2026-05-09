@@ -15,11 +15,11 @@ public class EntityFireElemental extends EntityElemental implements IMob {
         this.isImmuneToFire = true;
     }
 
+    @Override
     public void inflictEffectOnEntity(Entity target) {
-        if (target instanceof EntityLivingBase) {
+        if (target instanceof EntityLivingBase t) {
             target.setFire(10);
-            ((EntityLivingBase) target)
-                    .addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionInhibit.id, 150, 0));
+            t.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionInhibit.id, 150, 0));
         }
     }
 }

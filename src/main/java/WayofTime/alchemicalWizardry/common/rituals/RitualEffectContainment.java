@@ -50,11 +50,9 @@ public class RitualEffectContainment extends RitualEffect {
             List<Entity> entityList = SpellHelper.getEntitiesInRange(world, x + 0.5, y + 0.5, z + 0.5, d0, d0);
 
             for (Entity entity : entityList) {
-                if (!(entity instanceof EntityLivingBase)) {
+                if (!(entity instanceof EntityLivingBase livingEntity)) {
                     continue;
                 }
-
-                EntityLivingBase livingEntity = (EntityLivingBase) entity;
 
                 if (livingEntity instanceof EntityPlayer) {
                     continue;

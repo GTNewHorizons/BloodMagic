@@ -10,31 +10,22 @@ import net.minecraft.world.World;
 
 public class FireProjectile extends EnergyBlastProjectile {
 
-    public FireProjectile(World par1World) {
-        super(par1World);
+    public FireProjectile(World world) {
+        super(world);
     }
 
-    public FireProjectile(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public FireProjectile(World world, EntityLivingBase player, int damage) {
+        super(world, player, damage);
     }
 
-    public FireProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage) {
-        super(par1World, par2EntityPlayer, damage);
+    public FireProjectile(World world, EntityLivingBase player, int damage, int maxTicksInAir, double posX, double posY,
+            double posZ, float rotationYaw, float rotationPitch) {
+        super(world, player, damage, maxTicksInAir, posX, posY, posZ, rotationYaw, rotationPitch);
     }
 
-    public FireProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage, int maxTicksInAir,
-            double posX, double posY, double posZ, float rotationYaw, float rotationPitch) {
-        super(par1World, par2EntityPlayer, damage, maxTicksInAir, posX, posY, posZ, rotationYaw, rotationPitch);
-    }
-
-    public FireProjectile(World par1World, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase,
-            float par4, float par5, int damage, int maxTicksInAir) {
-        super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5, damage, maxTicksInAir);
-    }
-
-    @Override
-    public DamageSource getDamageSource() {
-        return DamageSource.causeMobDamage(shootingEntity);
+    public FireProjectile(World world, EntityLivingBase shooter, EntityLivingBase target, float velocity,
+            float inaccuracy, int damage, int maxTicksInAir) {
+        super(world, shooter, target, velocity, inaccuracy, damage, maxTicksInAir);
     }
 
     @Override
@@ -65,21 +56,20 @@ public class FireProjectile extends EnergyBlastProjectile {
     }
 
     @Override
-    public void onImpact(Entity mop) {
-        if (mop == shootingEntity && ticksInAir > 3) {
+    public void onImpact(Entity target) {
+        if (target == shootingEntity && ticksInAir > 3) {
             shootingEntity.attackEntityFrom(DamageSource.causeMobDamage(shootingEntity), 1);
             this.setDead();
         } else {
-            if (mop instanceof EntityLivingBase) {
-                ((EntityLivingBase) mop).setFire(10 * this.projectileDamage);
-                ((EntityLivingBase) mop).setRevengeTarget(shootingEntity);
+            if (target instanceof EntityLivingBase entity) {
+                target.setFire(10 * this.projectileDamage);
+                entity.setRevengeTarget(shootingEntity);
 
-                if (((EntityLivingBase) mop).isPotionActive(Potion.fireResistance)
-                        || ((EntityLivingBase) mop).isImmuneToFire()) {
-                    ((EntityLivingBase) mop).attackEntityFrom(DamageSource.causeMobDamage(shootingEntity), 1);
+                if (entity.isPotionActive(Potion.fireResistance) || target.isImmuneToFire()) {
+                    target.attackEntityFrom(DamageSource.causeMobDamage(shootingEntity), 1);
                 } else {
-                    doDamage(projectileDamage, mop);
-                    ((EntityLivingBase) mop).hurtResistantTime = 0;
+                    doDamage(projectileDamage, target);
+                    target.hurtResistantTime = 0;
                 }
             }
         }

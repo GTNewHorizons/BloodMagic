@@ -16,22 +16,18 @@ public class TESpellParadigmBlock extends TESpellBlock implements ISpellParadigm
 
     public SpellParadigm getSpellParadigm() {
         int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-        switch (meta) {
-            case 0:
-                return new SpellParadigmProjectile();
-            case 1:
-                return new SpellParadigmSelf();
-            case 2:
-                return new SpellParadigmMelee();
-            case 3:
-                return new SpellParadigmTool();
-        }
-        return new SpellParadigmSelf();
+        return switch (meta) {
+            case 0 -> new SpellParadigmProjectile();
+            case 2 -> new SpellParadigmMelee();
+            case 3 -> new SpellParadigmTool();
+            default -> new SpellParadigmSelf();
+        };
     }
 
     @Override
     protected void applySpellChange(SpellParadigm parad) {}
 
+    @Override
     public boolean canInputRecieve() {
         return false;
     }
@@ -46,17 +42,11 @@ public class TESpellParadigmBlock extends TESpellBlock implements ISpellParadigm
 
     @Override
     public String getResourceLocationForMeta(int meta) {
-        switch (meta) {
-            case 0:
-                return "alchemicalwizardry:textures/models/SpellParadigmProjectile.png";
-            case 1:
-                return "alchemicalwizardry:textures/models/SpellParadigmSelf.png";
-            case 2:
-                return "alchemicalwizardry:textures/models/SpellParadigmMelee.png";
-            case 3:
-                return "alchemicalwizardry:textures/models/SpellParadigmTool.png";
-        }
-        return "alchemicalwizardry:textures/models/SpellParadigmProjectile.png";
+        return switch (meta) {
+            case 2 -> "alchemicalwizardry:textures/models/SpellParadigmMelee.png";
+            case 3 -> "alchemicalwizardry:textures/models/SpellParadigmTool.png";
+            default -> "alchemicalwizardry:textures/models/SpellParadigmProjectile.png";
+        };
     }
 
     @Override

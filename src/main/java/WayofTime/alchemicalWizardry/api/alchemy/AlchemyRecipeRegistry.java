@@ -9,7 +9,7 @@ import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
 
 public class AlchemyRecipeRegistry {
 
-    public static List<AlchemyRecipe> recipes = new ArrayList();
+    public static List<AlchemyRecipe> recipes = new ArrayList<>();
 
     public static void registerRecipe(ItemStack output, int amountNeeded, ItemStack[] recipe, int bloodOrbLevel) {
         recipes.add(new AlchemyRecipe(output, amountNeeded, recipe, bloodOrbLevel));

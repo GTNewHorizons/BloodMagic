@@ -7,34 +7,30 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.common.entity.projectile.EnergyBlastProjectile;
 import WayofTime.alchemicalWizardry.common.entity.projectile.WindGustProjectile;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 
 public class EntityMinorDemonGruntWind extends EntityMinorDemonGrunt {
 
-    public EntityMinorDemonGruntWind(World par1World) {
-        super(par1World);
+    public EntityMinorDemonGruntWind(World world) {
+        super(world);
         this.setDemonID(AlchemicalWizardry.entityMinorDemonGruntWindID);
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        int i = this.isTamed() ? 20 : 20;
-        if (par1Entity instanceof IHoardDemon && ((IHoardDemon) par1Entity).isSamePortal(this)) {
+    public boolean attackEntityAsMob(Entity entity) {
+        if (friendlyDemon(entity)) {
             return false;
         }
 
-        if (par1Entity instanceof EntityPlayer) {
-            SpellHelper.setPlayerSpeedFromServer(
-                    (EntityPlayer) par1Entity,
-                    par1Entity.motionX,
-                    par1Entity.motionY + 3,
-                    par1Entity.motionZ);
-        } else if (par1Entity instanceof EntityLivingBase) {
-            ((EntityLivingBase) par1Entity).motionY += 3.0D;
+        if (entity instanceof EntityPlayer player) {
+            SpellHelper.setPlayerSpeedFromServer(player, entity.motionX, entity.motionY + 3, entity.motionZ);
+        } else if (entity instanceof EntityLivingBase) {
+            entity.motionY += 3.0D;
         }
 
-        return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) i);
+        return entity.attackEntityFrom(DamageSource.causeMobDamage(this), 20F);
     }
 
     @Override
@@ -44,11 +40,7 @@ public class EntityMinorDemonGruntWind extends EntityMinorDemonGrunt {
     }
 
     @Override
-    public void attackEntityWithRangedAttack(EntityLivingBase par1EntityLivingBase, float par2) {
-        if (par1EntityLivingBase instanceof IHoardDemon && ((IHoardDemon) par1EntityLivingBase).isSamePortal(this)) {
-            return;
-        }
-        WindGustProjectile hol = new WindGustProjectile(worldObj, this, par1EntityLivingBase, 1.8f, 0f, 15, 600);
-        this.worldObj.spawnEntityInWorld(hol);
+    protected EnergyBlastProjectile attackProjectile(EntityLivingBase target) {
+        return new WindGustProjectile(worldObj, this, target, 1.8f, 0f, 15, 600);
     }
 }

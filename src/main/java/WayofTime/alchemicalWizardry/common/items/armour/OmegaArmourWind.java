@@ -87,37 +87,35 @@ public class OmegaArmourWind extends OmegaArmour {
     }
 
     @Override
-    public Multimap getAttributeModifiers(ItemStack stack) {
-        Multimap map = HashMultimap.create();
+    public Multimap<String, AttributeModifier> getAttributeModifiers(ItemStack stack) {
+        Multimap<String, AttributeModifier> map = HashMultimap.create();
         int yLevel = this.getYLevelStored(stack);
-        map.put(SharedMonsterAttributes.maxHealth.getAttributeUnlocalizedName(), new AttributeModifier(new UUID(85212
-        /** Random number **/
-                , armorType),
-                "Health modifier" + armorType,
-                getDefaultArmourBoost() * getHealthBoostModifierForLevel(yLevel),
-                1));
-        map.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(new UUID(86212
-        /** Random number **/
-                , armorType),
-                "Damage modifier" + armorType,
-                getDefaultArmourBoost() * getDamageModifierForLevel(yLevel),
-                2));
+        map.put(
+                SharedMonsterAttributes.maxHealth.getAttributeUnlocalizedName(),
+                new AttributeModifier(
+                        new UUID(85212, armorType), // Random number
+                        "Health modifier" + armorType,
+                        getDefaultArmourBoost() * getHealthBoostModifierForLevel(yLevel),
+                        1));
+        map.put(
+                SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
+                new AttributeModifier(
+                        new UUID(86212, armorType), // Random number
+                        "Damage modifier" + armorType,
+                        getDefaultArmourBoost() * getDamageModifierForLevel(yLevel),
+                        2));
 
         return map;
     }
 
     public float getDefaultArmourBoost() {
-        switch (this.armorType) {
-            case 0:
-                return 2.5f;
-            case 1:
-                return 4;
-            case 2:
-                return 3.5f;
-            case 3:
-                return 2;
-        }
-        return 0.25f;
+        return switch (this.armorType) {
+            case 0 -> 2.5f;
+            case 1 -> 4;
+            case 2 -> 3.5f;
+            case 3 -> 2;
+            default -> 0.25f;
+        };
     }
 
     public float getHealthBoostModifierForLevel(int yLevel) {

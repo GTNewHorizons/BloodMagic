@@ -11,77 +11,31 @@ public class ItemSpellEnhancementBlock extends ItemBlock {
         setHasSubtypes(true);
     }
 
+    @Override
     public String getUnlocalizedName(ItemStack itemstack) {
-        String name;
-
-        switch (itemstack.getItemDamage()) {
-            case 0:
-                name = "power1";
-                break;
-
-            case 1:
-                name = "power2";
-                break;
-
-            case 2:
-                name = "power3";
-                break;
-
-            case 3:
-                name = "power4";
-                break;
-
-            case 4:
-                name = "power5";
-                break;
-
-            case 5:
-                name = "cost1";
-                break;
-
-            case 6:
-                name = "cost2";
-                break;
-
-            case 7:
-                name = "cost3";
-                break;
-
-            case 8:
-                name = "cost4";
-                break;
-
-            case 9:
-                name = "cost5";
-                break;
-
-            case 10:
-                name = "potency1";
-                break;
-
-            case 11:
-                name = "potency2";
-                break;
-
-            case 12:
-                name = "potency3";
-                break;
-
-            case 13:
-                name = "potency4";
-                break;
-
-            case 14:
-                name = "potency5";
-                break;
-
-            default:
-                name = "broken";
-        }
+        String name = switch (itemstack.getItemDamage()) {
+            case 0 -> "power1";
+            case 1 -> "power2";
+            case 2 -> "power3";
+            case 3 -> "power4";
+            case 4 -> "power5";
+            case 5 -> "cost1";
+            case 6 -> "cost2";
+            case 7 -> "cost3";
+            case 8 -> "cost4";
+            case 9 -> "cost5";
+            case 10 -> "potency1";
+            case 11 -> "potency2";
+            case 12 -> "potency3";
+            case 13 -> "potency4";
+            case 14 -> "potency5";
+            default -> "broken";
+        };
 
         return getUnlocalizedName() + "." + name;
     }
 
+    @Override
     public int getMetadata(int par1) {
 
         return par1;

@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common.items.energy;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -21,7 +20,6 @@ import WayofTime.alchemicalWizardry.api.alchemy.energy.ISegmentedReagentHandler;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentContainerInfo;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentRegistry;
-import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentStack;
 import WayofTime.alchemicalWizardry.api.items.interfaces.IReagentManipulator;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -52,14 +50,14 @@ public class ItemTankSegmenter extends Item implements IReagentManipulator {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.tanksegmenter.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.tanksegmenter.desc2"));
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.tanksegmenter.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.tanksegmenter.desc2"));
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            Reagent reagent = this.getReagent(par1ItemStack);
+        if (!(item.getTagCompound() == null)) {
+            Reagent reagent = this.getReagent(item);
             if (reagent != null) {
-                par3List.add(StatCollector.translateToLocal("tooltip.reagent.selectedreagent") + " " + reagent.name);
+                tooltip.add(StatCollector.translateToLocal("tooltip.reagent.selectedreagent") + " " + reagent.name);
             }
         }
     }
@@ -126,26 +124,14 @@ public class ItemTankSegmenter extends Item implements IReagentManipulator {
                 int y = movingobjectposition.blockY;
                 int z = movingobjectposition.blockZ;
                 TileEntity tile = world.getTileEntity(x, y, z);
-                if (!(tile instanceof ISegmentedReagentHandler)) {
+                if (!(tile instanceof ISegmentedReagentHandler reagentHandler)) {
                     return itemStack;
                 }
-                ISegmentedReagentHandler reagentHandler = (ISegmentedReagentHandler) tile;
 
                 if (player.isSneaking()) {
                     ReagentContainerInfo[] infos = reagentHandler.getContainerInfo(ForgeDirection.UNKNOWN);
                     if (infos != null) {
-                        List<Reagent> reagentList = new LinkedList();
-                        for (ReagentContainerInfo info : infos) {
-                            if (info != null) {
-                                ReagentStack reagentStack = info.reagent;
-                                if (reagentStack != null) {
-                                    Reagent reagent = reagentStack.reagent;
-                                    if (reagent != null) {
-                                        reagentList.add(reagent);
-                                    }
-                                }
-                            }
-                        }
+                        List<Reagent> reagentList = ItemAttunedCrystal.getReagents(infos);
                         Reagent pastReagent = this.getReagent(itemStack);
                         boolean goForNext = false;
                         boolean hasFound = false;
@@ -165,7 +151,7 @@ public class ItemTankSegmenter extends Item implements IReagentManipulator {
                                 this.setReagentWithNotification(itemStack, reagentList.get(0), player);
                             }
                         } else {
-                            if (reagentList.size() >= 1) {
+                            if (!reagentList.isEmpty()) {
                                 this.setReagentWithNotification(itemStack, reagentList.get(0), player);
                             }
                         }

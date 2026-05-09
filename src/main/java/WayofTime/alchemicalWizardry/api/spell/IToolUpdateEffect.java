@@ -6,5 +6,5 @@ import net.minecraft.world.World;
 
 public interface IToolUpdateEffect {
 
-    int onUpdate(ItemStack toolStack, World world, Entity par3Entity, int invSlot, boolean inHand);
+    int onUpdate(ItemStack toolStack, World world, Entity entity, int invSlot, boolean inHand);
 }

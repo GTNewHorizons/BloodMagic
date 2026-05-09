@@ -40,21 +40,18 @@ public class RitualEffectSphereCreator extends RitualEffect {
         // boolean hasPotentia = this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent,
         // potentiaDrain, false);
 
-        if (world.getTotalWorldTime() % 1 != 0) {
-            return;
-        }
+        world.getTotalWorldTime();
 
         if (currentEssence < this.getCostPerRefresh()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
         } else {
             TileEntity tile = world.getTileEntity(x, y + 1, z);
-            if (!(tile instanceof IInventory)) {
+            if (!(tile instanceof IInventory inv)) {
                 return;
             }
 
             int negYOffset = 0;
             int radius = 0;
-            IInventory inv = (IInventory) tile;
 
             int invSize = inv.getSizeInventory();
             if (invSize < 1) {
@@ -174,7 +171,7 @@ public class RitualEffectSphereCreator extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> magneticRitual = new ArrayList();
+        ArrayList<RitualComponent> magneticRitual = new ArrayList<>();
         magneticRitual.add(new RitualComponent(1, 0, 1, RitualComponent.EARTH));
         magneticRitual.add(new RitualComponent(1, 0, -1, RitualComponent.EARTH));
         magneticRitual.add(new RitualComponent(-1, 0, 1, RitualComponent.EARTH));

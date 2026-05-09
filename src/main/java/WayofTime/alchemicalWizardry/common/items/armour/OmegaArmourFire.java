@@ -90,24 +90,22 @@ public class OmegaArmourFire extends OmegaArmour {
     }
 
     @Override
-    public Multimap getAttributeModifiers(ItemStack stack) {
-        Multimap map = HashMultimap.create();
+    public Multimap<String, AttributeModifier> getAttributeModifiers(ItemStack stack) {
+        Multimap<String, AttributeModifier> map = HashMultimap.create();
         int biomeID = this.getBiomeIDStored(stack);
         BiomeGenBase biome = BiomeGenBase.getBiome(biomeID);
         if (biome != null) {
             map.put(
                     SharedMonsterAttributes.maxHealth.getAttributeUnlocalizedName(),
-                    new AttributeModifier(new UUID(895132
-                    /** Random number **/
-                            , armorType),
+                    new AttributeModifier(
+                            new UUID(895132, armorType), // Random number
                             "Health modifier" + armorType,
                             getDefaultArmourBoost() * getHealthBoostModifierForBiome(biome),
                             1));
             map.put(
                     SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
-                    new AttributeModifier(new UUID(196312
-                    /** Random number **/
-                            , armorType),
+                    new AttributeModifier(
+                            new UUID(196312, armorType), // Random number
                             "Damage modifier" + armorType,
                             getDefaultArmourBoost() * getDamageModifierForBiome(biome),
                             1));
@@ -116,17 +114,13 @@ public class OmegaArmourFire extends OmegaArmour {
     }
 
     public float getDefaultArmourBoost() {
-        switch (this.armorType) {
-            case 0:
-                return 2.5f;
-            case 1:
-                return 4;
-            case 2:
-                return 3.5f;
-            case 3:
-                return 2;
-        }
-        return 0.25f;
+        return switch (this.armorType) {
+            case 0 -> 2.5f;
+            case 1 -> 4;
+            case 2 -> 3.5f;
+            case 3 -> 2;
+            default -> 0.25f;
+        };
     }
 
     public float getHealthBoostModifierForBiome(BiomeGenBase biome) {

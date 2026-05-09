@@ -45,9 +45,9 @@ public class RenderEnergyBlastProjectile extends Render {
     }
 
     @Override
-    public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-        if (par1Entity instanceof IProjectile) {
-            this.doRenderEnergyBlastProjectile(par1Entity, par2, par4, par6, par8, par9);
+    public void doRender(Entity entity, double par2, double par4, double par6, float par8, float par9) {
+        if (entity instanceof IProjectile) {
+            this.doRenderEnergyBlastProjectile(entity, par2, par4, par6, par8, par9);
         }
     }
 

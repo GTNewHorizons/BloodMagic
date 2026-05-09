@@ -20,8 +20,7 @@ public class GuiHolding extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int param1, int param2) {
-        // the parameters for drawString are: string, x, y, color
-        fontRendererObj.drawString("Sigil of Holding", 52, 4, 4210752);
+        fontRendererObj.drawString("Sigil of Holding", 52, 4, 0x404040);
     }
 
     @Override

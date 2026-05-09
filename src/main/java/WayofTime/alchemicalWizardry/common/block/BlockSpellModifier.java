@@ -25,14 +25,15 @@ public class BlockSpellModifier extends BlockOrientable {
         return new TESpellModifierBlock();
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> items) {
         if (this.equals(ModBlocks.blockSpellModifier)) {
             for (int i = 0; i < 4; i++) {
-                par3List.add(new ItemStack(par1, 1, i));
+                items.add(new ItemStack(item, 1, i));
             }
         } else {
-            super.getSubBlocks(par1, par2CreativeTabs, par3List);
+            super.getSubBlocks(item, tab, items);
         }
     }
 

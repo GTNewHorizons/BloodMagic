@@ -69,11 +69,10 @@ public class BlockMasterStone extends BlockContainer {
 
         Item item = playerItem.getItem();
 
-        if (!(item instanceof ActivationCrystal)) {
+        if (!(item instanceof ActivationCrystal acItem)) {
             return false;
         }
 
-        ActivationCrystal acItem = (ActivationCrystal) item;
         // tileEntity.setOwner(acItem.getOwnerName(playerItem));
         tileEntity.activateRitual(
                 world,

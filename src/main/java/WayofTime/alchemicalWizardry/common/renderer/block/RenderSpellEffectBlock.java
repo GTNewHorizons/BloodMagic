@@ -12,12 +12,11 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class RenderSpellEffectBlock extends TileEntitySpecialRenderer {
 
-    private ModelSpellEffectBlock modelSpellEffectBlock = new ModelSpellEffectBlock();
+    private final ModelSpellEffectBlock modelSpellEffectBlock = new ModelSpellEffectBlock();
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double d0, double d1, double d2, float f) {
-        if (tileEntity instanceof TESpellEffectBlock) {
-            TESpellEffectBlock tileSpellBlock = (TESpellEffectBlock) tileEntity;
+        if (tileEntity instanceof TESpellEffectBlock tileSpellBlock) {
             GL11.glPushMatrix();
             GL11.glTranslatef((float) d0 + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
             ResourceLocation test;

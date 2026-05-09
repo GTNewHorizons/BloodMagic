@@ -1,16 +1,17 @@
 package WayofTime.alchemicalWizardry.common;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 
 import WayofTime.alchemicalWizardry.common.entity.mob.EntityDemon;
 
 public class EntityAITargetAggro extends EntityAINearestAttackableTarget {
 
-    private EntityDemon theCreature;
+    private final EntityDemon theCreature;
 
-    public EntityAITargetAggro(EntityDemon par1EntityDemon, Class par2Class, int par3, boolean par4) {
-        super(par1EntityDemon, par2Class, par3, par4);
-        this.theCreature = par1EntityDemon;
+    public EntityAITargetAggro(EntityDemon entityDemon, Class<? extends Entity> entityClass, int par3, boolean par4) {
+        super(entityDemon, entityClass, par3, par4);
+        this.theCreature = entityDemon;
     }
 
     /**

@@ -1,7 +1,6 @@
 package WayofTime.alchemicalWizardry.common.rituals;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -39,22 +38,13 @@ public class RitualEffectUnbinding extends RitualEffect {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
         } else {
             int d0 = 0;
-            AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
-                    (double) x,
-                    (double) y + 1,
-                    (double) z,
-                    (double) (x + 1),
-                    (double) (y + 2),
-                    (double) (z + 1)).expand(d0, d0, d0);
-            List list = world.getEntitiesWithinAABB(EntityItem.class, axisalignedbb);
-            Iterator iterator = list.iterator();
-            EntityItem item;
-
+            AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(x, (double) y + 1, z, x + 1, y + 2, z + 1)
+                    .expand(d0, d0, d0);
+            List<EntityItem> list = world.getEntitiesWithinAABB(EntityItem.class, axisalignedbb);
             boolean drain = false;
 
-            while (iterator.hasNext()) {
+            for (EntityItem item : list) {
                 final int sanctusDrain = 1000;
-                item = (EntityItem) iterator.next();
                 ItemStack itemStack = item.getEntityItem();
 
                 if (itemStack == null) {
@@ -64,7 +54,7 @@ public class RitualEffectUnbinding extends RitualEffect {
                 boolean hasSanctus = this
                         .canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, false);
                 if (hasSanctus) {
-                    if (itemStack.getItem() instanceof IBindable && !IBindable.getOwnerName(itemStack).equals("")) {
+                    if (itemStack.getItem() instanceof IBindable && !IBindable.getOwnerName(itemStack).isEmpty()) {
                         world.addWeatherEffect(new EntityLightningBolt(world, x, y + 1, z - 5));
                         world.addWeatherEffect(new EntityLightningBolt(world, x, y + 1, z + 5));
                         world.addWeatherEffect(new EntityLightningBolt(world, x - 5, y + 1, z));
@@ -94,16 +84,7 @@ public class RitualEffectUnbinding extends RitualEffect {
                     item.setDead();
                     doLightning(world, x, y, z);
                     ItemStack[] inv = ((BoundArmour) itemStack.getItem()).getInternalInventory(itemStack);
-                    int bloodSockets = 0;
-                    if (itemStack.getItem() == ModItems.boundHelmet) {
-                        bloodSockets = 5;
-                    } else if (itemStack.getItem() == ModItems.boundPlate) {
-                        bloodSockets = 8;
-                    } else if (itemStack.getItem() == ModItems.boundLeggings) {
-                        bloodSockets = 7;
-                    } else if (itemStack.getItem() == ModItems.boundBoots) {
-                        bloodSockets = 4;
-                    }
+                    int bloodSockets = getBloodSockets(itemStack);
                     if (inv != null) {
                         for (ItemStack internalItem : inv) {
                             if (internalItem != null) {
@@ -155,6 +136,20 @@ public class RitualEffectUnbinding extends RitualEffect {
         if (world.rand.nextInt(10) == 0) {
             SpellHelper.sendIndexedParticleToAllAround(world, x, y, z, 20, world.provider.dimensionId, 1, x, y, z);
         }
+    }
+
+    private static int getBloodSockets(ItemStack itemStack) {
+        int bloodSockets = 0;
+        if (itemStack.getItem() == ModItems.boundHelmet) {
+            bloodSockets = 5;
+        } else if (itemStack.getItem() == ModItems.boundPlate) {
+            bloodSockets = 8;
+        } else if (itemStack.getItem() == ModItems.boundLeggings) {
+            bloodSockets = 7;
+        } else if (itemStack.getItem() == ModItems.boundBoots) {
+            bloodSockets = 4;
+        }
+        return bloodSockets;
     }
 
     private void doLightning(World world, int x, int y, int z) {

@@ -13,31 +13,22 @@ public class TESpellEffectBlock extends TESpellBlock {
 
     public SpellEffect getSpellEffect() {
         int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-        switch (meta) {
-            case 0:
-                return new SpellEffect(ComplexSpellType.FIRE);
-            case 1:
-                return new SpellEffect(ComplexSpellType.ICE);
-            case 2:
-                return new SpellEffect(ComplexSpellType.WIND);
-            case 3:
-                return new SpellEffect(ComplexSpellType.EARTH);
-        }
-        return new SpellEffect(ComplexSpellType.FIRE);
+        return switch (meta) {
+            case 1 -> new SpellEffect(ComplexSpellType.ICE);
+            case 2 -> new SpellEffect(ComplexSpellType.WIND);
+            case 3 -> new SpellEffect(ComplexSpellType.EARTH);
+            default -> new SpellEffect(ComplexSpellType.FIRE);
+        };
     }
 
     @Override
     public String getResourceLocationForMeta(int meta) {
-        switch (meta) {
-            case 0:
-                return "alchemicalwizardry:textures/models/SpellEffectFire.png";
-            case 1:
-                return "alchemicalwizardry:textures/models/SpellEffectIce.png";
-            case 2:
-                return "alchemicalwizardry:textures/models/SpellEffectWind.png";
-            case 3:
-                return "alchemicalwizardry:textures/models/SpellEffectEarth.png";
-        }
-        return "";
+        return switch (meta) {
+            case 0 -> "alchemicalwizardry:textures/models/SpellEffectFire.png";
+            case 1 -> "alchemicalwizardry:textures/models/SpellEffectIce.png";
+            case 2 -> "alchemicalwizardry:textures/models/SpellEffectWind.png";
+            case 3 -> "alchemicalwizardry:textures/models/SpellEffectEarth.png";
+            default -> "";
+        };
     }
 }

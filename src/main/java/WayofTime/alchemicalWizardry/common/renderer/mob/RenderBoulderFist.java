@@ -17,11 +17,12 @@ public class RenderBoulderFist extends RenderLiving {
         super(par1ModelBase, par2);
     }
 
-    public ResourceLocation func_110832_a(EntityBoulderFist par1EntityBoulderFist) {
+    public ResourceLocation func_110832_a(EntityBoulderFist entityBoulderFist) {
         return field_110833_a;
     }
 
-    public ResourceLocation getEntityTexture(Entity par1Entity) {
-        return this.func_110832_a((EntityBoulderFist) par1Entity);
+    @Override
+    public ResourceLocation getEntityTexture(Entity entity) {
+        return this.func_110832_a((EntityBoulderFist) entity);
     }
 }

@@ -36,106 +36,99 @@ public class DemonPlacer extends Item {
         this.maxStackSize = 1;
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public int getColorFromItemStack(ItemStack par1ItemStack, int par2) {
-        EntityEggInfo entityegginfo = (EntityEggInfo) EntityList.entityEggs
-                .get(Integer.valueOf(par1ItemStack.getItemDamage()));
+    public int getColorFromItemStack(ItemStack item, int par2) {
+        EntityEggInfo entityegginfo = EntityList.entityEggs.get(item.getItemDamage());
         return entityegginfo != null ? (par2 == 0 ? entityegginfo.primaryColor : entityegginfo.secondaryColor)
-                : 16777215;
+                : 0xffffff;
     }
 
     /**
      * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
      * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
      */
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4,
-            int par5, int par6, int par7, float par8, float par9, float par10) {
-        if (par3World.isRemote) {
-            return true;
-        } else {
-            Block i1 = par3World.getBlock(par4, par5, par6);
-            par4 += Facing.offsetsXForSide[par7];
-            par5 += Facing.offsetsYForSide[par7];
-            par6 += Facing.offsetsZForSide[par7];
-            double d0 = 0.0D;
-
-            if (par7 == 1 && i1 != null && i1.getRenderType() == 11) {
-                d0 = 0.5D;
-            }
-
-            String demonName = DemonPlacer.getDemonString(par1ItemStack);
-            Entity entity = spawnCreature(
-                    par3World,
-                    demonName,
-                    (double) par4 + 0.5D,
-                    (double) par5 + d0,
-                    (double) par6 + 0.5D,
-                    par1ItemStack);
-
-            if (entity != null) {
-                if (entity instanceof EntityLivingBase && par1ItemStack.hasDisplayName()) {
-                    ((EntityLiving) entity).setCustomNameTag(par1ItemStack.getDisplayName());
-                }
-
-                if (!par2EntityPlayer.capabilities.isCreativeMode) {
-                    --par1ItemStack.stackSize;
-                }
-            }
-
+    @Override
+    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, int par4, int par5, int par6, int par7,
+            float par8, float par9, float par10) {
+        if (world.isRemote) {
             return true;
         }
+        Block i1 = world.getBlock(par4, par5, par6);
+        par4 += Facing.offsetsXForSide[par7];
+        par5 += Facing.offsetsYForSide[par7];
+        par6 += Facing.offsetsZForSide[par7];
+        double d0 = 0.0D;
+
+        if (par7 == 1 && i1 != null && i1.getRenderType() == 11) {
+            d0 = 0.5D;
+        }
+
+        String demonName = DemonPlacer.getDemonString(item);
+        Entity entity = spawnCreature(
+                world,
+                demonName,
+                (double) par4 + 0.5D,
+                (double) par5 + d0,
+                (double) par6 + 0.5D,
+                item);
+
+        if (entity != null) {
+            if (entity instanceof EntityLivingBase && item.hasDisplayName()) {
+                ((EntityLiving) entity).setCustomNameTag(item.getDisplayName());
+            }
+
+            if (!player.capabilities.isCreativeMode) {
+                --item.stackSize;
+            }
+        }
+
+        return true;
     }
 
     /**
      * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      */
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (par2World.isRemote) {
-            return par1ItemStack;
+    @Override
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (world.isRemote) {
+            return item;
+        }
+        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, true);
+
+        if (movingobjectposition == null) {
+            return item;
         } else {
-            MovingObjectPosition movingobjectposition = this
-                    .getMovingObjectPositionFromPlayer(par2World, par3EntityPlayer, true);
+            if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+                int i = movingobjectposition.blockX;
+                int j = movingobjectposition.blockY;
+                int k = movingobjectposition.blockZ;
 
-            if (movingobjectposition == null) {
-                return par1ItemStack;
-            } else {
-                if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                    int i = movingobjectposition.blockX;
-                    int j = movingobjectposition.blockY;
-                    int k = movingobjectposition.blockZ;
+                if (!world.canMineBlock(player, i, j, k)) {
+                    return item;
+                }
 
-                    if (!par2World.canMineBlock(par3EntityPlayer, i, j, k)) {
-                        return par1ItemStack;
-                    }
+                if (!player.canPlayerEdit(i, j, k, movingobjectposition.sideHit, item)) {
+                    return item;
+                }
 
-                    if (!par3EntityPlayer.canPlayerEdit(i, j, k, movingobjectposition.sideHit, par1ItemStack)) {
-                        return par1ItemStack;
-                    }
+                if (world.getBlock(i, j, k).getMaterial() == Material.water) {
+                    String demonName = DemonPlacer.getDemonString(item);
+                    Entity entity = spawnCreature(world, demonName, i, j, k, item);
 
-                    if (par2World.getBlock(i, j, k).getMaterial() == Material.water) {
-                        String demonName = DemonPlacer.getDemonString(par1ItemStack);
-                        Entity entity = spawnCreature(
-                                par2World,
-                                demonName,
-                                (double) i,
-                                (double) j,
-                                (double) k,
-                                par1ItemStack);
+                    if (entity != null) {
+                        if (entity instanceof EntityLivingBase && item.hasDisplayName()) {
+                            ((EntityLiving) entity).setCustomNameTag(item.getDisplayName());
+                        }
 
-                        if (entity != null) {
-                            if (entity instanceof EntityLivingBase && par1ItemStack.hasDisplayName()) {
-                                ((EntityLiving) entity).setCustomNameTag(par1ItemStack.getDisplayName());
-                            }
-
-                            if (!par3EntityPlayer.capabilities.isCreativeMode) {
-                                --par1ItemStack.stackSize;
-                            }
+                        if (!player.capabilities.isCreativeMode) {
+                            --item.stackSize;
                         }
                     }
                 }
-
-                return par1ItemStack;
             }
+
+            return item;
         }
     }
 
@@ -143,20 +136,20 @@ public class DemonPlacer extends Item {
      * Spawns the creature specified by the egg's type in the location specified by the last three parameters.
      * Parameters: world, entityID, x, y, z.
      */
-    public static Entity spawnCreature(World par0World, String par1, double par2, double par4, double par6,
+    public static Entity spawnCreature(World world, String par1, double par2, double par4, double par6,
             ItemStack itemStack) {
         Entity entity = null;
 
         for (int j = 0; j < 1; ++j) {
-            entity = SummoningRegistry.getEntityWithID(par0World, par1);
+            entity = SummoningRegistry.getEntityWithID(world, par1);
 
-            if (entity != null && entity instanceof EntityLivingBase) {
+            if (entity instanceof EntityLivingBase) {
                 EntityLiving entityliving = (EntityLiving) entity;
                 entity.setLocationAndAngles(
                         par2,
                         par4,
                         par6,
-                        MathHelper.wrapAngleTo180_float(par0World.rand.nextFloat() * 360.0F),
+                        MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360.0F),
                         0.0F);
                 entityliving.rotationYawHead = entityliving.rotationYaw;
                 entityliving.renderYawOffset = entityliving.rotationYaw;
@@ -165,33 +158,33 @@ public class DemonPlacer extends Item {
                     if (owner != null) {
                         ((EntityDemon) entityliving).func_152115_b(owner.getPersistentID().toString());
 
-                        if (!DemonPlacer.getOwnerName(itemStack).equals("")) {
+                        if (!DemonPlacer.getOwnerName(itemStack).isEmpty()) {
                             ((EntityDemon) entityliving).setTamed(true);
                         }
                     }
                 }
 
-                par0World.spawnEntityInWorld(entity);
+                world.spawnEntityInWorld(entity);
                 entityliving.playLivingSound();
             }
         }
         return entity;
     }
 
-    public static void setOwnerName(ItemStack par1ItemStack, String ownerName) {
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
+    public static void setOwnerName(ItemStack item, String ownerName) {
+        if (item.getTagCompound() == null) {
+            item.setTagCompound(new NBTTagCompound());
         }
 
-        par1ItemStack.getTagCompound().setString("ownerName", ownerName);
+        item.getTagCompound().setString("ownerName", ownerName);
     }
 
-    public static String getOwnerName(ItemStack par1ItemStack) {
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
+    public static String getOwnerName(ItemStack item) {
+        if (item.getTagCompound() == null) {
+            item.setTagCompound(new NBTTagCompound());
         }
 
-        return par1ItemStack.getTagCompound().getString("ownerName");
+        return item.getTagCompound().getString("ownerName");
     }
 
     public static void setDemonString(ItemStack itemStack, String demonName) {
@@ -211,14 +204,14 @@ public class DemonPlacer extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.demonplacer.desc"));
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.demonplacer.desc"));
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            if (!par1ItemStack.getTagCompound().getString("ownerName").equals("")) {
-                par3List.add(
+        if (!(item.getTagCompound() == null)) {
+            if (!item.getTagCompound().getString("ownerName").isEmpty()) {
+                tooltip.add(
                         StatCollector.translateToLocal("tooltip.owner.demonsowner") + " "
-                                + par1ItemStack.getTagCompound().getString("ownerName"));
+                                + item.getTagCompound().getString("ownerName"));
             }
         }
     }

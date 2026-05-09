@@ -19,6 +19,7 @@ public class AWBaseItems extends Item {
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
     }
 
+    @Override
     public void registerIcons(IIconRegister iconRegister) {
         if (this.equals(ModItems.blankSlate)) {
             this.itemIcon = iconRegister.registerIcon("AlchemicalWizardry:BlankSlate");
@@ -32,8 +33,8 @@ public class AWBaseItems extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.infusedstone.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.infusedstone.desc2"));
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.infusedstone.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.infusedstone.desc2"));
     }
 }

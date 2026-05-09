@@ -69,12 +69,11 @@ public class RitualEffectOmegaTest extends RitualEffect {
 
         Reagent reagent = null;
 
-        Map<Reagent, Integer> reagentMap = new HashMap();
+        Map<Reagent, Integer> reagentMap = new HashMap<>();
         for (int i = 0; i < 4; i++) {
             Int3 jarLoc = this.getJarLocation(i);
             TileEntity tile = world.getTileEntity(x + jarLoc.xCoord, y + jarLoc.yCoord, z + jarLoc.zCoord);
-            if (tile instanceof IReagentHandler) {
-                IReagentHandler container = (IReagentHandler) tile;
+            if (tile instanceof IReagentHandler container) {
                 ReagentContainerInfo[] containerInfoArray = container.getContainerInfo(ForgeDirection.UP);
                 if (containerInfoArray == null) {
                     continue;
@@ -107,7 +106,7 @@ public class RitualEffectOmegaTest extends RitualEffect {
             return;
         }
 
-        int tickDuration = isTesting ? 20 * 30 : 15 * 20 * 60 + (int) ((15 * 20 * 60) * Math.sqrt(stab / 700));
+        int tickDuration = isTesting ? 20 * 30 : 15 * 20 * 60 + (int) ((15 * 20 * 60) * Math.sqrt(stab / 700D));
 
         int affinity = 0;
 
@@ -127,15 +126,14 @@ public class RitualEffectOmegaTest extends RitualEffect {
                         (EntityPlayerMP) player);
 
                 if (!isTesting) {
-                    int drainLeft = this.drainTotal;
+                    int drainLeft = drainTotal;
                     for (int i = 0; i < 4; i++) {
                         if (drainLeft <= 0) {
                             break;
                         }
                         Int3 jarLoc = this.getJarLocation(i);
                         TileEntity tile = world.getTileEntity(x + jarLoc.xCoord, y + jarLoc.yCoord, z + jarLoc.zCoord);
-                        if (tile instanceof IReagentHandler) {
-                            IReagentHandler container = (IReagentHandler) tile;
+                        if (tile instanceof IReagentHandler container) {
                             ReagentStack drained = container
                                     .drain(ForgeDirection.UP, new ReagentStack(reagent, drainLeft), true);
                             if (drained != null) {
@@ -166,7 +164,7 @@ public class RitualEffectOmegaTest extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> omegaRitual = new ArrayList();
+        ArrayList<RitualComponent> omegaRitual = new ArrayList<>();
         this.addCornerRunes(omegaRitual, 1, 0, RitualComponent.DUSK);
         this.addCornerRunes(omegaRitual, 2, 0, RitualComponent.DUSK);
         this.addCornerRunes(omegaRitual, 3, 0, RitualComponent.BLANK);
@@ -231,17 +229,12 @@ public class RitualEffectOmegaTest extends RitualEffect {
     }
 
     public Int3 getJarLocation(int i) {
-        switch (i) {
-            case 0:
-                return new Int3(-3, 0, 0);
-            case 1:
-                return new Int3(3, 0, 0);
-            case 2:
-                return new Int3(0, 0, -3);
-            case 3:
-                return new Int3(0, 0, 3);
-            default:
-                return new Int3(0, 0, 0);
-        }
+        return switch (i) {
+            case 0 -> new Int3(-3, 0, 0);
+            case 1 -> new Int3(3, 0, 0);
+            case 2 -> new Int3(0, 0, -3);
+            case 3 -> new Int3(0, 0, 3);
+            default -> new Int3(0, 0, 0);
+        };
     }
 }

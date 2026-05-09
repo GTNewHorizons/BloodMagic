@@ -50,12 +50,12 @@ public class Alchemy {
 
         @Override
         public String describe() {
-            return "Adding Alchemy Recipe for " + ((AlchemyRecipe) recipe).getResult().getDisplayName();
+            return "Adding Alchemy Recipe for " + recipe.getResult().getDisplayName();
         }
 
         @Override
         public String describeUndo() {
-            return "Removing Alchemy Recipe for " + ((AlchemyRecipe) recipe).getResult().getDisplayName();
+            return "Removing Alchemy Recipe for " + recipe.getResult().getDisplayName();
         }
 
         @Override

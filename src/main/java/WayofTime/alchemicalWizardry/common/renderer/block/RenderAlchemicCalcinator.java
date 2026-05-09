@@ -24,9 +24,9 @@ import cpw.mods.fml.client.FMLClientHandler;
 public class RenderAlchemicCalcinator extends TileEntitySpecialRenderer {
 
     private final RenderItem customRenderItem;
-    private ModelAlchemicalCalcinator modelConduit = new ModelAlchemicalCalcinator();
-
-    private ResourceLocation resourceLocation = new ResourceLocation("alchemicalwizardry:textures/models/Reagent.png");
+    private final ModelAlchemicalCalcinator modelConduit = new ModelAlchemicalCalcinator();
+    private final ResourceLocation resourceLocation = new ResourceLocation(
+            "alchemicalwizardry:textures/models/Reagent.png");
 
     public RenderAlchemicCalcinator() {
         customRenderItem = new RenderItem() {
@@ -41,8 +41,7 @@ public class RenderAlchemicCalcinator extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double d0, double d1, double d2, float f) {
-        if (tileEntity instanceof TEAlchemicCalcinator) {
-            TEAlchemicCalcinator tileAltar = (TEAlchemicCalcinator) tileEntity;
+        if (tileEntity instanceof TEAlchemicCalcinator tileAltar) {
 
             GL11.glPushMatrix();
             GL11.glTranslatef((float) d0 + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
@@ -200,194 +199,16 @@ public class RenderAlchemicCalcinator extends TileEntitySpecialRenderer {
 
         if (itemStack != null) {
             if (itemStack.getItem() instanceof ItemBlock) {
-                switch (customRenderItem.getMiniBlockCount(itemStack, (byte) 1)) {
-                    case 1:
-                        return 0.90F * scaleFactor;
-
-                    case 2:
-                        return 0.90F * scaleFactor;
-
-                    case 3:
-                        return 0.90F * scaleFactor;
-
-                    case 4:
-                        return 0.90F * scaleFactor;
-
-                    case 5:
-                        return 0.80F * scaleFactor;
-
-                    default:
-                        return 0.90F * scaleFactor;
+                if (customRenderItem.getMiniBlockCount(itemStack, (byte) 1) == 5) {
+                    return 0.80F * scaleFactor;
                 }
+                return 0.90F * scaleFactor;
             } else {
-                switch (customRenderItem.getMiniItemCount(itemStack, (byte) 1)) {
-                    case 1:
-                        return 0.65F * scaleFactor;
-
-                    case 2:
-                        return 0.65F * scaleFactor;
-
-                    case 3:
-                        return 0.65F * scaleFactor;
-
-                    case 4:
-                        return 0.65F * scaleFactor;
-
-                    default:
-                        return 0.65F * scaleFactor;
-                }
+                return 0.65F * scaleFactor;
             }
         }
 
         return scaleFactor;
     }
 
-    private float getXDisplacementForSlot(int slot) {
-        switch (slot) {
-            case 0:
-                return 0.0f;
-
-            case 1:
-                return -0.375f;
-
-            case 2:
-                return -0.125f;
-
-            case 3:
-                return 0.3125f;
-
-            case 4:
-                return 0.3125f;
-
-            case 5:
-                return -0.125f;
-
-            default:
-                return 0.0f;
-        }
-    }
-
-    private float getYDisplacementForSlot(int slot) {
-        switch (slot) {
-            case 0:
-                return 0.4f;
-
-            case 1:
-                return -0.35f;
-
-            case 6:
-                return 0.4f;
-
-            default:
-                return -0.35f;
-        }
-    }
-
-    private float getZDisplacementForSlot(int slot) {
-        switch (slot) {
-            case 0:
-                return 0.0f;
-
-            case 1:
-                return 0.0f;
-
-            case 2:
-                return 0.375f;
-
-            case 3:
-                return 0.25f;
-
-            case 4:
-                return -0.25f;
-
-            case 5:
-                return -0.375f;
-
-            default:
-                return 0.0f;
-        }
-    }
-
-    private void translateGhostItemByOrientation(ItemStack ghostItemStack, double x, double y, double z,
-            ForgeDirection forgeDirection) {
-        if (ghostItemStack != null) {
-            if (ghostItemStack.getItem() instanceof ItemBlock) {
-                switch (forgeDirection) {
-                    case DOWN: {
-                        GL11.glTranslatef((float) x + 0.5F, (float) y + 2.7F, (float) z + 0.5F);
-                        return;
-                    }
-
-                    case UP: {
-                        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.25F, (float) z + 0.5F);
-                        return;
-                    }
-
-                    case NORTH: {
-                        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.7F);
-                        return;
-                    }
-
-                    case SOUTH: {
-                        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.3F);
-                        return;
-                    }
-
-                    case EAST: {
-                        GL11.glTranslatef((float) x + 0.3F, (float) y + 0.5F, (float) z + 0.5F);
-                        return;
-                    }
-
-                    case WEST: {
-                        GL11.glTranslatef((float) x + 0.70F, (float) y + 0.5F, (float) z + 0.5F);
-                        return;
-                    }
-
-                    case UNKNOWN: {
-                        return;
-                    }
-
-                    default: {}
-                }
-            } else {
-                switch (forgeDirection) {
-                    case DOWN: {
-                        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.6F, (float) z + 0.5F);
-                        return;
-                    }
-
-                    case UP: {
-                        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.20F, (float) z + 0.5F);
-                        return;
-                    }
-
-                    case NORTH: {
-                        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.4F, (float) z + 0.7F);
-                        return;
-                    }
-
-                    case SOUTH: {
-                        GL11.glTranslatef((float) x + 0.5F, (float) y + 0.4F, (float) z + 0.3F);
-                        return;
-                    }
-
-                    case EAST: {
-                        GL11.glTranslatef((float) x + 0.3F, (float) y + 0.4F, (float) z + 0.5F);
-                        return;
-                    }
-
-                    case WEST: {
-                        GL11.glTranslatef((float) x + 0.70F, (float) y + 0.4F, (float) z + 0.5F);
-                        return;
-                    }
-
-                    case UNKNOWN: {
-                        return;
-                    }
-
-                    default: {}
-                }
-            }
-        }
-    }
 }

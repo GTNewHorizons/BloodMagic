@@ -69,8 +69,7 @@ public class RitualEffectFullStomach extends RitualEffect {
                     for (int i = 0; i < inventory.getSizeInventory(); i++) {
                         ItemStack stack = inventory.getStackInSlot(i);
 
-                        if (stack != null && stack.getItem() instanceof ItemFood) {
-                            ItemFood foodItem = (ItemFood) stack.getItem();
+                        if (stack != null && stack.getItem() instanceof ItemFood foodItem) {
 
                             int regularHeal = foodItem.func_150905_g(stack);
                             float saturatedHeal = foodItem.func_150906_h(stack) * regularHeal * 2.0f;
@@ -101,7 +100,7 @@ public class RitualEffectFullStomach extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> fullRitual = new ArrayList();
+        ArrayList<RitualComponent> fullRitual = new ArrayList<>();
         fullRitual.add(new RitualComponent(0, 0, 3, RitualComponent.FIRE));
         fullRitual.add(new RitualComponent(0, 0, -3, RitualComponent.FIRE));
         fullRitual.add(new RitualComponent(3, 0, 0, RitualComponent.FIRE));

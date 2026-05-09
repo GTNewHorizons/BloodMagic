@@ -8,7 +8,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
@@ -39,9 +38,9 @@ public class SigilOfMagnetism extends EnergyItems implements ArmourUpgrade, IHol
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.sigilofmagnetism.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.sigilofmagnetism.desc"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
@@ -72,66 +71,53 @@ public class SigilOfMagnetism extends EnergyItems implements ArmourUpgrade, IHol
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
+        toggleSigil(item, world, player);
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5) {
-        if (!(par3Entity instanceof EntityPlayer)) {
+    public void onUpdate(ItemStack item, World world, Entity entity, int slot, boolean held) {
+        if (!(entity instanceof EntityPlayer player)) {
             return;
         }
 
-        EntityPlayer par3EntityPlayer = (EntityPlayer) par3Entity;
-
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
+        if (!IBindable.isActive(item)) {
+            return;
         }
 
-        if (IBindable.isActive(par1ItemStack)) {
+        checkPassiveDrain(item, world, player);
 
-            checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
+        int range = 5;
+        int verticalRange = 5;
+        float posX = Math.round(player.posX);
+        float posY = (float) (player.posY - player.getEyeHeight());
+        float posZ = Math.round(player.posZ);
+        List<EntityItem> entities = player.worldObj.getEntitiesWithinAABB(
+                EntityItem.class,
+                AxisAlignedBB
+                        .getBoundingBox(posX - 0.5f, posY - 0.5f, posZ - 0.5f, posX + 0.5f, posY + 0.5f, posZ + 0.5f)
+                        .expand(range, verticalRange, range));
+        List<EntityXPOrb> xpOrbs = player.worldObj.getEntitiesWithinAABB(
+                EntityXPOrb.class,
+                AxisAlignedBB
+                        .getBoundingBox(posX - 0.5f, posY - 0.5f, posZ - 0.5f, posX + 0.5f, posY + 0.5f, posZ + 0.5f)
+                        .expand(range, verticalRange, range));
 
-            int range = 5;
-            int verticalRange = 5;
-            float posX = Math.round(par3Entity.posX);
-            float posY = (float) (par3Entity.posY - par3Entity.getEyeHeight());
-            float posZ = Math.round(par3Entity.posZ);
-            List<EntityItem> entities = par3EntityPlayer.worldObj.getEntitiesWithinAABB(
-                    EntityItem.class,
-                    AxisAlignedBB.getBoundingBox(
-                            posX - 0.5f,
-                            posY - 0.5f,
-                            posZ - 0.5f,
-                            posX + 0.5f,
-                            posY + 0.5f,
-                            posZ + 0.5f).expand(range, verticalRange, range));
-            List<EntityXPOrb> xpOrbs = par3EntityPlayer.worldObj.getEntitiesWithinAABB(
-                    EntityXPOrb.class,
-                    AxisAlignedBB.getBoundingBox(
-                            posX - 0.5f,
-                            posY - 0.5f,
-                            posZ - 0.5f,
-                            posX + 0.5f,
-                            posY + 0.5f,
-                            posZ + 0.5f).expand(range, verticalRange, range));
-
-            for (EntityItem entity : entities) {
-                if (entity != null && !par2World.isRemote) {
-                    entity.onCollideWithPlayer(par3EntityPlayer);
-                }
+        for (EntityItem entityItem : entities) {
+            if (entityItem != null && !world.isRemote) {
+                entityItem.onCollideWithPlayer(player);
             }
+        }
 
-            for (EntityXPOrb xpOrb : xpOrbs) {
-                if (xpOrb != null && !par2World.isRemote) {
-                    xpOrb.onCollideWithPlayer(par3EntityPlayer);
-                }
+        for (EntityXPOrb xpOrb : xpOrbs) {
+            if (xpOrb != null && !world.isRemote) {
+                xpOrb.onCollideWithPlayer(player);
             }
         }
     }

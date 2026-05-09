@@ -35,7 +35,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
 
-    private int maxMetaData;
+    private final int maxMetaData;
 
     public ItemRitualDiviner() {
         super();
@@ -53,19 +53,19 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List par3List, boolean x) {
-        par3List.add(StatCollector.translateToLocal("tooltip.ritualdiviner.desc"));
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.ritualdiviner.desc"));
 
         if (this.getMaxRuneDisplacement(stack) == 1) {
-            par3List.add(StatCollector.translateToLocal("tooltip.ritualdiviner.canplace"));
+            tooltip.add(StatCollector.translateToLocal("tooltip.ritualdiviner.canplace"));
         } else if (this.getMaxRuneDisplacement(stack) >= 2) {
-            par3List.add(StatCollector.translateToLocal("tooltip.ritualdiviner.canplacedawn"));
+            tooltip.add(StatCollector.translateToLocal("tooltip.ritualdiviner.canplacedawn"));
 
         } else {
-            par3List.add(StatCollector.translateToLocal("tooltip.ritualdiviner.cannotplace"));
+            tooltip.add(StatCollector.translateToLocal("tooltip.ritualdiviner.cannotplace"));
         }
 
-        par3List.add(
+        tooltip.add(
                 StatCollector.translateToLocal("tooltip.ritualdiviner.ritualtunedto") + " "
                         + this.getNameForDirection(this.getDirection(stack)));
 
@@ -75,8 +75,8 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
             if (!(stack.getTagCompound() == null)) {
                 String ritualID = this.getCurrentRitual(stack);
                 // TODO
-                addBindingInformation(stack, par3List);
-                par3List.add(StatCollector.translateToLocal("tooltip.alchemy.ritualid") + " " + ritualID);
+                addBindingInformation(stack, tooltip);
+                tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.ritualid") + " " + ritualID);
                 List<RitualComponent> ritualList = Rituals.getRitualList(this.getCurrentRitual(stack));
                 if (ritualList == null) {
                     return;
@@ -91,34 +91,14 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
                 int dawnStones = 0;
 
                 for (RitualComponent rc : ritualList) {
-                    switch (rc.getStoneType()) {
-                        case RitualComponent.BLANK:
-                            blankStones++;
-                            break;
-
-                        case RitualComponent.AIR:
-                            airStones++;
-                            break;
-
-                        case RitualComponent.WATER:
-                            waterStones++;
-                            break;
-
-                        case RitualComponent.FIRE:
-                            fireStones++;
-                            break;
-
-                        case RitualComponent.EARTH:
-                            earthStones++;
-                            break;
-
-                        case RitualComponent.DUSK:
-                            duskStones++;
-                            break;
-
-                        case RitualComponent.DAWN:
-                            dawnStones++;
-                            break;
+                    switch (rc.stoneType()) {
+                        case RitualComponent.BLANK -> blankStones++;
+                        case RitualComponent.AIR -> airStones++;
+                        case RitualComponent.WATER -> waterStones++;
+                        case RitualComponent.FIRE -> fireStones++;
+                        case RitualComponent.EARTH -> earthStones++;
+                        case RitualComponent.DUSK -> duskStones++;
+                        case RitualComponent.DAWN -> dawnStones++;
                     }
                 }
 
@@ -129,44 +109,44 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
                         + duskStones
                         + dawnStones;
 
-                par3List.add(
+                tooltip.add(
                         EnumChatFormatting.WHITE + StatCollector.translateToLocal("tooltip.ritualdiviner.blankstones")
                                 + " "
                                 + blankStones);
-                par3List.add(
+                tooltip.add(
                         EnumChatFormatting.AQUA + StatCollector.translateToLocal("tooltip.ritualdiviner.airstones")
                                 + " "
                                 + airStones);
-                par3List.add(
+                tooltip.add(
                         EnumChatFormatting.BLUE + StatCollector.translateToLocal("tooltip.ritualdiviner.waterstones")
                                 + " "
                                 + waterStones);
-                par3List.add(
+                tooltip.add(
                         EnumChatFormatting.RED + StatCollector.translateToLocal("tooltip.ritualdiviner.firestones")
                                 + " "
                                 + fireStones);
-                par3List.add(
+                tooltip.add(
                         EnumChatFormatting.DARK_GREEN
                                 + StatCollector.translateToLocal("tooltip.ritualdiviner.earthstones")
                                 + " "
                                 + earthStones);
-                par3List.add(
+                tooltip.add(
                         EnumChatFormatting.DARK_PURPLE
                                 + StatCollector.translateToLocal("tooltip.ritualdiviner.duskstones")
                                 + " "
                                 + duskStones);
-                par3List.add(
+                tooltip.add(
                         EnumChatFormatting.GOLD + StatCollector.translateToLocal("tooltip.ritualdiviner.dawnstones")
                                 + " "
                                 + dawnStones);
-                par3List.add(
+                tooltip.add(
                         EnumChatFormatting.UNDERLINE
                                 + StatCollector.translateToLocal("tooltip.ritualdiviner.totalStones")
                                 + " "
                                 + totalStones);
             }
         } else {
-            par3List.add(
+            tooltip.add(
                     EnumChatFormatting.AQUA + "-"
                             + StatCollector.translateToLocal("tooltip.ritualdiviner.moreinfo")
                             + "-");
@@ -175,16 +155,15 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        if (!(stack.getTagCompound() == null)) {
-            String ritualID = this.getCurrentRitual(stack);
-            if (ritualID.equals("")) {
-                return super.getItemStackDisplayName(stack);
-            }
-            return StatCollector
-                    .translateToLocalFormatted("bm.string.ritualDiviner", Rituals.getLocalizedNameOfRitual(ritualID));
-        } else {
+        if (stack.getTagCompound() == null) {
             return super.getItemStackDisplayName(stack);
         }
+        String ritualID = this.getCurrentRitual(stack);
+        if (ritualID.isEmpty()) {
+            return super.getItemStackDisplayName(stack);
+        }
+        return StatCollector
+                .translateToLocalFormatted("bm.string.ritualDiviner", Rituals.getLocalizedNameOfRitual(ritualID));
     }
 
     @Override
@@ -238,9 +217,9 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
             }
 
             for (RitualComponent rc : ritualList) {
-                if (world.isAirBlock(x + rc.getX(direction), y + rc.getY(), z + rc.getZ(direction))) {
+                if (world.isAirBlock(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction))) {
                     if (playerInvRitualStoneLocation >= 0 || player.capabilities.isCreativeMode) {
-                        if (rc.getStoneType() > this.maxMetaData + this.getMaxRuneDisplacement(stack)) {
+                        if (rc.stoneType() > this.maxMetaData + this.getMaxRuneDisplacement(stack)) {
                             world.playAuxSFX(200, x, y + 1, z, 0);
                             return true;
                         }
@@ -252,10 +231,10 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
                         if (EnergyItems.syphonBatteries(stack, player, getEnergyUsed())) {
                             world.setBlock(
                                     x + rc.getX(direction),
-                                    y + rc.getY(),
+                                    y + rc.y(),
                                     z + rc.getZ(direction),
                                     ModBlocks.ritualStone,
-                                    rc.getStoneType(),
+                                    rc.stoneType(),
                                     3);
 
                             if (world.isRemote) {
@@ -268,27 +247,25 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
                         return true;
                     }
                 } else {
-                    Block block = world.getBlock(x + rc.getX(direction), y + rc.getY(), z + rc.getZ(direction));
+                    Block block = world.getBlock(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction));
 
                     if (block == ModBlocks.ritualStone) {
                         int metadata = world
-                                .getBlockMetadata(x + rc.getX(direction), y + rc.getY(), z + rc.getZ(direction));
+                                .getBlockMetadata(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction));
 
-                        if (metadata != rc.getStoneType()) {
-                            if (EnergyItems.syphonBatteries(stack, player, getEnergyUsed())) {
-                                if (rc.getStoneType() > this.maxMetaData + this.getMaxRuneDisplacement(stack)) {
-                                    world.playAuxSFX(200, x, y + 1, z, 0);
-                                    return true;
-                                }
-
-                                world.setBlockMetadataWithNotify(
-                                        x + rc.getX(direction),
-                                        y + rc.getY(),
-                                        z + rc.getZ(direction),
-                                        rc.getStoneType(),
-                                        3);
+                        if (metadata != rc.stoneType() && EnergyItems.syphonBatteries(stack, player, getEnergyUsed())) {
+                            if (rc.stoneType() > this.maxMetaData + this.getMaxRuneDisplacement(stack)) {
+                                world.playAuxSFX(200, x, y + 1, z, 0);
                                 return true;
                             }
+
+                            world.setBlockMetadataWithNotify(
+                                    x + rc.getX(direction),
+                                    y + rc.y(),
+                                    z + rc.getZ(direction),
+                                    rc.stoneType(),
+                                    3);
+                            return true;
                         }
                     } else {
                         world.playAuxSFX(0, x, y + 1, z, 0);
@@ -332,8 +309,6 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
     public void voidStoredLocation(ItemStack stack) {
         NBTTagCompound tag = stack.getTagCompound();
         if (tag == null || !tag.hasKey("location")) {
-            // tag = new NBTTagCompound();
-            // stack.setTagCompound(tag);
             this.setStoredLocation(stack, new Int3(0, 0, 0));
             return;
         }
@@ -367,9 +342,9 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(stack, par3EntityPlayer) && par3EntityPlayer.isSneaking()) {
-            rotateRituals(par2World, par3EntityPlayer, stack, true);
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(stack, player) && player.isSneaking()) {
+            rotateRituals(world, player, stack, true);
         }
 
         return stack;
@@ -377,27 +352,10 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
 
     @Override
     public boolean onEntitySwing(EntityLivingBase entityLiving, ItemStack stack) {
-        if (entityLiving instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) entityLiving;
-
+        if (entityLiving instanceof EntityPlayer player) {
             if (!IBindable.checkAndSetItemOwner(stack, player)) return true;
-
-            if (!player.isSwingInProgress) {
-                if (player.isSneaking()) {
-                    rotateRituals(player.worldObj, player, stack, false);
-                }
-                // else
-                // {
-                // if (!player.worldObj.isRemote)
-                // {
-                // int direction = this.getDirection(stack) - 1;
-                // if (direction == 0) direction = 4;
-                // this.setDirection(stack, direction);
-                // player.addChatComponentMessage(new
-                // ChatComponentText(StatCollector.translateToLocal("tooltip.ritualdiviner.ritualtunedto") + " " +
-                // this.getNameForDirection(direction)));
-                // }
-                // }
+            if (!player.isSwingInProgress && player.isSneaking()) {
+                rotateRituals(player.worldObj, player, stack, false);
             }
         }
 
@@ -438,13 +396,18 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
         stack.getTagCompound().setString("ritualID", ritualID);
     }
 
+    /**
+     * @return 0 if it can place the 4 elemental runes, 1 if it can also place dusk, 2 if it can also place dawn
+     */
     @Override
-    public int getMaxRuneDisplacement(ItemStack stack) // 0 indicates the starting 4 runes, 1 indicates it can use Dusk
-                                                       // runes
-    {
+    public int getMaxRuneDisplacement(ItemStack stack) {
         return stack.getItemDamage();
     }
 
+    /**
+     * @param displacement 0 if it can place the 4 elemental runes, 1 if it can also place dusk, 2 if it can also place
+     *                     dawn
+     */
     @Override
     public void setMaxRuneDisplacement(ItemStack stack, int displacement) {
         stack.setItemDamage(displacement);
@@ -452,7 +415,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
+    public void getSubItems(Item id, CreativeTabs creativeTab, List<ItemStack> list) {
         list.add(new ItemStack(id));
 
         ItemStack duskRitualDivinerStack = new ItemStack(id);
@@ -500,22 +463,12 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
 
     @Override
     public String getNameForDirection(int direction) {
-        String dir = "";
-        switch (direction) {
-            case 0:
-            case 1:
-                dir = StatCollector.translateToLocal("message.ritual.side.north");
-                break;
-            case 2:
-                dir = StatCollector.translateToLocal("message.ritual.side.east");
-                break;
-            case 3:
-                dir = StatCollector.translateToLocal("message.ritual.side.south");
-                break;
-            case 4:
-                dir = StatCollector.translateToLocal("message.ritual.side.west");
-        }
-
-        return dir;
+        return switch (direction) {
+            case 1 -> StatCollector.translateToLocal("message.ritual.side.north");
+            case 2 -> StatCollector.translateToLocal("message.ritual.side.east");
+            case 3 -> StatCollector.translateToLocal("message.ritual.side.south");
+            case 4 -> StatCollector.translateToLocal("message.ritual.side.west");
+            default -> "";
+        };
     }
 }
