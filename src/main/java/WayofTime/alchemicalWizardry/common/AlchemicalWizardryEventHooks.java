@@ -482,8 +482,7 @@ public class AlchemicalWizardryEventHooks {
                     NewPacketHandler.INSTANCE.sendTo(
                             NewPacketHandler.getLPPacket(
                                     SoulNetworkHandler.getCurrentEssence(ownerName),
-                                    SoulNetworkHandler
-                                            .getMaximumForOrbTier(SoulNetworkHandler.getCurrentMaxOrb(ownerName))),
+                                    SoulNetworkHandler.getMaxEssence(ownerName)),
                             (EntityPlayerMP) entityLiving);
                 }
             }
