@@ -2,10 +2,13 @@ package WayofTime.alchemicalWizardry.common.compress;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.github.bsideup.jabel.Desugar;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
@@ -186,8 +189,8 @@ public class StorageBlockCraftingRecipeAssimilator {
 
             List<ItemStack> offers;
 
-            if (input instanceof ItemStack) {
-                offers = List.of((ItemStack) input);
+            if (input instanceof ItemStack item) {
+                offers = Collections.singletonList(item);
             } else if (input instanceof List) {
                 offers = (List<ItemStack>) input;
 
@@ -245,7 +248,6 @@ public class StorageBlockCraftingRecipeAssimilator {
         }
     }
 
-    private record PackingRecipe(IRecipe recipe, List<ItemStack> possibleInputs, int inputCount) {
-
-    }
+    @Desugar
+    private record PackingRecipe(IRecipe recipe, List<ItemStack> possibleInputs, int inputCount) {}
 }
