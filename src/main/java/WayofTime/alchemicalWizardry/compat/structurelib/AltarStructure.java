@@ -18,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
 
-import com.github.bsideup.jabel.Desugar;
 import com.google.common.base.Joiner;
 import com.gtnewhorizon.structurelib.alignment.constructable.IMultiblockInfoContainer;
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
@@ -118,7 +117,6 @@ public class AltarStructure {
         // spotless:on
     }
 
-    @Desugar
     private record AltarMultiblockInfoContainer(IStructureDefinition<TEAltar> structureAltar)
             implements IMultiblockInfoContainer<TEAltar> {
 

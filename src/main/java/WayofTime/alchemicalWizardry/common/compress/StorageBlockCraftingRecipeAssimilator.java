@@ -19,8 +19,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import com.github.bsideup.jabel.Desugar;
-
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 
 public class StorageBlockCraftingRecipeAssimilator {
@@ -248,6 +246,5 @@ public class StorageBlockCraftingRecipeAssimilator {
         }
     }
 
-    @Desugar
     private record PackingRecipe(IRecipe recipe, List<ItemStack> possibleInputs, int inputCount) {}
 }

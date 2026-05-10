@@ -1,8 +1,5 @@
 package WayofTime.alchemicalWizardry.api.rituals;
 
-import com.github.bsideup.jabel.Desugar;
-
-@Desugar
 public record RitualComponent(int x, int y, int z, int stoneType) {
 
     public static final int BLANK = 0;

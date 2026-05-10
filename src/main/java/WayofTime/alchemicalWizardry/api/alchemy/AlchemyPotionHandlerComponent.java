@@ -3,9 +3,6 @@ package WayofTime.alchemicalWizardry.api.alchemy;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-import com.github.bsideup.jabel.Desugar;
-
-@Desugar
 public record AlchemyPotionHandlerComponent(ItemStack itemStack, int potionID, int tickDuration) {
 
     public boolean compareItemStack(ItemStack comparedStack) {
