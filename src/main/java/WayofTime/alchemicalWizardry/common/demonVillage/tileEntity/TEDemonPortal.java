@@ -336,11 +336,11 @@ public class TEDemonPortal extends TileEntity {
         this.assignPoints();
 
         if (printDebug) AlchemicalWizardry.logger
-                .info("Roads: " + roadCooldown + " Buildings: " + houseCooldown + " Lockdown: " + lockdownTimer);
+                .info("Roads: {} Buildings: {} Lockdown: {}", roadCooldown, houseCooldown, lockdownTimer);
 
         if (buildingStage >= 0 && buildingStage <= 2) {
-            if (printDebug) AlchemicalWizardry.logger.info("BuildingStage = " + buildingStage);
-            if (printDebug) AlchemicalWizardry.logger.info("Tier = " + this.tier);
+            if (printDebug) AlchemicalWizardry.logger.info("BuildingStage = {}", buildingStage);
+            if (printDebug) AlchemicalWizardry.logger.info("Tier = {}", this.tier);
             this.createPortalBuilding(buildingStage, nextDemonPortalName, tier);
             buildingStage++;
             return;
@@ -534,7 +534,7 @@ public class TEDemonPortal extends TileEntity {
         int yLevel = road.yCoord;
         int z = road.zCoord;
 
-        if (printDebug) AlchemicalWizardry.logger.info("X: " + x + " Z: " + z + " Direction: " + dir);
+        if (printDebug) AlchemicalWizardry.logger.info("X: {} Z: {} Direction: {}", x, z, dir);
 
         List<ForgeDirection> directions = this.findValidExtentionDirection(x, z);
 
@@ -562,7 +562,7 @@ public class TEDemonPortal extends TileEntity {
         }
         if (printDebug) AlchemicalWizardry.logger.info("I got here!");
         if (printDebug) AlchemicalWizardry.logger
-                .info("Distance: " + distance + " Direction: " + dominantDirection + " yLevel: " + yLevel);
+                .info("Distance: {} Direction: {} yLevel: {}", distance, dominantDirection, yLevel);
 
         this.createGriddedRoad(x, yLevel, z, dominantDirection, distance + 1, true);
 
@@ -837,7 +837,7 @@ public class TEDemonPortal extends TileEntity {
 
             if (next != null) {
                 initY = next.yCoord;
-                if (printDebug) AlchemicalWizardry.logger.info("" + initY);
+                if (printDebug) AlchemicalWizardry.logger.info("{}", initY);
             }
 
             if (!temp.bool) {
@@ -889,7 +889,7 @@ public class TEDemonPortal extends TileEntity {
     public void expandAreaInNegZ() {
         GridSpace[][] newGrid = new GridSpace[negXRadius + posXRadius + 1][negZRadius + posZRadius + 2];
 
-        if (printDebug) AlchemicalWizardry.logger.info("x " + newGrid.length + "z " + newGrid[0].length);
+        if (printDebug) AlchemicalWizardry.logger.info("x {}z {}", newGrid.length, newGrid[0].length);
 
         for (int i = 0; i <= negXRadius + posXRadius; i++) {
             newGrid[i][0] = new GridSpace();
@@ -1116,7 +1116,7 @@ public class TEDemonPortal extends TileEntity {
         int z = space.zCoord;
         int yLevel = space.yCoord;
 
-        if (printDebug) AlchemicalWizardry.logger.info("Road space - x: " + x + " z: " + z);
+        if (printDebug) AlchemicalWizardry.logger.info("Road space - x: {} z: {}", x, z);
 
         GridSpaceHolder grid = this.createGSH();
 

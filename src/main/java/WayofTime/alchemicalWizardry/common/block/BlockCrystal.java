@@ -37,12 +37,12 @@ public class BlockCrystal extends Block {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item item, CreativeTabs par2CreativeTabs, List<ItemStack> items) {
+    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> items) {
         if (this.equals(ModBlocks.blockCrystal)) {
             items.add(new ItemStack(item, 1, 0));
             items.add(new ItemStack(item, 1, 1));
         } else {
-            super.getSubBlocks(item, par2CreativeTabs, items);
+            super.getSubBlocks(item, tab, items);
         }
     }
 

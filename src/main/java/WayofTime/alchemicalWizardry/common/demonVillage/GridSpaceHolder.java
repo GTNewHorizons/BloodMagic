@@ -113,13 +113,11 @@ public class GridSpaceHolder {
     public boolean doesContainAll(GridSpaceHolder master, int xInit, int zInit, ForgeDirection dir) {
         if (master != null) {
             if (TEDemonPortal.printDebug) AlchemicalWizardry.logger.info(
-                    "negXRadius: " + negXRadius
-                            + " posXRadius: "
-                            + posXRadius
-                            + " negZRadius: "
-                            + negZRadius
-                            + " posZRadius: "
-                            + posZRadius);
+                    "negXRadius: {} posXRadius: {} negZRadius: {} posZRadius: {}",
+                    negXRadius,
+                    posXRadius,
+                    negZRadius,
+                    posZRadius);
             for (int i = -negXRadius; i <= posXRadius; i++) {
                 for (int j = -negZRadius; j <= posZRadius; j++) {
                     GridSpace thisSpace = this.getGridSpace(i, j);
@@ -127,7 +125,7 @@ public class GridSpaceHolder {
                         continue;
                     }
 
-                    if (TEDemonPortal.printDebug) AlchemicalWizardry.logger.info("x: " + i + " z: " + j);
+                    if (TEDemonPortal.printDebug) AlchemicalWizardry.logger.info("x: {} z: {}", i, j);
 
                     int xOff;
                     int zOff = switch (dir) {
@@ -161,8 +159,7 @@ public class GridSpaceHolder {
 
     public void setAllGridSpaces(int xInit, int zInit, int yLevel, ForgeDirection dir, int type,
             GridSpaceHolder master) {
-        if (TEDemonPortal.printDebug)
-            AlchemicalWizardry.logger.info("Grid space selected: (" + xInit + "," + zInit + ")");
+        if (TEDemonPortal.printDebug) AlchemicalWizardry.logger.info("Grid space selected: ({},{})", xInit, zInit);
         if (master != null) {
             for (int i = -negXRadius; i <= posXRadius; i++) {
                 for (int j = -negZRadius; j <= posZRadius; j++) {
@@ -192,7 +189,7 @@ public class GridSpaceHolder {
                     };
 
                     if (TEDemonPortal.printDebug)
-                        AlchemicalWizardry.logger.info("Grid space (" + (xInit + xOff) + "," + (zInit + zOff) + ")");
+                        AlchemicalWizardry.logger.info("Grid space ({},{})", xInit + xOff, zInit + zOff);
 
                     master.setGridSpace(xInit + xOff, zInit + zOff, new GridSpace(type, yLevel));
                 }

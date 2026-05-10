@@ -1,7 +1,6 @@
 package WayofTime.alchemicalWizardry.api.items;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -21,8 +20,8 @@ import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
  */
 public class ShapelessBloodOrbRecipe implements IRecipe {
 
-    private ItemStack output;
-    private final ArrayList<Object> input = new ArrayList<Object>();
+    private final ItemStack output;
+    private final ArrayList<Object> input = new ArrayList<>();
 
     public ShapelessBloodOrbRecipe(Block result, Object... recipe) {
         this(new ItemStack(result), recipe);
@@ -90,34 +89,35 @@ public class ShapelessBloodOrbRecipe implements IRecipe {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean matches(InventoryCrafting var1, World world) {
-        ArrayList<Object> required = new ArrayList<Object>(input);
+    public boolean matches(InventoryCrafting inv, World world) {
+        ArrayList<Object> required = new ArrayList<>(input);
 
-        for (int x = 0; x < var1.getSizeInventory(); x++) {
-            ItemStack slot = var1.getStackInSlot(x);
+        for (int x = 0; x < inv.getSizeInventory(); x++) {
+            ItemStack slot = inv.getStackInSlot(x);
 
             if (slot != null) {
                 boolean inRecipe = false;
 
-                for (Object o : required) {
+                for (Object next : required) {
                     boolean match = false;
 
-                    Object next = o;
-
-                    // If target is integer, then we should be check the blood orb value of the item instead
-                    if (next instanceof Integer) {
-                        if (slot.getItem() instanceof IBloodOrb orb) {
-                            if (orb.getOrbLevel() < (Integer) next) {
-                                return false;
-                            }
-                        } else return false;
+                    // If target is integer, then we should check the blood orb value of the item instead
+                    if (next instanceof Integer orbLevel) {
+                        if (!(slot.getItem() instanceof IBloodOrb orb)) {
+                            return false;
+                        }
+                        if (orb.getOrbLevel() < orbLevel) {
+                            return false;
+                        }
                         match = true;
-                    } else if (next instanceof ItemStack) {
-                        match = OreDictionary.itemMatches((ItemStack) next, slot, false);
+                    } else if (next instanceof ItemStack item) {
+                        match = OreDictionary.itemMatches(item, slot, false);
                     } else if (next instanceof ArrayList) {
-                        Iterator<ItemStack> itr = ((ArrayList<ItemStack>) next).iterator();
-                        while (itr.hasNext() && !match) {
-                            match = OreDictionary.itemMatches(itr.next(), slot, false);
+                        for (ItemStack item : ((ArrayList<ItemStack>) next)) {
+                            if (OreDictionary.itemMatches(item, slot, false)) {
+                                match = true;
+                                break;
+                            }
                         }
                     }
 

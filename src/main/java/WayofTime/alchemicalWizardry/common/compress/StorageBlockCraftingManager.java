@@ -25,7 +25,7 @@ public class StorageBlockCraftingManager {
     public void addStorageBlockRecipes() {
         this.recipes = new StorageBlockCraftingRecipeAssimilator().getPackingRecipes();
 
-        AlchemicalWizardry.logger.info("Total number of compression recipes: " + this.recipes.size());
+        AlchemicalWizardry.logger.info("Total number of compression recipes: {}", this.recipes.size());
     }
 
     private static ItemStack getRecipe(ItemStack stack, World world, int gridSize, List<IRecipe> list) {

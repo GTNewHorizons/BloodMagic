@@ -14,7 +14,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -52,9 +51,8 @@ public class StorageBlockCraftingRecipeAssimilator {
         InventoryCrafting inventoryUnpack = new InventoryCrafting(container, 2, 2);
         InventoryCrafting inventory2x2 = new InventoryCrafting(container, 2, 2);
         InventoryCrafting inventory3x3 = new InventoryCrafting(container, 3, 3);
-        World world = null; // TODO: use a proper dummy world?
 
-        List<IRecipe> ret = new ArrayList<IRecipe>();
+        List<IRecipe> ret = new ArrayList<>();
 
         for (IRecipe recipeUnpack : unpackingRecipes) {
             ItemStack unpacked = recipeUnpack.getRecipeOutput();
@@ -114,7 +112,7 @@ public class StorageBlockCraftingRecipeAssimilator {
                     if (recipeUnpack.matches(inventoryUnpack, null)) {
                         ret.add(recipePack.recipe);
                         AlchemicalWizardry.logger
-                                .info("Adding the following recipe to the Compression Handler: " + packOutput);
+                                .info("Adding the following recipe to the Compression Handler: {}", packOutput);
                         it.remove();
                     }
                 }
@@ -143,14 +141,14 @@ public class StorageBlockCraftingRecipeAssimilator {
 
         List<?> inputs;
 
-        if (recipe instanceof ShapedRecipes) {
-            inputs = Arrays.asList(((ShapedRecipes) recipe).recipeItems);
-        } else if (recipe instanceof ShapelessRecipes) {
-            inputs = ((ShapelessRecipes) recipe).recipeItems;
-        } else if (recipe instanceof ShapedOreRecipe) {
-            inputs = Arrays.asList(((ShapedOreRecipe) recipe).getInput());
-        } else if (recipe instanceof ShapelessOreRecipe) {
-            inputs = ((ShapelessOreRecipe) recipe).getInput();
+        if (recipe instanceof ShapedRecipes shapedRecipes) {
+            inputs = Arrays.asList(shapedRecipes.recipeItems);
+        } else if (recipe instanceof ShapelessRecipes shapelessRecipes) {
+            inputs = shapelessRecipes.recipeItems;
+        } else if (recipe instanceof ShapedOreRecipe shapedOreRecipe) {
+            inputs = Arrays.asList(shapedOreRecipe.getInput());
+        } else if (recipe instanceof ShapelessOreRecipe shapelessOreRecipe) {
+            inputs = shapelessOreRecipe.getInput();
         } else {
             return new PackingRecipe(recipe, null, -1);
         }
@@ -189,7 +187,7 @@ public class StorageBlockCraftingRecipeAssimilator {
             List<ItemStack> offers;
 
             if (input instanceof ItemStack) {
-                offers = Arrays.asList((ItemStack) input);
+                offers = List.of((ItemStack) input);
             } else if (input instanceof List) {
                 offers = (List<ItemStack>) input;
 
@@ -199,7 +197,7 @@ public class StorageBlockCraftingRecipeAssimilator {
             }
 
             if (options == null) {
-                options = new ArrayList<ItemStack>(offers);
+                options = new ArrayList<>(offers);
                 continue;
             }
 
@@ -247,16 +245,7 @@ public class StorageBlockCraftingRecipeAssimilator {
         }
     }
 
-    private static class PackingRecipe {
+    private record PackingRecipe(IRecipe recipe, List<ItemStack> possibleInputs, int inputCount) {
 
-        PackingRecipe(IRecipe recipe, List<ItemStack> possibleInputs, int inputCount) {
-            this.recipe = recipe;
-            this.possibleInputs = possibleInputs;
-            this.inputCount = inputCount;
-        }
-
-        final IRecipe recipe;
-        final List<ItemStack> possibleInputs;
-        final int inputCount;
     }
 }

@@ -283,7 +283,7 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
                 }
                 Fluid fluid = FluidRegistry.lookupFluidForBlock(block);
 
-                AlchemicalWizardry.logger.info("x: " + (i - range) + " y: " + (j - range) + " z: " + (k - range));
+                AlchemicalWizardry.logger.info("x: {} y: {} z: {}", i - range, j - range, k - range);
 
                 if (fluid == null || world.getBlockMetadata(x + i - range, y + j - range, z + k - range) != 0) {
                     continue;

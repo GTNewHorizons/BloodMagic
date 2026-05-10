@@ -2,7 +2,6 @@ package WayofTime.alchemicalWizardry.api.items;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -25,8 +24,8 @@ public class ShapedBloodOrbRecipe implements IRecipe {
     private static final int MAX_CRAFT_GRID_WIDTH = 3;
     private static final int MAX_CRAFT_GRID_HEIGHT = 3;
 
-    private ItemStack output;
-    private Object[] input;
+    private final ItemStack output;
+    private final Object[] input;
     public int width = 0;
     public int height = 0;
     private boolean mirrored = true;
@@ -188,28 +187,27 @@ public class ShapedBloodOrbRecipe implements IRecipe {
                 }
 
                 ItemStack slot = inv.getStackInRowAndColumn(x, y);
-                // If target is integer, then we should be check the blood orb value of the item instead
-                if (target instanceof Integer i) {
-                    if (slot != null && slot.getItem() instanceof IBloodOrb orb) {
-                        if (orb.getOrbLevel() < i) {
-                            return false;
-                        }
-                    } else return false;
+                // If target is integer, then we should check the blood orb value of the item instead
+                if (target instanceof Integer orbLevel) {
+                    if (slot == null || !(slot.getItem() instanceof IBloodOrb orb)) {
+                        return false;
+                    }
+                    if (orb.getOrbLevel() < orbLevel) {
+                        return false;
+                    }
                 } else if (target instanceof ItemStack stack) {
                     if (!OreDictionary.itemMatches(stack, slot, false)) {
                         return false;
                     }
                 } else if (target instanceof ArrayList) {
                     boolean matched = false;
-
-                    Iterator<ItemStack> itr = ((ArrayList<ItemStack>) target).iterator();
-                    while (itr.hasNext() && !matched) {
-                        matched = OreDictionary.itemMatches(itr.next(), slot, false);
+                    for (ItemStack item : ((ArrayList<ItemStack>) target)) {
+                        if (OreDictionary.itemMatches(item, slot, false)) {
+                            matched = true;
+                            break;
+                        }
                     }
-
-                    if (!matched) {
-                        return false;
-                    }
+                    if (!matched) return false;
                 } else if (target == null && slot != null) {
                     return false;
                 }

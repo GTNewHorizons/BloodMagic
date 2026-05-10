@@ -76,10 +76,10 @@ public final class HUDUtils {
     public static void renderQuad(Tessellator tessellator, int x, int y, int width, int height, int color) {
         tessellator.startDrawingQuads();
         tessellator.setColorOpaque_I(color);
-        tessellator.addVertex((x), (y), 0.0D);
-        tessellator.addVertex((x), (y + height), 0.0D);
-        tessellator.addVertex((x + width), (y + height), 0.0D);
-        tessellator.addVertex((x + width), (y), 0.0D);
+        tessellator.addVertex(x, y, 0.0D);
+        tessellator.addVertex(x, y + height, 0.0D);
+        tessellator.addVertex(x + width, y + height, 0.0D);
+        tessellator.addVertex(x + width, y, 0.0D);
         tessellator.draw();
     }
 

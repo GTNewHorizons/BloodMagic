@@ -67,8 +67,8 @@ public class ItemSpellMultiTool extends Item {
 
         damage *= (float) attacker.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
 
-        if (attacker instanceof EntityPlayer) {
-            target.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) attacker), damage);
+        if (attacker instanceof EntityPlayer player) {
+            target.attackEntityFrom(DamageSource.causePlayerDamage(player), damage);
         } else {
             target.attackEntityFrom(DamageSource.causeMobDamage(attacker), damage);
         }

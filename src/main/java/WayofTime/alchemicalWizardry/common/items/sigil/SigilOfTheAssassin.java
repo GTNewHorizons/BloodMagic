@@ -82,7 +82,7 @@ public class SigilOfTheAssassin extends EnergyItems implements ArmourUpgrade, IS
         if (movingobjectposition == null) {
             AlchemicalWizardry.logger.info("I saw nothing.");
         } else {
-            AlchemicalWizardry.logger.info("Got something! Type of hit: " + movingobjectposition.typeOfHit);
+            AlchemicalWizardry.logger.info("Got something! Type of hit: {}", movingobjectposition.typeOfHit);
 
             if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
                 Entity hitEntity = movingobjectposition.entityHit;

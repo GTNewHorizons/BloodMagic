@@ -3306,7 +3306,7 @@ public class AlchemicalWizardry {
             RecipeHolder.init();
             long finalTime = System.nanoTime();
             AlchemicalWizardry.logger
-                    .info("Recipe Holder initialized: took " + (finalTime - initialTime) / 1000000f + "ms.");
+                    .info("Recipe Holder initialized: took {}ms.", (finalTime - initialTime) / 1000000f);
 
             ModItems.itemMailCatalogue = new ItemMailOrderCatalogue().setUnlocalizedName("itemMailCatalogue");
             GameRegistry.registerItem(ModItems.itemMailCatalogue, "itemMailCatalogue");
@@ -3420,7 +3420,7 @@ public class AlchemicalWizardry {
                             .newInstance("registerGrinderBlacklist", mobClasses[i]);
                     method.invoke(null, bloodMagic, "MineFactoryReloaded", message);
                 } catch (Exception e) {
-                    logger.log(Level.ERROR, "Failed to blacklist Grinder for " + mobs[i]);
+                    logger.log(Level.ERROR, "Failed to blacklist Grinder for {}", mobs[i]);
                 }
             }
         }
