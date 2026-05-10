@@ -143,19 +143,17 @@ public class BlockAltar extends BlockContainer {
     private static boolean showAltarInfo(World world, int x, int y, int z, EntityPlayer player, Item sigilItem,
             TEAltar tileEntity) {
         boolean sightSigil = sigilItem == ModItems.itemSeerSigil;
-        if (sightSigil || sigilItem == ModItems.divinationSigil) {
-            if (world.isRemote) {
-                world.markBlockForUpdate(x, y, z);
-            } else {
-                if (sightSigil) {
-                    tileEntity.sendMoreChatInfoToPlayer(player);
-                } else {
-                    tileEntity.sendChatInfoToPlayer(player);
-                }
-            }
-            return true;
+        if (!sightSigil && sigilItem != ModItems.divinationSigil) {
+            return false;
         }
-        return false;
+        if (world.isRemote) {
+            world.markBlockForUpdate(x, y, z);
+        } else if (sightSigil) {
+            tileEntity.sendMoreChatInfoToPlayer(player);
+        } else {
+            tileEntity.sendChatInfoToPlayer(player);
+        }
+        return true;
     }
 
     @Override
