@@ -50,99 +50,60 @@ public class BlockSet {
         this(block);
         Arrays.fill(metadata, meta);
         if (block instanceof BlockStairs) {
-            int[] northSet = new int[] { 2, 3, 0, 1 };
-            int[] eastSet = new int[] { 1, 0, 2, 3 };
-            int[] southSet = new int[] { 3, 2, 1, 0 };
-            int[] westSet = new int[] { 0, 1, 3, 2 };
-            int[] northUpSet = new int[] { 6, 7, 4, 5 };
-            int[] eastUpSet = new int[] { 5, 4, 6, 7 };
-            int[] southUpSet = new int[] { 7, 6, 5, 4 };
-            int[] westUpSet = new int[] { 4, 5, 7, 6 };
-
             switch (meta) {
-                case 0 -> metadata = westSet;
-                case 1 -> metadata = eastSet;
-                case 2 -> metadata = northSet;
-                case 3 -> metadata = southSet;
-                case 4 -> metadata = westUpSet;
-                case 5 -> metadata = eastUpSet;
-                case 6 -> metadata = northUpSet;
-                case 7 -> metadata = southUpSet;
+                case 0 -> metadata = new int[] { 0, 1, 3, 2 };
+                case 1 -> metadata = new int[] { 1, 0, 2, 3 };
+                case 2 -> metadata = new int[] { 2, 3, 0, 1 };
+                case 3 -> metadata = new int[] { 3, 2, 1, 0 };
+                case 4 -> metadata = new int[] { 4, 5, 7, 6 };
+                case 5 -> metadata = new int[] { 5, 4, 6, 7 };
+                case 6 -> metadata = new int[] { 6, 7, 4, 5 };
+                case 7 -> metadata = new int[] { 7, 6, 5, 4 };
             }
         } else if (block instanceof BlockLadder) {
-            int[] northSet = new int[] { 3, 2, 5, 4 };
-            int[] eastSet = new int[] { 4, 5, 3, 2 };
-            int[] southSet = new int[] { 2, 3, 4, 5 };
-            int[] westSet = new int[] { 5, 4, 2, 3 };
-
             switch (meta) {
-                case 2 -> metadata = southSet;
-                case 3 -> metadata = northSet;
-                case 4 -> metadata = eastSet;
-                case 5 -> metadata = westSet;
+                case 2 -> metadata = new int[] { 2, 3, 4, 5 };
+                case 3 -> metadata = new int[] { 3, 2, 5, 4 };
+                case 4 -> metadata = new int[] { 4, 5, 3, 2 };
+                case 5 -> metadata = new int[] { 5, 4, 2, 3 };
             }
         } else if (block instanceof BlockTrapDoor) {
             int div = meta / 4;
-            int[] northSet = new int[] { 1 + div * 4, div * 4, 3 + div * 4, 2 + div * 4 }; // Second one: 0 +
-            int[] eastSet = new int[] { 2 + div * 4, 3 + div * 4, 1 + div * 4, div * 4 }; // Last one: 0 +
-            int[] southSet = new int[] { div * 4, 1 + div * 4, 2 + div * 4, 3 + div * 4 }; // First one: 0 +
-            int[] westSet = new int[] { 3 + div * 4, 2 + div * 4, div * 4, 1 + div * 4 }; // Third one: 0 +
-
             switch (meta % 4) {
-                case 0 -> metadata = southSet;
-                case 1 -> metadata = northSet;
-                case 2 -> metadata = eastSet;
-                case 3 -> metadata = westSet;
+                case 0 -> metadata = new int[] { div * 4, 1 + div * 4, 2 + div * 4, 3 + div * 4 };
+                case 1 -> metadata = new int[] { 1 + div * 4, div * 4, 3 + div * 4, 2 + div * 4 };
+                case 2 -> metadata = new int[] { 2 + div * 4, 3 + div * 4, 1 + div * 4, div * 4 };
+                case 3 -> metadata = new int[] { 3 + div * 4, 2 + div * 4, div * 4, 1 + div * 4 };
             }
         } else if (block instanceof BlockTorch) {
-            int[] northSet = new int[] { 3, 4, 1, 2 };
-            int[] eastSet = new int[] { 2, 1, 3, 4 };
-            int[] southSet = new int[] { 4, 3, 2, 1 };
-            int[] westSet = new int[] { 1, 2, 4, 3 };
-
             switch (meta) {
-                case 1 -> metadata = westSet;
-                case 2 -> metadata = eastSet;
-                case 3 -> metadata = northSet;
-                case 4 -> metadata = southSet;
+                case 1 -> metadata = new int[] { 1, 2, 4, 3 };
+                case 2 -> metadata = new int[] { 2, 1, 3, 4 };
+                case 3 -> metadata = new int[] { 3, 4, 1, 2 };
+                case 4 -> metadata = new int[] { 4, 3, 2, 1 };
             }
         } else if (block instanceof BlockDoor) {
-            int[] northSet = new int[] { 3, 1, 2, 0 };
-            int[] eastSet = new int[] { 0, 2, 3, 1 };
-            int[] southSet = new int[] { 1, 3, 0, 2 };
-            int[] westSet = new int[] { 2, 0, 1, 3 };
-
             switch (meta) {
-                case 0 -> metadata = eastSet;
-                case 1 -> metadata = southSet;
-                case 2 -> metadata = westSet;
-                case 3 -> metadata = northSet;
+                case 0 -> metadata = new int[] { 0, 2, 3, 1 };
+                case 1 -> metadata = new int[] { 1, 3, 0, 2 };
+                case 2 -> metadata = new int[] { 2, 0, 1, 3 };
+                case 3 -> metadata = new int[] { 3, 1, 2, 0 };
             }
         } else if (block instanceof BlockRedstoneComparator) {
             int div = meta / 4;
-            int[] northSet = new int[] { div * 4, 2 + div * 4, 3 + div * 4, 1 + div * 4 }; // First one: 0 +
-            int[] eastSet = new int[] { 1 + div * 4, 3 + div * 4, div * 4, 2 + div * 4 }; // Third one: 0 +
-            int[] southSet = new int[] { 2 + div * 4, div * 4, 1 + div * 4, 3 + div * 4 }; // Second one: 0 +
-            int[] westSet = new int[] { 3 + div * 4, 1 + div * 4, 2 + div * 4, div * 4 }; // Last one: 0 +
-
             switch (meta % 4) {
-                case 0 -> metadata = northSet;
-                case 1 -> metadata = eastSet;
-                case 2 -> metadata = southSet;
-                case 3 -> metadata = westSet;
+                case 0 -> metadata = new int[] { div * 4, 2 + div * 4, 3 + div * 4, 1 + div * 4 };
+                case 1 -> metadata = new int[] { 1 + div * 4, 3 + div * 4, div * 4, 2 + div * 4 };
+                case 2 -> metadata = new int[] { 2 + div * 4, div * 4, 1 + div * 4, 3 + div * 4 };
+                case 3 -> metadata = new int[] { 3 + div * 4, 1 + div * 4, 2 + div * 4, div * 4 };
             }
         } else if (block instanceof BlockRedstoneRepeater) {
             int div = meta / 4;
-            int[] northSet = new int[] { div * 4, 2 + div * 4, 3 + div * 4, 1 + div * 4 }; // First one: 0 +
-            int[] eastSet = new int[] { 1 + div * 4, 3 + div * 4, div * 4, 2 + div * 4 }; // Third one: 0 +
-            int[] southSet = new int[] { 2 + div * 4, div * 4, 1 + div * 4, 3 + div * 4 }; // Second one: 0 +
-            int[] westSet = new int[] { 3 + div * 4, 1 + div * 4, 2 + div * 4, div * 4 }; // Last one: 0 +
-
             switch (meta % 4) {
-                case 0 -> metadata = northSet;
-                case 1 -> metadata = eastSet;
-                case 2 -> metadata = southSet;
-                case 3 -> metadata = westSet;
+                case 0 -> metadata = new int[] { div * 4, 2 + div * 4, 3 + div * 4, 1 + div * 4 };
+                case 1 -> metadata = new int[] { 1 + div * 4, 3 + div * 4, div * 4, 2 + div * 4 };
+                case 2 -> metadata = new int[] { 2 + div * 4, div * 4, 1 + div * 4, 3 + div * 4 };
+                case 3 -> metadata = new int[] { 3 + div * 4, 1 + div * 4, 2 + div * 4, div * 4 };
             }
         }
     }

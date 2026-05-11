@@ -449,9 +449,7 @@ public class TEDemonPortal extends TileEntity {
         tag.setInteger("roadCooldown", roadCooldown);
         tag.setInteger("demonHoardCooldown", demonHoardCooldown);
 
-        NBTTagList gridList = getGridList();
-
-        tag.setTag("Grid", gridList);
+        tag.setTag("Grid", getGridList());
 
         tag.setBoolean("init", this.isInitialized);
         tag.setInteger("tier", this.tier);
