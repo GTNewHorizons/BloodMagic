@@ -10,7 +10,7 @@ public record RitualComponent(int x, int y, int z, int stoneType) {
     public static final int DUSK = 5;
     public static final int DAWN = 6;
 
-    public int getX(int direction) {
+    public int x(int direction) {
         return switch (direction) {
             case 2 -> -this.z();
             case 3 -> -this.x();
@@ -19,7 +19,7 @@ public record RitualComponent(int x, int y, int z, int stoneType) {
         };
     }
 
-    public int getZ(int direction) {
+    public int z(int direction) {
         return switch (direction) {
             case 2 -> this.x();
             case 3 -> -this.z();

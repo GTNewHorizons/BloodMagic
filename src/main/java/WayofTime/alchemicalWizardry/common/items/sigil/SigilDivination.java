@@ -66,25 +66,24 @@ public class SigilDivination extends Item implements ArmourUpgrade, IReagentMani
         if (movingobjectposition == null) {
             tellEssence(player, ownerName);
             return item;
-        } else {
-            if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                int x = movingobjectposition.blockX;
-                int y = movingobjectposition.blockY;
-                int z = movingobjectposition.blockZ;
+        }
+        if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            int x = movingobjectposition.blockX;
+            int y = movingobjectposition.blockY;
+            int z = movingobjectposition.blockZ;
 
-                TileEntity tile = world.getTileEntity(x, y, z);
+            TileEntity tile = world.getTileEntity(x, y, z);
 
-                if (!(tile instanceof IReagentHandler relay)) {
-                    tellEssence(player, ownerName);
-                    return item;
-                }
+            if (!(tile instanceof IReagentHandler relay)) {
+                tellEssence(player, ownerName);
+                return item;
+            }
 
-                ReagentContainerInfo[] infoList = relay.getContainerInfo(ForgeDirection.UNKNOWN);
-                if (infoList != null) {
-                    for (ReagentContainerInfo info : infoList) {
-                        if (info != null && info.reagent != null && info.reagent.reagent != null) {
-                            tellReagent(player, info);
-                        }
+            ReagentContainerInfo[] infoList = relay.getContainerInfo(ForgeDirection.UNKNOWN);
+            if (infoList != null) {
+                for (ReagentContainerInfo info : infoList) {
+                    if (info != null && info.reagent != null && info.reagent.reagent != null) {
+                        tellReagent(player, info);
                     }
                 }
             }

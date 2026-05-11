@@ -32,15 +32,15 @@ public class OutputRoutingFocus extends RoutingFocus implements ILimitedRoutingF
     }
 
     @Override
-    public void addInformation(ItemStack item, EntityPlayer player, List<String> par3List, boolean adv) {
-        super.addInformation(item, player, par3List, adv);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        super.addInformation(item, player, tooltip, adv);
         if (!(item.getItem() instanceof OutputRoutingFocus focus)) return;
-        par3List.addAll(focus.getLogic(item).getDescription());
+        tooltip.addAll(focus.getLogic(item).getDescription());
 
-        if (!(item.getTagCompound() == null)) {
+        if (item.getTagCompound() != null) {
             int limit = this.getRoutingFocusLimit(item);
             if (limit > 0) {
-                par3List.add(StatCollector.translateToLocal("tooltip.routingFocus.limit") + " " + limit);
+                tooltip.add(StatCollector.translateToLocal("tooltip.routingFocus.limit") + " " + limit);
             }
         }
     }

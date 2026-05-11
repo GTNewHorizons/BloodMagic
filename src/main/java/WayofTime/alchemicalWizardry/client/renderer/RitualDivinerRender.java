@@ -69,10 +69,7 @@ public class RitualDivinerRender {
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             for (RitualComponent ritualComponent : ritualEffect.getRitualComponentList()) {
                 Vector3 vX = vec3.add(
-                        new Vector3(
-                                ritualComponent.getX(direction),
-                                ritualComponent.y(),
-                                ritualComponent.getZ(direction)));
+                        new Vector3(ritualComponent.x(direction), ritualComponent.y(), ritualComponent.z(direction)));
                 double minX = vX.x() - posX;
                 double minY = vX.y() - posY;
                 double minZ = vX.z() - posZ;

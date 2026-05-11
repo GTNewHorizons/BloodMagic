@@ -48,22 +48,21 @@ public class ItemDestinationClearer extends Item implements IReagentManipulator 
 
         if (movingobjectposition == null) {
             return itemStack;
-        } else {
-            if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                int x = movingobjectposition.blockX;
-                int y = movingobjectposition.blockY;
-                int z = movingobjectposition.blockZ;
+        }
+        if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            int x = movingobjectposition.blockX;
+            int y = movingobjectposition.blockY;
+            int z = movingobjectposition.blockZ;
 
-                TileEntity tile = world.getTileEntity(x, y, z);
+            TileEntity tile = world.getTileEntity(x, y, z);
 
-                if (!(tile instanceof TEReagentConduit relay)) {
-                    return itemStack;
-                }
-
-                relay.reagentTargetList.clear();
-
-                player.addChatComponentMessage(new ChatComponentTranslation("message.destinationclearer.cleared"));
+            if (!(tile instanceof TEReagentConduit relay)) {
+                return itemStack;
             }
+
+            relay.reagentTargetList.clear();
+
+            player.addChatComponentMessage(new ChatComponentTranslation("message.destinationclearer.cleared"));
         }
 
         return itemStack;

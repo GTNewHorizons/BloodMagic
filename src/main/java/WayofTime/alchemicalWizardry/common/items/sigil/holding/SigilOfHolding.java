@@ -40,18 +40,19 @@ public class SigilOfHolding extends EnergyItems implements ISigil {
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (!(stack.getTagCompound() == null)) {
-            ItemStack[] inv = getInternalInventory(stack);
+        if (stack.getTagCompound() == null) {
+            return this.itemIcon;
+        }
+        ItemStack[] inv = getInternalInventory(stack);
 
-            if (inv == null) {
-                return this.itemIcon;
-            }
+        if (inv == null) {
+            return this.itemIcon;
+        }
 
-            ItemStack item = getCurrentSigil(stack);
+        ItemStack item = getCurrentSigil(stack);
 
-            if (item != null) {
-                return item.getIconIndex();
-            }
+        if (item != null) {
+            return item.getIconIndex();
         }
 
         return this.itemIcon;

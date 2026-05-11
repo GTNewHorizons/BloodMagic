@@ -54,7 +54,7 @@ public class ItemBloodLetterPack extends ItemArmor implements ArmourUpgrade, IAl
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
+    public IIcon getIconFromDamage(int meta) {
         return this.plateIcon;
     }
 

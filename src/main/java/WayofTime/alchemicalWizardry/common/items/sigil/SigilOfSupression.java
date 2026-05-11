@@ -66,8 +66,8 @@ public class SigilOfSupression extends EnergyItems implements ArmourUpgrade, ISi
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
-        if (par1 == 1) {
+    public IIcon getIconFromDamage(int meta) {
+        if (meta == 1) {
             return activeIcon;
         } else {
             return passiveIcon;

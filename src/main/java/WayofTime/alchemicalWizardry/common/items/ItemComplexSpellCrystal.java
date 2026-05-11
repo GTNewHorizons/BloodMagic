@@ -36,18 +36,19 @@ public class ItemComplexSpellCrystal extends EnergyItems {
         tooltip.add(StatCollector.translateToLocal("tooltip.complexspellcrystal.desc"));
         addBindingInformation(item, tooltip);
 
-        if (!(item.getTagCompound() == null)) {
-            NBTTagCompound itemTag = item.getTagCompound();
-
-            tooltip.add(
-                    StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
-                            + itemTag.getInteger("xCoord")
-                            + ", "
-                            + itemTag.getInteger("yCoord")
-                            + ", "
-                            + itemTag.getInteger("zCoord"));
-            tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimensionID(item));
+        if (item.getTagCompound() == null) {
+            return;
         }
+        NBTTagCompound itemTag = item.getTagCompound();
+
+        tooltip.add(
+                StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
+                        + itemTag.getInteger("xCoord")
+                        + ", "
+                        + itemTag.getInteger("yCoord")
+                        + ", "
+                        + itemTag.getInteger("zCoord"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimensionID(item));
     }
 
     @Override

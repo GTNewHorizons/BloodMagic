@@ -54,7 +54,7 @@ public class ItemTankSegmenter extends Item implements IReagentManipulator {
         tooltip.add(StatCollector.translateToLocal("tooltip.tanksegmenter.desc1"));
         tooltip.add(StatCollector.translateToLocal("tooltip.tanksegmenter.desc2"));
 
-        if (!(item.getTagCompound() == null)) {
+        if (item.getTagCompound() != null) {
             Reagent reagent = this.getReagent(item);
             if (reagent != null) {
                 tooltip.add(StatCollector.translateToLocal("tooltip.reagent.selectedreagent") + " " + reagent.name());

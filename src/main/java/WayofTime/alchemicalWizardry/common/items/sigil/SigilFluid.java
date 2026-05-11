@@ -51,28 +51,27 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
     public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
         tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.desc"));
 
-        if (!(item.getTagCompound() == null)) {
-            switch (this.getActionState(item)) {
-                case STATE_SYPHON -> tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.syphoningmode"));
-                case STATE_FORCE_SYPHON -> tooltip
-                        .add(StatCollector.translateToLocal("tooltip.fluidsigil.forcesyphonmode"));
-                case STATE_PLACE -> tooltip
-                        .add(StatCollector.translateToLocal("tooltip.fluidsigil.fluidplacementmode"));
-                case STATE_INPUT_TANK -> tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.filltankmode"));
-                case STATE_DRAIN_TANK -> tooltip
-                        .add(StatCollector.translateToLocal("tooltip.fluidsigil.draintankmode"));
-                case STATE_BEAST_DRAIN -> tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.beastmode"));
-            }
+        if (item.getTagCompound() == null) {
+            return;
+        }
+        switch (this.getActionState(item)) {
+            case STATE_SYPHON -> tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.syphoningmode"));
+            case STATE_FORCE_SYPHON -> tooltip
+                    .add(StatCollector.translateToLocal("tooltip.fluidsigil.forcesyphonmode"));
+            case STATE_PLACE -> tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.fluidplacementmode"));
+            case STATE_INPUT_TANK -> tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.filltankmode"));
+            case STATE_DRAIN_TANK -> tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.draintankmode"));
+            case STATE_BEAST_DRAIN -> tooltip.add(StatCollector.translateToLocal("tooltip.fluidsigil.beastmode"));
+        }
 
-            FluidStack fluid = this.getFluid(item);
-            if (fluid != null && fluid.amount > 0) {
-                String str = fluid.getFluid().getName();
-                int amount = fluid.amount;
+        FluidStack fluid = this.getFluid(item);
+        if (fluid != null && fluid.amount > 0) {
+            String str = fluid.getFluid().getName();
+            int amount = fluid.amount;
 
-                tooltip.add(amount + "mB of " + str);
-            } else {
-                tooltip.add("Empty");
-            }
+            tooltip.add(amount + "mB of " + str);
+        } else {
+            tooltip.add("Empty");
         }
     }
 
@@ -307,10 +306,8 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
     public ItemStack fillItemFromWorld(ItemStack container, World world, EntityPlayer player, boolean forceFill) {
         MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, true);
 
-        if (movingobjectposition == null) {
-            return container;
-        }
-        if (movingobjectposition.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
+        if (movingobjectposition == null
+                || movingobjectposition.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
             return container;
         }
         int i = movingobjectposition.blockX;
@@ -419,7 +416,6 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
         }
 
         return container;
-
     }
 
     public boolean tryPlaceContainedLiquid(World world, Block block, double par2, double par4, double par6, int par8,
@@ -468,20 +464,18 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
 
         if (movingobjectposition == null) {
             return container;
-        } else {
-            if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                int i = movingobjectposition.blockX;
-                int j = movingobjectposition.blockY;
-                int k = movingobjectposition.blockZ;
+        }
+        if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            int i = movingobjectposition.blockX;
+            int j = movingobjectposition.blockY;
+            int k = movingobjectposition.blockZ;
 
-                TileEntity tile = world.getTileEntity(i, j, k);
+            TileEntity tile = world.getTileEntity(i, j, k);
 
-                if (tile instanceof IFluidHandler) {
-                    int amount = ((IFluidHandler) tile)
-                            .fill(ForgeDirection.getOrientation(movingobjectposition.sideHit), fluid, true);
+            if (tile instanceof IFluidHandler handler) {
+                int amount = handler.fill(ForgeDirection.getOrientation(movingobjectposition.sideHit), fluid, true);
 
-                    this.drain(container, amount, true);
-                }
+                this.drain(container, amount, true);
             }
         }
 
@@ -493,30 +487,29 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
 
         if (movingobjectposition == null) {
             return container;
-        } else {
-            if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                int i = movingobjectposition.blockX;
-                int j = movingobjectposition.blockY;
-                int k = movingobjectposition.blockZ;
+        }
+        if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            int i = movingobjectposition.blockX;
+            int j = movingobjectposition.blockY;
+            int k = movingobjectposition.blockZ;
 
-                TileEntity tile = world.getTileEntity(i, j, k);
+            TileEntity tile = world.getTileEntity(i, j, k);
 
-                if (tile instanceof IFluidHandler) {
-                    FluidStack fluidAmount = ((IFluidHandler) tile).drain(
+            if (tile instanceof IFluidHandler) {
+                FluidStack fluidAmount = ((IFluidHandler) tile).drain(
+                        ForgeDirection.getOrientation(movingobjectposition.sideHit),
+                        this.getCapacity(container),
+                        false);
+
+                int amount = this.fill(container, fluidAmount, false);
+
+                if (amount > 0) {
+                    ((IFluidHandler) tile).drain(
                             ForgeDirection.getOrientation(movingobjectposition.sideHit),
                             this.getCapacity(container),
-                            false);
+                            true);
 
-                    int amount = this.fill(container, fluidAmount, false);
-
-                    if (amount > 0) {
-                        ((IFluidHandler) tile).drain(
-                                ForgeDirection.getOrientation(movingobjectposition.sideHit),
-                                this.getCapacity(container),
-                                true);
-
-                        this.fill(container, fluidAmount, true);
-                    }
+                    this.fill(container, fluidAmount, true);
                 }
             }
         }

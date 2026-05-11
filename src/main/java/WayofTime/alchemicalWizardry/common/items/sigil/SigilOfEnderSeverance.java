@@ -61,8 +61,8 @@ public class SigilOfEnderSeverance extends EnergyItems implements IHolding, ISig
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
-        if (par1 == 1) {
+    public IIcon getIconFromDamage(int meta) {
+        if (meta == 1) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;

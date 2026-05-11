@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.items.sigil;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -88,28 +89,13 @@ public class SigilLava extends ItemBucket implements ArmourUpgrade, ISigil {
             return false;
         }
 
-        if (side == 0) {
-            --y;
-        }
-
-        if (side == 1) {
-            ++y;
-        }
-
-        if (side == 2) {
-            --z;
-        }
-
-        if (side == 3) {
-            ++z;
-        }
-
-        if (side == 4) {
-            --x;
-        }
-
-        if (side == 5) {
-            ++x;
+        switch (side) {
+            case 0 -> --y;
+            case 1 -> ++y;
+            case 2 -> --z;
+            case 3 -> ++z;
+            case 4 -> --x;
+            case 5 -> ++x;
         }
 
         if (!player.canPlayerEdit(x, y, z, side, stack)) {
@@ -129,23 +115,16 @@ public class SigilLava extends ItemBucket implements ArmourUpgrade, ISigil {
      */
     @Override
     public boolean tryPlaceContainedLiquid(World world, int x, int y, int z) {
-        if (!world.isAirBlock(x, y, z) && world.getBlock(x, y, z).getMaterial().isSolid()) {
-            return false;
-        }
-        if ((world.getBlock(x, y, z) == Blocks.lava || world.getBlock(x, y, z) == Blocks.flowing_lava)
-                && world.getBlockMetadata(x, y, z) == 0) {
-            return false;
-        }
         world.setBlock(x, y, z, Blocks.lava, 0, 3);
         return true;
     }
 
     public boolean canPlaceContainedLiquid(World world, int x, int y, int z) {
-        if (!world.isAirBlock(x, y, z) && world.getBlock(x, y, z).getMaterial().isSolid()) {
+        Block block = world.getBlock(x, y, z);
+        if (!world.isAirBlock(x, y, z) && block.getMaterial().isSolid()) {
             return false;
         }
-        return (world.getBlock(x, y, z) != Blocks.lava && world.getBlock(x, y, z) != Blocks.flowing_lava)
-                || world.getBlockMetadata(x, y, z) != 0;
+        return (block != Blocks.lava && block != Blocks.flowing_lava) || world.getBlockMetadata(x, y, z) != 0;
     }
 
     protected void setEnergyUsed(int energy) {

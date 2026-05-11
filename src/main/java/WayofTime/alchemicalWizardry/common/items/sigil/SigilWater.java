@@ -93,52 +93,28 @@ public class SigilWater extends ItemBucket implements ArmourUpgrade, ISigil {
             return false;
         }
 
-        {
-            if (side == 0) {
-                --y;
-            }
+        switch (side) {
+            case 0 -> --y;
+            case 1 -> ++y;
+            case 2 -> --z;
+            case 3 -> ++z;
+            case 4 -> --x;
+            case 5 -> ++x;
+        }
 
-            if (side == 1) {
-                ++y;
-            }
+        if (!player.canPlayerEdit(x, y, z, side, stack)) {
+            return false;
+        }
 
-            if (side == 2) {
-                --z;
-            }
-
-            if (side == 3) {
-                ++z;
-            }
-
-            if (side == 4) {
-                --x;
-            }
-
-            if (side == 5) {
-                ++x;
-            }
-
-            if (!player.canPlayerEdit(x, y, z, side, stack)) {
-                return false;
-            }
-
-            if (this.canPlaceContainedLiquid(world, x, y, z)
-                    && EnergyItems.syphonBatteries(stack, player, getEnergyUsed())) {
-                return this.tryPlaceContainedLiquid(world, x, y, z);
-            }
+        if (this.canPlaceContainedLiquid(world, x, y, z)
+                && EnergyItems.syphonBatteries(stack, player, getEnergyUsed())) {
+            return this.tryPlaceContainedLiquid(world, x, y, z);
         }
 
         return false;
     }
 
     public boolean tryPlaceContainedLiquid(World world, int x, int y, int z) {
-        if (!world.isAirBlock(x, y, z) && world.getBlock(x, y, z).getMaterial().isSolid()) {
-            return false;
-        }
-        if ((world.getBlock(x, y, z) == Blocks.water || world.getBlock(x, y, z) == Blocks.flowing_water)
-                && world.getBlockMetadata(x, y, z) == 0) {
-            return false;
-        }
         if (world.provider.isHellWorld) {
             world.playSoundEffect(
                     x + 0.5D,

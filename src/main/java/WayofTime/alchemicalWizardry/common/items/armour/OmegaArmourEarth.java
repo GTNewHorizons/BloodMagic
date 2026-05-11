@@ -66,7 +66,7 @@ public class OmegaArmourEarth extends OmegaArmour {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
+    public IIcon getIconFromDamage(int meta) {
         if (this.equals(ModItems.boundHelmetEarth)) {
             return this.helmetIcon;
         }

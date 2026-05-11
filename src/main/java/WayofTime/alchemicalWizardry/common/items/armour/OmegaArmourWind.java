@@ -66,7 +66,7 @@ public class OmegaArmourWind extends OmegaArmour {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
+    public IIcon getIconFromDamage(int meta) {
         if (this.equals(ModItems.boundHelmetWind)) {
             return this.helmetIcon;
         }

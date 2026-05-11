@@ -217,7 +217,7 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
             }
 
             for (RitualComponent rc : ritualList) {
-                if (world.isAirBlock(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction))) {
+                if (world.isAirBlock(x + rc.x(direction), y + rc.y(), z + rc.z(direction))) {
                     if (playerInvRitualStoneLocation >= 0 || player.capabilities.isCreativeMode) {
                         if (rc.stoneType() > this.maxMetaData + this.getMaxRuneDisplacement(stack)) {
                             world.playAuxSFX(200, x, y + 1, z, 0);
@@ -230,9 +230,9 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
 
                         if (EnergyItems.syphonBatteries(stack, player, getEnergyUsed())) {
                             world.setBlock(
-                                    x + rc.getX(direction),
+                                    x + rc.x(direction),
                                     y + rc.y(),
-                                    z + rc.getZ(direction),
+                                    z + rc.z(direction),
                                     ModBlocks.ritualStone,
                                     rc.stoneType(),
                                     3);
@@ -247,11 +247,10 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
                         return true;
                     }
                 } else {
-                    Block block = world.getBlock(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction));
+                    Block block = world.getBlock(x + rc.x(direction), y + rc.y(), z + rc.z(direction));
 
                     if (block == ModBlocks.ritualStone) {
-                        int metadata = world
-                                .getBlockMetadata(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction));
+                        int metadata = world.getBlockMetadata(x + rc.x(direction), y + rc.y(), z + rc.z(direction));
 
                         if (metadata != rc.stoneType() && EnergyItems.syphonBatteries(stack, player, getEnergyUsed())) {
                             if (rc.stoneType() > this.maxMetaData + this.getMaxRuneDisplacement(stack)) {
@@ -260,9 +259,9 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
                             }
 
                             world.setBlockMetadataWithNotify(
-                                    x + rc.getX(direction),
+                                    x + rc.x(direction),
                                     y + rc.y(),
-                                    z + rc.getZ(direction),
+                                    z + rc.z(direction),
                                     rc.stoneType(),
                                     3);
                             return true;

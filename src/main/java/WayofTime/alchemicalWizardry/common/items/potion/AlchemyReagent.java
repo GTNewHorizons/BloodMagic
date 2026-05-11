@@ -66,7 +66,7 @@ public class AlchemyReagent extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack item, EntityPlayer player, List<String> par3List, boolean adv) {
-        par3List.add(StatCollector.translateToLocal("tooltip.alchemy.usedinalchemy"));
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.usedinalchemy"));
     }
 }

@@ -61,20 +61,21 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
         tooltip.add(StatCollector.translateToLocal("tooltip.attunedcrystal.desc1"));
         tooltip.add(StatCollector.translateToLocal("tooltip.attunedcrystal.desc2"));
 
-        if (!(item.getTagCompound() == null)) {
-            Reagent reagent = this.getReagent(item);
-            if (reagent != null) {
-                tooltip.add(StatCollector.translateToLocal("tooltip.reagent.selectedreagent") + " " + reagent.name());
-            }
+        if (item.getTagCompound() == null) {
+            return;
+        }
+        Reagent reagent = this.getReagent(item);
+        if (reagent != null) {
+            tooltip.add(StatCollector.translateToLocal("tooltip.reagent.selectedreagent") + " " + reagent.name());
+        }
 
-            if (this.getHasSavedCoordinates(item)) {
-                tooltip.add("");
-                Int3 coords = this.getCoordinates(item);
-                tooltip.add(
-                        StatCollector.translateToLocal(
-                                "tooltip.alchemy.coords") + " " + coords.x() + ", " + coords.y() + ", " + coords.z());
-                tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimension(item));
-            }
+        if (this.getHasSavedCoordinates(item)) {
+            tooltip.add("");
+            Int3 coords = this.getCoordinates(item);
+            tooltip.add(
+                    StatCollector.translateToLocal(
+                            "tooltip.alchemy.coords") + " " + coords.x() + ", " + coords.y() + ", " + coords.z());
+            tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimension(item));
         }
     }
 

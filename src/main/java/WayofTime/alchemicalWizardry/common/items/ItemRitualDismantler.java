@@ -63,22 +63,23 @@ public class ItemRitualDismantler extends EnergyItems {
         }
 
         for (RitualComponent rc : ritualList) {
-            if (!world.isAirBlock(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction)) && world
-                    .getBlock(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction)) instanceof RitualStone) {
-                if (EnergyItems.syphonBatteries(stack, player, getEnergyUsed()) || player.capabilities.isCreativeMode) {
-                    world.setBlockToAir(x + rc.getX(direction), y + rc.y(), z + rc.getZ(direction));
-                    EntityItem entityItem = new EntityItem(
-                            world,
-                            player.posX,
-                            player.posY,
-                            player.posZ,
-                            new ItemStack(ModBlocks.ritualStone));
-                    if (world.isRemote) {
-                        world.playAuxSFX(2005, x, y + 1, z, 0);
-                    } else {
-                        world.spawnEntityInWorld(entityItem);
-                    }
-                }
+            if (world.isAirBlock(x + rc.x(direction), y + rc.y(), z + rc.z(direction))
+                    || !(world.getBlock(x + rc.x(direction), y + rc.y(), z + rc.z(direction)) instanceof RitualStone)
+                    || (!player.capabilities.isCreativeMode
+                            && !EnergyItems.syphonBatteries(stack, player, getEnergyUsed()))) {
+                continue;
+            }
+            world.setBlockToAir(x + rc.x(direction), y + rc.y(), z + rc.z(direction));
+            EntityItem entityItem = new EntityItem(
+                    world,
+                    player.posX,
+                    player.posY,
+                    player.posZ,
+                    new ItemStack(ModBlocks.ritualStone));
+            if (world.isRemote) {
+                world.playAuxSFX(2005, x, y + 1, z, 0);
+            } else {
+                world.spawnEntityInWorld(entityItem);
             }
         }
 

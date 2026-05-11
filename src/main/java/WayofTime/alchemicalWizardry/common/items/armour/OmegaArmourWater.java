@@ -61,7 +61,7 @@ public class OmegaArmourWater extends OmegaArmour {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
+    public IIcon getIconFromDamage(int meta) {
         if (this.equals(ModItems.boundHelmetWater)) {
             return this.helmetIcon;
         }

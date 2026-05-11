@@ -58,7 +58,7 @@ public class ItemSanguineArmour extends ItemArmor
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
+    public IIcon getIconFromDamage(int meta) {
         if (this.equals(ModItems.sanguineHelmet)) {
             return this.helmetIcon;
         }
