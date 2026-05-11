@@ -66,7 +66,7 @@ public class AlchemicalWizardryEventHooks {
 
     public static Map<Integer, List<CoordAndRange>> respawnMap = new HashMap<>();
     public static Map<Integer, List<CoordAndRange>> forceSpawnMap = new HashMap<>();
-    public static ArrayList<BlockStack> teleposerBlacklist = new ArrayList<BlockStack>();
+    public static ArrayList<BlockStack> teleposerBlacklist = new ArrayList<>();
 
     public static Random rand = new Random();
 
@@ -80,10 +80,8 @@ public class AlchemicalWizardryEventHooks {
         ItemStack heldItem = player.getHeldItem();
         if (heldItem == null) {
             parad.onEmptyHandEntityInteract(player, event.target);
-        } else {
-            if (heldItem.getItem() instanceof EnergySword) {
-                parad.onBoundSwordInteractWithEntity(player, event.target);
-            }
+        } else if (heldItem.getItem() instanceof EnergySword) {
+            parad.onBoundSwordInteractWithEntity(player, event.target);
         }
     }
 
@@ -303,13 +301,12 @@ public class AlchemicalWizardryEventHooks {
                 for (CoordAndRange coords : list) {
                     TileEntity tile = event.world.getTileEntity(coords.xCoord, coords.yCoord, coords.zCoord);
 
-                    if (!(tile instanceof TEMasterStone) || !((TEMasterStone) tile).isRunning
-                            || !((TEMasterStone) tile).getCurrentRitual().equals(respawnRitual)) {
+                    if (!(tile instanceof TEMasterStone masterStone) || !masterStone.isRunning
+                            || !masterStone.getCurrentRitual().equals(respawnRitual)) {
                         list.remove(coords);
                         continue;
                     }
-                    if (!(event.x > coords.xCoord - coords.horizRadius)
-                            || !(event.x < coords.xCoord + coords.horizRadius)
+                    if (event.x <= coords.xCoord - coords.horizRadius || !(event.x < coords.xCoord + coords.horizRadius)
                             || !(event.z > coords.zCoord - coords.horizRadius)
                             || !(event.z < coords.zCoord + coords.horizRadius)
                             || !(event.y > coords.yCoord - coords.vertRadius)
@@ -343,8 +340,7 @@ public class AlchemicalWizardryEventHooks {
                         list.remove(coords);
                         continue;
                     }
-                    if (!(event.x > coords.xCoord - coords.horizRadius)
-                            || !(event.x < coords.xCoord + coords.horizRadius)
+                    if (event.x <= coords.xCoord - coords.horizRadius || !(event.x < coords.xCoord + coords.horizRadius)
                             || !(event.z > coords.zCoord - coords.horizRadius)
                             || !(event.z < coords.zCoord + coords.horizRadius)
                             || !(event.y > coords.yCoord - coords.vertRadius)
@@ -470,25 +466,15 @@ public class AlchemicalWizardryEventHooks {
 
         if (event.entityLiving.isPotionActive(AlchemicalWizardry.customPotionBoost)) {
             int i = event.entityLiving.getActivePotionEffect(AlchemicalWizardry.customPotionBoost).getAmplifier();
-            // if(!entity.isSneaking())
-            {
+            if (!event.entityLiving.isSneaking() && event.entityLiving instanceof EntityPlayer entityPlayer) {
                 float percentIncrease = (i + 1) * 0.05f;
+                entityPlayer.stepHeight = 1.0f;
 
-                // AttributeModifier speedModifier = new AttributeModifier(new UUID(213241, 3), "Potion Boost",
-                // percentIncrease, 0);
-                //
-                //
-                // event.entityLiving.getEntityAttribute(SharedMonsterAttributes.movementSpeed).applyModifier(speedModifier);
-
-                if (event.entityLiving instanceof EntityPlayer entityPlayer) {
-                    entityPlayer.stepHeight = 1.0f;
-
-                    if ((entityPlayer.onGround || entityPlayer.capabilities.isFlying) && entityPlayer.moveForward > 0F)
-                        entityPlayer.moveFlying(
-                                0F,
-                                1F,
-                                entityPlayer.capabilities.isFlying ? (percentIncrease / 2.0f) : percentIncrease);
-                }
+                if ((entityPlayer.onGround || entityPlayer.capabilities.isFlying) && entityPlayer.moveForward > 0F)
+                    entityPlayer.moveFlying(
+                            0F,
+                            1F,
+                            entityPlayer.capabilities.isFlying ? (percentIncrease / 2.0f) : percentIncrease);
             }
         }
 
@@ -516,12 +502,11 @@ public class AlchemicalWizardryEventHooks {
 
                 Entity throwingEntity = null;
 
-                if (projectile instanceof EntityArrow) {
-                    throwingEntity = ((EntityArrow) projectile).shootingEntity;
-                } else if (projectile instanceof EnergyBlastProjectile) {
-                    throwingEntity = ((EnergyBlastProjectile) projectile).shootingEntity;
-                } else if (projectile instanceof EntityThrowable) {
-                    throwingEntity = ((EntityThrowable) projectile).getThrower();
+                switch (projectile) {
+                    case EntityArrow entityArrow -> throwingEntity = entityArrow.shootingEntity;
+                    case EnergyBlastProjectile energyBlastProjectile -> throwingEntity = energyBlastProjectile.shootingEntity;
+                    case EntityThrowable entityThrowable -> throwingEntity = entityThrowable.getThrower();
+                    default -> {}
                 }
 
                 if (throwingEntity != null && throwingEntity.equals(entity)) {
@@ -626,12 +611,11 @@ public class AlchemicalWizardryEventHooks {
 
             int r = event.entityLiving.getActivePotionEffect(AlchemicalWizardry.customPotionIceCloak).getAmplifier();
             int horizRange = r + 1;
-            int vertRange = 1;
 
             if (!entityLiving.worldObj.isRemote) {
                 for (int i = -horizRange; i <= horizRange; i++) {
                     for (int k = -horizRange; k <= horizRange; k++) {
-                        for (int j = -vertRange - 1; j <= 0; j++) {
+                        for (int j = -2; j <= 0; j++) {
                             SpellHelper.freezeWaterBlock(entityLiving.worldObj, xPos + i, yPos + j, zPos + k);
                         }
                     }
@@ -684,56 +668,6 @@ public class AlchemicalWizardryEventHooks {
         }
     }
 
-    // @SubscribeEvent(priority = EventPriority.LOWEST)
-    // public void onTelepose(TeleposeEvent event) {
-    //
-    // AlchemicalWizardry.logger.info(event.initialBlock + ":" + event.initialMetadata);
-    // AlchemicalWizardry.logger.info(event.finalBlock + ":" + event.finalMetadata);
-    //
-    // for (int i = 0; i < BloodMagicConfiguration.teleposerBlacklist.length; i++) {
-    // String[] blockData = BloodMagicConfiguration.teleposerBlacklist[i].split(":");
-    //
-    // // If the block follows full syntax: modid:blockname:meta
-    // if (blockData.length == 3) {
-    //
-    // Block block = GameRegistry.findBlock(blockData[0], blockData[1]);
-    // int meta;
-    //
-    // // Check if it's an int, if so, parse it. If not, set meta to 0 to avoid crashing.
-    // if (isInteger(blockData[2]))
-    // meta = Integer.parseInt(blockData[2]);
-    // else if (blockData[2].equals("*"))
-    // meta = OreDictionary.WILDCARD_VALUE;
-    // else
-    // meta = 0;
-    //
-    // AlchemicalWizardry.logger.info(block + ":" + meta);
-    //
-    // if (block != null) {
-    // if ((block == event.initialBlock || block == event.finalBlock) && (meta == event.initialMetadata || meta ==
-    // event.finalMetadata || meta == OreDictionary.WILDCARD_VALUE)) {
-    // event.setCanceled(true);
-    // return;
-    // }
-    // }
-    //
-    // // If the block uses shorthand syntax: modid:blockname
-    // } else if (blockData.length == 2) {
-    //
-    // Block block = GameRegistry.findBlock(blockData[0], blockData[1]);
-    // int meta = 0;
-    //
-    // if (block != null) {
-    // if ((block == event.initialBlock && (meta == event.initialMetadata || meta == OreDictionary.WILDCARD_VALUE))
-    // || (block == event.finalBlock && (meta == event.finalMetadata || meta == OreDictionary.WILDCARD_VALUE))) {
-    // event.setCanceled(true);
-    // return;
-    // }
-    // }
-    // }
-    // }
-    // }
-
     @SubscribeEvent
     public void onTelepose(TeleposeEvent event) {
         BlockStack initialBlock = new BlockStack(event.initialBlock, event.initialMetadata);
@@ -767,9 +701,10 @@ public class AlchemicalWizardryEventHooks {
 
     @Optional.Method(modid = "Botania")
     private boolean isManaBurst(Entity entity) {
-        if (entity instanceof IManaBurst) {
-            ItemStack lens = ((IManaBurst) entity).getSourceLens();
-            return !(lens.getItemDamage() != 8 && lens.getItemDamage() != 11);
-        } else return false;
+        if (entity instanceof IManaBurst burst) {
+            ItemStack lens = burst.getSourceLens();
+            return lens.getItemDamage() == 8 || lens.getItemDamage() == 11;
+        }
+        return false;
     }
 }
