@@ -51,6 +51,7 @@ public class DigAreaEffect implements IDigAreaEffect {
             int z, ItemSpellMultiTool itemTool) {
         int hlvl = -1;
         Block localBlock = world.getBlock(x, y, z);
+        if (localBlock == null) return;
         int localMeta = world.getBlockMetadata(x, y, z);
         String toolClass = localBlock.getHarvestTool(localMeta);
         if (toolClass != null && itemTool.getHarvestLevel(container, toolClass) != -1)
