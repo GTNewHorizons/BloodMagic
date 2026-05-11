@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -28,10 +27,6 @@ import WayofTime.alchemicalWizardry.common.items.armour.OmegaArmour;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 
 public class RenderHelper {
-
-    public static boolean enableItemName = false;
-    public static boolean enabled = true;
-    public static boolean showInChat = true;
 
     public static int lpBarX = 12;
     public static int lpBarY = 75;
@@ -51,51 +46,48 @@ public class RenderHelper {
 
     public static String listMode = "horizontal";
     public static String alignMode = "bottomcenter";
+    public static Minecraft mc = Minecraft.getMinecraft();
 
     private static ScaledResolution scaledResolution;
 
     public static void onTickInGame(Minecraft mc) {
-        if (enabled
-                && (mc.inGameHasFocus || mc.currentScreen == null
-                        || (mc.currentScreen instanceof GuiChat && showInChat))
-                && !mc.gameSettings.showDebugInfo) {
-            EntityPlayer player = mc.thePlayer;
-            player.getEntityData();
-            if (SpellHelper.canPlayerSeeAlchemy(player)) {
-                GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                scaledResolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
-                displayArmorStatus(mc);
-                GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-            }
+        if (!(mc.inGameHasFocus || mc.currentScreen == null || mc.currentScreen instanceof GuiChat)
+                || mc.gameSettings.showDebugInfo) {
+            return;
+        }
+        EntityPlayer player = mc.thePlayer;
+        if (SpellHelper.canPlayerSeeAlchemy(player)) {
+            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+            scaledResolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+            displayArmorStatus(mc);
+            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        }
 
-            ItemStack stack = player.inventory.armorItemInSlot(2);
-            if (stack != null && stack.getItem() instanceof OmegaArmour) {
-                int maxAmount = (int) APISpellHelper.getPlayerMaxReagentAmount(player);
+        ItemStack stack = player.inventory.armorItemInSlot(2);
+        if (stack != null && stack.getItem() instanceof OmegaArmour) {
+            int maxAmount = (int) APISpellHelper.getPlayerMaxReagentAmount(player);
 
-                if (maxAmount > 0) {
-                    float val = APISpellHelper.getPlayerCurrentReagentAmount(player);
-                    ReagentStack reagentStack = new ReagentStack(
-                            APISpellHelper.getPlayerReagentType(player),
-                            (int) val);
+            if (maxAmount > 0) {
+                float val = APISpellHelper.getPlayerCurrentReagentAmount(player);
+                ReagentStack reagentStack = new ReagentStack(APISpellHelper.getPlayerReagentType(player), (int) val);
 
-                    if (reagentStack.amount > 0) {
-                        renderTestHUD(mc, reagentStack, maxAmount);
-                    }
+                if (reagentStack.amount > 0) {
+                    renderOmegaReagentHUD(mc, reagentStack, maxAmount);
                 }
             }
+        }
 
-            if (SpellHelper.canPlayerSeeLPBar(player)) {
-                int max = APISpellHelper.getPlayerMaxLPTag(player);
+        if (SpellHelper.canPlayerSeeLPBar(player)) {
+            int max = APISpellHelper.getPlayerMaxLPTag(player);
 
-                if (max > 1) {
-                    renderLPHUD(mc, APISpellHelper.getPlayerLPTag(player), max);
-                }
+            if (max > 1) {
+                renderLPHUD(mc, APISpellHelper.getPlayerLPTag(player), max);
             }
+        }
 
-            float maxHP = APISpellHelper.getCurrentAdditionalMaxHP(player);
-            if (maxHP > 0) {
-                renderHPHUD(mc, APISpellHelper.getCurrentAdditionalHP(player), maxHP);
-            }
+        float maxHP = APISpellHelper.getCurrentAdditionalMaxHP(player);
+        if (maxHP > 0) {
+            renderHPHUD(mc, APISpellHelper.getCurrentAdditionalHP(player), maxHP);
         }
     }
 
@@ -159,33 +151,34 @@ public class RenderHelper {
 
         if (movingobjectposition == null) {
             return elements;
-        } else {
-            if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                int x = movingobjectposition.blockX;
-                int y = movingobjectposition.blockY;
-                int z = movingobjectposition.blockZ;
+        }
+        if (movingobjectposition.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
+            return elements;
+        }
+        int x = movingobjectposition.blockX;
+        int y = movingobjectposition.blockY;
+        int z = movingobjectposition.blockZ;
 
-                TileEntity tile = world.getTileEntity(x, y, z);
+        TileEntity tile = world.getTileEntity(x, y, z);
 
-                if (!(tile instanceof IReagentHandler relay)) {
-                    return elements;
-                }
+        if (!(tile instanceof IReagentHandler relay)) {
+            return elements;
+        }
 
-                ReagentContainerInfo[] infos = relay
-                        .getContainerInfo(ForgeDirection.getOrientation(movingobjectposition.sideHit));
+        ReagentContainerInfo[] infos = relay
+                .getContainerInfo(ForgeDirection.getOrientation(movingobjectposition.sideHit));
 
-                if (infos != null) {
-                    for (ReagentContainerInfo info : infos) {
-                        if (info == null || info.reagent == null || info.reagent.reagent == null) {
-                            continue;
-                        }
-
-                        ItemStack itemStack = ReagentRegistry.getItemForReagent(info.reagent.reagent);
-
-                        if (itemStack != null) elements.add(new HUDElement(itemStack, 16, 16, 2, info.reagent.amount));
-                    }
-                }
+        if (infos == null) {
+            return elements;
+        }
+        for (ReagentContainerInfo info : infos) {
+            if (info == null || info.reagent == null || info.reagent.reagent == null) {
+                continue;
             }
+
+            ItemStack itemStack = ReagentRegistry.getItemForReagent(info.reagent.reagent);
+
+            if (itemStack != null) elements.add(new HUDElement(itemStack, 16, 16, 2, info.reagent.amount));
         }
 
         return elements;
@@ -216,35 +209,23 @@ public class RenderHelper {
         return r;
     }
 
-    public static void drawTexturedModalRect(int p_73729_1_, int p_73729_2_, int p_73729_3_, int p_73729_4_,
-            double p_73729_5_, double p_73729_6_) {
+    public static void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height) {
         float f = 0.00390625F;
-        float f1 = 0.00390625F;
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(x, y + height, zLevel, (float) (textureX) * f, (float) (textureY + height) * f);
         tessellator.addVertexWithUV(
-                p_73729_1_,
-                p_73729_2_ + p_73729_6_,
+                x + width,
+                y + height,
                 zLevel,
-                (p_73729_3_ * f),
-                (p_73729_4_ + p_73729_6_) * f1);
-        tessellator.addVertexWithUV(
-                p_73729_1_ + p_73729_5_,
-                p_73729_2_ + p_73729_6_,
-                zLevel,
-                (p_73729_3_ + p_73729_5_) * f,
-                (p_73729_4_ + p_73729_6_) * f1);
-        tessellator.addVertexWithUV(
-                p_73729_1_ + p_73729_5_,
-                p_73729_2_,
-                zLevel,
-                (p_73729_3_ + p_73729_5_) * f,
-                p_73729_4_ * f1);
-        tessellator.addVertexWithUV(p_73729_1_, p_73729_2_, zLevel, p_73729_3_ * f, p_73729_4_ * f1);
+                (float) (textureX + width) * f,
+                (float) (textureY + height) * f);
+        tessellator.addVertexWithUV(x + width, y, zLevel, (float) (textureX + width) * f, (float) (textureY) * f);
+        tessellator.addVertexWithUV(x, y, zLevel, (float) (textureX) * f, (float) (textureY) * f);
         tessellator.draw();
     }
 
-    private static void renderTestHUD(Minecraft mc, ReagentStack reagentStack, int maxAmount) {
+    private static void renderOmegaReagentHUD(Minecraft mc, ReagentStack reagentStack, int maxAmount) {
         GL11.glPushMatrix();
         Reagent reagent = reagentStack.reagent;
         int xSize = 32;
@@ -258,7 +239,7 @@ public class RenderHelper {
         GL11.glScalef(1f / 8f, 1f / 8f, 1f / 8f);
 
         ResourceLocation test2 = new ResourceLocation("alchemicalwizardry", "textures/gui/container1.png");
-        GL11.glColor4f(reagent.red() / 255f, reagent.green() / 255f, reagent.blue() / 255f, 1.0F);
+        GL11.glColor4ub((byte) reagent.red(), (byte) reagent.green(), (byte) reagent.blue(), (byte) 255);
         mc.getTextureManager().bindTexture(test2);
 
         drawTexturedModalRect(x, y + amount, 0, amount, 256, 256 - amount);
@@ -272,58 +253,34 @@ public class RenderHelper {
         GL11.glPopMatrix();
     }
 
-    public static void renderIcon(int p_94149_1_, int p_94149_2_, IIcon p_94149_3_, int p_94149_4_, int p_94149_5_) {
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(
-                p_94149_1_,
-                p_94149_2_ + p_94149_5_,
-                zLevel,
-                p_94149_3_.getMinU(),
-                p_94149_3_.getMaxV());
-        tessellator.addVertexWithUV(
-                p_94149_1_ + p_94149_4_,
-                p_94149_2_ + p_94149_5_,
-                zLevel,
-                p_94149_3_.getMaxU(),
-                p_94149_3_.getMaxV());
-        tessellator.addVertexWithUV(
-                p_94149_1_ + p_94149_4_,
-                p_94149_2_,
-                zLevel,
-                p_94149_3_.getMaxU(),
-                p_94149_3_.getMinV());
-        tessellator.addVertexWithUV(p_94149_1_, p_94149_2_, zLevel, p_94149_3_.getMinU(), p_94149_3_.getMinV());
-        tessellator.draw();
-    }
-
     private static void displayArmorStatus(Minecraft mc) {
         List<HUDElement> elements = getHUDElements(mc);
 
-        if (!elements.isEmpty()) {
-            int yOffset = enableItemName ? 18 : 16;
+        if (elements.isEmpty()) {
+            return;
+        }
+        int yOffset = 16;
 
-            if (listMode.equalsIgnoreCase("vertical")) {
-                int yBase = getY(elements.size(), yOffset);
+        if (listMode.equalsIgnoreCase("vertical")) {
+            int yBase = getY(elements.size(), yOffset);
 
-                for (HUDElement e : elements) {
-                    e.renderToHud((alignMode.toLowerCase().contains("right") ? getX(0) : getX(e.width())), yBase);
-                    yBase += yOffset;
-                }
-            } else if (listMode.equalsIgnoreCase("horizontal")) {
-                int totalWidth = getElementsWidth(elements);
-                int yBase = getY(1, yOffset);
-                int xBase = getX(totalWidth);
-                int prevX = 0;
-
-                for (HUDElement e : elements) {
-                    e.renderToHud(xBase + prevX + (alignMode.toLowerCase().contains("right") ? e.width() : 0), yBase);
-                    prevX += (e.width());
-                }
-            } // else if (listMode.equalsIgnoreCase("compound"))
-            {
-                // TODO
+            for (HUDElement e : elements) {
+                e.renderToHud((alignMode.toLowerCase().contains("right") ? getX(0) : getX(e.width())), yBase);
+                yBase += yOffset;
             }
+        } else if (listMode.equalsIgnoreCase("horizontal")) {
+            int totalWidth = getElementsWidth(elements);
+            int yBase = getY(1, yOffset);
+            int xBase = getX(totalWidth);
+            int prevX = 0;
+
+            for (HUDElement e : elements) {
+                e.renderToHud(xBase + prevX + (alignMode.toLowerCase().contains("right") ? e.width() : 0), yBase);
+                prevX += (e.width());
+            }
+        } // else if (listMode.equalsIgnoreCase("compound"))
+        {
+            // TODO
         }
     }
 }

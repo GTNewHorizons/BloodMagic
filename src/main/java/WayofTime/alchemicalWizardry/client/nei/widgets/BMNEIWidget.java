@@ -1,6 +1,6 @@
 package WayofTime.alchemicalWizardry.client.nei.widgets;
 
-import static WayofTime.alchemicalWizardry.client.ClientUtils.mc;
+import static WayofTime.alchemicalWizardry.client.renderer.RenderHelper.mc;
 
 import java.awt.Rectangle;
 

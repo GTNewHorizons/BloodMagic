@@ -1,7 +1,7 @@
 package WayofTime.alchemicalWizardry.client.nei;
 
-import static WayofTime.alchemicalWizardry.client.ClientUtils.mc;
 import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.getBloodOrbs;
+import static WayofTime.alchemicalWizardry.client.renderer.RenderHelper.mc;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;

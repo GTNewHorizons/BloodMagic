@@ -1,7 +1,7 @@
 package WayofTime.alchemicalWizardry.client.nei;
 
-import static WayofTime.alchemicalWizardry.client.ClientUtils.mc;
 import static WayofTime.alchemicalWizardry.client.nei.NEIConfig.ARROW_TEXTURE;
+import static WayofTime.alchemicalWizardry.client.renderer.RenderHelper.mc;
 import static codechicken.lib.gui.GuiDraw.fontRenderer;
 
 import java.awt.Rectangle;
