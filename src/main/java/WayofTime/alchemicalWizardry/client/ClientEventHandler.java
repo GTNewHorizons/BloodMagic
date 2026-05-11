@@ -8,9 +8,11 @@ import net.minecraftforge.client.event.sound.SoundEvent;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.ModBlocks;
+import WayofTime.alchemicalWizardry.client.renderer.RenderHelper;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class ClientEventHandler {
 
@@ -42,5 +44,12 @@ public class ClientEventHandler {
         if (event.blockForOverlay == ModBlocks.blockMimic && event.isCancelable()) {
             event.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public void onTick(TickEvent.RenderTickEvent event) {
+        if (event.phase.equals(TickEvent.Phase.START)) return;
+
+        RenderHelper.onTickInGame(mc);
     }
 }

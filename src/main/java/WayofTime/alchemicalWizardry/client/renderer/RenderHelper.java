@@ -54,7 +54,7 @@ public class RenderHelper {
 
     private static ScaledResolution scaledResolution;
 
-    public static boolean onTickInGame(Minecraft mc) {
+    public static void onTickInGame(Minecraft mc) {
         if (enabled
                 && (mc.inGameHasFocus || mc.currentScreen == null
                         || (mc.currentScreen instanceof GuiChat && showInChat))
@@ -93,13 +93,10 @@ public class RenderHelper {
             }
 
             float maxHP = APISpellHelper.getCurrentAdditionalMaxHP(player);
-            // System.out.println("MaxHP: " + maxHP);
             if (maxHP > 0) {
                 renderHPHUD(mc, APISpellHelper.getCurrentAdditionalHP(player), maxHP);
             }
         }
-
-        return true;
     }
 
     private static void renderLPHUD(Minecraft mc, int lpAmount, int maxAmount) {

@@ -90,41 +90,39 @@ public class SpellHelper {
     }
 
     public static boolean canPlayerSeeAlchemy(EntityPlayer player) {
-        if (player != null) {
-            ItemStack stack = player.getCurrentArmor(3);
-            if (stack != null) {
-                Item item = stack.getItem();
-                if (item instanceof IAlchemyGoggles
-                        && ((IAlchemyGoggles) item).showIngameHUD(player.worldObj, stack, player)) {
-                    return true;
-                }
+        if (player == null) {
+            return false;
+        }
+        ItemStack stack = player.getCurrentArmor(3);
+        if (stack != null) {
+            Item item = stack.getItem();
+            if (item instanceof IAlchemyGoggles
+                    && ((IAlchemyGoggles) item).showIngameHUD(player.worldObj, stack, player)) {
+                return true;
             }
-
-            ItemStack heldStack = player.getHeldItem();
-            return heldStack != null && heldStack.getItem() instanceof IReagentManipulator;
         }
 
-        return false;
+        ItemStack heldStack = player.getHeldItem();
+        return heldStack != null && heldStack.getItem() instanceof IReagentManipulator;
     }
 
     public static boolean canPlayerSeeLPBar(EntityPlayer player) {
-        if (player != null) {
-            for (int i = 0; i < 4; i++) {
-                ItemStack stack = player.getCurrentArmor(i);
-                if (stack != null) {
-                    Item item = stack.getItem();
-                    if (item instanceof ILPGauge && ((ILPGauge) item).canSeeLPBar(stack)) {
-                        return true;
-                    }
+        if (player == null) {
+            return false;
+        }
+        for (int i = 0; i < 4; i++) {
+            ItemStack stack = player.getCurrentArmor(i);
+            if (stack != null) {
+                Item item = stack.getItem();
+                if (item instanceof ILPGauge && ((ILPGauge) item).canSeeLPBar(stack)) {
+                    return true;
                 }
             }
-
-            ItemStack heldStack = player.getHeldItem();
-
-            return heldStack != null && heldStack.getItem() instanceof SigilDivination;
         }
 
-        return false;
+        ItemStack heldStack = player.getHeldItem();
+
+        return heldStack != null && heldStack.getItem() instanceof SigilDivination;
     }
 
     public static List<Entity> getEntitiesInRange(World world, double posX, double posY, double posZ,
