@@ -188,19 +188,19 @@ public class RitualEffectAutoAlchemy extends RitualEffect {
                             flag++;
                             break;
                         } else if (curStack.isItemEqual(alchStack) && curStack.stackSize < curStack.getMaxStackSize()
-                                    && ItemStack.areItemStackTagsEqual(alchStack, curStack)) {
-                                        alchStack.stackSize--;
-                                        if (alchStack.stackSize <= 0) {
-                                            alchemyEntity.setInventorySlotContents(i + 1, null);
-                                        } else {
-                                            alchemyEntity.setInventorySlotContents(i + 1, alchStack);
-                                        }
-
-                                        curStack.stackSize++;
-                                        outputInv.setInventorySlotContents(j, curStack);
-                                        flag++;
-                                        break;
+                                && ItemStack.areItemStackTagsEqual(alchStack, curStack)) {
+                                    alchStack.stackSize--;
+                                    if (alchStack.stackSize <= 0) {
+                                        alchemyEntity.setInventorySlotContents(i + 1, null);
+                                    } else {
+                                        alchemyEntity.setInventorySlotContents(i + 1, alchStack);
                                     }
+
+                                    curStack.stackSize++;
+                                    outputInv.setInventorySlotContents(j, curStack);
+                                    flag++;
+                                    break;
+                                }
                     }
                 }
             }
@@ -225,9 +225,8 @@ public class RitualEffectAutoAlchemy extends RitualEffect {
                                 continue;
                             }
 
-                            if (!inputInv1.isItemValidForSlot(j, curItem)
-                                    || (inputInv1 instanceof ISidedInventory input && !input
-                                            .canExtractItem(j, curItem, ForgeDirection.DOWN.ordinal()))) {
+                            if (!inputInv1.isItemValidForSlot(j, curItem) || (inputInv1 instanceof ISidedInventory input
+                                    && !input.canExtractItem(j, curItem, ForgeDirection.DOWN.ordinal()))) {
                                 continue;
                             }
 
