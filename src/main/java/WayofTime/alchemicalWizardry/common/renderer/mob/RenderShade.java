@@ -11,8 +11,8 @@ public class RenderShade extends RenderLiving {
             "alchemicalwizardry",
             "textures/models/ShadeMob.png");
 
-    public RenderShade(ModelBase par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
+    public RenderShade(ModelBase mainModel, float shadowSize) {
+        super(mainModel, shadowSize);
     }
 
     @Override

@@ -11,8 +11,8 @@ public class RenderWingedFireDemon extends RenderLiving {
             "alchemicalwizardry",
             "textures/models/WingedFireDemon.png");
 
-    public RenderWingedFireDemon(ModelBase par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
+    public RenderWingedFireDemon(ModelBase mainModel, float shadowSize) {
+        super(mainModel, shadowSize);
     }
 
     @Override

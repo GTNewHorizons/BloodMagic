@@ -11,8 +11,8 @@ public class RenderLowerGuardian extends RenderLiving {
             "alchemicalwizardry",
             "textures/models/LowerGuardian.png");
 
-    public RenderLowerGuardian(ModelBase par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
+    public RenderLowerGuardian(ModelBase mainModel, float shadowSize) {
+        super(mainModel, shadowSize);
     }
 
     @Override

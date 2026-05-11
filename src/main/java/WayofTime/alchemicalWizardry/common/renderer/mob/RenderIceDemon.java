@@ -11,8 +11,8 @@ public class RenderIceDemon extends RenderLiving {
             "alchemicalwizardry",
             "textures/models/IceDemon.png");
 
-    public RenderIceDemon(ModelBase par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
+    public RenderIceDemon(ModelBase mainModel, float shadowSize) {
+        super(mainModel, shadowSize);
     }
 
     @Override

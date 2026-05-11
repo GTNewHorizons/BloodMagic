@@ -11,8 +11,8 @@ public class RenderSmallEarthGolem extends RenderLiving {
             "alchemicalwizardry",
             "textures/models/SmallEarthGolem.png");
 
-    public RenderSmallEarthGolem(ModelBase par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
+    public RenderSmallEarthGolem(ModelBase mainModel, float shadowSize) {
+        super(mainModel, shadowSize);
     }
 
     @Override

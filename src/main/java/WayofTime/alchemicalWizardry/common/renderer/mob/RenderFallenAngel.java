@@ -15,8 +15,8 @@ public class RenderFallenAngel extends RenderLiving {
             "alchemicalwizardry",
             "textures/models/WingedAngel.png");
 
-    public RenderFallenAngel(ModelBase par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
+    public RenderFallenAngel(ModelBase mainModel, float shadowSize) {
+        super(mainModel, shadowSize);
     }
 
     @Override

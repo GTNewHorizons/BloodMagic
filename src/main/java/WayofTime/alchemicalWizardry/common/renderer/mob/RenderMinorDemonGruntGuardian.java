@@ -12,38 +12,35 @@ import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityM
 
 public class RenderMinorDemonGruntGuardian extends RenderLiving {
 
-    private static final ResourceLocation normalTexture = new ResourceLocation(
+    private static final ResourceLocation NORMAL_GUARDIAN = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/MinorDemonGruntGuardian_normal.png");
-    private static final ResourceLocation fireTexture = new ResourceLocation(
+    private static final ResourceLocation FIRE_GUARDIAN = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/MinorDemonGruntGuardian_fire.png");
-    private static final ResourceLocation iceTexture = new ResourceLocation(
+    private static final ResourceLocation ICE_GUARDIAN = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/MinorDemonGruntGuardian_ice.png");
-    private static final ResourceLocation windTexture = new ResourceLocation(
+    private static final ResourceLocation WIND_GUARDIAN = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/MinorDemonGruntGuardian_wind.png");
-    private static final ResourceLocation earthTexture = new ResourceLocation(
+    private static final ResourceLocation EARTH_GUARDIAN = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/MinorDemonGruntGuardian_earth.png");
 
-    public RenderMinorDemonGruntGuardian(ModelBase par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
+    public RenderMinorDemonGruntGuardian(ModelBase mainModel, float shadowSize) {
+        super(mainModel, shadowSize);
     }
 
     @Override
     public ResourceLocation getEntityTexture(Entity entity) {
-        if (entity instanceof EntityMinorDemonGruntGuardianFire) {
-            return fireTexture;
-        } else if (entity instanceof EntityMinorDemonGruntGuardianWind) {
-            return windTexture;
-        } else if (entity instanceof EntityMinorDemonGruntGuardianIce) {
-            return iceTexture;
-        } else if (entity instanceof EntityMinorDemonGruntGuardianEarth) {
-            return earthTexture;
-        }
+        return switch (entity) {
+            case EntityMinorDemonGruntGuardianFire _ -> FIRE_GUARDIAN;
+            case EntityMinorDemonGruntGuardianWind _ -> WIND_GUARDIAN;
+            case EntityMinorDemonGruntGuardianIce _ -> ICE_GUARDIAN;
+            case EntityMinorDemonGruntGuardianEarth _ -> EARTH_GUARDIAN;
+            default -> NORMAL_GUARDIAN;
+        };
 
-        return normalTexture;
     }
 }

@@ -5,24 +5,18 @@ import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-import WayofTime.alchemicalWizardry.common.entity.mob.EntityBileDemon;
-
 public class RenderBileDemon extends RenderLiving {
 
-    private static final ResourceLocation field_110833_a = new ResourceLocation(
+    private static final ResourceLocation BILE_DEMON = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/BileDemon.png");
 
-    public RenderBileDemon(ModelBase par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
-    }
-
-    public ResourceLocation func_110832_a(EntityBileDemon entityBileDemon) {
-        return field_110833_a;
+    public RenderBileDemon(ModelBase mainModel, float shadowSize) {
+        super(mainModel, shadowSize);
     }
 
     @Override
     public ResourceLocation getEntityTexture(Entity entity) {
-        return this.func_110832_a((EntityBileDemon) entity);
+        return BILE_DEMON;
     }
 }
