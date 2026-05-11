@@ -1,6 +1,9 @@
 package WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
@@ -12,6 +15,13 @@ public class EntityMinorDemonGruntGuardianIce extends EntityMinorDemonGruntGuard
     public EntityMinorDemonGruntGuardianIce(World world) {
         super(world);
         this.setDemonID(AlchemicalWizardry.entityMinorDemonGruntGuardianIceID);
+    }
+
+    @Override
+    public void causeEffect(Entity entity) {
+        if (entity instanceof EntityLivingBase e) {
+            e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 200, 4));
+        }
     }
 
     @Override

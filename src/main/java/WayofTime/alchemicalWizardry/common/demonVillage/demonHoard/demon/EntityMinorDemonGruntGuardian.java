@@ -1,8 +1,6 @@
 package WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
@@ -17,16 +15,12 @@ public class EntityMinorDemonGruntGuardian extends EntityMinorDemonGrunt {
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity entity) {
-        if (friendlyDemon((entity))) {
-            return false;
-        }
-
-        return entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) 25);
+    protected EnergyBlastProjectile attackProjectile(EntityLivingBase target) {
+        return new HolyProjectile(worldObj, this, target, 1.8f, 0f, 20, 600);
     }
 
     @Override
-    protected EnergyBlastProjectile attackProjectile(EntityLivingBase target) {
-        return new HolyProjectile(worldObj, this, target, 1.8f, 0f, 20, 600);
+    protected float meleeDamage() {
+        return 25f;
     }
 }

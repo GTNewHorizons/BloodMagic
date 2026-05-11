@@ -212,8 +212,17 @@ public class EntityMinorDemonGrunt extends EntityDemon implements IOccasionalRan
         if (friendlyDemon(entity)) {
             return false;
         }
+        if (!entity.attackEntityFrom(DamageSource.causeMobDamage(this), meleeDamage())) {
+            return false;
+        }
+        causeEffect(entity);
+        return true;
+    }
 
-        return entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) 20);
+    protected void causeEffect(Entity entity) {}
+
+    protected float meleeDamage() {
+        return 20f;
     }
 
     protected boolean friendlyDemon(Entity entity) {

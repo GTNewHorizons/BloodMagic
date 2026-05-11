@@ -17,12 +17,8 @@ public class EntityMinorDemonGruntFire extends EntityMinorDemonGrunt {
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity entity) {
-        if (super.attackEntityAsMob(entity)) {
-            entity.setFire(10);
-            return true;
-        }
-        return false;
+    public void causeEffect(Entity entity) {
+        entity.setFire(10);
     }
 
     @Override

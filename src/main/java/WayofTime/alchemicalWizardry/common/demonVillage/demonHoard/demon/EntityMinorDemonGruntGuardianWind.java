@@ -3,7 +3,6 @@ package WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
@@ -19,18 +18,12 @@ public class EntityMinorDemonGruntGuardianWind extends EntityMinorDemonGruntGuar
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity entity) {
-        if (friendlyDemon(entity)) {
-            return false;
-        }
-
+    public void causeEffect(Entity entity) {
         if (entity instanceof EntityPlayer player) {
             SpellHelper.setPlayerSpeedFromServer(player, entity.motionX, entity.motionY + 4, entity.motionZ);
         } else if (entity instanceof EntityLivingBase) {
             entity.motionY += 4.0D;
         }
-
-        return entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) 25);
     }
 
     @Override

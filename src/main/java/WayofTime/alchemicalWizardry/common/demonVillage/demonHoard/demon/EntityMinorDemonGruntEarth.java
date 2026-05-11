@@ -2,11 +2,11 @@ package WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.common.entity.projectile.EnergyBlastProjectile;
 import WayofTime.alchemicalWizardry.common.entity.projectile.ExplosionProjectile;
 
 public class EntityMinorDemonGruntEarth extends EntityMinorDemonGrunt {
@@ -17,19 +17,14 @@ public class EntityMinorDemonGruntEarth extends EntityMinorDemonGrunt {
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity entity) {
-        if (super.attackEntityAsMob(entity)) {
-            ((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 200, 2));
-            return true;
+    public void causeEffect(Entity entity) {
+        if (entity instanceof EntityLivingBase e) {
+            e.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionHeavyHeartID, 200, 4));
         }
-        return false;
     }
 
     @Override
-    public void attackEntityWithRangedAttack(EntityLivingBase entity, float par2) {
-        if (friendlyDemon(entity)) {
-            return;
-        }
-        this.worldObj.spawnEntityInWorld(new ExplosionProjectile(worldObj, this, entity, 1.8f, 0f, 15, 600, false));
+    protected EnergyBlastProjectile attackProjectile(EntityLivingBase target) {
+        return new ExplosionProjectile(worldObj, this, target, 1.8f, 0f, 15, 600, false);
     }
 }

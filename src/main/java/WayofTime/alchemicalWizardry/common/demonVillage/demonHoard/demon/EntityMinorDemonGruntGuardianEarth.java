@@ -2,9 +2,7 @@ package WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
@@ -19,16 +17,10 @@ public class EntityMinorDemonGruntGuardianEarth extends EntityMinorDemonGruntGua
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity entity) {
-        if (friendlyDemon(entity)) {
-            return false;
-        }
-
+    public void causeEffect(Entity entity) {
         if (entity instanceof EntityLivingBase e) {
-            e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 200, 4));
+            e.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionHeavyHeartID, 200, 4));
         }
-
-        return entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) 25);
     }
 
     @Override
