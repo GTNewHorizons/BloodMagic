@@ -60,7 +60,10 @@ public class ItemBlockCrystalBelljar extends ItemBlock {
                     tooltip.add("- Empty");
                 } else {
                     ReagentStack reagentStack = tank.getReagent();
-                    tooltip.add("- " + reagentStack.reagent.name() + ": " + reagentStack.amount
+                    tooltip.add(
+                            "- " + reagentStack.reagent.name()
+                                    + ": "
+                                    + reagentStack.amount
                                     + "/"
                                     + tank.getCapacity() / 1000
                                     + "k AR");

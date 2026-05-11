@@ -71,12 +71,8 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
                 tooltip.add("");
                 Int3 coords = this.getCoordinates(item);
                 tooltip.add(
-                        StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
-                                + coords.x()
-                                + ", "
-                                + coords.y()
-                                + ", "
-                                + coords.z());
+                        StatCollector.translateToLocal(
+                                "tooltip.alchemy.coords") + " " + coords.x() + ", " + coords.y() + ", " + coords.z());
                 tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimension(item));
             }
         }

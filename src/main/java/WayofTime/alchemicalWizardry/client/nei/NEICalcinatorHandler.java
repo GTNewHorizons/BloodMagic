@@ -119,7 +119,7 @@ public class NEICalcinatorHandler extends TemplateRecipeHandler {
                     (byte) reagent.red(),
                     (byte) reagent.green(),
                     (byte) reagent.blue(),
-                    (byte) 255);
+                    (byte) reagent.intensity());
 
             tessellator.startDrawingQuads();
             tessellator.addVertexWithUV(arrowX, arrowY + ARROW_HEIGHT, 0, 0, 1);

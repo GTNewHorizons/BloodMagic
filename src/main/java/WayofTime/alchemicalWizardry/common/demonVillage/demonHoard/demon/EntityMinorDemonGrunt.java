@@ -259,8 +259,7 @@ public class EntityMinorDemonGrunt extends EntityDemon implements IOccasionalRan
     @Override
     public boolean isSamePortal(IHoardDemon demon) {
         Int3 position = demon.getPortalLocation();
-        TileEntity portal = worldObj
-                .getTileEntity(this.demonPortal.x(), this.demonPortal.y(), this.demonPortal.z());
+        TileEntity portal = worldObj.getTileEntity(this.demonPortal.x(), this.demonPortal.y(), this.demonPortal.z());
 
         return portal instanceof TEDemonPortal
                 && portal == worldObj.getTileEntity(position.x(), position.y(), position.z());

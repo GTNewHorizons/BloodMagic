@@ -89,10 +89,8 @@ public class RitualEffectCrafting extends RitualEffect {
                     Int3 pos = this.getSlotPositionForDirection(gridSpace, direction);
                     TileEntity inv = world.getTileEntity(x + pos.x(), y + pos.y(), z + pos.z());
                     if (inv instanceof IInventory iInventory) {
-                        if (iInventory.getSizeInventory() <= slotDesignation
-                                || !iInventory.isItemValidForSlot(
-                                slotDesignation,
-                                iInventory.getStackInSlot(slotDesignation))) {
+                        if (iInventory.getSizeInventory() <= slotDesignation || !iInventory
+                                .isItemValidForSlot(slotDesignation, iInventory.getStackInSlot(slotDesignation))) {
                             continue;
                         }
                         ItemStack invStack = iInventory.getStackInSlot(slotDesignation);

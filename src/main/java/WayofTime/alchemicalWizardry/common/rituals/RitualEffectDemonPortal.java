@@ -133,8 +133,7 @@ public class RitualEffectDemonPortal extends RitualEffect {
         int z = ritualStone.getZCoord();
 
         for (Int3 pos : jarLocations) {
-            if (!(ritualStone.getWorld()
-                    .getTileEntity(x + pos.x(), y + pos.y(), z + pos.z()) instanceof TEBellJar)) {
+            if (!(ritualStone.getWorld().getTileEntity(x + pos.x(), y + pos.y(), z + pos.z()) instanceof TEBellJar)) {
                 return false;
             }
         }

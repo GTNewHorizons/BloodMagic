@@ -28,8 +28,8 @@ public class StorageBlockCraftingRecipeAssimilator {
     public List<IRecipe> getPackingRecipes() {
         // grab all recipes potentially suitable for packing or unpacking
 
-        List<PackingRecipe> packingRecipes = new LinkedList<PackingRecipe>();
-        List<IRecipe> unpackingRecipes = new ArrayList<IRecipe>();
+        List<PackingRecipe> packingRecipes = new LinkedList<>();
+        List<IRecipe> unpackingRecipes = new ArrayList<>();
 
         for (IRecipe recipe : getCraftingRecipes()) {
             ItemStack output = recipe.getRecipeOutput();

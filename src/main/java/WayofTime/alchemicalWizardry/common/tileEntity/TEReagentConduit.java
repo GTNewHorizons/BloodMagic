@@ -369,7 +369,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
                                     reagent.red(),
                                     reagent.green(),
                                     reagent.blue(),
-                                    reagent.colourIntensity(),
+                                    reagent.intensity(),
                                     coord.x(),
                                     coord.y(),
                                     coord.z()));
