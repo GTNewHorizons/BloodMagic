@@ -15,14 +15,4 @@ public record Int3(int x, int y, int z) {
 
         return tag;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof Int3(int x1, int y1, int z1) && x1 == this.x && y1 == this.y && z1 == this.z;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.x + this.y << 8 + this.z << 16;
-    }
 }

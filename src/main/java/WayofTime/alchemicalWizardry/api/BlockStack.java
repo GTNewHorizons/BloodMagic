@@ -16,14 +16,4 @@ public record BlockStack(Block block, int meta) {
     public String toString() {
         return GameData.getBlockRegistry().getNameForObject(block) + ":" + meta;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof BlockStack(Block b, int m) && b == this.block() && m == this.meta();
-    }
-
-    @Override
-    public int hashCode() {
-        return meta + Block.blockRegistry.getIDForObject(block) << 16;
-    }
 }
