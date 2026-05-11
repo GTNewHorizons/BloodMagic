@@ -187,50 +187,39 @@ public class ArmourForge extends Block {
             int zOff = ac.zOff();
 
             switch (direction) {
-                case 1:
+                case 1 -> {
                     if (!(world.getTileEntity(x + xOff, y, z - zOff) instanceof TESocket)) {
                         return false;
                     }
-
-                    break;
-
-                case 2:
+                }
+                case 2 -> {
                     if (!(world.getTileEntity(x + zOff, y, z + xOff) instanceof TESocket)) {
                         return false;
                     }
-
-                    break;
-
-                case 3:
+                }
+                case 3 -> {
                     if (!(world.getTileEntity(x - xOff, y, z + zOff) instanceof TESocket)) {
                         return false;
                     }
-
-                    break;
-
-                case 4:
+                }
+                case 4 -> {
                     if (!(world.getTileEntity(x - zOff, y, z - xOff) instanceof TESocket)) {
                         return false;
                     }
-
-                    break;
-
-                case 5:
+                }
+                case 5 -> {
                     if (!(world.getTileEntity(x + xOff, y + zOff, z) instanceof TESocket)) {
                         return false;
                     }
-
-                    break;
-
-                case 6:
+                }
+                case 6 -> {
                     if (!(world.getTileEntity(x, y + zOff, z + xOff) instanceof TESocket)) {
                         return false;
                     }
-
-                    break;
-
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
 
