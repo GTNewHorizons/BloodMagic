@@ -11,8 +11,7 @@ import WayofTime.alchemicalWizardry.api.rituals.IMasterRitualStone;
 
 public class AlchemyCircleRenderer extends MRSRenderer {
 
-    private ResourceLocation resourceLocation = new ResourceLocation(
-            "alchemicalwizardry:textures/models/TransCircle.png");
+    private final ResourceLocation resourceLocation;
     private final int colourRed;
     private final int colourGreen;
     private final int colourBlue;

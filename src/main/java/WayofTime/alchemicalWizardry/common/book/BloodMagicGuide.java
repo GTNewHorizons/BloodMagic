@@ -121,7 +121,7 @@ public class BloodMagicGuide {
         blankRunePages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/altars/T2.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/altars/T2.png"),
                         true));
         blankRunePages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.architect.blankRunes.2")));
@@ -208,7 +208,7 @@ public class BloodMagicGuide {
         tier3Pages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/altars/T3.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/altars/T3.png"),
                         true));
         tier3Pages.addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.architect.tier3")));
         entries.add(new EntryUniText(tier3Pages, "guide.BloodMagic.entryName.architect.tier3"));
@@ -311,7 +311,7 @@ public class BloodMagicGuide {
         tier4AltarPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/altars/T4.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/altars/T4.png"),
                         true));
         tier4AltarPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.architect.tier4Altar.2")));
@@ -381,7 +381,7 @@ public class BloodMagicGuide {
         tier5AltarPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/altars/T5.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/altars/T5.png"),
                         true));
         tier5AltarPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.architect.tier5Altar")));
@@ -431,7 +431,7 @@ public class BloodMagicGuide {
         tier6AltarPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/altars/T6.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/altars/T6.png"),
                         true));
         tier6AltarPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.architect.tier6Altar")));
@@ -484,7 +484,7 @@ public class BloodMagicGuide {
         waterRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Water.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Water.png"),
                         true));
         waterRitualPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.waterRitual")));
@@ -494,7 +494,7 @@ public class BloodMagicGuide {
         lavaRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Lava.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Lava.png"),
                         true));
         lavaRitualPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.lavaRitual")));
@@ -504,7 +504,7 @@ public class BloodMagicGuide {
         groveRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/GreenGrove.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/GreenGrove.png"),
                         true));
         groveRitualPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.groveRitual")));
@@ -514,7 +514,9 @@ public class BloodMagicGuide {
         interdictionRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Interdiction.png"),
+                        new ResourceLocation(
+                                "alchemicalwizardry",
+                                "textures/misc/screenshots/rituals/Interdiction.png"),
                         true));
         interdictionRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.interdictionRitual")));
@@ -524,7 +526,7 @@ public class BloodMagicGuide {
         containmentRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Containment.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Containment.png"),
                         true));
         containmentRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.containmentRitual")));
@@ -534,7 +536,7 @@ public class BloodMagicGuide {
         bindingRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Binding.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Binding.png"),
                         true));
         bindingRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.bindingRitual")));
@@ -549,7 +551,7 @@ public class BloodMagicGuide {
         unbindingRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Unbinding.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Unbinding.png"),
                         true));
         unbindingRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.unbindingRitual")));
@@ -559,7 +561,7 @@ public class BloodMagicGuide {
         jumpRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Jump.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Jump.png"),
                         true));
         jumpRitualPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.jumpRitual")));
@@ -574,7 +576,7 @@ public class BloodMagicGuide {
         magnetismRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Magnetism.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Magnetism.png"),
                         true));
         magnetismRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.magnetismRitual")));
@@ -584,7 +586,7 @@ public class BloodMagicGuide {
         crusherRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Crusher.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Crusher.png"),
                         true));
         crusherRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.crusherRitual")));
@@ -594,7 +596,7 @@ public class BloodMagicGuide {
         speedRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Speed.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Speed.png"),
                         true));
         speedRitualPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.speedRitual")));
@@ -604,7 +606,9 @@ public class BloodMagicGuide {
         shepherdRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/AnimalGrowth.png"),
+                        new ResourceLocation(
+                                "alchemicalwizardry",
+                                "textures/misc/screenshots/rituals/AnimalGrowth.png"),
                         true));
         shepherdRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.shepherdRitual")));
@@ -620,7 +624,8 @@ public class BloodMagicGuide {
                 new PageUnlocImage(
                         "",
                         new ResourceLocation(
-                                "alchemicalwizardry:textures/misc/screenshots/rituals/WellOfSuffering.png"),
+                                "alchemicalwizardry",
+                                "textures/misc/screenshots/rituals/WellOfSuffering.png"),
                         true));
         knifeAndSufferingRitualPages.addAll(
                 PageHelper.pagesForLongText(
@@ -628,7 +633,9 @@ public class BloodMagicGuide {
         knifeAndSufferingRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/FeatheredKnife.png"),
+                        new ResourceLocation(
+                                "alchemicalwizardry",
+                                "textures/misc/screenshots/rituals/FeatheredKnife.png"),
                         true));
         knifeAndSufferingRitualPages.addAll(
                 PageHelper.pagesForLongText(
@@ -642,7 +649,9 @@ public class BloodMagicGuide {
         regenerationRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Regeneration.png"),
+                        new ResourceLocation(
+                                "alchemicalwizardry",
+                                "textures/misc/screenshots/rituals/Regeneration.png"),
                         true));
         regenerationRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.regenerationRitual")));
@@ -662,7 +671,7 @@ public class BloodMagicGuide {
         alchemyRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Alchemy.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Alchemy.png"),
                         true));
         alchemyRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.alchemyRitual")));
@@ -672,7 +681,7 @@ public class BloodMagicGuide {
         domeRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Dome.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Dome.png"),
                         true));
         domeRitualPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.domeRitual")));
@@ -687,7 +696,9 @@ public class BloodMagicGuide {
         featheredEarthRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/FeatheredEarth.png"),
+                        new ResourceLocation(
+                                "alchemicalwizardry",
+                                "textures/misc/screenshots/rituals/FeatheredEarth.png"),
                         true));
         featheredEarthRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.featheredEarthRitual")));
@@ -698,7 +709,7 @@ public class BloodMagicGuide {
         gaiaRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Gaia.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Gaia.png"),
                         true));
         gaiaRitualPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.gaiaRitual")));
@@ -708,7 +719,7 @@ public class BloodMagicGuide {
         condorRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Flight.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Flight.png"),
                         true));
         condorRitualPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.condorRitual")));
@@ -718,7 +729,7 @@ public class BloodMagicGuide {
         meteorRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Meteor.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Meteor.png"),
                         true));
         meteorRitualPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.meteorRitual")));
@@ -728,7 +739,7 @@ public class BloodMagicGuide {
         expulsionRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Expulsion.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Expulsion.png"),
                         true));
         expulsionRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.expulsionRitual")));
@@ -745,7 +756,7 @@ public class BloodMagicGuide {
         zephyrRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Zephyr.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Zephyr.png"),
                         true));
         zephyrRitualPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.zephyrRitual")));
@@ -755,7 +766,7 @@ public class BloodMagicGuide {
         harvestRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Harvest.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Harvest.png"),
                         true));
         harvestRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.harvestRitual")));
@@ -765,7 +776,7 @@ public class BloodMagicGuide {
         eternalSoulRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/EternalSoul.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/EternalSoul.png"),
                         true));
         eternalSoulRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.eternalSoulRitual")));
@@ -775,7 +786,7 @@ public class BloodMagicGuide {
         ellipsoidRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Ellipsoid.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Ellipsoid.png"),
                         true));
         ellipsoidRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.ellipsoidRitual")));
@@ -785,7 +796,7 @@ public class BloodMagicGuide {
         evaporationRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Evaporation.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Evaporation.png"),
                         true));
         evaporationRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.evaporationRitual")));
@@ -795,7 +806,9 @@ public class BloodMagicGuide {
         sacrosanctityRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Sacrosanctity.png"),
+                        new ResourceLocation(
+                                "alchemicalwizardry",
+                                "textures/misc/screenshots/rituals/Sacrosanctity.png"),
                         true));
         sacrosanctityRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.sacrosanctityRitual")));
@@ -806,7 +819,7 @@ public class BloodMagicGuide {
         evilRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/VeilOfEvil.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/VeilOfEvil.png"),
                         true));
         evilRitualPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.evilRitual")));
@@ -816,7 +829,7 @@ public class BloodMagicGuide {
         stomachRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Stomach.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Stomach.png"),
                         true));
         stomachRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.stomachRitual")));
@@ -844,7 +857,7 @@ public class BloodMagicGuide {
         convocationRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/Convocation.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/rituals/Convocation.png"),
                         true));
         convocationRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.convocationRitual")));
@@ -859,7 +872,9 @@ public class BloodMagicGuide {
         phantomHandsRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/PhantomHands.png"),
+                        new ResourceLocation(
+                                "alchemicalwizardry",
+                                "textures/misc/screenshots/rituals/PhantomHands.png"),
                         true));
         phantomHandsRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.phantomHandsRitual")));
@@ -869,7 +884,9 @@ public class BloodMagicGuide {
         anvilRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/BeatingAnvil.png"),
+                        new ResourceLocation(
+                                "alchemicalwizardry",
+                                "textures/misc/screenshots/rituals/BeatingAnvil.png"),
                         true));
         anvilRitualPages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.anvilRitual")));
@@ -884,7 +901,9 @@ public class BloodMagicGuide {
         symmetryRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/SymmetryOmega.png"),
+                        new ResourceLocation(
+                                "alchemicalwizardry",
+                                "textures/misc/screenshots/rituals/SymmetryOmega.png"),
                         true));
         symmetryRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.symmetryRitual")));
@@ -894,7 +913,9 @@ public class BloodMagicGuide {
         stallingRitualPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/rituals/StallingOmega.png"),
+                        new ResourceLocation(
+                                "alchemicalwizardry",
+                                "textures/misc/screenshots/rituals/StallingOmega.png"),
                         true));
         stallingRitualPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.rituals.stallingRitual")));
@@ -945,12 +966,12 @@ public class BloodMagicGuide {
         demonSummoningPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/demons/Ring1.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/demons/Ring1.png"),
                         true));
         demonSummoningPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/demons/Ring2.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/demons/Ring2.png"),
                         true));
         demonSummoningPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.demons.demonSummoning")));
@@ -1000,7 +1021,8 @@ public class BloodMagicGuide {
                 new PageUnlocImage(
                         "",
                         new ResourceLocation(
-                                "alchemicalwizardry:textures/misc/screenshots/spells/SimpleSpellTable.png"),
+                                "alchemicalwizardry",
+                                "textures/misc/screenshots/spells/SimpleSpellTable.png"),
                         true));
         spellTablePages
                 .addAll(PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.spells.spellTable.2")));
@@ -1034,7 +1056,7 @@ public class BloodMagicGuide {
         complexSpellBasicsPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/spells/Paradigm.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/spells/Paradigm.png"),
                         true));
 
         for (int i = 2; i <= 6; i++) complexSpellBasicsPages.addAll(
@@ -1044,14 +1066,14 @@ public class BloodMagicGuide {
         complexSpellBasicsPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/spells/Effect.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/spells/Effect.png"),
                         true));
         complexSpellBasicsPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.spells.complexSpellBasics.7")));
         complexSpellBasicsPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/spells/Modifier.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/spells/Modifier.png"),
                         true));
 
         for (int i = 8; i <= 12; i++) complexSpellBasicsPages.addAll(
@@ -1061,7 +1083,7 @@ public class BloodMagicGuide {
         complexSpellBasicsPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/spells/Enhancement.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/spells/Enhancement.png"),
                         true));
 
         for (int i = 13; i <= 16; i++) complexSpellBasicsPages.addAll(
@@ -1071,7 +1093,7 @@ public class BloodMagicGuide {
         complexSpellBasicsPages.add(
                 new PageUnlocImage(
                         "",
-                        new ResourceLocation("alchemicalwizardry:textures/misc/screenshots/spells/Conduit.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/misc/screenshots/spells/Conduit.png"),
                         true));
         complexSpellBasicsPages.addAll(
                 PageHelper.pagesForLongText(StatCollector.translateToLocal("aw.entries.spells.complexSpellBasics.17")));

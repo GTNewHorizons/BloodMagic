@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common.renderer.block.itemRender;
 
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
@@ -12,11 +11,10 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class TEAltarItemRenderer implements IItemRenderer {
 
-    private final ModelBloodAltar modelBloodAltar;
-
-    public TEAltarItemRenderer() {
-        modelBloodAltar = new ModelBloodAltar();
-    }
+    private static final ResourceLocation TEXTURE = new ResourceLocation(
+            "alchemicalwizardry",
+            "textures/models/altar.png");
+    private static final ModelBloodAltar MODEL = new ModelBloodAltar();
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
@@ -32,32 +30,21 @@ public class TEAltarItemRenderer implements IItemRenderer {
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         float scale = 0.08f;
         switch (type) {
-            case ENTITY:
-                renderBloodAltar((RenderBlocks) data[0], item, 0, 0, 0, scale);
-                break;
-            case EQUIPPED:
-                renderBloodAltar((RenderBlocks) data[0], item, 0, 0, 0.5f, scale);
-                break;
-            case EQUIPPED_FIRST_PERSON:
-                renderBloodAltar((RenderBlocks) data[0], item, +0.5f, 0.5f, +0.5f, scale);
-                break;
-            case INVENTORY:
-                renderBloodAltar((RenderBlocks) data[0], item, -0.5f, -0.75f, -0.5f, scale);
-                break;
-
-            default:
-                return;
+            case ENTITY -> renderBloodAltar(0, 0, 0, scale);
+            case EQUIPPED -> renderBloodAltar(0, 0, 0.5f, scale);
+            case EQUIPPED_FIRST_PERSON -> renderBloodAltar(+0.5f, 0.5f, +0.5f, scale);
+            case INVENTORY -> renderBloodAltar(-0.5f, -0.75f, -0.5f, scale);
+            default -> {}
         }
     }
 
-    private void renderBloodAltar(RenderBlocks render, ItemStack item, float x, float y, float z, float scale) {
+    private void renderBloodAltar(float x, float y, float z, float scale) {
         GL11.glPushMatrix();
         GL11.glTranslatef(x, y, z);
         GL11.glScalef(scale, scale, scale);
         GL11.glRotatef(180f, 0f, 1f, 0f);
-        ResourceLocation test = new ResourceLocation("alchemicalwizardry:textures/models/altar.png");
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(test);
-        modelBloodAltar.renderBloodAltar();
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(TEXTURE);
+        MODEL.renderBloodAltar();
         GL11.glPopMatrix();
     }
 }

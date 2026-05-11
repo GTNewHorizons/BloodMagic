@@ -3733,7 +3733,7 @@ public class AlchemicalWizardry {
                 new RitualEffectWater(),
                 "Ritual of the Full Spring",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/AlchemyArrays/WaterArray.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/AlchemyArrays/WaterArray.png"),
                         0,
                         30,
                         255,
@@ -3751,7 +3751,7 @@ public class AlchemicalWizardry {
                 new RitualEffectLava(),
                 "Serenade of the Nether",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/AlchemyArrays/LavaArray.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/AlchemyArrays/LavaArray.png"),
                         255,
                         0,
                         0,
@@ -3769,7 +3769,7 @@ public class AlchemicalWizardry {
                 new RitualEffectGrowth(),
                 "Ritual of the Green Grove",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/AlchemyArrays/GreenGroveArray.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/AlchemyArrays/GreenGroveArray.png"),
                         244,
                         164,
                         96,
@@ -3787,7 +3787,9 @@ public class AlchemicalWizardry {
                 new RitualEffectInterdiction(),
                 "Interdiction Ritual",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/AlchemyArrays/InterdictionArray.png"),
+                        new ResourceLocation(
+                                "alchemicalwizardry",
+                                "textures/models/AlchemyArrays/InterdictionArray.png"),
                         27,
                         227,
                         206,
@@ -3805,7 +3807,7 @@ public class AlchemicalWizardry {
                 new RitualEffectContainment(),
                 "Ritual of Containment",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         186,
                         21,
                         21,
@@ -3823,7 +3825,7 @@ public class AlchemicalWizardry {
                 new RitualEffectBinding(),
                 "Ritual of Binding",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/TransCircleBinding.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/TransCircleBinding.png"),
                         193,
                         7,
                         7,
@@ -3841,7 +3843,7 @@ public class AlchemicalWizardry {
                 new RitualEffectUnbinding(),
                 "Ritual of Unbinding",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         193,
                         7,
                         7,
@@ -3859,7 +3861,7 @@ public class AlchemicalWizardry {
                 new RitualEffectJumping(),
                 "Ritual of the High Jump",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         10,
                         183,
                         173,
@@ -3877,7 +3879,7 @@ public class AlchemicalWizardry {
                 new RitualEffectMagnetic(),
                 "Ritual of Magnetism",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/AlchemyArrays/MagnetismArray.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/AlchemyArrays/MagnetismArray.png"),
                         126,
                         39,
                         0,
@@ -3895,7 +3897,7 @@ public class AlchemicalWizardry {
                 new RitualEffectCrushing(),
                 "Ritual of the Crusher",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -3913,7 +3915,7 @@ public class AlchemicalWizardry {
                 new RitualEffectLeap(),
                 "Ritual of Speed",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -3931,7 +3933,7 @@ public class AlchemicalWizardry {
                 new RitualEffectAnimalGrowth(),
                 "Ritual of the Shepherd",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -3950,7 +3952,8 @@ public class AlchemicalWizardry {
                 "Well of Suffering",
                 new AlchemyCircleRenderer(
                         new ResourceLocation(
-                                "alchemicalwizardry:textures/models/AlchemyArrays/WellOfSufferingArray.png"),
+                                "alchemicalwizardry",
+                                "textures/models/AlchemyArrays/WellOfSufferingArray.png"),
                         0,
                         0,
                         0,
@@ -3968,7 +3971,7 @@ public class AlchemicalWizardry {
                 new RitualEffectHealing(),
                 "Ritual of Regeneration",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -3986,7 +3989,7 @@ public class AlchemicalWizardry {
                 new RitualEffectFeatheredKnife(),
                 "Ritual of the Feathered Knife",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4004,7 +4007,7 @@ public class AlchemicalWizardry {
                 new RitualEffectFeatheredEarth(),
                 "Ritual of the Feathered Earth",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4022,7 +4025,7 @@ public class AlchemicalWizardry {
                 new RitualEffectBiomeChanger(),
                 "Ritual of Gaia's Transformation",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4040,7 +4043,7 @@ public class AlchemicalWizardry {
                 new RitualEffectFlight(),
                 "Reverence of the Condor",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4058,7 +4061,7 @@ public class AlchemicalWizardry {
                 new RitualEffectSummonMeteor(),
                 "Mark of the Falling Tower",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4076,7 +4079,7 @@ public class AlchemicalWizardry {
                 new RitualEffectAutoAlchemy(),
                 "Ballad of Alchemy",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4094,7 +4097,7 @@ public class AlchemicalWizardry {
                 new RitualEffectExpulsion(),
                 "Aura of Expulsion",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4112,7 +4115,7 @@ public class AlchemicalWizardry {
                 new RitualEffectSupression(),
                 "Dome of Supression",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4130,7 +4133,7 @@ public class AlchemicalWizardry {
                 new RitualEffectItemSuction(),
                 "Call of the Zephyr",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4148,7 +4151,7 @@ public class AlchemicalWizardry {
                 new RitualEffectHarvest(),
                 "Reap of the Harvest Moon",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4166,7 +4169,7 @@ public class AlchemicalWizardry {
                 new RitualEffectLifeConduit(),
                 "Cry of the Eternal Soul",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4184,7 +4187,7 @@ public class AlchemicalWizardry {
                 new RitualEffectEllipsoid(),
                 "Focus of the Ellipsoid",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4202,7 +4205,7 @@ public class AlchemicalWizardry {
                 new RitualEffectEvaporation(),
                 "Song of Evaporation",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4220,7 +4223,7 @@ public class AlchemicalWizardry {
                 new RitualEffectSpawnWard(),
                 "Ward of Sacrosanctity",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4238,7 +4241,7 @@ public class AlchemicalWizardry {
                 new RitualEffectVeilOfEvil(),
                 "Veil of Evil",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4256,7 +4259,7 @@ public class AlchemicalWizardry {
                 new RitualEffectFullStomach(),
                 "Requiem of the Satiated Stomach",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/SimpleTransCircle.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/SimpleTransCircle.png"),
                         0,
                         0,
                         0,
@@ -4274,7 +4277,7 @@ public class AlchemicalWizardry {
                 new RitualEffectDemonPortal(),
                 "Convocation of the Damned",
                 new AlchemyCircleRenderer(
-                        new ResourceLocation("alchemicalwizardry:textures/models/TransCircleDemon.png"),
+                        new ResourceLocation("alchemicalwizardry", "textures/models/TransCircleDemon.png"),
                         220,
                         22,
                         22,

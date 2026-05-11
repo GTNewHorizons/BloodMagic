@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common.renderer.block.itemRender;
 
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -17,20 +16,21 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class TEBellJarItemRenderer implements IItemRenderer {
 
-    private final ModelCrystalBelljar modelConduit = new ModelCrystalBelljar();
-    private final ResourceLocation mainResource = new ResourceLocation(
-            "alchemicalwizardry:textures/models/CrystalBelljar.png");
-    private final ResourceLocation resourceLocation = new ResourceLocation(
-            "alchemicalwizardry:textures/models/Reagent.png");
+    private final ResourceLocation BELLJAR_TEXTURE = new ResourceLocation(
+            "alchemicalwizardry",
+            "textures/models/CrystalBelljar.png");
+    private final ResourceLocation REAGENT_TEXTURE = new ResourceLocation(
+            "alchemicalwizardry",
+            "textures/models/Reagent.png");
+    private final ModelCrystalBelljar MODEL = new ModelCrystalBelljar();
 
-    private void renderConduitItem(RenderBlocks render, ItemStack item, float translateX, float translateY,
-            float translateZ) {
+    private void renderBelljar(ItemStack item, float translateX, float translateY, float translateZ) {
         GL11.glPushMatrix();
         GL11.glTranslatef(translateX + 0.5F, translateY + 1.5F, translateZ + 0.5F);
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(mainResource);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(BELLJAR_TEXTURE);
         GL11.glPushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-        this.modelConduit.renderSpecialItem(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, 0);
+        this.MODEL.renderSpecialItem(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, 0);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
 
@@ -57,10 +57,10 @@ public class TEBellJarItemRenderer implements IItemRenderer {
 
         GL11.glPushMatrix();
         GL11.glTranslatef(translateX + 0.5F, translateY + 1.5F, translateZ + 0.5F);
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(mainResource);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(BELLJAR_TEXTURE);
         GL11.glPushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-        this.modelConduit.renderSpecialItem(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, 1);
+        this.MODEL.renderSpecialItem(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, 1);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
 
@@ -72,7 +72,7 @@ public class TEBellJarItemRenderer implements IItemRenderer {
             int colourIntensity) {
         GL11.glPushMatrix();
         Tessellator tessellator = Tessellator.instance;
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(resourceLocation);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(REAGENT_TEXTURE);
         GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
         GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -138,10 +138,7 @@ public class TEBellJarItemRenderer implements IItemRenderer {
      */
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return switch (type) {
-            case ENTITY, INVENTORY, EQUIPPED_FIRST_PERSON, EQUIPPED -> true;
-            default -> false;
-        };
+        return type != ItemRenderType.FIRST_PERSON_MAP;
     }
 
     @Override
@@ -152,13 +149,9 @@ public class TEBellJarItemRenderer implements IItemRenderer {
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         switch (type) {
-            case ENTITY, INVENTORY:
-                renderConduitItem((RenderBlocks) data[0], item, -0.5f, -0.5f, -0.5f);
-                break;
-            case EQUIPPED, EQUIPPED_FIRST_PERSON:
-                renderConduitItem((RenderBlocks) data[0], item, -0.4f, 0.50f, 0.35f);
-                break;
-            default:
+            case ENTITY, INVENTORY -> renderBelljar(item, -0.5f, -0.5f, -0.5f);
+            case EQUIPPED, EQUIPPED_FIRST_PERSON -> renderBelljar(item, -0.4f, 0.50f, 0.35f);
+            default -> {}
         }
     }
 }

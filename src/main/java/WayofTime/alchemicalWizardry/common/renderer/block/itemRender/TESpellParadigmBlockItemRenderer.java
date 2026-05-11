@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common.renderer.block.itemRender;
 
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
@@ -13,18 +12,28 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class TESpellParadigmBlockItemRenderer implements IItemRenderer {
 
-    private final ModelSpellParadigmBlock modelSpellBlock = new ModelSpellParadigmBlock();
+    private static final ResourceLocation TEXTURE_SELF = new ResourceLocation(
+            "alchemicalwizardry",
+            "textures/models/SpellParadigmSelf.png");
+    private static final ResourceLocation TEXTURE_MELEE = new ResourceLocation(
+            "alchemicalwizardry",
+            "textures/models/SpellParadigmMelee.png");
+    private static final ResourceLocation TEXTURE_TOOL = new ResourceLocation(
+            "alchemicalwizardry",
+            "textures/models/SpellParadigmTool.png");
+    private static final ResourceLocation TEXTURE_PROJECTILE = new ResourceLocation(
+            "alchemicalwizardry",
+            "textures/models/SpellParadigmProjectile.png");
+    private static final ModelSpellParadigmBlock MODEL = new ModelSpellParadigmBlock();
 
-    private void renderConduitItem(RenderBlocks render, ItemStack item, float translateX, float translateY,
-            float translateZ) {
+    private void renderSpellBlock(ItemStack item, float translateX, float translateY, float translateZ) {
         GL11.glPushMatrix();
         GL11.glTranslatef(translateX + 0.5F, translateY + 1.5F, translateZ + 0.5F);
-        ResourceLocation test = new ResourceLocation(this.getResourceLocationForMeta(item.getItemDamage()));
+        ResourceLocation test = this.getResourceLocationForMeta(item.getItemDamage());
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(test);
         GL11.glPushMatrix();
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-        this.modelSpellBlock
-                .render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, ForgeDirection.DOWN, ForgeDirection.UP);
+        MODEL.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, ForgeDirection.DOWN, ForgeDirection.UP);
         GL11.glPopMatrix();
         GL11.glPopMatrix();
     }
@@ -34,10 +43,7 @@ public class TESpellParadigmBlockItemRenderer implements IItemRenderer {
      */
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return switch (type) {
-            case ENTITY, INVENTORY, EQUIPPED_FIRST_PERSON, EQUIPPED -> true;
-            default -> false;
-        };
+        return type != ItemRenderType.FIRST_PERSON_MAP;
     }
 
     @Override
@@ -48,21 +54,18 @@ public class TESpellParadigmBlockItemRenderer implements IItemRenderer {
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         switch (type) {
-            case ENTITY, INVENTORY:
-                renderConduitItem((RenderBlocks) data[0], item, -0.5f, -0.5f, -0.5f);
-                break;
-            case EQUIPPED, EQUIPPED_FIRST_PERSON:
-                renderConduitItem((RenderBlocks) data[0], item, -0.4f, 0.50f, 0.35f);
-                break;
-            default:
+            case ENTITY, INVENTORY -> renderSpellBlock(item, -0.5f, -0.5f, -0.5f);
+            case EQUIPPED, EQUIPPED_FIRST_PERSON -> renderSpellBlock(item, -0.4f, 0.50f, 0.35f);
+            default -> {}
         }
     }
 
-    public String getResourceLocationForMeta(int meta) {
+    public ResourceLocation getResourceLocationForMeta(int meta) {
         return switch (meta) {
-            case 2 -> "alchemicalwizardry:textures/models/SpellParadigmMelee.png";
-            case 3 -> "alchemicalwizardry:textures/models/SpellParadigmTool.png";
-            default -> "alchemicalwizardry:textures/models/SpellParadigmProjectile.png";
+            case 1 -> TEXTURE_SELF;
+            case 2 -> TEXTURE_MELEE;
+            case 3 -> TEXTURE_TOOL;
+            default -> TEXTURE_PROJECTILE;
         };
     }
 }

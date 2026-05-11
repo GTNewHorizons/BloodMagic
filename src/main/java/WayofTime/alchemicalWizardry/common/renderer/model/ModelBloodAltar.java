@@ -16,18 +16,15 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class ModelBloodAltar extends ModelBase {
 
-    private static final ResourceLocation altar_texture = new ResourceLocation(
-            "alchemicalwizardry:textures/models/altar.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(
+            "alchemicalwizardry",
+            "textures/models/altar.png");
 
-    private final IModelCustom modelBloodAltar;
-
-    public ModelBloodAltar() {
-        modelBloodAltar = AdvancedModelLoader
-                .loadModel(new ResourceLocation("alchemicalwizardry:models/bloodaltar-fixeUV.obj"));
-    }
+    private final IModelCustom MODEL = AdvancedModelLoader
+            .loadModel(new ResourceLocation("alchemicalwizardry:models/bloodaltar-fixeUV.obj"));
 
     public void renderBloodAltar() {
-        modelBloodAltar.renderAll();
+        MODEL.renderAll();
     }
 
     public void renderBloodAltar(TEAltar altar, double x, double y, double z) {
@@ -39,7 +36,7 @@ public class ModelBloodAltar extends ModelBase {
         // Scale our object to about half-size in all directions (the OBJ file is a little large)
         GL11.glScalef(scale, scale, scale);
         // Bind the texture, so that OpenGL properly textures our block.
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(altar_texture);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(TEXTURE);
         // Render the object, using modelTutBox.renderAll();
         this.renderBloodAltar();
         // Pop this matrix from the stack.

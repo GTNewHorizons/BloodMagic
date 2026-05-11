@@ -3,7 +3,6 @@ package WayofTime.alchemicalWizardry.common.renderer.block;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -18,60 +17,59 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class RenderCrystalBelljar extends TileEntitySpecialRenderer {
 
-    private final ModelCrystalBelljar modelConduit = new ModelCrystalBelljar();
-
-    private final ResourceLocation resourceLocation = new ResourceLocation(
-            "alchemicalwizardry:textures/models/Reagent.png");
+    private final ModelCrystalBelljar MODEL = new ModelCrystalBelljar();
+    public static final ResourceLocation BELLJAR_TEXTURE = new ResourceLocation(
+            "alchemicalwizardry",
+            "textures/models/CrystalBelljar.png");
+    private final ResourceLocation REAGENT_TEXTURE = new ResourceLocation(
+            "alchemicalwizardry",
+            "textures/models/Reagent.png");
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double d0, double d1, double d2, float f) {
-        if (tileEntity instanceof TEBellJar tileAltar) {
-            GL11.glPushMatrix();
-            GL11.glTranslatef((float) d0 + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
-            ResourceLocation test = new ResourceLocation("alchemicalwizardry:textures/models/CrystalBelljar.png");
-            FMLClientHandler.instance().getClient().renderEngine.bindTexture(test);
-            GL11.glPushMatrix();
-            GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-            this.modelConduit.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
-            GL11.glPopMatrix();
-            GL11.glPopMatrix();
+        if (!(tileEntity instanceof TEBellJar tileAltar)) {
+            return;
+        }
+        GL11.glPushMatrix();
+        GL11.glTranslatef((float) d0 + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(BELLJAR_TEXTURE);
+        GL11.glPushMatrix();
+        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+        this.MODEL.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
+        GL11.glPopMatrix();
+        GL11.glPopMatrix();
 
-            ReagentContainerInfo[] info = tileAltar.getContainerInfo(ForgeDirection.UNKNOWN);
-            if (info.length >= 1 && info[0] != null) {
-                ReagentStack reagentStack = info[0].reagent;
-                int capacity = info[0].capacity;
-                if (reagentStack != null && reagentStack.reagent != null) {
-                    Reagent reagent = reagentStack.reagent;
-                    this.renderTankContents(
-                            d0,
-                            d1,
-                            d2,
-                            reagent.red(),
-                            reagent.green(),
-                            reagent.blue(),
-                            200 * reagentStack.amount / capacity);
-                }
+        ReagentContainerInfo[] info = tileAltar.getContainerInfo(ForgeDirection.UNKNOWN);
+        if (info.length >= 1 && info[0] != null) {
+            ReagentStack reagentStack = info[0].reagent;
+            int capacity = info[0].capacity;
+            if (reagentStack != null && reagentStack.reagent != null) {
+                Reagent reagent = reagentStack.reagent;
+                this.renderTankContents(
+                        d0,
+                        d1,
+                        d2,
+                        reagent.red(),
+                        reagent.green(),
+                        reagent.blue(),
+                        200 * reagentStack.amount / capacity);
             }
         }
     }
 
-    private void renderTankContents(double x, double y, double z, int colourRed, int colourGreen, int colourBlue,
-            int colourIntensity) {
+    private void renderTankContents(double x, double y, double z, int red, int green, int blue, int intensity) {
         GL11.glPushMatrix();
-        float f1 = 1.0f;
         Tessellator tessellator = Tessellator.instance;
-        this.bindTexture(resourceLocation);
+        this.bindTexture(REAGENT_TEXTURE);
         GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
         GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_CULL_FACE);
-        float f2 = 0;
-        float f3 = -f2 * 0.2F - (float) MathHelper.floor_float(-f2 * 0.1F);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glDepthMask(false);
         tessellator.startDrawingQuads();
-        tessellator.setColorRGBA(colourRed, colourGreen, colourBlue, colourIntensity);
+        tessellator.setColorRGBA(red, green, blue, intensity);
         GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
         tessellator.setBrightness(240);
 

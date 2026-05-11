@@ -2,8 +2,6 @@ package WayofTime.alchemicalWizardry.common.renderer.block;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
@@ -23,116 +21,103 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class RenderAlchemicCalcinator extends TileEntitySpecialRenderer {
 
-    private final RenderItem customRenderItem;
-    private final ModelAlchemicalCalcinator modelConduit = new ModelAlchemicalCalcinator();
-    private final ResourceLocation resourceLocation = new ResourceLocation(
-            "alchemicalwizardry:textures/models/Reagent.png");
-
-    public RenderAlchemicCalcinator() {
-        customRenderItem = new RenderItem() {
-
-            @Override
-            public boolean shouldBob() {
-                return false;
-            }
-        };
-        customRenderItem.setRenderManager(RenderManager.instance);
-    }
+    private final ModelAlchemicalCalcinator CALCINATOR_MODEL = new ModelAlchemicalCalcinator();
+    private final ResourceLocation REAGENT_TEXTURE = new ResourceLocation(
+            "alchemicalwizardry",
+            "textures/models/Reagent.png");
+    private static final ResourceLocation CALCINATOR_TEXTURE = new ResourceLocation(
+            "alchemicalwizardry",
+            "textures/models/AlchemicalCalcinator.png");
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double d0, double d1, double d2, float f) {
-        if (tileEntity instanceof TEAlchemicCalcinator tileAltar) {
+        if (!(tileEntity instanceof TEAlchemicCalcinator calcinator)) {
+            return;
+        }
 
+        GL11.glPushMatrix();
+        GL11.glTranslatef((float) d0 + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(CALCINATOR_TEXTURE);
+        GL11.glPushMatrix();
+        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+        this.CALCINATOR_MODEL.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
+        GL11.glPopMatrix();
+        GL11.glPopMatrix();
+
+        if (calcinator.getStackInSlot(1) != null) {
             GL11.glPushMatrix();
-            GL11.glTranslatef((float) d0 + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
-            ResourceLocation test = new ResourceLocation("alchemicalwizardry:textures/models/AlchemicalCalcinator.png");
-            FMLClientHandler.instance().getClient().renderEngine.bindTexture(test);
-            GL11.glPushMatrix();
-            GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-            this.modelConduit.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
-            GL11.glPopMatrix();
-            GL11.glPopMatrix();
+            boolean fancySaved = Minecraft.isFancyGraphicsEnabled();
+            Minecraft.getMinecraft().gameSettings.fancyGraphics = true;
 
-            GL11.glPushMatrix();
+            float scaleFactor = getGhostItemScaleFactor(calcinator.getStackInSlot(1));
+            EntityItem ghostEntityItem = new EntityItem(calcinator.getWorldObj());
+            ghostEntityItem.hoverStart = 0.0F;
+            ghostEntityItem.setEntityItemStack(calcinator.getStackInSlot(1));
+            float displacement = 0.2F;
 
-            if (tileAltar.getStackInSlot(1) != null) {
+            if (ghostEntityItem.getEntityItem().getItem() instanceof ItemBlock) {
+                GL11.glTranslatef((float) d0 + 0.5F, (float) d1 + displacement + 0.7F, (float) d2 + 0.5F);
+            } else {
+                GL11.glTranslatef(
+                        (float) d0 + 0.5F,
+                        (float) d1 + displacement + 10.4f / 16.0f,
+                        (float) d2 + 0.5F - 0.0625f * 2f);
+            }
+            GL11.glScalef(scaleFactor, scaleFactor, scaleFactor);
 
-                boolean fancySaved = Minecraft.isFancyGraphicsEnabled();
-                Minecraft.getMinecraft().gameSettings.fancyGraphics = true;
-
-                float scaleFactor = getGhostItemScaleFactor(tileAltar.getStackInSlot(1));
-                EntityItem ghostEntityItem = new EntityItem(tileAltar.getWorldObj());
-                ghostEntityItem.hoverStart = 0.0F;
-                ghostEntityItem.setEntityItemStack(tileAltar.getStackInSlot(1));
-                float displacement = 0.2F;
-
-                if (ghostEntityItem.getEntityItem().getItem() instanceof ItemBlock) {
-                    GL11.glTranslatef((float) d0 + 0.5F, (float) d1 + displacement + 0.7F, (float) d2 + 0.5F);
-                } else {
-                    GL11.glTranslatef(
-                            (float) d0 + 0.5F,
-                            (float) d1 + displacement + 10.4f / 16.0f,
-                            (float) d2 + 0.5F - 0.0625f * 2f);
-                }
-                GL11.glScalef(scaleFactor, scaleFactor, scaleFactor);
-
-                if (!(ghostEntityItem.getEntityItem().getItem() instanceof ItemBlock)) {
-                    GL11.glRotatef(90f, 1.0f, 0.0f, 0.0F);
-                }
-
-                customRenderItem.doRender(ghostEntityItem, 0, 0, 0, 0, 0);
-                Minecraft.getMinecraft().gameSettings.fancyGraphics = fancySaved;
+            if (!(ghostEntityItem.getEntityItem().getItem() instanceof ItemBlock)) {
+                GL11.glRotatef(90f, 1.0f, 0.0f, 0.0F);
             }
 
+            TEAltarRenderer.customRenderItem.doRender(ghostEntityItem, 0, 0, 0, 0, 0);
+            Minecraft.getMinecraft().gameSettings.fancyGraphics = fancySaved;
             GL11.glPopMatrix();
+        }
+
+        if (calcinator.getStackInSlot(0) != null) {
             GL11.glPushMatrix();
+            boolean fancySaved = Minecraft.isFancyGraphicsEnabled();
+            Minecraft.getMinecraft().gameSettings.fancyGraphics = true;
 
-            if (tileAltar.getStackInSlot(0) != null) {
+            float scaleFactor = getGhostItemScaleFactor(calcinator.getStackInSlot(0));
+            EntityItem ghostEntityItem = new EntityItem(calcinator.getWorldObj());
+            ghostEntityItem.hoverStart = 0.0F;
+            ghostEntityItem.setEntityItemStack(calcinator.getStackInSlot(0));
+            float displacement = -0.5F;
 
-                boolean fancySaved = Minecraft.isFancyGraphicsEnabled();
-                Minecraft.getMinecraft().gameSettings.fancyGraphics = true;
+            if (ghostEntityItem.getEntityItem().getItem() instanceof ItemBlock) {
+                GL11.glTranslatef((float) d0 + 0.5F, (float) d1 + displacement + 0.7F, (float) d2 + 0.5F);
+            } else {
+                GL11.glTranslatef(
+                        (float) d0 + 0.5F,
+                        (float) d1 + displacement + 10.4f / 16.0f,
+                        (float) d2 + 0.5F - 0.0625f * 2f);
+            }
+            GL11.glScalef(scaleFactor, scaleFactor, scaleFactor);
 
-                float scaleFactor = getGhostItemScaleFactor(tileAltar.getStackInSlot(0));
-                EntityItem ghostEntityItem = new EntityItem(tileAltar.getWorldObj());
-                ghostEntityItem.hoverStart = 0.0F;
-                ghostEntityItem.setEntityItemStack(tileAltar.getStackInSlot(0));
-                float displacement = -0.5F;
-
-                if (ghostEntityItem.getEntityItem().getItem() instanceof ItemBlock) {
-                    GL11.glTranslatef((float) d0 + 0.5F, (float) d1 + displacement + 0.7F, (float) d2 + 0.5F);
-                } else {
-                    GL11.glTranslatef(
-                            (float) d0 + 0.5F,
-                            (float) d1 + displacement + 10.4f / 16.0f,
-                            (float) d2 + 0.5F - 0.0625f * 2f);
-                }
-                GL11.glScalef(scaleFactor, scaleFactor, scaleFactor);
-
-                if (!(ghostEntityItem.getEntityItem().getItem() instanceof ItemBlock)) {
-                    GL11.glRotatef(90f, 1.0f, 0.0f, 0.0F);
-                }
-
-                customRenderItem.doRender(ghostEntityItem, 0, 0, 0, 0, 0);
-                Minecraft.getMinecraft().gameSettings.fancyGraphics = fancySaved;
+            if (!(ghostEntityItem.getEntityItem().getItem() instanceof ItemBlock)) {
+                GL11.glRotatef(90f, 1.0f, 0.0f, 0.0F);
             }
 
+            TEAltarRenderer.customRenderItem.doRender(ghostEntityItem, 0, 0, 0, 0, 0);
+            Minecraft.getMinecraft().gameSettings.fancyGraphics = fancySaved;
             GL11.glPopMatrix();
+        }
 
-            ReagentContainerInfo[] info = tileAltar.getContainerInfo(ForgeDirection.UNKNOWN);
-            if (info.length >= 1 && info[0] != null) {
-                ReagentStack reagentStack = info[0].reagent;
-                int capacity = info[0].capacity;
-                if (reagentStack != null && reagentStack.reagent != null) {
-                    Reagent reagent = reagentStack.reagent;
-                    this.renderTankContents(
-                            d0,
-                            d1,
-                            d2,
-                            reagent.red(),
-                            reagent.green(),
-                            reagent.blue(),
-                            200 * reagentStack.amount / capacity);
-                }
+        ReagentContainerInfo[] info = calcinator.getContainerInfo(ForgeDirection.UNKNOWN);
+        if (info.length >= 1 && info[0] != null) {
+            ReagentStack reagentStack = info[0].reagent;
+            int capacity = info[0].capacity;
+            if (reagentStack != null && reagentStack.reagent != null) {
+                Reagent reagent = reagentStack.reagent;
+                this.renderTankContents(
+                        d0,
+                        d1,
+                        d2,
+                        reagent.red(),
+                        reagent.green(),
+                        reagent.blue(),
+                        200 * reagentStack.amount / capacity);
             }
         }
     }
@@ -141,7 +126,7 @@ public class RenderAlchemicCalcinator extends TileEntitySpecialRenderer {
             int colourIntensity) {
         GL11.glPushMatrix();
         Tessellator tessellator = Tessellator.instance;
-        this.bindTexture(resourceLocation);
+        this.bindTexture(REAGENT_TEXTURE);
         GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, 10497.0F);
         GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, 10497.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -199,7 +184,7 @@ public class RenderAlchemicCalcinator extends TileEntitySpecialRenderer {
 
         if (itemStack != null) {
             if (itemStack.getItem() instanceof ItemBlock) {
-                if (customRenderItem.getMiniBlockCount(itemStack, (byte) 1) == 5) {
+                if (TEAltarRenderer.customRenderItem.getMiniBlockCount(itemStack, (byte) 1) == 5) {
                     return 0.80F * scaleFactor;
                 }
                 return 0.90F * scaleFactor;
