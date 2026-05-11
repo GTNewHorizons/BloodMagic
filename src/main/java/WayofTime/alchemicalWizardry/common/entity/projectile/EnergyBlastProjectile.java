@@ -108,7 +108,7 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
         super(world);
         this.renderDistanceWeight = 10.0D;
         this.shootingEntity = shooter;
-        this.posY = shooter.posY + (double) shooter.getEyeHeight() - 0.10000000149011612D;
+        this.posY = shooter.posY + (double) shooter.getEyeHeight() - 0.1D;
         double deltaX = target.posX - shooter.posX;
         double deltaY = target.boundingBox.minY + (double) (target.height / 1.5F) - this.posY;
         double deltaZ = target.posZ - shooter.posZ;
@@ -177,8 +177,8 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
 
         if (prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
             prevRotationYaw = rotationYaw = (float) (Math.atan2(x, z) * 180.0D / Math.PI);
-            prevRotationPitch = rotationPitch = (float) (Math.atan2(y, MathHelper.sqrt_double(x * x + z * z)) * 180.0D
-                    / Math.PI);
+            float horizontalSpeed = MathHelper.sqrt_double(x * x + z * z);
+            prevRotationPitch = rotationPitch = (float) (Math.atan2(y, horizontalSpeed) * 180.0D / Math.PI);
             prevRotationYaw = rotationYaw;
             this.setLocationAndAngles(posX, posY, posZ, rotationYaw, rotationPitch);
         }

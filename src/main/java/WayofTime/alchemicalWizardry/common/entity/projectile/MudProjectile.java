@@ -52,11 +52,11 @@ public class MudProjectile extends EnergyBlastProjectile {
     public void onImpact(Entity target) {
         if (target == shootingEntity && ticksInAir > 3) {
             this.setDead();
-        } else if (target instanceof EntityLivingBase) {
+        } else if (target instanceof EntityLivingBase entity) {
             if (doesBlindness) {
-                ((EntityLivingBase) target).addPotionEffect(new PotionEffect(Potion.blindness.id, 100, 0));
+                entity.addPotionEffect(new PotionEffect(Potion.blindness.id, 100, 0));
             } else {
-                ((EntityLivingBase) target).addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 100, 2));
+                entity.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 100, 2));
             }
             doDamage(projectileDamage, target);
         }

@@ -222,8 +222,7 @@ public class DemonVillagePath {
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (DemonVillagePath) obj;
+        if (!(obj instanceof DemonVillagePath that)) return false;
         return this.xPos == that.xPos && this.yPos == that.yPos
                 && this.zPos == that.zPos
                 && Objects.equals(this.dir, that.dir)

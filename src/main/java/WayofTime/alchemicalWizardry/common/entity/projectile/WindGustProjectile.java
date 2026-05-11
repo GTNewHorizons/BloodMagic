@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.entity.projectile;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -37,12 +38,18 @@ public class WindGustProjectile extends EnergyBlastProjectile {
 
     @Override
     public void onImpact(Entity target) {
-        if (target == shootingEntity && ticksInAir > 3) {
+        if (target == shootingEntity && ticksInAir > 3 || target == this.shootingEntity) {
             this.setDead();
+        } else if (target instanceof EntityPlayer player) {
+            SpellHelper.setPlayerSpeedFromServer(
+                    player,
+                    this.motionX * 0.25 * this.projectileDamage,
+                    1.5,
+                    this.motionZ * 0.25 * this.projectileDamage);
         } else if (target instanceof EntityLivingBase) {
-            target.motionX = this.motionX * 0.25 * this.projectileDamage;
-            target.motionY = 1.5;
-            target.motionZ = this.motionZ * 0.25 * this.projectileDamage;
+            target.motionX += this.motionX * 0.25 * this.projectileDamage;
+            target.motionY += 1.5;
+            target.motionZ += this.motionZ * 0.25 * this.projectileDamage;
         }
 
         spawnHitParticles("magicCrit", 8);

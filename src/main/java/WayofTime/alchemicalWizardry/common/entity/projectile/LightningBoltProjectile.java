@@ -43,14 +43,12 @@ public class LightningBoltProjectile extends EnergyBlastProjectile {
     public void onImpact(Entity target) {
         if (target == shootingEntity && ticksInAir > 3) {
             this.setDead();
-        } else {
-            if (target instanceof EntityLivingBase) {
-                if (causeLightning) {
-                    this.worldObj.addWeatherEffect(
-                            new EntityLightningBolt(this.worldObj, target.posX, target.posY, target.posZ));
-                } else {
-                    doDamage(projectileDamage, target);
-                }
+        } else if (target instanceof EntityLivingBase) {
+            if (causeLightning) {
+                this.worldObj.addWeatherEffect(
+                        new EntityLightningBolt(this.worldObj, target.posX, target.posY, target.posZ));
+            } else {
+                doDamage(projectileDamage, target);
             }
         }
 

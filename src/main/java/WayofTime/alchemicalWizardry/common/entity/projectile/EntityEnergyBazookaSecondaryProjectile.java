@@ -103,7 +103,7 @@ public class EntityEnergyBazookaSecondaryProjectile extends EnergyBlastProjectil
                 switch (sideHit) {
                     case 0 -> worldObj
                             .spawnParticle("smoke", posX, posY, posZ, gaussian(0.1D), -gaussian(0.1D), gaussian(0.1D));
-                    case 1, 5, 3 -> worldObj
+                    case 1, 3, 5 -> worldObj
                             .spawnParticle("smoke", posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), gaussian(0.1D));
                     case 2 -> worldObj
                             .spawnParticle("smoke", posX, posY, posZ, gaussian(0.1D), gaussian(0.1D), -gaussian(0.1D));

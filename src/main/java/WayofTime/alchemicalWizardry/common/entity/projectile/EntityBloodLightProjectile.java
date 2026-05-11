@@ -66,11 +66,9 @@ public class EntityBloodLightProjectile extends EnergyBlastProjectile {
         if (target == shootingEntity && ticksInAir > 3) {
             shootingEntity.attackEntityFrom(DamageSource.causeMobDamage(shootingEntity), 1);
             this.setDead();
-        } else {
-            if (target instanceof EntityLivingBase) {
-                ((EntityLivingBase) target).setRevengeTarget(shootingEntity);
-                doDamage(1, target);
-            }
+        } else if (target instanceof EntityLivingBase entity) {
+            entity.setRevengeTarget(shootingEntity);
+            doDamage(1, target);
         }
 
         if (worldObj.isAirBlock((int) this.posX, (int) this.posY, (int) this.posZ)) {

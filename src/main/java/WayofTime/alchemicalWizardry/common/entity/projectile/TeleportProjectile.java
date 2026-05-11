@@ -68,27 +68,21 @@ public class TeleportProjectile extends EnergyBlastProjectile {
             spawnHitParticles("magicCrit", 8);
             return;
         }
-        if (target instanceof EntityLivingBase) {
+        if (target instanceof EntityLivingBase entity) {
             if (isEntityTeleport) {
-                if (shootingEntity != null && shootingEntity instanceof EntityPlayerMP player) {
-                    if (player.worldObj == this.worldObj) {
-                        EnderTeleportEvent event = new EnderTeleportEvent(
-                                player,
-                                this.posX,
-                                this.posY,
-                                this.posZ,
-                                5.0F);
-                        if (!MinecraftForge.EVENT_BUS.post(event)) {
-                            if (shootingEntity.isRiding()) {
-                                shootingEntity.mountEntity(null);
-                            }
-
-                            shootingEntity.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
+                if (shootingEntity != null && shootingEntity instanceof EntityPlayerMP player
+                        && player.worldObj == this.worldObj) {
+                    EnderTeleportEvent event = new EnderTeleportEvent(player, this.posX, this.posY, this.posZ, 5.0F);
+                    if (!MinecraftForge.EVENT_BUS.post(event)) {
+                        if (shootingEntity.isRiding()) {
+                            shootingEntity.mountEntity(null);
                         }
+
+                        shootingEntity.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
                     }
                 }
             } else {
-                SpellTeleport.teleportRandomly((EntityLivingBase) target, 64);
+                SpellTeleport.teleportRandomly(entity, 64);
             }
         }
 

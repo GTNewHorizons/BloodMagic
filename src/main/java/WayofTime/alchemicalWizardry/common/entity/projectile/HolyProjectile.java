@@ -46,8 +46,8 @@ public class HolyProjectile extends EnergyBlastProjectile {
         if (target == shootingEntity && ticksInAir > 3) {
             shootingEntity.attackEntityFrom(DamageSource.causeMobDamage(shootingEntity), 1);
             this.setDead();
-        } else if (target instanceof EntityLivingBase) {
-            if (((EntityLivingBase) target).isEntityUndead()) {
+        } else if (target instanceof EntityLivingBase entity) {
+            if (entity.isEntityUndead()) {
                 doDamage(projectileDamage * 2, target);
             } else {
                 doDamage(projectileDamage, target);

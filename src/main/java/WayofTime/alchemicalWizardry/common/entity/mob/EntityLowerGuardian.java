@@ -138,7 +138,7 @@ public class EntityLowerGuardian extends EntityDemon {
         boolean flag = entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) (7 + this.rand.nextInt(15)));
 
         if (flag) {
-            entity.motionY += 0.4000000059604645D;
+            entity.motionY += 0.4D;
         }
 
         this.playSound("mob.irongolem.throw", 1.0F, 1.0F);

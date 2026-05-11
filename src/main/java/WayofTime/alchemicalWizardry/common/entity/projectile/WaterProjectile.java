@@ -32,7 +32,7 @@ public class WaterProjectile extends EnergyBlastProjectile {
             }
 
             this.onImpact(mop.entityHit);
-        } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {}
+        }
 
         this.setDead();
     }

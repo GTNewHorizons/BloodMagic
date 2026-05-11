@@ -63,23 +63,23 @@ public class EntityParticleBeam extends Entity implements IProjectile, IThrowabl
      * Similar to setArrowHeading, it's point the throwable entity to a x, y, z direction.
      */
     @Override
-    public void setThrowableHeading(double var1, double var3, double var5, float var7, float var8) {
-        float var9 = MathHelper.sqrt_double(var1 * var1 + var3 * var3 + var5 * var5);
-        var1 /= var9;
-        var3 /= var9;
-        var5 /= var9;
-        var1 += rand.nextGaussian() * 0.007499999832361937D * var8;
-        var3 += rand.nextGaussian() * 0.007499999832361937D * var8;
-        var5 += rand.nextGaussian() * 0.007499999832361937D * var8;
-        var1 *= var7;
-        var3 *= var7;
-        var5 *= var7;
-        motionX = var1;
-        motionY = var3;
-        motionZ = var5;
-        float var10 = MathHelper.sqrt_double(var1 * var1 + var5 * var5);
-        prevRotationYaw = rotationYaw = (float) (Math.atan2(var1, var5) * 180.0D / Math.PI);
-        prevRotationPitch = rotationPitch = (float) (Math.atan2(var3, var10) * 180.0D / Math.PI);
+    public void setThrowableHeading(double x, double y, double z, float velocity, float inaccuracy) {
+        float var9 = MathHelper.sqrt_double(x * x + y * y + z * z);
+        x /= var9;
+        y /= var9;
+        z /= var9;
+        x += rand.nextGaussian() * 0.0075D * inaccuracy;
+        y += rand.nextGaussian() * 0.0075D * inaccuracy;
+        z += rand.nextGaussian() * 0.0075D * inaccuracy;
+        x *= velocity;
+        y *= velocity;
+        z *= velocity;
+        motionX = x;
+        motionY = y;
+        motionZ = z;
+        float horizontalDistance = MathHelper.sqrt_double(x * x + z * z);
+        prevRotationYaw = rotationYaw = (float) (Math.atan2(x, z) * 180.0D / Math.PI);
+        prevRotationPitch = rotationPitch = (float) (Math.atan2(y, horizontalDistance) * 180.0D / Math.PI);
     }
 
     @Override
