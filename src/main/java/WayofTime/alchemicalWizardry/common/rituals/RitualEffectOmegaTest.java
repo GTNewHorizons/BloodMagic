@@ -140,11 +140,7 @@ public class RitualEffectOmegaTest extends RitualEffect {
                                 drainLeft -= drained.amount;
                                 world.markBlockForUpdate(x + jarLoc.x(), y + jarLoc.y(), z + jarLoc.z());
                                 world.addWeatherEffect(
-                                        new EntityLightningBolt(
-                                                world,
-                                                x + jarLoc.x(),
-                                                y + jarLoc.y(),
-                                                z + jarLoc.z()));
+                                        new EntityLightningBolt(world, x + jarLoc.x(), y + jarLoc.y(), z + jarLoc.z()));
                             }
                         }
                     }

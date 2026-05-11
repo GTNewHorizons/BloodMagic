@@ -67,23 +67,20 @@ public class SpellTeleport extends HomSpell {
             EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getDefensiveEnergy());
         }
 
-        double xCoord = player.posX;
-        double yCoord = player.posY;
-        double zCoord = player.posZ;
         SpellTeleport.teleportRandomly(player, 128);
 
         for (int i = 0; i < 20; i++) {
             SpellHelper.sendParticleToAllAround(
                     world,
-                    xCoord,
-                    yCoord,
-                    zCoord,
+                    player.posX,
+                    player.posY,
+                    player.posZ,
                     30,
                     world.provider.dimensionId,
                     "portal",
-                    xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
-                    yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
-                    zCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
+                    player.posX + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
+                    player.posY + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
+                    player.posZ + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
                     itemRand.nextFloat(),
                     itemRand.nextFloat(),
                     itemRand.nextFloat());
@@ -111,36 +108,28 @@ public class SpellTeleport extends HomSpell {
                     (player.posX + 1),
                     (player.posY + 2),
                     (player.posZ + 1)).expand(d0, d0, d0);
-            List list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
+            List<EntityLivingBase> list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
-            for (Object o : list) {
-                EntityLivingBase entityLiving = (EntityLivingBase) o;
-
-                if (entityLiving instanceof EntityPlayer) {
-                    if (entityLiving.equals(player)) {
-                        continue;
-                    }
+            for (EntityLivingBase entityLiving : list) {
+                if (entityLiving instanceof EntityPlayer && entityLiving.equals(player)) {
+                    continue;
                 }
                 SpellTeleport.teleportRandomly(entityLiving, 128);
             }
         }
 
-        double xCoord = player.posX;
-        double yCoord = player.posY;
-        double zCoord = player.posZ;
-
         for (int i = 0; i < 32; i++) {
             SpellHelper.sendParticleToAllAround(
                     world,
-                    xCoord,
-                    yCoord,
-                    zCoord,
+                    player.posX,
+                    player.posY,
+                    player.posZ,
                     30,
                     world.provider.dimensionId,
                     "portal",
-                    xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
-                    yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
-                    zCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
+                    player.posX + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
+                    player.posY + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
+                    player.posZ + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
                     itemRand.nextFloat(),
                     itemRand.nextFloat(),
                     itemRand.nextFloat());
@@ -169,54 +158,54 @@ public class SpellTeleport extends HomSpell {
         return i < 100;
     }
 
-    private static boolean teleportTo(EntityLivingBase entityLiving, double par1, double par3, double par5,
-            double lastX, double lastY, double lastZ) {
-        EnderTeleportEvent event = new EnderTeleportEvent(entityLiving, par1, par3, par5, 0);
+    private static boolean teleportTo(EntityLivingBase entityLiving, double x, double y, double z, double lastX,
+            double lastY, double lastZ) {
+        EnderTeleportEvent event = new EnderTeleportEvent(entityLiving, x, y, z, 0);
 
         if (MinecraftForge.EVENT_BUS.post(event)) {
             return false;
         }
 
         SpellTeleport.moveEntityViaTeleport(entityLiving, event.targetX, event.targetY, event.targetZ);
-        boolean flag = false;
-        int i = MathHelper.floor_double(entityLiving.posX);
-        int j = MathHelper.floor_double(entityLiving.posY);
-        int k = MathHelper.floor_double(entityLiving.posZ);
+        boolean clear = false;
+        int posX = MathHelper.floor_double(entityLiving.posX);
+        int posY = MathHelper.floor_double(entityLiving.posY);
+        int posZ = MathHelper.floor_double(entityLiving.posZ);
         Block l;
 
-        if (entityLiving.worldObj.blockExists(i, j, k)) {
-            boolean flag1 = false;
+        if (entityLiving.worldObj.blockExists(posX, posY, posZ)) {
+            boolean foundFloor = false;
 
-            while (!flag1 && j > 0) {
-                l = entityLiving.worldObj.getBlock(i, j - 1, k);
+            while (!foundFloor && posY > 0) {
+                l = entityLiving.worldObj.getBlock(posX, posY - 1, posZ);
 
                 if (l != null && l.getMaterial().blocksMovement()) {
-                    flag1 = true;
+                    foundFloor = true;
                 } else {
                     --entityLiving.posY;
-                    --j;
+                    --posY;
                 }
             }
 
-            if (flag1) {
+            if (foundFloor) {
                 SpellTeleport
                         .moveEntityViaTeleport(entityLiving, entityLiving.posX, entityLiving.posY, entityLiving.posZ);
 
                 if (entityLiving.worldObj.getCollidingBoundingBoxes(entityLiving, entityLiving.boundingBox).isEmpty()
                         && !entityLiving.worldObj.isAnyLiquid(entityLiving.boundingBox)) {
-                    flag = true;
+                    clear = true;
                 }
             }
         }
 
-        if (!flag) {
+        if (!clear) {
             SpellTeleport.moveEntityViaTeleport(entityLiving, lastX, lastY, lastZ);
             return false;
         } else {
             short short1 = 128;
 
-            for (j = 0; j < short1; ++j) {
-                double d6 = (double) j / ((double) short1 - 1.0D);
+            for (posY = 0; posY < short1; ++posY) {
+                double d6 = (double) posY / ((double) short1 - 1.0D);
                 float f = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
                 float f1 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
                 float f2 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;

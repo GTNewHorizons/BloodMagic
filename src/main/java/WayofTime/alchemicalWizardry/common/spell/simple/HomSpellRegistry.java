@@ -20,22 +20,10 @@ public class HomSpellRegistry {
         }
 
         for (HomSpellComponent hsc : spellList) {
-            ItemStack item = hsc.getItemStack();
+            ItemStack item = hsc.item();
 
-            if (item != null) {
-                if (item.getItem() instanceof ItemBlock) {
-                    if (testItem.getItem() instanceof ItemBlock) {
-                        if (testItem.getItem() == item.getItem()) {
-                            return hsc.getSpell();
-                        }
-                    }
-                } else {
-                    if (!(testItem.getItem() instanceof ItemBlock)) {
-                        if (testItem.getItem() == item.getItem()) {
-                            return hsc.getSpell();
-                        }
-                    }
-                }
+            if (item != null && item.getItem() instanceof ItemBlock && testItem.getItem() == item.getItem()) {
+                return hsc.spell();
             }
         }
 

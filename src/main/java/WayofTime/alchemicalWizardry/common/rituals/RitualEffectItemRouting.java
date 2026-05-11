@@ -70,10 +70,8 @@ public class RitualEffectItemRouting extends RitualEffect {
             for (RoutingFocusPosAndFacing posAndFacing : paradigm.locationList) {
                 if (posAndFacing == null) continue;
                 ForgeDirection inputDirection = posAndFacing.facing;
-                TileEntity outputTarget = world.getTileEntity(
-                        posAndFacing.location.x(),
-                        posAndFacing.location.y(),
-                        posAndFacing.location.z());
+                TileEntity outputTarget = world
+                        .getTileEntity(posAndFacing.location.x(), posAndFacing.location.y(), posAndFacing.location.z());
 
                 if (!(outputTarget instanceof IInventory outputInventory)) continue;
 

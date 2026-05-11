@@ -79,12 +79,9 @@ public class SpellEarthBender extends HomSpell {
             EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getDefensiveEnergy());
         }
 
-        double xCoord = player.posX;
-        double yCoord = player.posY;
-        double zCoord = player.posZ;
-        int posX = (int) xCoord;
-        int posY = (int) yCoord;
-        int posZ = (int) zCoord;
+        int posX = (int) player.posX;
+        int posY = (int) player.posY;
+        int posZ = (int) player.posZ;
         Block blockID = Blocks.stone;
 
         if (world.isAirBlock(posX, posY + 3, posZ)) {
@@ -109,10 +106,8 @@ public class SpellEarthBender extends HomSpell {
                     world.setBlock(posX - 2, posY + j, posZ + 1 - i, blockID);
                 }
 
-                {
-                    if (world.isAirBlock(posX - 1 + i, posY + 3, posZ - 1 + j)) {
-                        world.setBlock(posX - 1 + i, posY + 3, posZ - 1 + j, blockID);
-                    }
+                if (world.isAirBlock(posX - 1 + i, posY + 3, posZ - 1 + j)) {
+                    world.setBlock(posX - 1 + i, posY + 3, posZ - 1 + j, blockID);
                 }
             }
         }
@@ -120,15 +115,15 @@ public class SpellEarthBender extends HomSpell {
         for (int i = 0; i < 20; i++) {
             SpellHelper.sendParticleToAllAround(
                     world,
-                    xCoord,
-                    yCoord,
-                    zCoord,
+                    player.posX,
+                    player.posY,
+                    player.posZ,
                     30,
                     world.provider.dimensionId,
                     "mobSpell",
-                    xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    zCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posX + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posY + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posZ + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
                     0.0F,
                     0.410F,
                     1.0F);
@@ -157,9 +152,7 @@ public class SpellEarthBender extends HomSpell {
                                 == Blocks.water
                                 || world.getBlock((int) player.posX + i, (int) player.posY + j, (int) player.posZ + k)
                                         == Blocks.flowing_water) {
-                            int x = world.rand.nextInt(2);
-
-                            if (x == 0) {
+                            if (world.rand.nextInt(2) == 0) {
                                 world.setBlock(
                                         (int) player.posX + i,
                                         (int) player.posY + j,
@@ -178,22 +171,18 @@ public class SpellEarthBender extends HomSpell {
             }
         }
 
-        double xCoord = player.posX;
-        double yCoord = player.posY;
-        double zCoord = player.posZ;
-
         for (int i = 0; i < 16; i++) {
             SpellHelper.sendParticleToAllAround(
                     world,
-                    xCoord,
-                    yCoord,
-                    zCoord,
+                    player.posX,
+                    player.posY,
+                    player.posZ,
                     30,
                     world.provider.dimensionId,
                     "mobSpell",
-                    xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    zCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posX + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posY + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posZ + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
                     0.0F,
                     0.410F,
                     1.0F);

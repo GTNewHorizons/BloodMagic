@@ -83,22 +83,18 @@ public class SpellWateryGrave extends HomSpell {
             EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getDefensiveEnergy());
         }
 
-        int d0 = 3;
         AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
                 player.posX,
                 player.posY,
                 player.posZ,
                 (player.posX + 1),
                 (player.posY + 2),
-                (player.posZ + 1)).expand(d0, d0, d0);
+                (player.posZ + 1)).expand(3, 3, 3);
         List<EntityLivingBase> list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
         for (EntityLivingBase entityLiving : list) {
-
-            if (entityLiving instanceof EntityPlayer) {
-                if (entityLiving.equals(player)) {
-                    continue;
-                }
+            if (entityLiving instanceof EntityPlayer && entityLiving.equals(player)) {
+                continue;
             }
 
             int x = 1;
@@ -111,22 +107,18 @@ public class SpellWateryGrave extends HomSpell {
             entityLiving.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionDrowning.id, 100, x - 1));
         }
 
-        double xCoord = player.posX;
-        double yCoord = player.posY;
-        double zCoord = player.posZ;
-
         for (int i = 0; i < 20; i++) {
             SpellHelper.sendParticleToAllAround(
                     world,
-                    xCoord,
-                    yCoord,
-                    zCoord,
+                    player.posX,
+                    player.posY,
+                    player.posZ,
                     30,
                     world.provider.dimensionId,
                     "mobSpell",
-                    xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    zCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posX + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posY + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posZ + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
                     0.0F,
                     0.410F,
                     1.0F);

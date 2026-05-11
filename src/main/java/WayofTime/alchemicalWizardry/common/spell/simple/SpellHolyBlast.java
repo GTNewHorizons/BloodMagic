@@ -56,25 +56,23 @@ public class SpellHolyBlast extends HomSpell {
         int distance = 2;
         double yaw = player.rotationYaw / 180 * Math.PI;
         double pitch = player.rotationPitch / 180 * Math.PI;
-        double xCoord = player.posX + Math.sin(yaw) * Math.cos(pitch) * (-distance);
+        double v = Math.sin(yaw) * Math.cos(pitch) * (-distance);
+        double v1 = Math.cos(yaw) * Math.cos(pitch) * distance;
+        double xCoord = player.posX + v;
         double yCoord = player.posY + player.getEyeHeight() + Math.sin(-pitch) * distance;
-        double zCoord = player.posZ + Math.cos(yaw) * Math.cos(pitch) * distance;
-        float d0 = 0.5f;
+        double zCoord = player.posZ + v1;
         AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
-                player.posX - 0.5 + Math.sin(yaw) * Math.cos(pitch) * (-distance),
-                player.posY + player.getEyeHeight() + Math.sin(-pitch) * distance,
-                player.posZ - 0.5 + Math.cos(yaw) * Math.cos(pitch) * distance,
-                player.posX + Math.sin(yaw) * Math.cos(pitch) * (-distance) + 0.5,
-                player.posY + player.getEyeHeight() + Math.sin(-pitch) * distance + 1,
-                player.posZ + Math.cos(yaw) * Math.cos(pitch) * distance + 0.5).expand(d0, d0, d0);
+                xCoord - 0.5 + v,
+                yCoord + player.getEyeHeight() + Math.sin(-pitch) * distance,
+                zCoord - 0.5 + v1,
+                xCoord + v + 0.5,
+                yCoord + player.getEyeHeight() + Math.sin(-pitch) * distance + 1,
+                zCoord + v1 + 0.5).expand(0.5f, 0.5f, 0.5f);
         List<EntityLivingBase> list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
         for (EntityLivingBase entityLiving : list) {
-
-            if (entityLiving instanceof EntityPlayer) {
-                if (entityLiving.equals(player)) {
-                    continue;
-                }
+            if (entityLiving instanceof EntityPlayer && entityLiving.equals(player)) {
+                continue;
             }
 
             int i = 1;
@@ -154,15 +152,11 @@ public class SpellHolyBlast extends HomSpell {
                 (player.posX + 1),
                 (player.posY + 2),
                 (player.posZ + 1)).expand(d0, d0, d0);
-        List list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
+        List<EntityLivingBase> list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
-        for (Object o : list) {
-            EntityLivingBase entityLiving = (EntityLivingBase) o;
-
-            if (entityLiving instanceof EntityPlayer) {
-                if (entityLiving.equals(player)) {
-                    continue;
-                }
+        for (EntityLivingBase entityLiving : list) {
+            if (entityLiving instanceof EntityPlayer && entityLiving.equals(player)) {
+                continue;
             }
 
             int i = 1;

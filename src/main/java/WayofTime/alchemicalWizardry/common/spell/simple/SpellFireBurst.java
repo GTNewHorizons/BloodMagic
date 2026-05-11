@@ -93,16 +93,14 @@ public class SpellFireBurst extends HomSpell {
                 player.posX,
                 player.posY,
                 player.posZ,
-                (player.posX + 1),
-                (player.posY + 2),
-                (player.posZ + 1)).expand(d0, d0, d0);
+                player.posX + 1,
+                player.posY + 2,
+                player.posZ + 1).expand(d0, d0, d0);
         List<EntityLivingBase> list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
         for (EntityLivingBase entityLiving : list) {
-            if (entityLiving instanceof EntityPlayer) {
-                if (entityLiving.equals(player)) {
-                    continue;
-                }
+            if (entityLiving instanceof EntityPlayer && entityLiving.equals(player)) {
+                continue;
             }
 
             entityLiving.setFire(100);

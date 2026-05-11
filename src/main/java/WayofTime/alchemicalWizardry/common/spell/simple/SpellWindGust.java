@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common.spell.simple;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -62,22 +61,18 @@ public class SpellWindGust extends HomSpell {
         double xCoord = player.posX + v1;
         double yCoord = player.posY + player.getEyeHeight() + Math.sin(-pitch) * distance;
         double zCoord = player.posZ + v;
-        float d0 = 0.5f;
         AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
-                player.posX - 0.5 + v1,
-                player.posY + player.getEyeHeight() + Math.sin(-pitch) * distance,
-                player.posZ - 0.5 + v,
-                player.posX + v1 + 0.5,
-                player.posY + player.getEyeHeight() + Math.sin(-pitch) * distance + 1,
-                player.posZ + v + 0.5).expand(d0, d0, d0);
+                xCoord - 0.5 + v1,
+                yCoord + player.getEyeHeight() + Math.sin(-pitch) * distance,
+                zCoord - 0.5 + v,
+                xCoord + v1 + 0.5,
+                yCoord + player.getEyeHeight() + Math.sin(-pitch) * distance + 1,
+                zCoord + v + 0.5).expand(0.5f, 0.5f, 0.5f);
         List<EntityLivingBase> list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
         for (EntityLivingBase entityLiving : list) {
-
-            if (entityLiving instanceof EntityPlayer) {
-                if (entityLiving.equals(player)) {
-                    continue;
-                }
+            if (entityLiving instanceof EntityPlayer && entityLiving.equals(player)) {
+                continue;
             }
             entityLiving.motionX = Math.sin(-yaw) * 2;
             entityLiving.motionY = 2;
@@ -131,22 +126,19 @@ public class SpellWindGust extends HomSpell {
                 0.5F,
                 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
         player.fallDistance = 0;
-        double xCoord = player.posX;
-        double yCoord = player.posY;
-        double zCoord = player.posZ;
 
         for (int i = 0; i < 8; i++) {
             SpellHelper.sendParticleToAllAround(
                     world,
-                    xCoord,
-                    yCoord,
-                    zCoord,
+                    player.posX,
+                    player.posY,
+                    player.posZ,
                     30,
                     world.provider.dimensionId,
                     "mobSpell",
-                    xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    zCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posX + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posY + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posZ + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
                     0.0F,
                     0.410F,
                     1.0F);
@@ -165,28 +157,19 @@ public class SpellWindGust extends HomSpell {
             EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getEnvironmentalEnergy());
         }
 
-        int d0 = 3;
         AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
                 player.posX,
                 player.posY,
                 player.posZ,
-                (player.posX + 1),
-                (player.posY + 2),
-                (player.posZ + 1)).expand(d0, d0, d0);
-        List list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
-        Iterator iterator = list.iterator();
-        double xCoord = player.posX;
-        double yCoord = player.posY;
-        double zCoord = player.posZ;
+                player.posX + 1,
+                player.posY + 2,
+                player.posZ + 1).expand(3, 3, 3);
+        List<EntityLivingBase> list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
         double wantedVel = 2;
 
-        while (iterator.hasNext()) {
-            EntityLivingBase entityLiving = (EntityLivingBase) iterator.next();
-
-            if (entityLiving instanceof EntityPlayer) {
-                if (entityLiving.equals(player)) {
-                    continue;
-                }
+        for (EntityLivingBase entityLiving : list) {
+            if (entityLiving instanceof EntityPlayer && entityLiving.equals(player)) {
+                continue;
             }
 
             double posXDif = entityLiving.posX - player.posX;
@@ -201,15 +184,15 @@ public class SpellWindGust extends HomSpell {
         for (int i = 0; i < 20; i++) {
             SpellHelper.sendParticleToAllAround(
                     world,
-                    xCoord,
-                    yCoord,
-                    zCoord,
+                    player.posX,
+                    player.posY,
+                    player.posZ,
                     30,
                     world.provider.dimensionId,
                     "mobSpell",
-                    xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    zCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posX + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posY + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posZ + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
                     0.0F,
                     0.410F,
                     1.0F);
