@@ -55,7 +55,7 @@ public abstract class SpellParadigm {
         if (bufferedEffectList.isEmpty()) {
             return null;
         } else {
-            return bufferedEffectList.get(bufferedEffectList.size() - 1);
+            return bufferedEffectList.getLast();
         }
     }
 

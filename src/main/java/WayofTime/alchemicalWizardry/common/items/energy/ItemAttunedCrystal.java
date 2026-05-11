@@ -50,7 +50,7 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
         String name = super.getItemStackDisplayName(stack);
 
         if (reagent != null) {
-            name = name + " (" + reagent.name + ")";
+            name = name + " (" + reagent.name() + ")";
         }
 
         return name;
@@ -64,7 +64,7 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
         if (!(item.getTagCompound() == null)) {
             Reagent reagent = this.getReagent(item);
             if (reagent != null) {
-                tooltip.add(StatCollector.translateToLocal("tooltip.reagent.selectedreagent") + " " + reagent.name);
+                tooltip.add(StatCollector.translateToLocal("tooltip.reagent.selectedreagent") + " " + reagent.name());
             }
 
             if (this.getHasSavedCoordinates(item)) {
@@ -72,11 +72,11 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
                 Int3 coords = this.getCoordinates(item);
                 tooltip.add(
                         StatCollector.translateToLocal("tooltip.alchemy.coords") + " "
-                                + coords.xCoord
+                                + coords.x()
                                 + ", "
-                                + coords.yCoord
+                                + coords.y()
                                 + ", "
-                                + coords.zCoord);
+                                + coords.z());
                 tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.dimension") + " " + getDimension(item));
             }
         }
@@ -98,8 +98,7 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
             case 1:
                 Reagent reagent = this.getReagent(stack);
                 if (reagent != null) {
-                    return (reagent.getColourRed() * 256 * 256 + reagent.getColourGreen() * 256
-                            + reagent.getColourBlue());
+                    return (reagent.red() * 256 * 256 + reagent.green() * 256 + reagent.blue());
                 }
                 break;
         }
@@ -172,7 +171,7 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
                         reagentLocation = reagentList.indexOf(pastReagent);
 
                         if (reagentLocation == -1 || reagentLocation + 1 >= reagentList.size()) {
-                            this.setReagentWithNotification(itemStack, reagentList.get(0), player);
+                            this.setReagentWithNotification(itemStack, reagentList.getFirst(), player);
                         } else {
                             this.setReagentWithNotification(itemStack, reagentList.get(reagentLocation + 1), player);
                         }
@@ -186,15 +185,15 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
                             return itemStack;
                         }
 
-                        if (dimension != world.provider.dimensionId || Math.abs(coords.xCoord - x) > maxDistance
-                                || Math.abs(coords.yCoord - y) > maxDistance
-                                || Math.abs(coords.zCoord - z) > maxDistance) {
+                        if (dimension != world.provider.dimensionId || Math.abs(coords.x() - x) > maxDistance
+                                || Math.abs(coords.y() - y) > maxDistance
+                                || Math.abs(coords.z() - z) > maxDistance) {
                             player.addChatComponentMessage(
                                     new ChatComponentTranslation("message.attunedcrystal.error.toofar"));
                             return itemStack;
                         }
 
-                        TileEntity pastTile = world.getTileEntity(coords.xCoord, coords.yCoord, coords.zCoord);
+                        TileEntity pastTile = world.getTileEntity(coords.x(), coords.y(), coords.z());
                         if (!(pastTile instanceof TEReagentConduit pastRelay)) {
                             player.addChatComponentMessage(
                                     new ChatComponentTranslation("message.attunedcrystal.error.cannotfind"));
@@ -214,13 +213,13 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
                                 player.addChatComponentMessage(
                                         new ChatComponentText(
                                                 StatCollector.translateToLocal("message.attunedcrystal.linked") + " "
-                                                        + reagent.name));
+                                                        + reagent.name()));
                             } else {
                                 player.addChatComponentMessage(
                                         new ChatComponentTranslation("message.attunedcrystal.error.noconnections"));
                             }
                         }
-                        world.markBlockForUpdate(coords.xCoord, coords.yCoord, coords.zCoord);
+                        world.markBlockForUpdate(coords.x(), coords.y(), coords.z());
                     } else {
                         int dimension = world.provider.dimensionId;
 
@@ -340,7 +339,7 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
         if (reagent != null) {
             player.addChatComponentMessage(
                     new ChatComponentText(
-                            StatCollector.translateToLocal("message.attunedcrystal.setto") + " " + reagent.name));
+                            StatCollector.translateToLocal("message.attunedcrystal.setto") + " " + reagent.name()));
         }
     }
 }

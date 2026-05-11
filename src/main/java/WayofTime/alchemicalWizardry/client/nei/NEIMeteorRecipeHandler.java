@@ -142,7 +142,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
             ArrayList<Reagent> reagents = component.getRequiredReagents();
             ArrayList<String> reagentNames = new ArrayList<>();
             for (Reagent r : reagents) {
-                reagentNames.add(r.name);
+                reagentNames.add(r.name());
             }
             return Joiner.on(", ").join(reagentNames);
         }
@@ -369,7 +369,7 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
             }
 
             if (!l.isEmpty()) {
-                list.add(r.name + ":");
+                list.add(r.name() + ":");
                 list.addAll(l);
             }
         }
@@ -404,6 +404,6 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
     private String requiredReagentsForFiller(MeteorComponent mc) {
         List<Reagent> reagents = mc.getRequiredReagents();
         if (reagents.isEmpty()) return "";
-        return " (" + reagents.stream().map(r -> r.name).collect(Collectors.joining(", ")) + ")";
+        return " (" + reagents.stream().map(r -> r.name()).collect(Collectors.joining(", ")) + ")";
     }
 }

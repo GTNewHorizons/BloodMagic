@@ -26,7 +26,7 @@ public class EntityDemonAIHurtByTarget extends EntityAIHurtByTarget {
         }
 
         TileEntity portal = this.taskOwner.worldObj
-                .getTileEntity(portalPosition.xCoord, portalPosition.yCoord, portalPosition.zCoord);
+                .getTileEntity(portalPosition.x(), portalPosition.y(), portalPosition.z());
 
         if ((this.taskOwner.getAITarget() instanceof IHoardDemon
                 && portalPosition.equals(((IHoardDemon) this.taskOwner.getAITarget()).getPortalLocation()))) {

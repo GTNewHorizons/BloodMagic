@@ -59,7 +59,7 @@ public class NEICalcinatorHandler extends TemplateRecipeHandler {
                     .translateToLocalFormatted("text.recipe.alchemicCalcinator.reagent", formattedAmount);
             this.amountTextWidth = fontRenderer.getStringWidth(amountText);
 
-            this.nameText = this.reagent.name;
+            this.nameText = this.reagent.name();
             this.nameTextWidth = fontRenderer.getStringWidth(nameText);
         }
 
@@ -85,7 +85,7 @@ public class NEICalcinatorHandler extends TemplateRecipeHandler {
 
             textX = x + 84 - (nameTextWidth / 2);
             textY += 10;
-            int color = reagent.getColourRed() << 16 | reagent.getColourGreen() << 8 | reagent.getColourBlue();
+            int color = reagent.red() << 16 | reagent.green() << 8 | reagent.blue();
             fontRenderer.drawString(nameText, textX, textY, color);
         }
 
@@ -116,9 +116,9 @@ public class NEICalcinatorHandler extends TemplateRecipeHandler {
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
             GL11.glColor4ub(
-                    (byte) reagent.getColourRed(),
-                    (byte) reagent.getColourGreen(),
-                    (byte) reagent.getColourBlue(),
+                    (byte) reagent.red(),
+                    (byte) reagent.green(),
+                    (byte) reagent.blue(),
                     (byte) 255);
 
             tessellator.startDrawingQuads();

@@ -72,7 +72,7 @@ public class RitualEffectOmegaTest extends RitualEffect {
         Map<Reagent, Integer> reagentMap = new HashMap<>();
         for (int i = 0; i < 4; i++) {
             Int3 jarLoc = this.getJarLocation(i);
-            TileEntity tile = world.getTileEntity(x + jarLoc.xCoord, y + jarLoc.yCoord, z + jarLoc.zCoord);
+            TileEntity tile = world.getTileEntity(x + jarLoc.x(), y + jarLoc.y(), z + jarLoc.z());
             if (tile instanceof IReagentHandler container) {
                 ReagentContainerInfo[] containerInfoArray = container.getContainerInfo(ForgeDirection.UP);
                 if (containerInfoArray == null) {
@@ -132,19 +132,19 @@ public class RitualEffectOmegaTest extends RitualEffect {
                             break;
                         }
                         Int3 jarLoc = this.getJarLocation(i);
-                        TileEntity tile = world.getTileEntity(x + jarLoc.xCoord, y + jarLoc.yCoord, z + jarLoc.zCoord);
+                        TileEntity tile = world.getTileEntity(x + jarLoc.x(), y + jarLoc.y(), z + jarLoc.z());
                         if (tile instanceof IReagentHandler container) {
                             ReagentStack drained = container
                                     .drain(ForgeDirection.UP, new ReagentStack(reagent, drainLeft), true);
                             if (drained != null) {
                                 drainLeft -= drained.amount;
-                                world.markBlockForUpdate(x + jarLoc.xCoord, y + jarLoc.yCoord, z + jarLoc.zCoord);
+                                world.markBlockForUpdate(x + jarLoc.x(), y + jarLoc.y(), z + jarLoc.z());
                                 world.addWeatherEffect(
                                         new EntityLightningBolt(
                                                 world,
-                                                x + jarLoc.xCoord,
-                                                y + jarLoc.yCoord,
-                                                z + jarLoc.zCoord));
+                                                x + jarLoc.x(),
+                                                y + jarLoc.y(),
+                                                z + jarLoc.z()));
                             }
                         }
                     }

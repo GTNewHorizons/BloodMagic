@@ -33,7 +33,7 @@ public class RenderReagentConduit extends TileEntitySpecialRenderer {
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glDepthMask(false);
             tessellator.startDrawingQuads();
-            tessellator.setColorRGBA(colourMap.xCoord, colourMap.yCoord, colourMap.zCoord, 200);
+            tessellator.setColorRGBA(colourMap.x(), colourMap.y(), colourMap.z(), 200);
             GL11.glTranslated(d0 + 0.5, d1 + 0.5, d2 + 0.5);
             GL11.glRotatef(tileEntity.getWorldObj().getWorldTime() / 3.0f, 0F, 1F, 0F); // Rotate on planar axis
             GL11.glRotatef(renderCount + key1, 0F, 0F, 1F); // Rotate vertical axis

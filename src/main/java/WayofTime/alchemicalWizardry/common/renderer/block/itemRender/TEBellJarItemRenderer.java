@@ -44,9 +44,9 @@ public class TEBellJarItemRenderer implements IItemRenderer {
                         translateX,
                         translateY,
                         translateZ,
-                        reagent.getColourRed(),
-                        reagent.getColourGreen(),
-                        reagent.getColourBlue(),
+                        reagent.red(),
+                        reagent.green(),
+                        reagent.blue(),
                         200 * reagentStack.amount / capacity);
             }
         }

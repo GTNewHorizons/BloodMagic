@@ -103,9 +103,9 @@ public class AltarStructure {
             altarBuilder.addElement(keys[i],
                     ofChain(
                             values[i].stream()
-                                    .map(s -> s.getMeta() == OreDictionary.WILDCARD_VALUE
-                                            ? ofBlockAnyMeta(s.getBlock())
-                                            : ofBlock(s.getBlock(), s.getMeta()))
+                                    .map(s -> s.meta() == OreDictionary.WILDCARD_VALUE
+                                            ? ofBlockAnyMeta(s.block())
+                                            : ofBlock(s.block(), s.meta()))
                                     .toArray(IStructureElement[]::new)
                     )
             );

@@ -35,7 +35,7 @@ public class EntityMeteor extends EnergyBlastProjectile {
         tag.setInteger("meteorID", meteorID);
 
         for (Reagent r : reagentList) {
-            tag.setBoolean("reagent." + r.name, true);
+            tag.setBoolean("reagent." + r.name(), true);
         }
 
     }
@@ -46,7 +46,7 @@ public class EntityMeteor extends EnergyBlastProjectile {
 
         meteorID = tag.getInteger("meteorID");
         for (Reagent r : ReagentRegistry.reagentList.values()) {
-            if (tag.getBoolean("reagent." + r.name)) {
+            if (tag.getBoolean("reagent." + r.name())) {
                 reagentList.add(r);
             }
         }

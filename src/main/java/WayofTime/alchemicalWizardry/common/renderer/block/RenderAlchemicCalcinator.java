@@ -128,9 +128,9 @@ public class RenderAlchemicCalcinator extends TileEntitySpecialRenderer {
                             d0,
                             d1,
                             d2,
-                            reagent.getColourRed(),
-                            reagent.getColourGreen(),
-                            reagent.getColourBlue(),
+                            reagent.red(),
+                            reagent.green(),
+                            reagent.blue(),
                             200 * reagentStack.amount / capacity);
                 }
             }

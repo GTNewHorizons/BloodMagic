@@ -96,9 +96,9 @@ public class RitualEffectEllipsoid extends RitualEffect {
             int k = -zSize;
 
             if (lastPos != null) {
-                i = Math.min(xSize, Math.max(-xSize, lastPos.xCoord));
-                j = Math.min(ySize, Math.max(-ySize, lastPos.yCoord));
-                k = Math.min(zSize, Math.max(-zSize, lastPos.zCoord));
+                i = Math.min(xSize, Math.max(-xSize, lastPos.x()));
+                j = Math.min(ySize, Math.max(-ySize, lastPos.y()));
+                k = Math.min(zSize, Math.max(-zSize, lastPos.z()));
             }
 
             boolean incrementNext = false;

@@ -592,13 +592,13 @@ public enum NewPacketHandler {
                     target.writeInt(list.size());
 
                     list.forEach(colourSet -> {
-                        target.writeInt(colourSet.colourRed);
-                        target.writeInt(colourSet.colourGreen);
-                        target.writeInt(colourSet.colourBlue);
-                        target.writeInt(colourSet.colourIntensity);
-                        target.writeInt(colourSet.xCoord);
-                        target.writeInt(colourSet.yCoord);
-                        target.writeInt(colourSet.zCoord);
+                        target.writeInt(colourSet.red());
+                        target.writeInt(colourSet.green());
+                        target.writeInt(colourSet.blue());
+                        target.writeInt(colourSet.intensity());
+                        target.writeInt(colourSet.x());
+                        target.writeInt(colourSet.y());
+                        target.writeInt(colourSet.z());
                     });
                 }
                 case 11 -> {

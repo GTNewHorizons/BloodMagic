@@ -29,7 +29,7 @@ public class OmegaStructureHandler {
             }
         }
 
-        boolList[expLim + offset.xCoord][expLim + offset.yCoord][expLim + offset.zCoord] = 1;
+        boolList[expLim + offset.x()][expLim + offset.y()][expLim + offset.z()] = 1;
         boolean isReady = false;
 
         while (!isReady) {

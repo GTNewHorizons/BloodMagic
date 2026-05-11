@@ -283,9 +283,9 @@ public class ItemRitualDiviner extends EnergyItems implements IRitualDiviner {
         if (entity instanceof EntityPlayer && hasStoredLocation(stack) && world.getTotalWorldTime() % 5 == 0) {
             Int3 loc = getStoredLocation(stack);
 
-            int x = loc.xCoord;
-            int y = loc.yCoord;
-            int z = loc.zCoord;
+            int x = loc.x();
+            int y = loc.y();
+            int z = loc.z();
 
             if (!this.placeRitualStoneAtMasterStone(stack, (EntityPlayer) entity, world, x, y, z)) {
                 this.voidStoredLocation(stack);

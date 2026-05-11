@@ -89,9 +89,9 @@ public class RitualEffectSphereCreator extends RitualEffect {
             int k = -radius;
 
             if (lastPos != null) {
-                j = Math.min(radius, Math.max(-radius, lastPos.yCoord));
-                i = Math.min(radius, Math.max(-radius, lastPos.xCoord));
-                k = Math.min(radius, Math.max(-radius, lastPos.zCoord));
+                j = Math.min(radius, Math.max(-radius, lastPos.y()));
+                i = Math.min(radius, Math.max(-radius, lastPos.x()));
+                k = Math.min(radius, Math.max(-radius, lastPos.z()));
             }
 
             int yP = y + negYOffset;

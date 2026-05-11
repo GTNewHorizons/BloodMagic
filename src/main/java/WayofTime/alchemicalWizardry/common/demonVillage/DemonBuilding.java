@@ -53,33 +53,18 @@ public class DemonBuilding {
     }
 
     public Int3 getDoorSpace(ForgeDirection dir) {
-        int x;
-        int z = switch (dir) {
-            case SOUTH -> {
-                x = -doorGridSpace.xCoord;
-                yield -doorGridSpace.zCoord;
-            }
-            case WEST -> {
-                x = doorGridSpace.zCoord;
-                yield -doorGridSpace.xCoord;
-            }
-            case EAST -> {
-                x = -doorGridSpace.zCoord;
-                yield doorGridSpace.xCoord;
-            }
-            default -> {
-                x = doorGridSpace.xCoord;
-                yield doorGridSpace.zCoord;
-            }
+        return switch (dir) {
+            case SOUTH -> new Int3(-doorGridSpace.x(), doorGridSpace.y(), -doorGridSpace.z());
+            case WEST -> new Int3(doorGridSpace.z(), doorGridSpace.y(), -doorGridSpace.x());
+            case EAST -> new Int3(-doorGridSpace.z(), doorGridSpace.y(), doorGridSpace.x());
+            default -> new Int3(doorGridSpace.x(), doorGridSpace.y(), doorGridSpace.z());
         };
-
-        return new Int3(x, doorGridSpace.yCoord, z);
     }
 
     public Int3 getGridOffsetFromRoad(ForgeDirection sideOfRoad, int yLevel) {
         Int3 doorSpace = this.getDoorSpace(sideOfRoad);
-        int x = doorSpace.xCoord;
-        int z = doorSpace.zCoord;
+        int x = doorSpace.x();
+        int z = doorSpace.z();
 
         switch (sideOfRoad) {
             case SOUTH:

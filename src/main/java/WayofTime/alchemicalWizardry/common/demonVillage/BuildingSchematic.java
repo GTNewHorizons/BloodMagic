@@ -50,8 +50,8 @@ public class BuildingSchematic {
 
         for (BlockSet set : blockList) {
             for (Int3 coords : set.getPositions()) {
-                int gridX = (int) ((coords.xCoord + 2 * Math.signum(coords.xCoord)) / 5);
-                int gridZ = (int) ((coords.zCoord + 2 * Math.signum(coords.zCoord)) / 5);
+                int gridX = (int) ((coords.x() + 2 * Math.signum(coords.x())) / 5);
+                int gridZ = (int) ((coords.z() + 2 * Math.signum(coords.z())) / 5);
 
                 holder.setGridSpace(gridX, gridZ, new GridSpace(GridSpace.HOUSE, 0));
             }
@@ -65,8 +65,8 @@ public class BuildingSchematic {
 
         for (BlockSet blockSet : blockList) {
             for (Int3 pos : blockSet.getPositions()) {
-                int xOff = pos.xCoord;
-                int zOff = pos.zCoord;
+                int xOff = pos.x();
+                int zOff = pos.z();
 
                 switch (dir) {
                     case SOUTH -> {
@@ -103,9 +103,9 @@ public class BuildingSchematic {
 
         for (int i = this.getMinY(); i <= this.getMaxY(); i++) {
             for (Int3 pos : positionList) {
-                Block block = world.getBlock(xCoord + pos.xCoord, yCoord + i, zCoord + pos.zCoord);
+                Block block = world.getBlock(xCoord + pos.x(), yCoord + i, zCoord + pos.z());
                 if (block != ModBlocks.blockDemonPortal) {
-                    world.setBlockToAir(xCoord + pos.xCoord, yCoord + i, zCoord + pos.zCoord);
+                    world.setBlockToAir(xCoord + pos.x(), yCoord + i, zCoord + pos.z());
                 }
             }
         }
@@ -115,8 +115,8 @@ public class BuildingSchematic {
         int min = 0;
         for (BlockSet set : blockList) {
             for (Int3 pos : set.getPositions()) {
-                if (pos.yCoord < min) {
-                    min = pos.yCoord;
+                if (pos.y() < min) {
+                    min = pos.y();
                 }
             }
         }
@@ -128,8 +128,8 @@ public class BuildingSchematic {
         int max = 0;
         for (BlockSet set : blockList) {
             for (Int3 pos : set.getPositions()) {
-                if (pos.yCoord > max) {
-                    max = pos.yCoord;
+                if (pos.y() > max) {
+                    max = pos.y();
                 }
             }
         }

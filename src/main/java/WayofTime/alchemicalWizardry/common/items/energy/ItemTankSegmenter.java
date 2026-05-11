@@ -44,7 +44,7 @@ public class ItemTankSegmenter extends Item implements IReagentManipulator {
         Reagent reagent = this.getReagent(stack);
         String name = super.getItemStackDisplayName(stack);
         if (reagent != null) {
-            name = name + " (" + reagent.name + ")";
+            name += " (" + reagent.name() + ")";
         }
         return name;
     }
@@ -57,7 +57,7 @@ public class ItemTankSegmenter extends Item implements IReagentManipulator {
         if (!(item.getTagCompound() == null)) {
             Reagent reagent = this.getReagent(item);
             if (reagent != null) {
-                tooltip.add(StatCollector.translateToLocal("tooltip.reagent.selectedreagent") + " " + reagent.name);
+                tooltip.add(StatCollector.translateToLocal("tooltip.reagent.selectedreagent") + " " + reagent.name());
             }
         }
     }
@@ -78,8 +78,7 @@ public class ItemTankSegmenter extends Item implements IReagentManipulator {
             case 1:
                 Reagent reagent = this.getReagent(stack);
                 if (reagent != null) {
-                    return (reagent.getColourRed() * 256 * 256 + reagent.getColourGreen() * 256
-                            + reagent.getColourBlue());
+                    return (reagent.red() * 256 * 256 + reagent.green() * 256 + reagent.blue());
                 }
                 break;
         }
@@ -177,7 +176,7 @@ public class ItemTankSegmenter extends Item implements IReagentManipulator {
                                             + " "
                                             + StatCollector.translateToLocal("message.tanksegmenter.tankssetto")
                                             + " "
-                                            + reagent.name));
+                                            + reagent.name()));
 
                     reagentHandler.setTanksTunedToReagent(reagent, numberAssigned);
                 }
@@ -215,7 +214,7 @@ public class ItemTankSegmenter extends Item implements IReagentManipulator {
         if (reagent != null) {
             player.addChatComponentMessage(
                     new ChatComponentText(
-                            StatCollector.translateToLocal("message.tanksegmenter.setto") + " " + reagent.name));
+                            StatCollector.translateToLocal("message.tanksegmenter.setto") + " " + reagent.name()));
         }
     }
 }

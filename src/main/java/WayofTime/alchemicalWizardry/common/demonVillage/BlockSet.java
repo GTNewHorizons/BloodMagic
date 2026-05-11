@@ -202,9 +202,9 @@ public class BlockSet {
         }
 
         Int3 position = positions.get(index);
-        int xOff = position.xCoord;
-        int yOff = position.yCoord;
-        int zOff = position.zCoord;
+        int xOff = position.x();
+        int yOff = position.y();
+        int zOff = position.z();
         int meta = this.getMetaForDirection(dir);
 
         switch (dir) {

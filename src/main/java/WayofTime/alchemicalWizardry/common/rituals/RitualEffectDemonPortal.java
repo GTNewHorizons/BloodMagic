@@ -134,7 +134,7 @@ public class RitualEffectDemonPortal extends RitualEffect {
 
         for (Int3 pos : jarLocations) {
             if (!(ritualStone.getWorld()
-                    .getTileEntity(x + pos.xCoord, y + pos.yCoord, z + pos.zCoord) instanceof TEBellJar)) {
+                    .getTileEntity(x + pos.x(), y + pos.y(), z + pos.z()) instanceof TEBellJar)) {
                 return false;
             }
         }

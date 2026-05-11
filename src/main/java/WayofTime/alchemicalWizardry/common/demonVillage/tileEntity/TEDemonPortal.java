@@ -231,14 +231,14 @@ public class TEDemonPortal extends TileEntity {
 
     public void notifyDemons(int xf, int yf, int zf, double radius) {
         for (IHoardDemon thrallDemon : this.hoardList) {
-            if (thrallDemon instanceof EntityCreature) {
-                if (((EntityCreature) thrallDemon).getAttackTarget() == null) {
-                    double xi = ((EntityCreature) thrallDemon).posX;
-                    double yi = ((EntityCreature) thrallDemon).posY;
-                    double zi = ((EntityCreature) thrallDemon).posZ;
+            if (thrallDemon instanceof EntityCreature thrall) {
+                if (thrall.getAttackTarget() == null) {
+                    double xi = thrall.posX;
+                    double yi = thrall.posY;
+                    double zi = thrall.posZ;
 
                     if ((xi - xf) * (xi - xf) + (yi - yf) * (yi - yf) + (zi - zf) * (zi - zf) <= radius * radius) {
-                        ((EntityCreature) thrallDemon).getNavigator().tryMoveToXYZ(xf, yf, zf, 1);
+                        thrall.getNavigator().tryMoveToXYZ(xf, yf, zf, 1);
                     }
                 }
             }
@@ -246,10 +246,10 @@ public class TEDemonPortal extends TileEntity {
     }
 
     public void enthrallDemon(EntityLivingBase demon) {
-        if (demon instanceof IHoardDemon) {
-            boolean enthrall = ((IHoardDemon) demon).thrallDemon(new Int3(this.xCoord, this.yCoord, this.zCoord));
+        if (demon instanceof IHoardDemon hoardDemon) {
+            boolean enthrall = hoardDemon.thrallDemon(new Int3(this.xCoord, this.yCoord, this.zCoord));
             if (enthrall) {
-                this.hoardList.add((IHoardDemon) demon);
+                this.hoardList.add(hoardDemon);
             }
         }
     }
@@ -508,9 +508,9 @@ public class TEDemonPortal extends TileEntity {
         return DemonPacketRegistry.spawnDemons(
                 teDemonPortal,
                 worldObj,
-                xCoord + road.xCoord * 5,
-                road.yCoord + 1,
-                zCoord + road.zCoord * 5,
+                xCoord + road.x() * 5,
+                road.y() + 1,
+                zCoord + road.z() * 5,
                 type,
                 tier,
                 spawnGuardian);
@@ -530,9 +530,9 @@ public class TEDemonPortal extends TileEntity {
                 dir,
                 (rand.nextInt(negXRadius + negZRadius + posXRadius + posZRadius)) + 1);
 
-        int x = road.xCoord;
-        int yLevel = road.yCoord;
-        int z = road.zCoord;
+        int x = road.x();
+        int yLevel = road.y();
+        int z = road.z();
 
         if (printDebug) AlchemicalWizardry.logger.info("X: {} Z: {} Direction: {}", x, z, dir);
 
@@ -836,7 +836,7 @@ public class TEDemonPortal extends TileEntity {
             Int3 next = temp.coords;
 
             if (next != null) {
-                initY = next.yCoord;
+                initY = next.y();
                 if (printDebug) AlchemicalWizardry.logger.info("{}", initY);
             }
 
@@ -1060,7 +1060,7 @@ public class TEDemonPortal extends TileEntity {
 
                 ForgeDirection chosenDirection = this.nextDemonPortalDirection;
                 Int3 portalSpace = build.getDoorSpace(chosenDirection);
-                int yOffset = portalSpace.yCoord;
+                int yOffset = portalSpace.y();
 
                 switch (stage) {
                     case 1 -> {
@@ -1112,9 +1112,9 @@ public class TEDemonPortal extends TileEntity {
                                                                                                                          // 1
                                                                                                                          // *
 
-        int x = space.xCoord;
-        int z = space.zCoord;
-        int yLevel = space.yCoord;
+        int x = space.x();
+        int z = space.z();
+        int yLevel = space.y();
 
         if (printDebug) AlchemicalWizardry.logger.info("Road space - x: {} z: {}", x, z);
 
@@ -1145,8 +1145,8 @@ public class TEDemonPortal extends TileEntity {
                     continue;
                 }
                 Int3 offsetSpace = build.getGridOffsetFromRoad(nextDir, yLevel);
-                int xOff = offsetSpace.xCoord;
-                int zOff = offsetSpace.zCoord;
+                int xOff = offsetSpace.x();
+                int zOff = offsetSpace.z();
 
                 if (build.isValid(grid, x + xOff, z + zOff, nextDir.getOpposite())) {
                     if (schemMap.containsKey(nextDir)) {
@@ -1171,8 +1171,8 @@ public class TEDemonPortal extends TileEntity {
                 .get(new Random().nextInt(schemMap.get(chosenDirection).size()));
 
         Int3 offsetSpace = build.getGridOffsetFromRoad(chosenDirection, yLevel);
-        int xOff = offsetSpace.xCoord;
-        int zOff = offsetSpace.zCoord;
+        int xOff = offsetSpace.x();
+        int zOff = offsetSpace.z();
 
         build.destroyAllInField(
                 worldObj,

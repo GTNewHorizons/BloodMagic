@@ -267,9 +267,9 @@ public class SigilFluid extends Item implements IFluidContainerItem, ISigil {
         }
 
         for (Int3 pos : positionList) {
-            int i = pos.xCoord;
-            int j = pos.yCoord;
-            int k = pos.zCoord;
+            int i = pos.x();
+            int j = pos.y();
+            int k = pos.z();
 
             if (!boolList[i][j][k]) {
                 continue;

@@ -16,15 +16,15 @@ public class LocalRitualStorage {
     public int zCoord;
 
     public void writeToNBT(NBTTagCompound tag) {
-        tag.setInteger("xCoord", xCoord);
-        tag.setInteger("yCoord", yCoord);
-        tag.setInteger("zCoord", zCoord);
+        tag.setInteger("x", xCoord);
+        tag.setInteger("y", yCoord);
+        tag.setInteger("z", zCoord);
     }
 
     public void readFromNBT(NBTTagCompound tag) {
-        this.xCoord = tag.getInteger("xCoord");
-        this.yCoord = tag.getInteger("yCoord");
-        this.zCoord = tag.getInteger("zCoord");
+        this.xCoord = tag.getInteger("x");
+        this.yCoord = tag.getInteger("y");
+        this.zCoord = tag.getInteger("z");
     }
 
     public Int3 getLocation() {
@@ -32,8 +32,8 @@ public class LocalRitualStorage {
     }
 
     public void setLocation(Int3 location) {
-        this.xCoord = location.xCoord;
-        this.yCoord = location.yCoord;
-        this.zCoord = location.zCoord;
+        this.xCoord = location.x();
+        this.yCoord = location.y();
+        this.zCoord = location.z();
     }
 }

@@ -73,11 +73,11 @@ public class RitualDivinerRender {
                                 ritualComponent.getX(direction),
                                 ritualComponent.y(),
                                 ritualComponent.getZ(direction)));
-                double minX = vX.x - posX;
-                double minY = vX.y - posY;
-                double minZ = vX.z - posZ;
+                double minX = vX.x() - posX;
+                double minY = vX.y() - posY;
+                double minZ = vX.z() - posZ;
 
-                if (!world.getBlock(vX.x, vX.y, vX.z).isOpaqueCube()) {
+                if (!world.getBlock(vX.x(), vX.y(), vX.z()).isOpaqueCube()) {
                     RenderFakeBlocks.drawFakeBlock(
                             vX,
                             ModBlocks.ritualStone,

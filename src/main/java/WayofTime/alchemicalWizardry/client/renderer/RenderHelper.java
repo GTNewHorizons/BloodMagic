@@ -261,11 +261,7 @@ public class RenderHelper {
         GL11.glScalef(1f / 8f, 1f / 8f, 1f / 8f);
 
         ResourceLocation test2 = new ResourceLocation("alchemicalwizardry", "textures/gui/container1.png");
-        GL11.glColor4f(
-                reagent.getColourRed() / 255f,
-                reagent.getColourGreen() / 255f,
-                reagent.getColourBlue() / 255f,
-                1.0F);
+        GL11.glColor4f(reagent.red() / 255f, reagent.green() / 255f, reagent.blue() / 255f, 1.0F);
         mc.getTextureManager().bindTexture(test2);
 
         drawTexturedModalRect(x, y + amount, 0, amount, 256, 256 - amount);

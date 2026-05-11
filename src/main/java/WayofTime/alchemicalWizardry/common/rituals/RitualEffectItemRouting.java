@@ -71,9 +71,9 @@ public class RitualEffectItemRouting extends RitualEffect {
                 if (posAndFacing == null) continue;
                 ForgeDirection inputDirection = posAndFacing.facing;
                 TileEntity outputTarget = world.getTileEntity(
-                        posAndFacing.location.xCoord,
-                        posAndFacing.location.yCoord,
-                        posAndFacing.location.zCoord);
+                        posAndFacing.location.x(),
+                        posAndFacing.location.y(),
+                        posAndFacing.location.z());
 
                 if (!(outputTarget instanceof IInventory outputInventory)) continue;
 
@@ -147,7 +147,7 @@ public class RitualEffectItemRouting extends RitualEffect {
         List<IInventory> chestList = new ArrayList<>();
         for (Int3 chestLocation : locations) {
             TileEntity tileEntity = world
-                    .getTileEntity(x + chestLocation.xCoord, y + chestLocation.yCoord, z + chestLocation.zCoord);
+                    .getTileEntity(x + chestLocation.x(), y + chestLocation.y(), z + chestLocation.z());
             if (tileEntity instanceof IInventory inv) {
                 chestList.add(inv);
             }

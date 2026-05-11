@@ -47,9 +47,9 @@ public class TEDemonChest extends TileEntityChest implements ITilePortalNode {
     }
 
     public TEDemonPortal getDemonPortal() {
-        TileEntity tile = worldObj.getTileEntity(portalLocation.xCoord, portalLocation.yCoord, portalLocation.zCoord);
-        if (tile instanceof TEDemonPortal) {
-            return (TEDemonPortal) tile;
+        TileEntity tile = worldObj.getTileEntity(portalLocation.x(), portalLocation.y(), portalLocation.z());
+        if (tile instanceof TEDemonPortal portal) {
+            return portal;
         }
         return null;
     }

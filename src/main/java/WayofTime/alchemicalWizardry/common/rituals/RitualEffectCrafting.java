@@ -87,20 +87,19 @@ public class RitualEffectCrafting extends RitualEffect {
                     int gridSpace = (i + 1) * 3 + (j + 1);
 
                     Int3 pos = this.getSlotPositionForDirection(gridSpace, direction);
-                    TileEntity inv = world.getTileEntity(x + pos.xCoord, y + pos.yCoord, z + pos.zCoord);
-                    if (inv instanceof IInventory) {
-                        if (((IInventory) inv).getSizeInventory() <= slotDesignation
-                                || !((IInventory) inv).isItemValidForSlot(
-                                        slotDesignation,
-                                        ((IInventory) inv).getStackInSlot(slotDesignation))) {
+                    TileEntity inv = world.getTileEntity(x + pos.x(), y + pos.y(), z + pos.z());
+                    if (inv instanceof IInventory iInventory) {
+                        if (iInventory.getSizeInventory() <= slotDesignation
+                                || !iInventory.isItemValidForSlot(
+                                slotDesignation,
+                                iInventory.getStackInSlot(slotDesignation))) {
                             continue;
-                        } else {
-                            ItemStack invStack = ((IInventory) inv).getStackInSlot(slotDesignation);
-                            if (invStack != null) {
-                                inventory.setInventorySlotContents(gridSpace, invStack);
-                                recipe[gridSpace] = invStack;
-                                canContinue = true;
-                            }
+                        }
+                        ItemStack invStack = iInventory.getStackInSlot(slotDesignation);
+                        if (invStack != null) {
+                            inventory.setInventorySlotContents(gridSpace, invStack);
+                            recipe[gridSpace] = invStack;
+                            canContinue = true;
                         }
                     }
                 }
@@ -317,11 +316,6 @@ public class RitualEffectCrafting extends RitualEffect {
                     world.markBlockForUpdate(x, y - 1, z - 2);
                     world.markBlockForUpdate(x + 2, y - 1, z);
                     world.markBlockForUpdate(x - 2, y - 1, z);
-
-                    // long endTime = System.nanoTime();
-                    //
-                    // long duration = (endTime - startTime); //divide by 1000000 to get milliseconds.
-                    // System.out.println("(Total) method time in ms: " + (float)(duration)/1000000.0);
                 }
             }
         }
@@ -354,11 +348,6 @@ public class RitualEffectCrafting extends RitualEffect {
         if (stack1 == null || stack2 == null) {
             return false;
         }
-        //
-        // if (stack1.isItemStackDamageable() ^ stack2.isItemStackDamageable())
-        // {
-        // return false;
-        // }
 
         return stack1.getItem() == stack2.getItem() && !stack1.getItem().getHasSubtypes()
                 || stack1.getItemDamage() == stack2.getItemDamage();

@@ -188,9 +188,9 @@ public class EntityMinorDemonGrunt extends EntityDemon implements IOccasionalRan
     public void onUpdate() {
         if (!this.enthralled) {
             TileEntity tile = this.worldObj
-                    .getTileEntity(this.demonPortal.xCoord, this.demonPortal.yCoord, this.demonPortal.zCoord);
-            if (tile instanceof TEDemonPortal) {
-                ((TEDemonPortal) tile).enthrallDemon(this);
+                    .getTileEntity(this.demonPortal.x(), this.demonPortal.y(), this.demonPortal.z());
+            if (tile instanceof TEDemonPortal portal) {
+                portal.enthrallDemon(this);
                 this.enthralled = true;
             } else if (tile instanceof IMasterRitualStone stone) {
                 LocalRitualStorage stor = stone.getLocalStorage();
@@ -260,10 +260,10 @@ public class EntityMinorDemonGrunt extends EntityDemon implements IOccasionalRan
     public boolean isSamePortal(IHoardDemon demon) {
         Int3 position = demon.getPortalLocation();
         TileEntity portal = worldObj
-                .getTileEntity(this.demonPortal.xCoord, this.demonPortal.yCoord, this.demonPortal.zCoord);
+                .getTileEntity(this.demonPortal.x(), this.demonPortal.y(), this.demonPortal.z());
 
         return portal instanceof TEDemonPortal
-                && portal == worldObj.getTileEntity(position.xCoord, position.yCoord, position.zCoord);
+                && portal == worldObj.getTileEntity(position.x(), position.y(), position.z());
     }
 
     @Override
