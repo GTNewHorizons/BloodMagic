@@ -81,26 +81,23 @@ public class RitualEffectLava extends RitualEffect {
         if (world.isAirBlock(x, y + 1, z) && !(block instanceof BlockSpectralContainer)) {
             if (currentEssence < this.getCostPerRefresh()) {
                 SoulNetworkHandler.causeNauseaToPlayer(owner);
-            } else {
-                for (int i = 0; i < 10; i++) {
-                    SpellHelper
-                            .sendIndexedParticleToAllAround(world, x, y, z, 20, world.provider.dimensionId, 3, x, y, z);
-                }
-
-                world.setBlock(x, y + 1, z, Blocks.lava, 0, 3);
-                SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
+                return;
             }
+            for (int i = 0; i < 10; i++) {
+                SpellHelper.sendIndexedParticleToAllAround(world, x, y, z, 20, world.provider.dimensionId, 3, x, y, z);
+            }
+
+            world.setBlock(x, y + 1, z, Blocks.lava, 0, 3);
+            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
         } else {
-            boolean hasSanctus = this.canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, false);
-            if (!hasSanctus) {
+            if (!this.canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, false)) {
                 return;
             }
             TileEntity tile = world.getTileEntity(x, y + 1, z);
-            if (tile instanceof IFluidHandler) {
-                int amount = ((IFluidHandler) tile)
-                        .fill(ForgeDirection.DOWN, new FluidStack(FluidRegistry.LAVA, 1000), false);
+            if (tile instanceof IFluidHandler handler) {
+                int amount = handler.fill(ForgeDirection.DOWN, new FluidStack(FluidRegistry.LAVA, 1000), false);
                 if (amount >= 1000) {
-                    ((IFluidHandler) tile).fill(ForgeDirection.DOWN, new FluidStack(FluidRegistry.LAVA, 1000), true);
+                    handler.fill(ForgeDirection.DOWN, new FluidStack(FluidRegistry.LAVA, 1000), true);
 
                     this.canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, true);
 

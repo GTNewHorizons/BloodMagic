@@ -28,41 +28,37 @@ public class RitualEffectVeilOfEvil extends RitualEffect {
 
         if (currentEssence < this.getCostPerRefresh()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            int horizRange = 32;
-            int vertRange = 32;
+            return;
+        }
+        int horizRange = 32;
+        int vertRange = 32;
 
-            int dimension = world.provider.dimensionId;
+        int dimension = world.provider.dimensionId;
 
-            if (AlchemicalWizardryEventHooks.forceSpawnMap.containsKey(dimension)) {
-                List<CoordAndRange> list = AlchemicalWizardryEventHooks.forceSpawnMap.get(dimension);
-                if (list != null) {
-                    if (!list.contains(new CoordAndRange(x, y, z, horizRange, vertRange))) {
-                        for (CoordAndRange coords : list) {
-                            int xLocation = coords.xCoord;
-                            int yLocation = coords.yCoord;
-                            int zLocation = coords.zCoord;
-
-                            if (xLocation == x && yLocation == y && zLocation == z) {
-                                list.remove(coords);
-                                break;
-                            }
+        if (AlchemicalWizardryEventHooks.forceSpawnMap.containsKey(dimension)) {
+            List<CoordAndRange> list = AlchemicalWizardryEventHooks.forceSpawnMap.get(dimension);
+            if (list != null) {
+                if (!list.contains(new CoordAndRange(x, y, z, horizRange, vertRange))) {
+                    for (CoordAndRange coords : list) {
+                        if (coords.xCoord == x && coords.yCoord == y && coords.zCoord == z) {
+                            list.remove(coords);
+                            break;
                         }
-                        list.add(new CoordAndRange(x, y, z, horizRange, vertRange));
                     }
-                } else {
-                    list = new LinkedList<>();
                     list.add(new CoordAndRange(x, y, z, horizRange, vertRange));
-                    AlchemicalWizardryEventHooks.forceSpawnMap.put(dimension, list);
                 }
             } else {
-                List<CoordAndRange> list = new LinkedList<>();
+                list = new LinkedList<>();
                 list.add(new CoordAndRange(x, y, z, horizRange, vertRange));
                 AlchemicalWizardryEventHooks.forceSpawnMap.put(dimension, list);
             }
-
-            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
+        } else {
+            List<CoordAndRange> list = new LinkedList<>();
+            list.add(new CoordAndRange(x, y, z, horizRange, vertRange));
+            AlchemicalWizardryEventHooks.forceSpawnMap.put(dimension, list);
         }
+
+        SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
     }
 
     @Override

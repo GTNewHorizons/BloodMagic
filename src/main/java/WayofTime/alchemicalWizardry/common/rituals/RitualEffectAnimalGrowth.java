@@ -40,7 +40,7 @@ public class RitualEffectAnimalGrowth extends RitualEffect {
 
         double range = 2;
 
-        AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(x, (double) y + 1, z, x + 1, y + 3, z + 1)
+        AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(x, y + 1, z, x + 1, y + 3, z + 1)
                 .expand(range, 0, range);
         List<EntityAgeable> list = world.getEntitiesWithinAABB(EntityAgeable.class, axisalignedbb);
 

@@ -43,20 +43,18 @@ public class RitualEffectFeatheredKnife extends RitualEffect {
         }
 
         IBloodAltar tileAltar = null;
-        boolean testFlag = false;
 
         for (int i = -5; i <= 5; i++) {
             for (int j = -5; j <= 5; j++) {
                 for (int k = -10; k <= 10; k++) {
-                    if (world.getTileEntity(x + i, y + k, z + j) instanceof IBloodAltar) {
-                        tileAltar = (IBloodAltar) world.getTileEntity(x + i, y + k, z + j);
-                        testFlag = true;
+                    if (world.getTileEntity(x + i, y + k, z + j) instanceof IBloodAltar altar) {
+                        tileAltar = altar;
                     }
                 }
             }
         }
 
-        if (!testFlag) {
+        if (tileAltar == null) {
             return;
         }
 
@@ -67,53 +65,46 @@ public class RitualEffectFeatheredKnife extends RitualEffect {
         List<EntityPlayer> list = SpellHelper.getPlayersInRange(world, x + 0.5, y + 0.5, z + 0.5, range, vertRange);
 
         int entityCount = 0;
-        boolean flag = false;
 
         if (currentEssence < this.getCostPerRefresh() * list.size()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            boolean hasMagicales = this
-                    .canDrainReagent(ritualStone, ReagentRegistry.magicalesReagent, magicalesDrain, false);
-            boolean hasSanctus = this.canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, false);
+            return;
+        }
+        boolean hasMagicales = this
+                .canDrainReagent(ritualStone, ReagentRegistry.magicalesReagent, magicalesDrain, false);
+        boolean hasSanctus = this.canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, false);
 
-            EntityPlayer ownerPlayer = SpellHelper.getPlayerForUsername(owner);
-            for (EntityPlayer player : list) {
-                hasSanctus = hasSanctus
-                        && this.canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, false);
-                double threshold = hasSanctus ? 0.7d : 0.3d;
+        EntityPlayer ownerPlayer = SpellHelper.getPlayerForUsername(owner);
+        for (EntityPlayer player : list) {
+            hasSanctus = hasSanctus
+                    && this.canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, false);
+            double threshold = hasSanctus ? 0.7d : 0.3d;
 
-                if (!hasMagicales || player == ownerPlayer) {
-                    if (!SpellHelper.isFakePlayer(world, player)) {
-                        if (player.getHealth() / player.getMaxHealth() > threshold) {
-                            player.setHealth(player.getHealth() - 1);
-                            entityCount++;
-                            tileAltar.sacrificialDaggerCall(this.amount, false);
-                            if (hasSanctus) {
-                                this.canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, true);
-                            }
-                            if (hasMagicales) {
-                                this.canDrainReagent(
-                                        ritualStone,
-                                        ReagentRegistry.magicalesReagent,
-                                        magicalesDrain,
-                                        true);
-                                break;
-                            }
-                        }
-                    }
-                }
+            if ((hasMagicales && player != ownerPlayer) || SpellHelper.isFakePlayer(world, player)
+                    || !(player.getHealth() / player.getMaxHealth() > threshold)) {
+                continue;
+            }
+            player.setHealth(player.getHealth() - 1);
+            entityCount++;
+            tileAltar.sacrificialDaggerCall(this.amount, false);
+            if (hasSanctus) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, true);
+            }
+            if (hasMagicales) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.magicalesReagent, magicalesDrain, true);
+                break;
+            }
+        }
+
+        if (entityCount > 0) {
+            if (hasReductus) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, true);
+            }
+            if (hasPotentia) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, true);
             }
 
-            if (entityCount > 0) {
-                if (hasReductus) {
-                    this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, true);
-                }
-                if (hasPotentia) {
-                    this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, true);
-                }
-
-                SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
-            }
+            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
         }
     }
 

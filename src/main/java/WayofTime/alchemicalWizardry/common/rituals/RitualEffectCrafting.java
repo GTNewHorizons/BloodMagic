@@ -53,268 +53,268 @@ public class RitualEffectCrafting extends RitualEffect {
 
         if (currentEssence < this.getCostPerRefresh()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
+            return;
+        }
+        NBTTagCompound tag = ritualStone.getCustomRitualTag();
+
+        if (tag == null) {
+            ritualStone.setCustomRitualTag(new NBTTagCompound());
+            tag = ritualStone.getCustomRitualTag();
+        }
+
+        boolean lastFailed = tag.getBoolean("didLastCraftFail");
+
+        int slotDesignation = tag.getInteger("slotDesignation");
+        if (lastFailed) {
+            slotDesignation++;
+            tag.setInteger("slotDesignation", slotDesignation);
+            tag.setBoolean("didLastCraftFail", false);
+        }
+        int direction = ritualStone.getDirection();
+
+        boolean canContinue = false;
+
+        ItemStack[] recipe = new ItemStack[9];
+        InventoryCrafting inventory = new InventoryCrafting(new Container() {
+
+            @Override
+            public boolean canInteractWith(EntityPlayer player) {
+                return false;
+            }
+        }, 3, 3);
+
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                int gridSpace = (i + 1) * 3 + (j + 1);
+
+                Int3 pos = this.getSlotPositionForDirection(gridSpace, direction);
+                TileEntity inv = world.getTileEntity(x + pos.x(), y + pos.y(), z + pos.z());
+                if (inv instanceof IInventory iInventory) {
+                    if (iInventory.getSizeInventory() <= slotDesignation || !iInventory
+                            .isItemValidForSlot(slotDesignation, iInventory.getStackInSlot(slotDesignation))) {
+                        continue;
+                    }
+                    ItemStack invStack = iInventory.getStackInSlot(slotDesignation);
+                    if (invStack != null) {
+                        inventory.setInventorySlotContents(gridSpace, invStack);
+                        recipe[gridSpace] = invStack;
+                        canContinue = true;
+                    }
+                }
+            }
+        }
+
+        if (!canContinue) {
+            tag.setInteger("slotDesignation", 0);
+            return;
+        }
+
+        ItemStack returnStack = CraftingManager.getInstance().findMatchingRecipe(inventory, world);
+
+        if (returnStack == null) {
+            tag.setBoolean("didLastCraftFail", true);
         } else {
-            NBTTagCompound tag = ritualStone.getCustomRitualTag();
 
-            if (tag == null) {
-                ritualStone.setCustomRitualTag(new NBTTagCompound());
-                tag = ritualStone.getCustomRitualTag();
-            }
+            IInventory outputInv = null;
 
-            boolean lastFailed = tag.getBoolean("didLastCraftFail");
+            List<IInventory> invList = new ArrayList<>();
 
-            int slotDesignation = tag.getInteger("slotDesignation");
-            if (lastFailed) {
-                slotDesignation++;
-                tag.setInteger("slotDesignation", slotDesignation);
-                tag.setBoolean("didLastCraftFail", false);
-            }
-            int direction = ritualStone.getDirection();
+            TileEntity northEntity = world.getTileEntity(x, y - 1, z - 2);
+            TileEntity southEntity = world.getTileEntity(x, y - 1, z + 2);
+            TileEntity eastEntity = world.getTileEntity(x + 2, y - 1, z);
+            TileEntity westEntity = world.getTileEntity(x - 2, y - 1, z);
 
-            boolean canContinue = false;
-
-            ItemStack[] recipe = new ItemStack[9];
-            InventoryCrafting inventory = new InventoryCrafting(new Container() {
-
-                @Override
-                public boolean canInteractWith(EntityPlayer player) {
-                    return false;
-                }
-            }, 3, 3);
-
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    int gridSpace = (i + 1) * 3 + (j + 1);
-
-                    Int3 pos = this.getSlotPositionForDirection(gridSpace, direction);
-                    TileEntity inv = world.getTileEntity(x + pos.x(), y + pos.y(), z + pos.z());
-                    if (inv instanceof IInventory iInventory) {
-                        if (iInventory.getSizeInventory() <= slotDesignation || !iInventory
-                                .isItemValidForSlot(slotDesignation, iInventory.getStackInSlot(slotDesignation))) {
-                            continue;
-                        }
-                        ItemStack invStack = iInventory.getStackInSlot(slotDesignation);
-                        if (invStack != null) {
-                            inventory.setInventorySlotContents(gridSpace, invStack);
-                            recipe[gridSpace] = invStack;
-                            canContinue = true;
-                        }
-                    }
-                }
-            }
-
-            if (!canContinue) {
-                tag.setInteger("slotDesignation", 0);
-                return;
-            }
-
-            ItemStack returnStack = CraftingManager.getInstance().findMatchingRecipe(inventory, world);
-
-            if (returnStack == null) {
-                tag.setBoolean("didLastCraftFail", true);
-            } else {
-
-                IInventory outputInv = null;
-
-                List<IInventory> invList = new ArrayList<>();
-
-                TileEntity northEntity = world.getTileEntity(x, y - 1, z - 2);
-                TileEntity southEntity = world.getTileEntity(x, y - 1, z + 2);
-                TileEntity eastEntity = world.getTileEntity(x + 2, y - 1, z);
-                TileEntity westEntity = world.getTileEntity(x - 2, y - 1, z);
-
-                switch (direction) {
-                    case 1 -> {
-                        if (southEntity instanceof IInventory out) {
-                            outputInv = out;
-                        } else {
-                            return;
-                        }
-
-                        if (northEntity instanceof IInventory inv) {
-                            invList.add(inv);
-                        }
-                        if (eastEntity instanceof IInventory inv) {
-                            invList.add(inv);
-                        }
-                        if (westEntity instanceof IInventory inv) {
-                            invList.add(inv);
-                        }
-                    }
-                    case 2 -> {
-                        if (westEntity instanceof IInventory out) {
-                            outputInv = out;
-                        } else {
-                            return;
-                        }
-
-                        if (northEntity instanceof IInventory inv) {
-                            invList.add(inv);
-                        }
-                        if (eastEntity instanceof IInventory inv) {
-                            invList.add(inv);
-                        }
-                        if (southEntity instanceof IInventory inv) {
-                            invList.add(inv);
-                        }
-                    }
-                    case 3 -> {
-                        if (northEntity instanceof IInventory out) {
-                            outputInv = out;
-                        } else {
-                            return;
-                        }
-
-                        if (eastEntity instanceof IInventory inv) {
-                            invList.add(inv);
-                        }
-                        if (southEntity instanceof IInventory inv) {
-                            invList.add(inv);
-                        }
-                        if (westEntity instanceof IInventory inv) {
-                            invList.add(inv);
-                        }
-                    }
-                    case 4 -> {
-                        if (eastEntity instanceof IInventory out) {
-                            outputInv = out;
-                        } else {
-                            return;
-                        }
-
-                        if (northEntity instanceof IInventory inv) {
-                            invList.add(inv);
-                        }
-                        if (southEntity instanceof IInventory inv) {
-                            invList.add(inv);
-                        }
-                        if (westEntity instanceof IInventory inv) {
-                            invList.add(inv);
-                        }
-                    }
-                }
-
-                if (outputInv != null) {
-                    if (!(!limitToSingleStack
-                            ? SpellHelper.canInsertStackFullyIntoInventory(returnStack, outputInv, ForgeDirection.DOWN)
-                            : SpellHelper.canInsertStackFullyIntoInventory(
-                                    returnStack,
-                                    outputInv,
-                                    ForgeDirection.DOWN,
-                                    true,
-                                    returnStack.getMaxStackSize()))) {
-                        tag.setBoolean("didLastCraftFail", true);
+            switch (direction) {
+                case 1 -> {
+                    if (southEntity instanceof IInventory out) {
+                        outputInv = out;
+                    } else {
                         return;
                     }
 
-                    if (this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false)) {
-                        invList.add(outputInv);
+                    if (northEntity instanceof IInventory inv) {
+                        invList.add(inv);
+                    }
+                    if (eastEntity instanceof IInventory inv) {
+                        invList.add(inv);
+                    }
+                    if (westEntity instanceof IInventory inv) {
+                        invList.add(inv);
+                    }
+                }
+                case 2 -> {
+                    if (westEntity instanceof IInventory out) {
+                        outputInv = out;
+                    } else {
+                        return;
                     }
 
-                    Map<Integer, Map<Integer, Integer>> syphonMap = new HashMap<>(); // Inventory, Slot, how much
-                                                                                     // claimed
+                    if (northEntity instanceof IInventory inv) {
+                        invList.add(inv);
+                    }
+                    if (eastEntity instanceof IInventory inv) {
+                        invList.add(inv);
+                    }
+                    if (southEntity instanceof IInventory inv) {
+                        invList.add(inv);
+                    }
+                }
+                case 3 -> {
+                    if (northEntity instanceof IInventory out) {
+                        outputInv = out;
+                    } else {
+                        return;
+                    }
 
-                    for (int n = 0; n < recipe.length; n++) // Look for the correct items
-                    {
-                        ItemStack recipeStack = recipe[n];
-                        if (recipeStack == null) {
+                    if (eastEntity instanceof IInventory inv) {
+                        invList.add(inv);
+                    }
+                    if (southEntity instanceof IInventory inv) {
+                        invList.add(inv);
+                    }
+                    if (westEntity instanceof IInventory inv) {
+                        invList.add(inv);
+                    }
+                }
+                case 4 -> {
+                    if (eastEntity instanceof IInventory out) {
+                        outputInv = out;
+                    } else {
+                        return;
+                    }
+
+                    if (northEntity instanceof IInventory inv) {
+                        invList.add(inv);
+                    }
+                    if (southEntity instanceof IInventory inv) {
+                        invList.add(inv);
+                    }
+                    if (westEntity instanceof IInventory inv) {
+                        invList.add(inv);
+                    }
+                }
+            }
+
+            if (outputInv != null) {
+                if (!(!limitToSingleStack
+                        ? SpellHelper.canInsertStackFullyIntoInventory(returnStack, outputInv, ForgeDirection.DOWN)
+                        : SpellHelper.canInsertStackFullyIntoInventory(
+                                returnStack,
+                                outputInv,
+                                ForgeDirection.DOWN,
+                                true,
+                                returnStack.getMaxStackSize()))) {
+                    tag.setBoolean("didLastCraftFail", true);
+                    return;
+                }
+
+                if (this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false)) {
+                    invList.add(outputInv);
+                }
+
+                Map<Integer, Map<Integer, Integer>> syphonMap = new HashMap<>(); // Inventory, Slot, how much
+                                                                                 // claimed
+
+                for (int n = 0; n < recipe.length; n++) // Look for the correct items
+                {
+                    ItemStack recipeStack = recipe[n];
+                    if (recipeStack == null) {
+                        continue;
+                    }
+
+                    boolean isItemTaken = false;
+
+                    for (int i = 0; i < invList.size(); i++) {
+                        if (isItemTaken) {
+                            break;
+                        }
+                        IInventory inputInv = invList.get(i);
+                        if (inputInv == null) {
                             continue;
                         }
 
-                        boolean isItemTaken = false;
-
-                        for (int i = 0; i < invList.size(); i++) {
-                            if (isItemTaken) {
-                                break;
-                            }
-                            IInventory inputInv = invList.get(i);
-                            if (inputInv == null) {
+                        for (int j = 0; j < inputInv.getSizeInventory(); j++) {
+                            if (!inputInv.isItemValidForSlot(j, recipeStack)) {
                                 continue;
                             }
 
-                            for (int j = 0; j < inputInv.getSizeInventory(); j++) {
-                                if (!inputInv.isItemValidForSlot(j, recipeStack)) {
-                                    continue;
-                                }
+                            ItemStack invItem = inputInv.getStackInSlot(j);
+                            if (invItem == null) {
+                                continue;
+                            }
 
-                                ItemStack invItem = inputInv.getStackInSlot(j);
-                                if (invItem == null) {
-                                    continue;
-                                }
+                            if (this.areItemsEqualForCrafting(recipeStack, invItem)) {
+                                // TODO
+                                inventory.setInventorySlotContents(n, invItem);
+                                // ItemStack returnedStack =
+                                // CraftingManager.getInstance().findMatchingRecipe(inventory, world);
+                                // if(returnedStack == null || returnedStack.getItem() == null
+                                // || returnedStack.getItem() != returnStack.getItem())
+                                // {
+                                // continue;
+                                // }
+                                Map<Integer, Integer> slotMap = syphonMap.computeIfAbsent(i, k -> new HashMap<>());
 
-                                if (this.areItemsEqualForCrafting(recipeStack, invItem)) {
-                                    // TODO
-                                    inventory.setInventorySlotContents(n, invItem);
-                                    // ItemStack returnedStack =
-                                    // CraftingManager.getInstance().findMatchingRecipe(inventory, world);
-                                    // if(returnedStack == null || returnedStack.getItem() == null
-                                    // || returnedStack.getItem() != returnStack.getItem())
-                                    // {
-                                    // continue;
-                                    // }
-                                    Map<Integer, Integer> slotMap = syphonMap.computeIfAbsent(i, k -> new HashMap<>());
-
-                                    if (slotMap.containsKey(j)) {
-                                        int syphoned = slotMap.get(j);
-                                        if (invItem.stackSize - syphoned > 0) {
-                                            slotMap.put(j, syphoned + 1);
-                                            isItemTaken = true;
-                                            break;
-                                        }
-                                    } else {
-                                        slotMap.put(j, 1);
+                                if (slotMap.containsKey(j)) {
+                                    int syphoned = slotMap.get(j);
+                                    if (invItem.stackSize - syphoned > 0) {
+                                        slotMap.put(j, syphoned + 1);
                                         isItemTaken = true;
                                         break;
                                     }
-                                }
-                            }
-                        }
-
-                        if (!isItemTaken) {
-                            tag.setBoolean("didLastCraftFail", true);
-                            return;
-                        }
-                    }
-
-                    /* The recipe is valid and the items have been found */
-
-                    SpellHelper.insertStackIntoInventory(
-                            CraftingManager.getInstance().findMatchingRecipe(inventory, world),
-                            outputInv,
-                            ForgeDirection.DOWN);
-
-                    for (Entry<Integer, Map<Integer, Integer>> entry1 : syphonMap.entrySet()) {
-                        IInventory inputInv = invList.get(entry1.getKey());
-                        for (Entry<Integer, Integer> entry2 : entry1.getValue().entrySet()) {
-                            ItemStack drainedStack = inputInv.getStackInSlot(entry2.getKey());
-                            Item item = drainedStack.getItem();
-                            if (item.hasContainerItem(drainedStack)) {
-                                inputInv.setInventorySlotContents(entry2.getKey(), item.getContainerItem(drainedStack));
-                            } else {
-                                drainedStack.stackSize -= entry2.getValue();
-                                if (drainedStack.stackSize <= 0) {
-                                    inputInv.setInventorySlotContents(entry2.getKey(), null);
+                                } else {
+                                    slotMap.put(j, 1);
+                                    isItemTaken = true;
+                                    break;
                                 }
                             }
                         }
                     }
 
-                    if (this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false)
-                            && syphonMap.containsKey(invList.size())) {
-                        this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, true);
+                    if (!isItemTaken) {
+                        tag.setBoolean("didLastCraftFail", true);
+                        return;
                     }
-
-                    SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
-
-                    if (hasPotentia) {
-                        this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, true);
-                    }
-
-                    world.markBlockForUpdate(x, y - 1, z + 2);
-                    world.markBlockForUpdate(x, y - 1, z - 2);
-                    world.markBlockForUpdate(x + 2, y - 1, z);
-                    world.markBlockForUpdate(x - 2, y - 1, z);
                 }
+
+                /* The recipe is valid and the items have been found */
+
+                SpellHelper.insertStackIntoInventory(
+                        CraftingManager.getInstance().findMatchingRecipe(inventory, world),
+                        outputInv,
+                        ForgeDirection.DOWN);
+
+                for (Entry<Integer, Map<Integer, Integer>> entry1 : syphonMap.entrySet()) {
+                    IInventory inputInv = invList.get(entry1.getKey());
+                    for (Entry<Integer, Integer> entry2 : entry1.getValue().entrySet()) {
+                        ItemStack drainedStack = inputInv.getStackInSlot(entry2.getKey());
+                        Item item = drainedStack.getItem();
+                        if (item.hasContainerItem(drainedStack)) {
+                            inputInv.setInventorySlotContents(entry2.getKey(), item.getContainerItem(drainedStack));
+                        } else {
+                            drainedStack.stackSize -= entry2.getValue();
+                            if (drainedStack.stackSize <= 0) {
+                                inputInv.setInventorySlotContents(entry2.getKey(), null);
+                            }
+                        }
+                    }
+                }
+
+                if (this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false)
+                        && syphonMap.containsKey(invList.size())) {
+                    this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, true);
+                }
+
+                SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
+
+                if (hasPotentia) {
+                    this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, true);
+                }
+
+                world.markBlockForUpdate(x, y - 1, z + 2);
+                world.markBlockForUpdate(x, y - 1, z - 2);
+                world.markBlockForUpdate(x + 2, y - 1, z);
+                world.markBlockForUpdate(x - 2, y - 1, z);
             }
         }
     }

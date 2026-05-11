@@ -158,7 +158,7 @@ public class SpellTeleport extends HomSpell {
         return i < 100;
     }
 
-    private static boolean teleportTo(EntityLivingBase entityLiving, double x, double y, double z, double lastX,
+    public static boolean teleportTo(EntityLivingBase entityLiving, double x, double y, double z, double lastX,
             double lastY, double lastZ) {
         EnderTeleportEvent event = new EnderTeleportEvent(entityLiving, x, y, z, 0);
 

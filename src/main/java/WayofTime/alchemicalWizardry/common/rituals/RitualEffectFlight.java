@@ -39,40 +39,36 @@ public class RitualEffectFlight extends RitualEffect {
         axis.maxY = 256;
         axis.minY = 0;
         List<EntityPlayer> entities = world.getEntitiesWithinAABB(EntityPlayer.class, axis);
-        int entityCount = 0;
+        int entityCount = entities.size();
 
         boolean hasAether = this.canDrainReagent(ritualStone, ReagentRegistry.aetherReagent, aetherDrain, false);
         boolean hasReductus = this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
 
+        if (currentEssence < this.getCostPerRefresh() * entityCount) {
+            SoulNetworkHandler.causeNauseaToPlayer(owner);
+            return;
+        }
+        entityCount = 0;
+        EntityPlayer ownerEntity = SpellHelper.getPlayerForUsername(owner);
         for (EntityPlayer entity : entities) {
+            if (hasReductus && entity != ownerEntity) {
+                continue;
+            }
+            entity.addPotionEffect(
+                    new PotionEffect(AlchemicalWizardry.customPotionFlight.id, hasAether ? 30 * 20 : 20, 0));
             entityCount++;
         }
 
-        if (currentEssence < this.getCostPerRefresh() * entityCount) {
-            SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            entityCount = 0;
-            EntityPlayer ownerEntity = SpellHelper.getPlayerForUsername(owner);
-            for (EntityPlayer entity : entities) {
-                if (hasReductus && entity != ownerEntity) {
-                    continue;
-                }
-                entity.addPotionEffect(
-                        new PotionEffect(AlchemicalWizardry.customPotionFlight.id, hasAether ? 30 * 20 : 20, 0));
-                entityCount++;
+        if (entityCount > 0 && world.getTotalWorldTime() % reagentCooldown == 0) {
+            if (hasAether) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.aetherReagent, aetherDrain, true);
             }
-
-            if (entityCount > 0 && world.getTotalWorldTime() % reagentCooldown == 0) {
-                if (hasAether) {
-                    this.canDrainReagent(ritualStone, ReagentRegistry.aetherReagent, aetherDrain, true);
-                }
-                if (hasReductus) {
-                    this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, true);
-                }
+            if (hasReductus) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, true);
             }
-
-            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
         }
+
+        SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
     }
 
     @Override

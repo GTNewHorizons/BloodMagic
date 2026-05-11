@@ -48,48 +48,46 @@ public class RitualEffectDemonPortal extends RitualEffect {
 
         if (currentEssence < this.getCostPerRefresh()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            NBTTagCompound tag = ritualStone.getCustomRitualTag();
+            return;
+        }
+        NBTTagCompound tag = ritualStone.getCustomRitualTag();
 
-            boolean reagentsFulfilled = true;
+        boolean reagentsFulfilled = true;
 
-            for (Reagent reagent : reagents) {
-                int reagentAmount = tag.getInteger(ReagentRegistry.getKeyForReagent(reagent));
-                if (reagentAmount < neededAmount) {
-                    reagentsFulfilled = false;
-                    // System.out.println("Reagents not fulfilled. Missing: " +
-                    // ReagentRegistry.getKeyForReagent(reagent));
-                    int drainAmount = Math.min(drainRate, neededAmount - reagentAmount);
+        for (Reagent reagent : reagents) {
+            int reagentAmount = tag.getInteger(ReagentRegistry.getKeyForReagent(reagent));
+            if (reagentAmount < neededAmount) {
+                reagentsFulfilled = false;
+                int drainAmount = Math.min(drainRate, neededAmount - reagentAmount);
 
-                    if (drainAmount <= 0) {
-                        continue;
+                if (drainAmount <= 0) {
+                    continue;
+                }
+
+                if (this.canDrainReagent(ritualStone, reagent, drainAmount, true)) {
+                    if (rand.nextInt(10) == 0) {
+                        this.createRandomLightning(world, x, y, z);
                     }
+                    reagentAmount += drainAmount;
 
-                    if (this.canDrainReagent(ritualStone, reagent, drainAmount, true)) {
-                        if (rand.nextInt(10) == 0) {
-                            this.createRandomLightning(world, x, y, z);
-                        }
-                        reagentAmount += drainAmount;
-
-                        tag.setInteger(ReagentRegistry.getKeyForReagent(reagent), reagentAmount);
-                        break;
-                    }
+                    tag.setInteger(ReagentRegistry.getKeyForReagent(reagent), reagentAmount);
+                    break;
                 }
             }
-
-            ritualStone.setCustomRitualTag(tag);
-
-            if (reagentsFulfilled && checkCreatePortal(ritualStone)) {
-                world.setBlock(x, y + 1, z, ModBlocks.blockDemonPortal);
-
-                TEDemonPortal portal = (TEDemonPortal) world.getTileEntity(x, y + 1, z);
-                portal.start();
-
-                ritualStone.setActive(false);
-            }
-
-            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
         }
+
+        ritualStone.setCustomRitualTag(tag);
+
+        if (reagentsFulfilled && checkCreatePortal(ritualStone)) {
+            world.setBlock(x, y + 1, z, ModBlocks.blockDemonPortal);
+
+            TEDemonPortal portal = (TEDemonPortal) world.getTileEntity(x, y + 1, z);
+            portal.start();
+
+            ritualStone.setActive(false);
+        }
+
+        SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
     }
 
     public boolean checkCreatePortal(IMasterRitualStone ritualStone) {

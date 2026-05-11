@@ -118,11 +118,10 @@ public class RitualEffectWater extends RitualEffect {
                 return;
             }
             TileEntity tile = world.getTileEntity(x, y + 1, z);
-            if (tile instanceof IFluidHandler) {
-                int amount = ((IFluidHandler) tile)
-                        .fill(ForgeDirection.DOWN, new FluidStack(FluidRegistry.WATER, 1000), false);
+            if (tile instanceof IFluidHandler handler) {
+                int amount = handler.fill(ForgeDirection.DOWN, new FluidStack(FluidRegistry.WATER, 1000), false);
                 if (amount >= 1000) {
-                    ((IFluidHandler) tile).fill(ForgeDirection.DOWN, new FluidStack(FluidRegistry.WATER, 1000), true);
+                    handler.fill(ForgeDirection.DOWN, new FluidStack(FluidRegistry.WATER, 1000), true);
 
                     this.canDrainReagent(ritualStone, ReagentRegistry.sanctusReagent, sanctusDrain, true);
 

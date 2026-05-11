@@ -84,88 +84,81 @@ public class RitualEffectMagnetic extends RitualEffect {
 
         if (currentEssence < this.getCostPerRefresh()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            int xRep = 0;
-            int yRep = 0;
-            int zRep = 0;
-            boolean replace = false;
+            return;
+        }
+        int xRep = 0;
+        int yRep = 0;
+        int zRep = 0;
+        boolean replace = false;
 
-            outer: for (int j = 1; j <= 3; j++) {
-                for (int i = -1; i <= 1; i++) {
-                    for (int k = -1; k <= 1; k++) {
-                        if (world.isAirBlock(x + i, y + j, z + k)) {
-                            xRep = x + i;
-                            yRep = y + j;
-                            zRep = z + k;
-                            replace = true;
-                            break outer;
-                        }
+        outer: for (int j = 1; j <= 3; j++) {
+            for (int i = -1; i <= 1; i++) {
+                for (int k = -1; k <= 1; k++) {
+                    if (world.isAirBlock(x + i, y + j, z + k)) {
+                        xRep = x + i;
+                        yRep = y + j;
+                        zRep = z + k;
+                        replace = true;
+                        break outer;
                     }
                 }
             }
+        }
 
-            if (replace) {
-                Int3 lastPos = this.getLastPosition(ritualStone.getCustomRitualTag());
+        if (replace) {
+            Int3 lastPos = this.getLastPosition(ritualStone.getCustomRitualTag());
 
-                int j = y - 1;
-                int i = 0;
-                int k = 0;
+            int height = y - 1;
+            int i = 0;
+            int k = 0;
 
-                if (lastPos != null) {
-                    j = lastPos.y();
-                    i = Math.min(radius, Math.max(-radius, lastPos.x()));
-                    k = Math.min(radius, Math.max(-radius, lastPos.z()));
-                }
-
-                while (j >= 0) {
-                    while (i <= radius) {
-                        while (k <= radius) {
-                            Block block = world.getBlock(x + i, j, z + k);
-                            int meta = world.getBlockMetadata(x + i, j, z + k);
-
-                            if (isBlockOre(block, meta)) {
-                                // Allow swapping code. This means the searched block is an ore.
-                                BlockTeleposer.swapBlocks(this, world, world, x + i, j, z + k, xRep, yRep, zRep);
-                                SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
-
-                                if (hasPotentia) {
-                                    this.canDrainReagent(
-                                            ritualStone,
-                                            ReagentRegistry.potentiaReagent,
-                                            potentiaDrain,
-                                            true);
-                                }
-
-                                if (hasTerrae) {
-                                    this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, terraeDrain, true);
-                                }
-
-                                if (hasOrbisTerrae) {
-                                    this.canDrainReagent(
-                                            ritualStone,
-                                            ReagentRegistry.orbisTerraeReagent,
-                                            orbisTerraeDrain,
-                                            true);
-                                }
-
-                                this.setLastPosition(ritualStone.getCustomRitualTag(), new Int3(i, j, k));
-
-                                return;
-                            }
-                            k++;
-                        }
-                        k = -radius;
-                        i++;
-                    }
-                    i = -radius;
-                    j--;
-                    this.setLastPosition(ritualStone.getCustomRitualTag(), new Int3(i, j, k));
-                    return;
-                }
-
-                j = y - 1;
-                this.setLastPosition(ritualStone.getCustomRitualTag(), new Int3(i, j, k));
+            if (lastPos != null) {
+                height = lastPos.y();
+                i = Math.min(radius, Math.max(-radius, lastPos.x()));
+                k = Math.min(radius, Math.max(-radius, lastPos.z()));
             }
+
+            if (height < 1) {
+                height = y - 1;
+                this.setLastPosition(ritualStone.getCustomRitualTag(), new Int3(i, height, k));
+            }
+            while (i <= radius) {
+                while (k <= radius) {
+                    Block block = world.getBlock(x + i, height, z + k);
+                    int meta = world.getBlockMetadata(x + i, height, z + k);
+
+                    if (isBlockOre(block, meta)) {
+                        // Allow swapping code. This means the searched block is an ore.
+                        BlockTeleposer.swapBlocks(this, world, world, x + i, height, z + k, xRep, yRep, zRep);
+                        SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
+
+                        if (hasPotentia) {
+                            this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, true);
+                        }
+
+                        if (hasTerrae) {
+                            this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, terraeDrain, true);
+                        }
+
+                        if (hasOrbisTerrae) {
+                            this.canDrainReagent(
+                                    ritualStone,
+                                    ReagentRegistry.orbisTerraeReagent,
+                                    orbisTerraeDrain,
+                                    true);
+                        }
+
+                        this.setLastPosition(ritualStone.getCustomRitualTag(), new Int3(i, height, k));
+                        return;
+                    }
+                    k++;
+                }
+                k = -radius;
+                i++;
+            }
+            i = -radius;
+            height--;
+            this.setLastPosition(ritualStone.getCustomRitualTag(), new Int3(i, height, k));
         }
     }
 

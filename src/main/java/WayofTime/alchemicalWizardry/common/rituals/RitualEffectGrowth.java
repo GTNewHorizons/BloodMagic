@@ -35,80 +35,75 @@ public class RitualEffectGrowth extends RitualEffect {
 
         if (currentEssence < this.getCostPerRefresh() * 9) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            boolean hasTerrae = this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, terraeDrain, false);
-            boolean hasOrbisTerrae = this
-                    .canDrainReagent(ritualStone, ReagentRegistry.orbisTerraeReagent, orbisTerraeDrain, false);
-            boolean hasVirtus = this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false);
+            return;
+        }
+        boolean hasTerrae = this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, terraeDrain, false);
+        boolean hasOrbisTerrae = this
+                .canDrainReagent(ritualStone, ReagentRegistry.orbisTerraeReagent, orbisTerraeDrain, false);
+        boolean hasVirtus = this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false);
 
-            int speed = this.getSpeedForReagents(hasTerrae, hasOrbisTerrae);
-            if (world.getTotalWorldTime() % speed != 0) {
-                return;
-            }
+        int speed = this.getSpeedForReagents(hasTerrae, hasOrbisTerrae);
+        if (world.getTotalWorldTime() % speed != 0) {
+            return;
+        }
 
-            if (this.canDrainReagent(ritualStone, ReagentRegistry.aquasalusReagent, aquasalusDrain, false)) {
-                int hydrationRange = hasVirtus ? 4 : 1;
-                for (int i = -hydrationRange; i <= hydrationRange; i++) {
-                    for (int j = -hydrationRange; j <= hydrationRange; j++) {
-                        for (int k = -hydrationRange; k <= hydrationRange; k++) {
+        if (this.canDrainReagent(ritualStone, ReagentRegistry.aquasalusReagent, aquasalusDrain, false)) {
+            int hydrationRange = hasVirtus ? 4 : 1;
+            for (int i = -hydrationRange; i <= hydrationRange; i++) {
+                for (int j = -hydrationRange; j <= hydrationRange; j++) {
+                    for (int k = -hydrationRange; k <= hydrationRange; k++) {
 
-                            if (this.canDrainReagent(
-                                    ritualStone,
-                                    ReagentRegistry.aquasalusReagent,
-                                    aquasalusDrain,
-                                    false)) {
-                                if (SpellHelper.hydrateSoil(world, x + i, y + k, z + j)) {
-                                    this.canDrainReagent(
-                                            ritualStone,
-                                            ReagentRegistry.aquasalusReagent,
-                                            aquasalusDrain,
-                                            true);
-                                }
+                        if (this.canDrainReagent(
+                                ritualStone,
+                                ReagentRegistry.aquasalusReagent,
+                                aquasalusDrain,
+                                false)) {
+                            if (SpellHelper.hydrateSoil(world, x + i, y + k, z + j)) {
+                                this.canDrainReagent(
+                                        ritualStone,
+                                        ReagentRegistry.aquasalusReagent,
+                                        aquasalusDrain,
+                                        true);
                             }
                         }
                     }
                 }
             }
+        }
 
-            int flag = 0;
+        int count = 0;
 
-            int range = hasVirtus ? 4 : 1;
-            for (int i = -range; i <= range; i++) {
-                for (int j = -range; j <= range; j++) {
-
-                    for (int k = -range; k <= range; k++) {
-
-                        Block block = world.getBlock(x + i, y + k, z + j);
-
-                        if (block instanceof IPlantable || block instanceof IGrowable) {
-                            {
-                                SpellHelper.sendIndexedParticleToAllAround(
-                                        world,
-                                        x,
-                                        y,
-                                        z,
-                                        20,
-                                        world.provider.dimensionId,
-                                        3,
-                                        x,
-                                        y,
-                                        z);
-                                block.updateTick(world, x + i, y + k, z + j, world.rand);
-                                flag++;
-                            }
-                        }
+        int range = hasVirtus ? 4 : 1;
+        for (int i = -range; i <= range; i++) {
+            for (int j = -range; j <= range; j++) {
+                for (int k = -range; k <= range; k++) {
+                    Block block = world.getBlock(x + i, y + k, z + j);
+                    if (block instanceof IPlantable || block instanceof IGrowable) {
+                        SpellHelper.sendIndexedParticleToAllAround(
+                                world,
+                                x,
+                                y,
+                                z,
+                                20,
+                                world.provider.dimensionId,
+                                3,
+                                x,
+                                y,
+                                z);
+                        block.updateTick(world, x + i, y + k, z + j, world.rand);
+                        count++;
                     }
                 }
             }
+        }
 
-            if (flag > 0) {
-                if (hasTerrae) this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, terraeDrain, true);
-                if (hasOrbisTerrae)
-                    this.canDrainReagent(ritualStone, ReagentRegistry.orbisTerraeReagent, orbisTerraeDrain, true);
-                if (hasVirtus) this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, true);
+        if (count > 0) {
+            if (hasTerrae) this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, terraeDrain, true);
+            if (hasOrbisTerrae)
+                this.canDrainReagent(ritualStone, ReagentRegistry.orbisTerraeReagent, orbisTerraeDrain, true);
+            if (hasVirtus) this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, true);
 
-                SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * flag);
-            }
+            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * count);
         }
     }
 

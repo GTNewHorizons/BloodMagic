@@ -2,19 +2,13 @@ package WayofTime.alchemicalWizardry.common.rituals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentRegistry;
@@ -44,82 +38,73 @@ public class RitualEffectExpulsion extends RitualEffect {
 
         if (currentEssence < this.getCostPerRefresh()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            boolean hasVirtus = this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false);
-            boolean hasPotentia = this
-                    .canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, false);
+            return;
+        }
+        boolean hasVirtus = this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false);
+        boolean hasPotentia = this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, false);
 
-            int teleportDistance = hasVirtus ? 300 : 100;
-            int range = hasPotentia ? 50 : 25;
-            List<EntityPlayer> playerList = SpellHelper
-                    .getPlayersInRange(world, x + 0.5, y + 0.5, z + 0.5, range, range);
-            boolean flag = false;
+        int teleportDistance = hasVirtus ? 300 : 100;
+        int range = hasPotentia ? 50 : 25;
+        List<EntityPlayer> playerList = SpellHelper.getPlayersInRange(world, x + 0.5, y + 0.5, z + 0.5, range, range);
+        boolean teleported = false;
 
-            TileEntity tile = world.getTileEntity(x, y + 1, z);
-            IInventory inventoryTile = null;
-            if (tile instanceof IInventory) {
-                inventoryTile = (IInventory) tile;
+        TileEntity tile = world.getTileEntity(x, y + 1, z);
+        IInventory inventoryTile = null;
+        if (tile instanceof IInventory inv) {
+            inventoryTile = inv;
+        }
+
+        players: for (EntityPlayer entityplayer : playerList) {
+            if (entityplayer.capabilities.isCreativeMode) {
+                continue;
             }
-
-            for (EntityPlayer entityplayer : playerList) {
-                if (entityplayer.capabilities.isCreativeMode) {
-                    continue;
-                }
-                String playerString = SpellHelper.getUsername(entityplayer);
-                if (!playerString.equals(owner)) {
-                    if (inventoryTile != null) {
-                        boolean test = false;
-                        for (int i = 0; i < inventoryTile.getSizeInventory(); i++) {
-                            ItemStack stack = inventoryTile.getStackInSlot(i);
-                            if (stack != null && stack.getItem() instanceof IBindable
-                                    && IBindable.getOwnerName(stack).equals(playerString)) {
-                                test = true;
-                            }
-                        }
-
-                        if (test) {
-                            continue;
+            String playerString = SpellHelper.getUsername(entityplayer);
+            if (!playerString.equals(owner)) {
+                if (inventoryTile != null) {
+                    for (int i = 0; i < inventoryTile.getSizeInventory(); i++) {
+                        ItemStack stack = inventoryTile.getStackInSlot(i);
+                        if (stack != null && stack.getItem() instanceof IBindable
+                                && IBindable.getOwnerName(stack).equals(playerString)) {
+                            continue players;
                         }
                     }
-                    flag = teleportRandomly(entityplayer, teleportDistance) || flag;
                 }
-            }
-
-            if (flag) {
-                if (hasVirtus) {
-                    this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, true);
-                }
-
-                if (hasPotentia) {
-                    this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, true);
-                }
-
-                SoulNetworkHandler.syphonFromNetwork(owner, getCostPerRefresh());
+                teleported = SpellTeleport.teleportRandomly(entityplayer, teleportDistance) || teleported;
             }
         }
 
-        boolean hasTennebrae = this
-                .canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, false);
-        if (hasTennebrae && SoulNetworkHandler.canSyphonFromOnlyNetwork(owner, 1000)) {
-            boolean hasVirtus = this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false);
-            boolean hasPotentia = this
-                    .canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, false);
+        if (teleported) {
+            if (hasVirtus) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, true);
+            }
 
-            int teleportDistance = hasVirtus ? 300 : 100;
-            int range = hasPotentia ? 50 : 25;
+            if (hasPotentia) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, true);
+            }
+
+            SoulNetworkHandler.syphonFromNetwork(owner, getCostPerRefresh());
+        }
+
+        if (this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, false)
+                && SoulNetworkHandler.canSyphonFromOnlyNetwork(owner, 1000)) {
+            hasVirtus = this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false);
+            hasPotentia = this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, false);
+
+            teleportDistance = hasVirtus ? 300 : 100;
+            range = hasPotentia ? 50 : 25;
             List<EntityLivingBase> livingList = SpellHelper
                     .getLivingEntitiesInRange(world, x + 0.5, y + 0.5, z + 0.5, range, range);
-            boolean flag = false;
+            teleported = false;
 
             for (EntityLivingBase livingEntity : livingList) {
                 if (livingEntity instanceof EntityPlayer) {
                     continue;
                 }
 
-                flag = teleportRandomly(livingEntity, teleportDistance) || flag;
+                teleported = SpellTeleport.teleportRandomly(livingEntity, teleportDistance) || teleported;
             }
 
-            if (flag) {
+            if (teleported) {
                 if (hasVirtus) {
                     this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, true);
                 }
@@ -138,111 +123,6 @@ public class RitualEffectExpulsion extends RitualEffect {
     @Override
     public int getCostPerRefresh() {
         return AlchemicalWizardry.ritualCostExpulsion[1];
-    }
-
-    public boolean teleportRandomly(EntityLivingBase entityLiving, double distance) {
-        if (entityLiving instanceof EntityPlayer player) {
-            if (player.capabilities.isCreativeMode) return false;
-        }
-
-        double x = entityLiving.posX;
-        double y = entityLiving.posY;
-        double z = entityLiving.posZ;
-        Random rand = new Random();
-        double d0 = x + (rand.nextDouble() - 0.5D) * distance;
-        double d1 = y + (rand.nextInt((int) distance) - (distance) / 2);
-        double d2 = z + (rand.nextDouble() - 0.5D) * distance;
-        int i = 0;
-
-        while (!teleportTo(entityLiving, d0, d1, d2, x, y, z) && i < 100) {
-            d0 = x + (rand.nextDouble() - 0.5D) * distance;
-            d1 = y + (rand.nextInt((int) distance) - (distance) / 2);
-            d2 = z + (rand.nextDouble() - 0.5D) * distance;
-            i++;
-        }
-
-        return i < 100;
-    }
-
-    public boolean teleportTo(EntityLivingBase entityLiving, double par1, double par3, double par5, double lastX,
-            double lastY, double lastZ) {
-        EnderTeleportEvent event = new EnderTeleportEvent(entityLiving, par1, par3, par5, 0);
-
-        if (MinecraftForge.EVENT_BUS.post(event)) {
-            return false;
-        }
-
-        SpellTeleport.moveEntityViaTeleport(entityLiving, event.targetX, event.targetY, event.targetZ);
-        boolean flag = false;
-        int i = MathHelper.floor_double(entityLiving.posX);
-        int j = MathHelper.floor_double(entityLiving.posY);
-        int k = MathHelper.floor_double(entityLiving.posZ);
-        int l;
-
-        if (entityLiving.worldObj.blockExists(i, j, k)) {
-            boolean flag1 = false;
-
-            while (!flag1 && j > 0) {
-                Block block = entityLiving.worldObj.getBlock(i, j - 1, k);
-
-                if (block != null && block.getMaterial().blocksMovement()) {
-                    flag1 = true;
-                } else {
-                    --entityLiving.posY;
-                    --j;
-                }
-            }
-
-            if (flag1) {
-                SpellTeleport
-                        .moveEntityViaTeleport(entityLiving, entityLiving.posX, entityLiving.posY, entityLiving.posZ);
-
-                if (entityLiving.worldObj.getCollidingBoundingBoxes(entityLiving, entityLiving.boundingBox).isEmpty()
-                        && !entityLiving.worldObj.isAnyLiquid(entityLiving.boundingBox)) {
-                    flag = true;
-                }
-            }
-        }
-
-        if (!flag) {
-            SpellTeleport.moveEntityViaTeleport(entityLiving, lastX, lastY, lastZ);
-            return false;
-        } else {
-            short short1 = 128;
-
-            for (l = 0; l < short1; ++l) {
-                double d6 = (double) l / ((double) short1 - 1.0D);
-                float f = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                float f1 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                float f2 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                double d7 = lastX + (entityLiving.posX - lastX) * d6
-                        + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
-                double d8 = lastY + (entityLiving.posY - lastY) * d6
-                        + entityLiving.worldObj.rand.nextDouble() * (double) entityLiving.height;
-                double d9 = lastZ + (entityLiving.posZ - lastZ) * d6
-                        + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
-                entityLiving.worldObj.spawnParticle("portal", d7, d8, d9, f, f1, f2);
-            }
-            return true;
-        }
-    }
-
-    public void moveEntityViaTeleport(EntityLivingBase entityLiving, double x, double y, double z) {
-        if (entityLiving instanceof EntityPlayer) {
-            if (entityLiving instanceof EntityPlayerMP entityplayermp) {
-
-                EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x, y, z, 5.0F);
-
-                if (!MinecraftForge.EVENT_BUS.post(event)) {
-                    if (entityLiving.isRiding()) {
-                        entityLiving.mountEntity(null);
-                    }
-                    entityLiving.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
-                }
-            }
-        } else if (entityLiving != null) {
-            entityLiving.setPosition(x, y, z);
-        }
     }
 
     @Override

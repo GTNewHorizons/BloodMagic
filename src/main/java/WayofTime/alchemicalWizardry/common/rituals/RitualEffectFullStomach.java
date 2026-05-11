@@ -8,7 +8,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.FoodStats;
 import net.minecraft.world.World;
 
@@ -47,50 +46,47 @@ public class RitualEffectFullStomach extends RitualEffect {
 
         if (currentEssence < this.getCostPerRefresh() * playerList.size()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            TileEntity tile = world.getTileEntity(x, y + 1, z);
-            IInventory inventory = null;
-            if (tile instanceof IInventory) {
-                inventory = (IInventory) tile;
-            } else {
-                tile = world.getTileEntity(x, y - 1, z);
-                if (tile instanceof IInventory) {
-                    inventory = (IInventory) tile;
-                }
-            }
+            return;
+        }
+        IInventory inventory = null;
+        if (world.getTileEntity(x, y + 1, z) instanceof IInventory inv) {
+            inventory = inv;
+        } else if (world.getTileEntity(x, y - 1, z) instanceof IInventory inv) {
+            inventory = inv;
+        }
 
-            int count = 0;
+        if (inventory == null) {
+            return;
+        }
 
-            if (inventory != null) {
-                for (EntityPlayer player : playerList) {
-                    FoodStats foodStats = player.getFoodStats();
-                    float satLevel = foodStats.getSaturationLevel();
+        int count = 0;
+        for (EntityPlayer player : playerList) {
+            FoodStats foodStats = player.getFoodStats();
+            float satLevel = foodStats.getSaturationLevel();
 
-                    for (int i = 0; i < inventory.getSizeInventory(); i++) {
-                        ItemStack stack = inventory.getStackInSlot(i);
+            for (int i = 0; i < inventory.getSizeInventory(); i++) {
+                ItemStack stack = inventory.getStackInSlot(i);
 
-                        if (stack != null && stack.getItem() instanceof ItemFood foodItem) {
+                if (stack != null && stack.getItem() instanceof ItemFood foodItem) {
 
-                            int regularHeal = foodItem.func_150905_g(stack);
-                            float saturatedHeal = foodItem.func_150906_h(stack) * regularHeal * 2.0f;
+                    int regularHeal = foodItem.func_150905_g(stack);
+                    float saturatedHeal = foodItem.func_150906_h(stack) * regularHeal * 2.0f;
 
-                            if (saturatedHeal + satLevel <= 20) {
-                                NBTTagCompound nbt = new NBTTagCompound();
-                                foodStats.writeNBT(nbt);
-                                nbt.setFloat("foodSaturationLevel", saturatedHeal + satLevel);
-                                foodStats.readNBT(nbt);
+                    if (saturatedHeal + satLevel <= 20) {
+                        NBTTagCompound nbt = new NBTTagCompound();
+                        foodStats.writeNBT(nbt);
+                        nbt.setFloat("foodSaturationLevel", saturatedHeal + satLevel);
+                        foodStats.readNBT(nbt);
 
-                                inventory.decrStackSize(i, 1);
-                                count++;
-                                break;
-                            }
-                        }
+                        inventory.decrStackSize(i, 1);
+                        count++;
+                        break;
                     }
                 }
             }
-
-            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * count);
         }
+
+        SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * count);
     }
 
     @Override

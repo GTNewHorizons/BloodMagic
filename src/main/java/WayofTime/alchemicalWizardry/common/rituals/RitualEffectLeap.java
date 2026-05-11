@@ -93,39 +93,31 @@ public class RitualEffectLeap extends RitualEffect {
             livingEntity.fallDistance = 0;
             count++;
 
-            if (livingEntity instanceof EntityPlayer) {
+            if (livingEntity instanceof EntityPlayer player) {
                 switch (direction) {
-                    case 1:
-                        SpellHelper.setPlayerSpeedFromServer((EntityPlayer) livingEntity, 0, motionY, -speed);
-                        break;
-                    case 2:
-                        SpellHelper.setPlayerSpeedFromServer((EntityPlayer) livingEntity, speed, motionY, 0);
-                        break;
-                    case 3:
-                        SpellHelper.setPlayerSpeedFromServer((EntityPlayer) livingEntity, 0, motionY, speed);
-                        break;
-                    case 4:
-                        SpellHelper.setPlayerSpeedFromServer((EntityPlayer) livingEntity, -speed, motionY, 0);
-                        break;
+                    case 1 -> SpellHelper.setPlayerSpeedFromServer(player, 0, motionY, -speed);
+                    case 2 -> SpellHelper.setPlayerSpeedFromServer(player, speed, motionY, 0);
+                    case 3 -> SpellHelper.setPlayerSpeedFromServer(player, 0, motionY, speed);
+                    case 4 -> SpellHelper.setPlayerSpeedFromServer(player, -speed, motionY, 0);
                 }
             } else {
                 switch (direction) {
-                    case 1:
+                    case 1 -> {
                         livingEntity.motionX = 0.0;
                         livingEntity.motionZ = -speed;
-                        break;
-                    case 2:
+                    }
+                    case 2 -> {
                         livingEntity.motionX = speed;
                         livingEntity.motionZ = 0.0;
-                        break;
-                    case 3:
+                    }
+                    case 3 -> {
                         livingEntity.motionX = 0.0;
                         livingEntity.motionZ = speed;
-                        break;
-                    case 4:
+                    }
+                    case 4 -> {
                         livingEntity.motionX = -speed;
                         livingEntity.motionZ = 0.0;
-                        break;
+                    }
                 }
 
                 if (hasTenebrae) {

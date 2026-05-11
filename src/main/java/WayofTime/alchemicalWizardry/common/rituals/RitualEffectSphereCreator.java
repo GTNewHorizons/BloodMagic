@@ -40,8 +40,6 @@ public class RitualEffectSphereCreator extends RitualEffect {
         // boolean hasPotentia = this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent,
         // potentiaDrain, false);
 
-        world.getTotalWorldTime();
-
         if (currentEssence < this.getCostPerRefresh()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
         } else {
@@ -51,7 +49,7 @@ public class RitualEffectSphereCreator extends RitualEffect {
             }
 
             int negYOffset = 0;
-            int radius = 0;
+            int radius;
 
             int invSize = inv.getSizeInventory();
             if (invSize < 1) {

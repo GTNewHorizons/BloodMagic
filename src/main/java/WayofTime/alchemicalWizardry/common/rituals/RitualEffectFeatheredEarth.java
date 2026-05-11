@@ -52,33 +52,29 @@ public class RitualEffectFeatheredEarth extends RitualEffect // Nullifies all fa
         List<EntityLivingBase> entities = world.getEntitiesWithinAABB(
                 EntityLivingBase.class,
                 AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 1, z + 1).expand(range, verticalRange, range));
-        int entityCount = 0;
+        int entityCount = entities.size();
         boolean flag = false;
-
-        for (EntityLivingBase entity : entities) {
-            entityCount++;
-        }
 
         if (currentEssence < this.getCostPerRefresh() * entityCount) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            for (EntityLivingBase entity : entities) {
-                entity.fallDistance = 0;
-                flag = true;
+            return;
+        }
+        for (EntityLivingBase entity : entities) {
+            entity.fallDistance = 0;
+            flag = true;
+        }
+
+        SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
+
+        if (flag && world.getTotalWorldTime() % costCooldown == 0) {
+            if (hasTerrae) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, terraeDrain, true);
             }
-
-            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
-
-            if (flag && world.getTotalWorldTime() % costCooldown == 0) {
-                if (hasTerrae) {
-                    this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, terraeDrain, true);
-                }
-                if (hasOrbisTerrae) {
-                    this.canDrainReagent(ritualStone, ReagentRegistry.orbisTerraeReagent, orbisTerraeDrain, true);
-                }
-                if (hasAether) {
-                    this.canDrainReagent(ritualStone, ReagentRegistry.aetherReagent, aetherDrain, true);
-                }
+            if (hasOrbisTerrae) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.orbisTerraeReagent, orbisTerraeDrain, true);
+            }
+            if (hasAether) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.aetherReagent, aetherDrain, true);
             }
         }
     }

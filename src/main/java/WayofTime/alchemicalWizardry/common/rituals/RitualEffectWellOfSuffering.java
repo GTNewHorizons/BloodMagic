@@ -40,20 +40,18 @@ public class RitualEffectWellOfSuffering extends RitualEffect {
         }
 
         IBloodAltar tileAltar = null;
-        boolean testFlag = false;
 
         for (int i = -5; i <= 5; i++) {
             for (int j = -5; j <= 5; j++) {
                 for (int k = -10; k <= 10; k++) {
-                    if (world.getTileEntity(x + i, y + k, z + j) instanceof IBloodAltar) {
-                        tileAltar = (IBloodAltar) world.getTileEntity(x + i, y + k, z + j);
-                        testFlag = true;
+                    if (world.getTileEntity(x + i, y + k, z + j) instanceof IBloodAltar altar) {
+                        tileAltar = altar;
                     }
                 }
             }
         }
 
-        if (!testFlag) {
+        if (tileAltar == null) {
             return;
         }
 
@@ -72,30 +70,30 @@ public class RitualEffectWellOfSuffering extends RitualEffect {
 
         if (currentEssence < this.getCostPerRefresh() * list.size()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            for (EntityLivingBase livingEntity : list) {
-                if (!livingEntity.isEntityAlive() || livingEntity instanceof EntityPlayer
-                        || AlchemicalWizardry.wellBlacklist.contains(livingEntity.getClass())) {
-                    continue;
-                }
-
-                hasOffensa = hasOffensa
-                        && this.canDrainReagent(ritualStone, ReagentRegistry.offensaReagent, offensaDrain, true);
-
-                if (livingEntity.attackEntityFrom(DamageSource.outOfWorld, hasOffensa ? 2 : 1)) {
-                    hasTennebrae = hasTennebrae
-                            && this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, true);
-
-                    entityCount++;
-                    tileAltar.sacrificialDaggerCall(amount * (hasTennebrae ? 2 : 1) * (hasOffensa ? 2 : 1), true);
-                }
+            return;
+        }
+        for (EntityLivingBase livingEntity : list) {
+            if (!livingEntity.isEntityAlive() || livingEntity instanceof EntityPlayer
+                    || AlchemicalWizardry.wellBlacklist.contains(livingEntity.getClass())) {
+                continue;
             }
 
-            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
+            hasOffensa = hasOffensa
+                    && this.canDrainReagent(ritualStone, ReagentRegistry.offensaReagent, offensaDrain, true);
 
-            if (hasPotentia) {
-                this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, true);
+            if (livingEntity.attackEntityFrom(DamageSource.outOfWorld, hasOffensa ? 2 : 1)) {
+                hasTennebrae = hasTennebrae
+                        && this.canDrainReagent(ritualStone, ReagentRegistry.tenebraeReagent, tennebraeDrain, true);
+
+                entityCount++;
+                tileAltar.sacrificialDaggerCall(amount * (hasTennebrae ? 2 : 1) * (hasOffensa ? 2 : 1), true);
             }
+        }
+
+        SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * entityCount);
+
+        if (hasPotentia) {
+            this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent, potentiaDrain, true);
         }
     }
 
