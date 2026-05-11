@@ -10,13 +10,11 @@ public class TESpellEnhancementBlock extends TESpellBlock {
 
     @Override
     protected void applySpellChange(SpellParadigm parad) {
-        int i = -1;
-
-        i = switch (this.enhancementType()) {
+        int i = switch (this.enhancementType()) {
             case 0 -> parad.getBufferedEffectPower();
             case 1 -> parad.getBufferedEffectCost();
             case 2 -> parad.getBufferedEffectPotency();
-            default -> i;
+            default -> -1;
         };
 
         if (i != -1 && i < this.getLimit()) {
@@ -27,33 +25,24 @@ public class TESpellEnhancementBlock extends TESpellBlock {
     }
 
     public SpellEnhancement getSpellEnhancement() {
-        int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-        return switch (meta) {
-            case 0, 1, 2, 3, 4 -> new SpellEnhancementPower();
-            case 10, 11, 12, 13, 14 -> new SpellEnhancementPotency();
+        return switch (enhancementType()) {
+            case 0 -> new SpellEnhancementPower();
+            case 2 -> new SpellEnhancementPotency();
             default -> new SpellEnhancementCost();
         };
     }
 
     public int getLimit() {
         int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-        return switch (meta) {
-            case 0, 10, 5 -> 1;
-            case 1, 11, 6 -> 2;
-            case 2, 12, 7 -> 3;
-            case 3, 13, 8 -> 4;
-            case 4, 14, 9 -> 5;
-            default -> 0;
-        };
+        if (meta > 14) return 0;
+        return meta % 5 + 1;
     }
 
-    public int enhancementType() // 0 is power, 1 is cost, 2 is potency
-    {
+    // 0 is power, 1 is cost, 2 is potency, -1 is invalid
+    public int enhancementType() {
         int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-        return switch (meta) {
-            case 0, 1, 2, 3, 4 -> 0;
-            default -> 1;
-        };
+        if (meta > 14) return -1;
+        return meta / 5;
     }
 
     public void doBadStuff() {}
@@ -61,6 +50,7 @@ public class TESpellEnhancementBlock extends TESpellBlock {
     @Override
     public String getResourceLocationForMeta(int meta) {
         return switch (meta) {
+            case 1 -> "alchemicalwizardry:textures/models/SpellEnhancementPower2.png";
             case 2 -> "alchemicalwizardry:textures/models/SpellEnhancementPower3.png";
             case 3 -> "alchemicalwizardry:textures/models/SpellEnhancementPower4.png";
             case 5 -> "alchemicalwizardry:textures/models/SpellEnhancementCost1.png";

@@ -54,6 +54,7 @@ public class TEOrientable extends TileEntity implements IOrientable {
 
     public static int getIntForForgeDirection(ForgeDirection direction) {
         return switch (direction) {
+            case UP -> 1;
             case NORTH -> 2;
             case SOUTH -> 3;
             case WEST -> 4;

@@ -23,6 +23,7 @@ public class TESpellModifierBlock extends TESpellBlock {
     @Override
     public String getResourceLocationForMeta(int meta) {
         return switch (meta) {
+            case 1 -> "alchemicalwizardry:textures/models/SpellModifierOffensive.png";
             case 2 -> "alchemicalwizardry:textures/models/SpellModifierDefensive.png";
             case 3 -> "alchemicalwizardry:textures/models/SpellModifierEnvironmental.png";
             default -> "alchemicalwizardry:textures/models/SpellModifierDefault.png";

@@ -17,10 +17,10 @@ public class TESpellParadigmBlock extends TESpellBlock implements ISpellParadigm
     public SpellParadigm getSpellParadigm() {
         int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
         return switch (meta) {
-            case 0 -> new SpellParadigmProjectile();
+            case 1 -> new SpellParadigmSelf();
             case 2 -> new SpellParadigmMelee();
             case 3 -> new SpellParadigmTool();
-            default -> new SpellParadigmSelf();
+            default -> new SpellParadigmProjectile();
         };
     }
 
@@ -43,6 +43,7 @@ public class TESpellParadigmBlock extends TESpellBlock implements ISpellParadigm
     @Override
     public String getResourceLocationForMeta(int meta) {
         return switch (meta) {
+            case 1 -> "alchemicalwizardry:textures/models/SpellParadigmSelf.png";
             case 2 -> "alchemicalwizardry:textures/models/SpellParadigmMelee.png";
             case 3 -> "alchemicalwizardry:textures/models/SpellParadigmTool.png";
             default -> "alchemicalwizardry:textures/models/SpellParadigmProjectile.png";
