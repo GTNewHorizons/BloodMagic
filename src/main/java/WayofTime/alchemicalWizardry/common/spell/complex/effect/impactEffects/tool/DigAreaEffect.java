@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -11,6 +12,7 @@ import net.minecraft.world.World;
 import WayofTime.alchemicalWizardry.api.items.ItemSpellMultiTool;
 import WayofTime.alchemicalWizardry.api.spell.IDigAreaEffect;
 import WayofTime.alchemicalWizardry.api.spell.SpellParadigmTool;
+import WayofTime.alchemicalWizardry.common.items.BoundPickaxe;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 
 public class DigAreaEffect implements IDigAreaEffect {
@@ -49,71 +51,59 @@ public class DigAreaEffect implements IDigAreaEffect {
 
     public void breakBlock(ItemStack container, World world, EntityPlayer player, float blockHardness, int x, int y,
             int z, ItemSpellMultiTool itemTool) {
-        int hlvl = -1;
-        Block localBlock = world.getBlock(x, y, z);
-        if (localBlock == null) return;
-        int localMeta = world.getBlockMetadata(x, y, z);
-        String toolClass = localBlock.getHarvestTool(localMeta);
-        if (toolClass != null && itemTool.getHarvestLevel(container, toolClass) != -1)
-            hlvl = localBlock.getHarvestLevel(localMeta);
-        int toolLevel = itemTool.getHarvestLevel(container, toolClass);
-
-        float localHardness = localBlock.getBlockHardness(world, x, y, z);
-
-        if (hlvl <= toolLevel && localHardness - this.getHardnessDifference() <= blockHardness) {
-            boolean cancelHarvest = false;
-
-            if (!cancelHarvest) {
-                if (!(localHardness < 0)) {
-                    boolean isEffective = false;
-
-                    String localToolClass = itemTool.getToolClassForMaterial(localBlock.getMaterial());
-
-                    if (localToolClass != null && itemTool.getHarvestLevel(container, toolClass)
-                            >= localBlock.getHarvestLevel(localMeta)) {
-                        isEffective = true;
-                    }
-
-                    if (localBlock.getMaterial().isToolNotRequired()) {
-                        isEffective = true;
-                    }
-
-                    if (!player.capabilities.isCreativeMode) {
-                        if (isEffective) {
-                            if (localBlock.removedByPlayer(world, player, x, y, z)) {
-                                localBlock.onBlockDestroyedByPlayer(world, x, y, z, localMeta);
-                            }
-                            localBlock.onBlockHarvested(world, x, y, z, localMeta, player);
-                            if (localHardness > 0f)
-                                itemTool.onBlockDestroyed(container, world, localBlock, x, y, z, player);
-
-                            List<ItemStack> items = SpellHelper.getItemsFromBlock(
-                                    world,
-                                    localBlock,
-                                    x,
-                                    y,
-                                    z,
-                                    localMeta,
-                                    itemTool.getSilkTouch(container),
-                                    itemTool.getFortuneLevel(container));
-
-                            SpellParadigmTool parad = itemTool.loadParadigmFromStack(container);
-                            items = parad.handleItemList(container, items);
-
-                            if (!world.isRemote) {
-                                SpellHelper.spawnItemListInWorld(items, world, x + 0.5f, y + 0.5f, z + 0.5f);
-                            }
-
-                            world.func_147479_m(x, y, z);
-                        } else {}
-
-                    } else {
-                        world.setBlockToAir(x, y, z);
-                        world.func_147479_m(x, y, z);
-                    }
-                }
-            }
+        Block block = world.getBlock(x, y, z);
+        if (block == null || block == Blocks.air) return;
+        int meta = world.getBlockMetadata(x, y, z);
+        String blockRequiredTool = block.getHarvestTool(meta);
+        if (blockRequiredTool != null && itemTool.getHarvestLevel(container, blockRequiredTool) != -1
+                && block.getHarvestLevel(meta) > itemTool.getHarvestLevel(container, blockRequiredTool)) {
+            return;
         }
+
+        float localHardness = block.getBlockHardness(world, x, y, z);
+
+        if (localHardness - this.getHardnessDifference() > blockHardness
+                || BoundPickaxe.checkPermissions(world, x, y, z, block, meta, player)
+                || localHardness < 0) {
+            return;
+        }
+
+        String localToolClass = itemTool.getToolClassForMaterial(block.getMaterial());
+
+        if (player.capabilities.isCreativeMode) {
+            world.setBlockToAir(x, y, z);
+            world.func_147479_m(x, y, z);
+            return;
+        }
+        if ((localToolClass == null
+                || itemTool.getHarvestLevel(container, blockRequiredTool) < block.getHarvestLevel(meta))
+                && !block.getMaterial().isToolNotRequired()) {
+            return;
+        }
+        if (block.removedByPlayer(world, player, x, y, z, true)) {
+            block.onBlockDestroyedByPlayer(world, x, y, z, meta);
+        }
+        block.onBlockHarvested(world, x, y, z, meta, player);
+        if (localHardness > 0f) itemTool.onBlockDestroyed(container, world, block, x, y, z, player);
+
+        List<ItemStack> items = SpellHelper.getItemsFromBlock(
+                world,
+                block,
+                x,
+                y,
+                z,
+                meta,
+                itemTool.getSilkTouch(container),
+                itemTool.getFortuneLevel(container));
+
+        SpellParadigmTool parad = itemTool.loadParadigmFromStack(container);
+        items = parad.handleItemList(container, items);
+
+        if (!world.isRemote) {
+            SpellHelper.spawnItemListInWorld(items, world, x + 0.5f, y + 0.5f, z + 0.5f);
+        }
+
+        world.func_147479_m(x, y, z);
     }
 
     public float getHardnessDifference() {
