@@ -12,12 +12,11 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class RenderSpellEnhancementBlock extends TileEntitySpecialRenderer {
 
-    private ModelSpellEnhancementBlock modelSpellEnhancementBlock = new ModelSpellEnhancementBlock();
+    private final ModelSpellEnhancementBlock modelSpellEnhancementBlock = new ModelSpellEnhancementBlock();
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double d0, double d1, double d2, float f) {
-        if (tileEntity instanceof TESpellEnhancementBlock) {
-            TESpellEnhancementBlock tileSpellBlock = (TESpellEnhancementBlock) tileEntity;
+        if (tileEntity instanceof TESpellEnhancementBlock tileSpellBlock) {
             GL11.glPushMatrix();
             GL11.glTranslatef((float) d0 + 0.5F, (float) d1 + 1.5F, (float) d2 + 0.5F);
             ResourceLocation test;

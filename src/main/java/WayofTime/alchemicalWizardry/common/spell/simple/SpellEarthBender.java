@@ -23,162 +23,145 @@ public class SpellEarthBender extends HomSpell {
     }
 
     @Override
-    public ItemStack onOffensiveRangedRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveRangedRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveRangedEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveRangedEnergy());
         }
 
-        par2World.spawnEntityInWorld(new MudProjectile(par2World, par3EntityPlayer, 8, false));
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-        return par1ItemStack;
+        world.spawnEntityInWorld(new MudProjectile(world, player, 8, false));
+        world.playSoundAtEntity(player, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        return item;
     }
 
     @Override
-    public ItemStack onOffensiveMeleeRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveMeleeRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveMeleeEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveMeleeEnergy());
         }
 
-        if (!par2World.isRemote) {
+        if (!world.isRemote) {
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    par2World.spawnEntityInWorld(
+                    world.spawnEntityInWorld(
                             new MudProjectile(
-                                    par2World,
-                                    par3EntityPlayer,
+                                    world,
+                                    player,
                                     3,
                                     3,
-                                    par3EntityPlayer.posX,
-                                    par3EntityPlayer.posY + par3EntityPlayer.getEyeHeight(),
-                                    par3EntityPlayer.posZ,
-                                    par3EntityPlayer.rotationYaw + i * 10F,
-                                    par3EntityPlayer.rotationPitch + j * 5F,
+                                    player.posX,
+                                    player.posY + player.getEyeHeight(),
+                                    player.posZ,
+                                    player.rotationYaw + i * 10F,
+                                    player.rotationPitch + j * 5F,
                                     true));
                 }
             }
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onDefensiveRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onDefensiveRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getDefensiveEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getDefensiveEnergy());
         }
 
-        double xCoord = par3EntityPlayer.posX;
-        double yCoord = par3EntityPlayer.posY;
-        double zCoord = par3EntityPlayer.posZ;
-        int posX = (int) xCoord;
-        int posY = (int) yCoord;
-        int posZ = (int) zCoord;
+        int posX = (int) player.posX;
+        int posY = (int) player.posY;
+        int posZ = (int) player.posZ;
         Block blockID = Blocks.stone;
 
-        if (par2World.isAirBlock(posX, posY + 3, posZ)) {
-            par2World.setBlock(posX, posY + 3, posZ, Blocks.glass);
+        if (world.isAirBlock(posX, posY + 3, posZ)) {
+            world.setBlock(posX, posY + 3, posZ, Blocks.glass);
         }
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                if (par2World.isAirBlock(posX + i - 1, posY + j, posZ - 2)) {
-                    par2World.setBlock(posX + i - 1, posY + j, posZ - 2, blockID);
+                if (world.isAirBlock(posX + i - 1, posY + j, posZ - 2)) {
+                    world.setBlock(posX + i - 1, posY + j, posZ - 2, blockID);
                 }
 
-                if (par2World.isAirBlock(posX + 2, posY + j, posZ - 1 + i)) {
-                    par2World.setBlock(posX + 2, posY + j, posZ - 1 + i, blockID);
+                if (world.isAirBlock(posX + 2, posY + j, posZ - 1 + i)) {
+                    world.setBlock(posX + 2, posY + j, posZ - 1 + i, blockID);
                 }
 
-                if (par2World.isAirBlock(posX - i + 1, posY + j, posZ + 2)) {
-                    par2World.setBlock(posX - i + 1, posY + j, posZ + 2, blockID);
+                if (world.isAirBlock(posX - i + 1, posY + j, posZ + 2)) {
+                    world.setBlock(posX - i + 1, posY + j, posZ + 2, blockID);
                 }
 
-                if (par2World.isAirBlock(posX - 2, posY + j, posZ + 1 - i)) {
-                    par2World.setBlock(posX - 2, posY + j, posZ + 1 - i, blockID);
+                if (world.isAirBlock(posX - 2, posY + j, posZ + 1 - i)) {
+                    world.setBlock(posX - 2, posY + j, posZ + 1 - i, blockID);
                 }
 
-                {
-                    if (par2World.isAirBlock(posX - 1 + i, posY + 3, posZ - 1 + j)) {
-                        par2World.setBlock(posX - 1 + i, posY + 3, posZ - 1 + j, blockID);
-                    }
+                if (world.isAirBlock(posX - 1 + i, posY + 3, posZ - 1 + j)) {
+                    world.setBlock(posX - 1 + i, posY + 3, posZ - 1 + j, blockID);
                 }
             }
         }
 
         for (int i = 0; i < 20; i++) {
             SpellHelper.sendParticleToAllAround(
-                    par2World,
-                    xCoord,
-                    yCoord,
-                    zCoord,
+                    world,
+                    player.posX,
+                    player.posY,
+                    player.posZ,
                     30,
-                    par2World.provider.dimensionId,
+                    world.provider.dimensionId,
                     "mobSpell",
-                    xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    zCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posX + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posY + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posZ + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
                     0.0F,
                     0.410F,
                     1.0F);
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onEnvironmentalRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onEnvironmentalRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getEnvironmentalEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getEnvironmentalEnergy());
         }
 
         int range = 3;
 
-        if (!par2World.isRemote) {
+        if (!world.isRemote) {
             for (int i = -range; i <= range; i++) {
                 for (int j = -1; j <= 1; j++) {
                     for (int k = -range; k <= range; k++) {
-                        if (par2World.getBlock(
-                                (int) par3EntityPlayer.posX + i,
-                                (int) par3EntityPlayer.posY + j,
-                                (int) par3EntityPlayer.posZ + k) == Blocks.water
-                                || par2World.getBlock(
-                                        (int) par3EntityPlayer.posX + i,
-                                        (int) par3EntityPlayer.posY + j,
-                                        (int) par3EntityPlayer.posZ + k) == Blocks.flowing_water) {
-                            int x = par2World.rand.nextInt(2);
-
-                            if (x == 0) {
-                                par2World.setBlock(
-                                        (int) par3EntityPlayer.posX + i,
-                                        (int) par3EntityPlayer.posY + j,
-                                        (int) par3EntityPlayer.posZ + k,
+                        Block block = world
+                                .getBlock((int) player.posX + i, (int) player.posY + j, (int) player.posZ + k);
+                        if (block == Blocks.water || block == Blocks.flowing_water) {
+                            if (world.rand.nextInt(2) == 0) {
+                                world.setBlock(
+                                        (int) player.posX + i,
+                                        (int) player.posY + j,
+                                        (int) player.posZ + k,
                                         Blocks.sand);
                             } else {
-                                par2World.setBlock(
-                                        (int) par3EntityPlayer.posX + i,
-                                        (int) par3EntityPlayer.posY + j,
-                                        (int) par3EntityPlayer.posZ + k,
+                                world.setBlock(
+                                        (int) player.posX + i,
+                                        (int) player.posY + j,
+                                        (int) player.posZ + k,
                                         Blocks.dirt);
                             }
                         }
@@ -187,27 +170,23 @@ public class SpellEarthBender extends HomSpell {
             }
         }
 
-        double xCoord = par3EntityPlayer.posX;
-        double yCoord = par3EntityPlayer.posY;
-        double zCoord = par3EntityPlayer.posZ;
-
         for (int i = 0; i < 16; i++) {
             SpellHelper.sendParticleToAllAround(
-                    par2World,
-                    xCoord,
-                    yCoord,
-                    zCoord,
+                    world,
+                    player.posX,
+                    player.posY,
+                    player.posZ,
                     30,
-                    par2World.provider.dimensionId,
+                    world.provider.dimensionId,
                     "mobSpell",
-                    xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
-                    zCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posX + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posY + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
+                    player.posZ + (itemRand.nextFloat() - itemRand.nextFloat()) * 3,
                     0.0F,
                     0.410F,
                     1.0F);
         }
 
-        return par1ItemStack;
+        return item;
     }
 }

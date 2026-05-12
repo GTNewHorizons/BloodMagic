@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.StatCollector;
@@ -32,9 +31,9 @@ public class SigilBloodLight extends EnergyItems implements IHolding, ArmourUpgr
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.bloodlightsigil.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.bloodlightsigil.desc"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
@@ -44,63 +43,59 @@ public class SigilBloodLight extends EnergyItems implements IHolding, ArmourUpgr
     }
 
     @Override
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4,
-            int par5, int par6, int par7, float par8, float par9, float par10) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par2EntityPlayer)
-                || !EnergyItems.syphonBatteries(par1ItemStack, par2EntityPlayer, getEnergyUsed())) {
+    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, int par4, int par5, int par6, int par7,
+            float par8, float par9, float par10) {
+        if (!IBindable.checkAndSetItemOwner(item, player)
+                || !EnergyItems.syphonBatteries(item, player, getEnergyUsed())) {
             return true;
         }
 
-        if (par3World.isRemote) {
+        if (world.isRemote) {
             return true;
         }
 
-        if (par7 == 0 && par3World.isAirBlock(par4, par5 - 1, par6)) {
-            par3World.setBlock(par4, par5 - 1, par6, ModBlocks.blockBloodLight);
+        if (par7 == 0 && world.isAirBlock(par4, par5 - 1, par6)) {
+            world.setBlock(par4, par5 - 1, par6, ModBlocks.blockBloodLight);
         }
 
-        if (par7 == 1 && par3World.isAirBlock(par4, par5 + 1, par6)) {
-            par3World.setBlock(par4, par5 + 1, par6, ModBlocks.blockBloodLight);
+        if (par7 == 1 && world.isAirBlock(par4, par5 + 1, par6)) {
+            world.setBlock(par4, par5 + 1, par6, ModBlocks.blockBloodLight);
         }
 
-        if (par7 == 2 && par3World.isAirBlock(par4, par5, par6 - 1)) {
-            par3World.setBlock(par4, par5, par6 - 1, ModBlocks.blockBloodLight);
+        if (par7 == 2 && world.isAirBlock(par4, par5, par6 - 1)) {
+            world.setBlock(par4, par5, par6 - 1, ModBlocks.blockBloodLight);
         }
 
-        if (par7 == 3 && par3World.isAirBlock(par4, par5, par6 + 1)) {
-            par3World.setBlock(par4, par5, par6 + 1, ModBlocks.blockBloodLight);
+        if (par7 == 3 && world.isAirBlock(par4, par5, par6 + 1)) {
+            world.setBlock(par4, par5, par6 + 1, ModBlocks.blockBloodLight);
         }
 
-        if (par7 == 4 && par3World.isAirBlock(par4 - 1, par5, par6)) {
-            par3World.setBlock(par4 - 1, par5, par6, ModBlocks.blockBloodLight);
+        if (par7 == 4 && world.isAirBlock(par4 - 1, par5, par6)) {
+            world.setBlock(par4 - 1, par5, par6, ModBlocks.blockBloodLight);
         }
 
-        if (par7 == 5 && par3World.isAirBlock(par4 + 1, par5, par6)) {
-            par3World.setBlock(par4 + 1, par5, par6, ModBlocks.blockBloodLight);
+        if (par7 == 5 && world.isAirBlock(par4 + 1, par5, par6)) {
+            world.setBlock(par4 + 1, par5, par6, ModBlocks.blockBloodLight);
         }
 
         return true;
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
+        if (!EnergyItems.syphonBatteries(item, player, getEnergyUsed() * 5)) {
+            return item;
         }
 
-        if (!EnergyItems.syphonBatteries(par1ItemStack, par3EntityPlayer, getEnergyUsed() * 5)) {
-            return par1ItemStack;
+        if (!world.isRemote) {
+            world.spawnEntityInWorld(new EntityBloodLightProjectile(world, player, 10));
         }
 
-        if (!par2World.isRemote) {
-            par2World.spawnEntityInWorld(new EntityBloodLightProjectile(par2World, par3EntityPlayer, 10));
-        }
-
-        return par1ItemStack;
+        return item;
     }
 
     @Override

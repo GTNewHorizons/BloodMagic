@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common.spell.simple;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -26,124 +25,111 @@ public class SpellFireBurst extends HomSpell {
     }
 
     @Override
-    public ItemStack onOffensiveRangedRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveRangedRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveRangedEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveRangedEnergy());
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        world.playSoundAtEntity(player, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
-        if (!par2World.isRemote) {
-            FireProjectile proj = new FireProjectile(par2World, par3EntityPlayer, 7);
-            par2World.spawnEntityInWorld(proj);
+        if (!world.isRemote) {
+            FireProjectile proj = new FireProjectile(world, player, 7);
+            world.spawnEntityInWorld(proj);
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onOffensiveMeleeRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveMeleeRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveMeleeEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveMeleeEnergy());
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        world.playSoundAtEntity(player, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
-        if (!par2World.isRemote) {
+        if (!world.isRemote) {
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                    par2World.spawnEntityInWorld(
+                    world.spawnEntityInWorld(
                             new FireProjectile(
-                                    par2World,
-                                    par3EntityPlayer,
+                                    world,
+                                    player,
                                     8,
                                     2,
-                                    par3EntityPlayer.posX,
-                                    par3EntityPlayer.posY + par3EntityPlayer.getEyeHeight(),
-                                    par3EntityPlayer.posZ,
-                                    par3EntityPlayer.rotationYaw + i * 10F,
-                                    par3EntityPlayer.rotationPitch + j * 10F));
+                                    player.posX,
+                                    player.posY + player.getEyeHeight(),
+                                    player.posZ,
+                                    player.rotationYaw + i * 10F,
+                                    player.rotationPitch + j * 10F));
                 }
             }
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onDefensiveRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onDefensiveRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getDefensiveEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getDefensiveEnergy());
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        world.playSoundAtEntity(player, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
         int d0 = 2;
         AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
-                par3EntityPlayer.posX,
-                par3EntityPlayer.posY,
-                par3EntityPlayer.posZ,
-                (par3EntityPlayer.posX + 1),
-                (par3EntityPlayer.posY + 2),
-                (par3EntityPlayer.posZ + 1)).expand(d0, d0, d0);
-        List list = par3EntityPlayer.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
-        Iterator iterator = list.iterator();
+                player.posX,
+                player.posY,
+                player.posZ,
+                player.posX + 1,
+                player.posY + 2,
+                player.posZ + 1).expand(d0, d0, d0);
+        List<EntityLivingBase> list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
-        while (iterator.hasNext()) {
-            EntityLivingBase entityLiving = (EntityLivingBase) iterator.next();
-
-            if (entityLiving instanceof EntityPlayer) {
-                if (entityLiving.equals(par3EntityPlayer)) {
-                    continue;
-                }
+        for (EntityLivingBase entityLiving : list) {
+            if (entityLiving instanceof EntityPlayer && entityLiving.equals(player)) {
+                continue;
             }
 
             entityLiving.setFire(100);
             entityLiving.attackEntityFrom(DamageSource.inFire, 2);
         }
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onEnvironmentalRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onEnvironmentalRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getEnvironmentalEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getEnvironmentalEnergy());
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        world.playSoundAtEntity(player, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 for (int k = -1; k <= 1; k++) {
-                    if (par2World.isAirBlock(
-                            (int) par3EntityPlayer.posX + i,
-                            (int) par3EntityPlayer.posY + j,
-                            (int) par3EntityPlayer.posZ + k)) {
-                        if (par2World.rand.nextFloat() < 0.8F) {
-                            par2World.setBlock(
-                                    (int) par3EntityPlayer.posX + i,
-                                    (int) par3EntityPlayer.posY + j,
-                                    (int) par3EntityPlayer.posZ + k,
+                    if (world.isAirBlock((int) player.posX + i, (int) player.posY + j, (int) player.posZ + k)) {
+                        if (world.rand.nextFloat() < 0.8F) {
+                            world.setBlock(
+                                    (int) player.posX + i,
+                                    (int) player.posY + j,
+                                    (int) player.posZ + k,
                                     Blocks.fire);
                         }
                     }
@@ -151,6 +137,6 @@ public class SpellFireBurst extends HomSpell {
             }
         }
 
-        return par1ItemStack;
+        return item;
     }
 }

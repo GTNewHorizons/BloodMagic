@@ -11,18 +11,17 @@ import amerifrance.guideapi.api.GuideRegistry;
 
 public class MailOrderEntityItem extends EntityItem {
 
-    public MailOrderEntityItem(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public MailOrderEntityItem(World world, double x, double y, double z) {
+        super(world, x, y, z);
         this.isImmuneToFire = true;
         this.lifespan = 72000;
     }
 
-    public MailOrderEntityItem(World par1World, double par2, double par4, double par6, ItemStack par8ItemStack) {
-        this(par1World, par2, par4, par6);
-        this.setEntityItemStack(par8ItemStack);
+    public MailOrderEntityItem(World world, double x, double y, double z, ItemStack item) {
+        this(world, x, y, z);
+        this.setEntityItemStack(item);
         this.isImmuneToFire = true;
-        this.lifespan = (par8ItemStack.getItem() == null ? 6000
-                : par8ItemStack.getItem().getEntityLifespan(par8ItemStack, par1World));
+        this.lifespan = (item.getItem() == null ? 6000 : item.getItem().getEntityLifespan(item, world));
     }
 
     public MailOrderEntityItem(World world, Entity original, ItemStack stack) {
@@ -35,10 +34,11 @@ public class MailOrderEntityItem extends EntityItem {
         this.isImmuneToFire = true;
     }
 
-    public MailOrderEntityItem(World par1world) {
-        super(par1world);
+    public MailOrderEntityItem(World world) {
+        super(world);
     }
 
+    @Override
     public void onUpdate() {
         super.onUpdate();
 

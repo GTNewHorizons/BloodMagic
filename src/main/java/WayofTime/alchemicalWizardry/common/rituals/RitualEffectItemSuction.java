@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -34,12 +33,8 @@ public class RitualEffectItemSuction extends RitualEffect {
         int x = ritualStone.getXCoord();
         int y = ritualStone.getYCoord();
         int z = ritualStone.getZCoord();
-        TileEntity tile = world.getTileEntity(x, y + 1, z);
-        IInventory tileEntity;
 
-        if (tile instanceof IInventory) {
-            tileEntity = (IInventory) tile;
-        } else {
+        if (!(world.getTileEntity(x, y + 1, z) instanceof IInventory tileEntity)) {
             return;
         }
 
@@ -49,50 +44,45 @@ public class RitualEffectItemSuction extends RitualEffect {
 
         if (currentEssence < this.getCostPerRefresh() * 100) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            List<EntityItem> itemDropList = SpellHelper.getItemsInRange(world, x + 0.5f, y + 0.5f, z + 0.5f, 10, 10);
+            return;
+        }
+        List<EntityItem> itemDropList = SpellHelper.getItemsInRange(world, x + 0.5f, y + 0.5f, z + 0.5f, 10, 10);
 
-            boolean hasReductus = this
-                    .canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
+        boolean hasReductus = this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
 
-            int count = 0;
+        int count = 0;
 
-            if (itemDropList != null) {
-                int invSize = tileEntity.getSizeInventory();
+        if (itemDropList != null) {
+            for (EntityItem itemEntity : itemDropList) {
+                hasReductus = hasReductus
+                        && this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
+                if (hasReductus && itemEntity.age < timeDelayMin) {
+                    continue;
+                }
+                ItemStack copyStack = itemEntity.getEntityItem().copy();
 
-                for (EntityItem itemEntity : itemDropList) {
-                    hasReductus = hasReductus
-                            && this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
-                    if (hasReductus && itemEntity.age < this.timeDelayMin) {
-                        continue;
+                int pastAmount = copyStack.stackSize;
+                ItemStack newStack = SpellHelper.insertStackIntoInventory(copyStack, tileEntity, ForgeDirection.DOWN);
+
+                if (newStack != null && newStack.stackSize < pastAmount) {
+                    count++;
+                    if (newStack.stackSize <= 0) {
+                        itemEntity.setDead();
+                        itemEntity.getEntityItem().stackSize = newStack.stackSize;
                     }
-                    ItemStack item = itemEntity.getEntityItem();
-                    ItemStack copyStack = itemEntity.getEntityItem().copy();
 
-                    int pastAmount = copyStack.stackSize;
-                    ItemStack newStack = SpellHelper
-                            .insertStackIntoInventory(copyStack, tileEntity, ForgeDirection.DOWN);
-
-                    if (newStack != null && newStack.stackSize < pastAmount) {
-                        count++;
-                        if (newStack.stackSize <= 0) {
-                            itemEntity.setDead();
-                            itemEntity.getEntityItem().stackSize = newStack.stackSize;
-                        }
-
-                        if (newStack.stackSize > 0) {
-                            itemEntity.getEntityItem().stackSize = newStack.stackSize;
-                        }
-                        if (hasReductus) {
-                            this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, true);
-                        }
+                    if (newStack.stackSize > 0) {
+                        itemEntity.getEntityItem().stackSize = newStack.stackSize;
+                    }
+                    if (hasReductus) {
+                        this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, true);
                     }
                 }
             }
+        }
 
-            if (count > 0) {
-                SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * Math.min(count, 100));
-            }
+        if (count > 0) {
+            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * Math.min(count, 100));
         }
     }
 
@@ -103,7 +93,7 @@ public class RitualEffectItemSuction extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> suctionRitual = new ArrayList();
+        ArrayList<RitualComponent> suctionRitual = new ArrayList<>();
         suctionRitual.add(new RitualComponent(2, 0, 0, RitualComponent.AIR));
         suctionRitual.add(new RitualComponent(-2, 0, 0, RitualComponent.AIR));
         suctionRitual.add(new RitualComponent(0, 0, 2, RitualComponent.AIR));

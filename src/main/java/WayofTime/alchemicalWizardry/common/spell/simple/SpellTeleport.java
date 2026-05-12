@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common.spell.simple;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -30,130 +29,113 @@ public class SpellTeleport extends HomSpell {
     }
 
     @Override
-    public ItemStack onOffensiveRangedRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveRangedRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveRangedEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveRangedEnergy());
         }
 
-        par2World.spawnEntityInWorld(new TeleportProjectile(par2World, par3EntityPlayer, 8, true));
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-        return par1ItemStack;
+        world.spawnEntityInWorld(new TeleportProjectile(world, player, 8, true));
+        world.playSoundAtEntity(player, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        return item;
     }
 
     @Override
-    public ItemStack onOffensiveMeleeRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveMeleeRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveMeleeEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveMeleeEnergy());
         }
 
-        par2World.spawnEntityInWorld(new TeleportProjectile(par2World, par3EntityPlayer, 8, false));
-        return par1ItemStack;
+        world.spawnEntityInWorld(new TeleportProjectile(world, player, 8, false));
+        return item;
     }
 
     @Override
-    public ItemStack onDefensiveRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onDefensiveRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getDefensiveEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getDefensiveEnergy());
         }
 
-        double xCoord = par3EntityPlayer.posX;
-        double yCoord = par3EntityPlayer.posY;
-        double zCoord = par3EntityPlayer.posZ;
-        SpellTeleport.teleportRandomly(par3EntityPlayer, 128);
+        SpellTeleport.teleportRandomly(player, 128);
 
         for (int i = 0; i < 20; i++) {
             SpellHelper.sendParticleToAllAround(
-                    par2World,
-                    xCoord,
-                    yCoord,
-                    zCoord,
+                    world,
+                    player.posX,
+                    player.posY,
+                    player.posZ,
                     30,
-                    par2World.provider.dimensionId,
+                    world.provider.dimensionId,
                     "portal",
-                    xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
-                    yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
-                    zCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
+                    player.posX + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
+                    player.posY + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
+                    player.posZ + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
                     itemRand.nextFloat(),
                     itemRand.nextFloat(),
                     itemRand.nextFloat());
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onEnvironmentalRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onEnvironmentalRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getEnvironmentalEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getEnvironmentalEnergy());
         }
 
-        if (!par2World.isRemote) {
+        if (!world.isRemote) {
             int d0 = 3;
             AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
-                    par3EntityPlayer.posX,
-                    par3EntityPlayer.posY,
-                    par3EntityPlayer.posZ,
-                    (par3EntityPlayer.posX + 1),
-                    (par3EntityPlayer.posY + 2),
-                    (par3EntityPlayer.posZ + 1)).expand(d0, d0, d0);
-            List list = par3EntityPlayer.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
-            Iterator iterator = list.iterator();
+                    player.posX,
+                    player.posY,
+                    player.posZ,
+                    (player.posX + 1),
+                    (player.posY + 2),
+                    (player.posZ + 1)).expand(d0, d0, d0);
+            List<EntityLivingBase> list = player.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
 
-            while (iterator.hasNext()) {
-                EntityLivingBase entityLiving = (EntityLivingBase) iterator.next();
-
-                if (entityLiving instanceof EntityPlayer) {
-                    if (entityLiving.equals(par3EntityPlayer)) {
-                        continue;
-                    }
+            for (EntityLivingBase entityLiving : list) {
+                if (entityLiving instanceof EntityPlayer && entityLiving.equals(player)) {
+                    continue;
                 }
                 SpellTeleport.teleportRandomly(entityLiving, 128);
             }
         }
 
-        double xCoord = par3EntityPlayer.posX;
-        double yCoord = par3EntityPlayer.posY;
-        double zCoord = par3EntityPlayer.posZ;
-
         for (int i = 0; i < 32; i++) {
             SpellHelper.sendParticleToAllAround(
-                    par2World,
-                    xCoord,
-                    yCoord,
-                    zCoord,
+                    world,
+                    player.posX,
+                    player.posY,
+                    player.posZ,
                     30,
-                    par2World.provider.dimensionId,
+                    world.provider.dimensionId,
                     "portal",
-                    xCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
-                    yCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
-                    zCoord + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
+                    player.posX + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
+                    player.posY + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
+                    player.posZ + (itemRand.nextFloat() - itemRand.nextFloat()) * 2,
                     itemRand.nextFloat(),
                     itemRand.nextFloat(),
                     itemRand.nextFloat());
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     public static boolean teleportRandomly(EntityLivingBase entityLiving, double distance) {
@@ -173,89 +155,81 @@ public class SpellTeleport extends HomSpell {
             i++;
         }
 
-        if (i >= 100) {
-            return false;
-        }
-
-        return true;
+        return i < 100;
     }
 
-    private static boolean teleportTo(EntityLivingBase entityLiving, double par1, double par3, double par5,
-            double lastX, double lastY, double lastZ) {
-        EnderTeleportEvent event = new EnderTeleportEvent(entityLiving, par1, par3, par5, 0);
+    public static boolean teleportTo(EntityLivingBase entityLiving, double x, double y, double z, double lastX,
+            double lastY, double lastZ) {
+        EnderTeleportEvent event = new EnderTeleportEvent(entityLiving, x, y, z, 0);
 
         if (MinecraftForge.EVENT_BUS.post(event)) {
             return false;
         }
 
         SpellTeleport.moveEntityViaTeleport(entityLiving, event.targetX, event.targetY, event.targetZ);
-        boolean flag = false;
-        int i = MathHelper.floor_double(entityLiving.posX);
-        int j = MathHelper.floor_double(entityLiving.posY);
-        int k = MathHelper.floor_double(entityLiving.posZ);
+        boolean clear = false;
+        int posX = MathHelper.floor_double(entityLiving.posX);
+        int posY = MathHelper.floor_double(entityLiving.posY);
+        int posZ = MathHelper.floor_double(entityLiving.posZ);
         Block l;
 
-        if (entityLiving.worldObj.blockExists(i, j, k)) {
-            boolean flag1 = false;
+        if (entityLiving.worldObj.blockExists(posX, posY, posZ)) {
+            boolean foundFloor = false;
 
-            while (!flag1 && j > 0) {
-                l = entityLiving.worldObj.getBlock(i, j - 1, k);
+            while (!foundFloor && posY > 0) {
+                l = entityLiving.worldObj.getBlock(posX, posY - 1, posZ);
 
                 if (l != null && l.getMaterial().blocksMovement()) {
-                    flag1 = true;
+                    foundFloor = true;
                 } else {
                     --entityLiving.posY;
-                    --j;
+                    --posY;
                 }
             }
 
-            if (flag1) {
+            if (foundFloor) {
                 SpellTeleport
                         .moveEntityViaTeleport(entityLiving, entityLiving.posX, entityLiving.posY, entityLiving.posZ);
 
                 if (entityLiving.worldObj.getCollidingBoundingBoxes(entityLiving, entityLiving.boundingBox).isEmpty()
                         && !entityLiving.worldObj.isAnyLiquid(entityLiving.boundingBox)) {
-                    flag = true;
+                    clear = true;
                 }
             }
         }
 
-        if (!flag) {
+        if (!clear) {
             SpellTeleport.moveEntityViaTeleport(entityLiving, lastX, lastY, lastZ);
             return false;
-        } else {
-            short short1 = 128;
-
-            for (j = 0; j < short1; ++j) {
-                double d6 = (double) j / ((double) short1 - 1.0D);
-                float f = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                float f1 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                float f2 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                double d7 = lastX + (entityLiving.posX - lastX) * d6
-                        + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
-                double d8 = lastY + (entityLiving.posY - lastY) * d6
-                        + entityLiving.worldObj.rand.nextDouble() * (double) entityLiving.height;
-                double d9 = lastZ + (entityLiving.posZ - lastZ) * d6
-                        + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
-                entityLiving.worldObj.spawnParticle("portal", d7, d8, d9, (double) f, (double) f1, (double) f2);
-            }
-            return true;
         }
+        short short1 = 128;
+
+        for (posY = 0; posY < short1; ++posY) {
+            double d6 = (double) posY / ((double) short1 - 1.0D);
+            float f = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
+            float f1 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
+            float f2 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
+            double d7 = lastX + (entityLiving.posX - lastX) * d6
+                    + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
+            double d8 = lastY + (entityLiving.posY - lastY) * d6
+                    + entityLiving.worldObj.rand.nextDouble() * (double) entityLiving.height;
+            double d9 = lastZ + (entityLiving.posZ - lastZ) * d6
+                    + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
+            entityLiving.worldObj.spawnParticle("portal", d7, d8, d9, f, f1, f2);
+        }
+        return true;
     }
 
     public static void moveEntityViaTeleport(EntityLivingBase entityLiving, double x, double y, double z) {
         if (entityLiving instanceof EntityPlayer) {
-            if (entityLiving != null && entityLiving instanceof EntityPlayerMP) {
-                EntityPlayerMP entityplayermp = (EntityPlayerMP) entityLiving;
-                if (entityplayermp.worldObj == entityLiving.worldObj) {
-                    EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x, y, z, 5.0F);
+            if (entityLiving instanceof EntityPlayerMP entityplayermp) {
+                EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x, y, z, 5.0F);
 
-                    if (!MinecraftForge.EVENT_BUS.post(event)) {
-                        if (entityLiving.isRiding()) {
-                            entityLiving.mountEntity(null);
-                        }
-                        entityLiving.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
+                if (!MinecraftForge.EVENT_BUS.post(event)) {
+                    if (entityLiving.isRiding()) {
+                        entityLiving.mountEntity(null);
                     }
+                    entityLiving.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
                 }
             }
         } else if (entityLiving != null) {

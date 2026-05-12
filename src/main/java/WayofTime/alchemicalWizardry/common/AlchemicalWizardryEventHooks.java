@@ -2,7 +2,6 @@ package WayofTime.alchemicalWizardry.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -62,12 +61,12 @@ import vazkii.botania.api.internal.IManaBurst;
 
 public class AlchemicalWizardryEventHooks {
 
-    public static Map<String, Boolean> playerFlightBuff = new HashMap();
-    public static List<String> playersWith1Step = new ArrayList();
+    public static Map<String, Boolean> playerFlightBuff = new HashMap<>();
+    public static List<String> playersWith1Step = new ArrayList<>();
 
-    public static Map<Integer, List<CoordAndRange>> respawnMap = new HashMap();
-    public static Map<Integer, List<CoordAndRange>> forceSpawnMap = new HashMap();
-    public static ArrayList<BlockStack> teleposerBlacklist = new ArrayList<BlockStack>();
+    public static Map<Integer, List<CoordAndRange>> respawnMap = new HashMap<>();
+    public static Map<Integer, List<CoordAndRange>> forceSpawnMap = new HashMap<>();
+    public static ArrayList<BlockStack> teleposerBlacklist = new ArrayList<>();
 
     public static Random rand = new Random();
 
@@ -81,10 +80,8 @@ public class AlchemicalWizardryEventHooks {
         ItemStack heldItem = player.getHeldItem();
         if (heldItem == null) {
             parad.onEmptyHandEntityInteract(player, event.target);
-        } else {
-            if (heldItem.getItem() instanceof EnergySword) {
-                parad.onBoundSwordInteractWithEntity(player, event.target);
-            }
+        } else if (heldItem.getItem() instanceof EnergySword) {
+            parad.onBoundSwordInteractWithEntity(player, event.target);
         }
     }
 
@@ -99,15 +96,14 @@ public class AlchemicalWizardryEventHooks {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onLivingHurtEvent(LivingHurtEvent event) {
-        if (!event.isCanceled() && event.entityLiving instanceof EntityPlayer
+        if (!event.isCanceled() && event.entityLiving instanceof EntityPlayerMP player
                 && !event.entityLiving.worldObj.isRemote) {
-            EntityPlayer player = (EntityPlayer) event.entityLiving;
 
             if (APISpellHelper.getCurrentAdditionalMaxHP(player) > 0) {
                 APISpellHelper.setPlayerReagentRegenCooldownTag(player, 20 * 20);
             }
 
-            float prevHp = APISpellHelper.getCurrentAdditionalHP((EntityPlayer) event.entityLiving);
+            float prevHp = APISpellHelper.getCurrentAdditionalHP(player);
             if (prevHp > 0) {
                 float recalculatedAmount = ArmorProperties
                         .ApplyArmor(player, player.inventory.armorInventory, event.source, event.ammount);
@@ -141,17 +137,12 @@ public class AlchemicalWizardryEventHooks {
                     APISpellHelper.setCurrentAdditionalHP(player, hp);
                     NewPacketHandler.INSTANCE.sendTo(
                             NewPacketHandler.getAddedHPPacket(hp, APISpellHelper.getCurrentAdditionalMaxHP(player)),
-                            (EntityPlayerMP) player);
-
-                    // if(event.ammount <= 0.3)
-                    // {
-                    // event.ammount++;
-                    // }
+                            player);
                 } else {
                     APISpellHelper.setCurrentAdditionalHP(player, 0);
                     NewPacketHandler.INSTANCE.sendTo(
                             NewPacketHandler.getAddedHPPacket(0, APISpellHelper.getCurrentAdditionalMaxHP(player)),
-                            (EntityPlayerMP) player);
+                            player);
 
                     event.ammount -= prevHp / ratio;
                     if (event.ammount < 0) {
@@ -164,8 +155,7 @@ public class AlchemicalWizardryEventHooks {
 
     @SubscribeEvent
     public void omegaUpdateReagentAndHpEvent(LivingUpdateEvent event) {
-        if (event.entityLiving instanceof EntityPlayer && !event.entityLiving.worldObj.isRemote) {
-            EntityPlayer player = (EntityPlayer) event.entityLiving;
+        if (event.entityLiving instanceof EntityPlayer player && !event.entityLiving.worldObj.isRemote) {
             Reagent reagent = APISpellHelper.getPlayerReagentType(player);
             float reagentAmount = APISpellHelper.getPlayerCurrentReagentAmount(player);
 
@@ -222,10 +212,7 @@ public class AlchemicalWizardryEventHooks {
                                 float drain = addedAmount * config.costPerPoint;
 
                                 reagentAmount -= drain;
-                                hasReagentChanged = true;
-
                                 health += addedAmount;
-
                                 hasHealthChanged = true;
                             }
 
@@ -239,7 +226,6 @@ public class AlchemicalWizardryEventHooks {
                             }
                         }
                     }
-
                 } else {
                     reagentAmount = 0;
                     APISpellHelper.setPlayerMaxReagentAmount(player, 0);
@@ -252,10 +238,8 @@ public class AlchemicalWizardryEventHooks {
                 float costPerTick = parad.getCostPerTickOfUse(player);
                 if (parad.doDrainReagent(player)) {
                     if (reagentAmount > costPerTick) {
-                        hasReagentChanged = true;
                         reagentAmount = Math.max(0, reagentAmount - costPerTick);
                     } else {
-                        hasReagentChanged = true;
                         reagentAmount = 0;
                     }
                 }
@@ -279,7 +263,7 @@ public class AlchemicalWizardryEventHooks {
                 }
             }
 
-            if (player instanceof EntityPlayerMP) {
+            if (player instanceof EntityPlayerMP p) {
                 if (hasReagentChanged) {
                     APISpellHelper.setPlayerCurrentReagentAmount(player, reagentAmount);
                     NewPacketHandler.INSTANCE.sendTo(
@@ -287,7 +271,7 @@ public class AlchemicalWizardryEventHooks {
                                     reagent,
                                     reagentAmount,
                                     APISpellHelper.getPlayerMaxReagentAmount(player)),
-                            (EntityPlayerMP) player);
+                            p);
                 }
             }
         }
@@ -295,10 +279,9 @@ public class AlchemicalWizardryEventHooks {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerDamageEvent(LivingAttackEvent event) {
-        if (event.source.isProjectile()) {
-            if (event.entityLiving.isPotionActive(AlchemicalWizardry.customPotionProjProt) && event.isCancelable()) {
-                event.setCanceled(true);
-            }
+        if (event.source.isProjectile() && event.entityLiving.isPotionActive(AlchemicalWizardry.customPotionProjProt)
+                && event.isCancelable()) {
+            event.setCanceled(true);
         }
     }
 
@@ -318,30 +301,23 @@ public class AlchemicalWizardryEventHooks {
                 for (CoordAndRange coords : list) {
                     TileEntity tile = event.world.getTileEntity(coords.xCoord, coords.yCoord, coords.zCoord);
 
-                    if (tile instanceof TEMasterStone && ((TEMasterStone) tile).isRunning
-                            && ((TEMasterStone) tile).getCurrentRitual().equals(respawnRitual)) {
-                        if (event.x > coords.xCoord - coords.horizRadius && event.x < coords.xCoord + coords.horizRadius
-                                && event.z > coords.zCoord - coords.horizRadius
-                                && event.z < coords.zCoord + coords.horizRadius
-                                && event.y > coords.yCoord - coords.vertRadius
-                                && event.y < coords.yCoord + coords.vertRadius) {
-                            switch (event.getResult()) {
-                                case ALLOW:
-                                    event.setResult(Result.DEFAULT);
-                                    break;
-                                case DEFAULT:
-                                    event.setResult(Result.DENY);
-                                    break;
-                                case DENY:
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        }
-                    } else {
+                    if (!(tile instanceof TEMasterStone masterStone) || !masterStone.isRunning
+                            || !masterStone.getCurrentRitual().equals(respawnRitual)) {
                         list.remove(coords);
+                        continue;
                     }
+                    if (event.x <= coords.xCoord - coords.horizRadius || !(event.x < coords.xCoord + coords.horizRadius)
+                            || !(event.z > coords.zCoord - coords.horizRadius)
+                            || !(event.z < coords.zCoord + coords.horizRadius)
+                            || !(event.y > coords.yCoord - coords.vertRadius)
+                            || !(event.y < coords.yCoord + coords.vertRadius)) {
+                        continue;
+                    }
+                    switch (event.getResult()) {
+                        case ALLOW -> event.setResult(Result.DEFAULT);
+                        case DEFAULT -> event.setResult(Result.DENY);
+                    }
+                    break;
                 }
             }
         }
@@ -359,30 +335,23 @@ public class AlchemicalWizardryEventHooks {
                 for (CoordAndRange coords : list) {
                     TileEntity tile = event.world.getTileEntity(coords.xCoord, coords.yCoord, coords.zCoord);
 
-                    if (tile instanceof TEMasterStone && ((TEMasterStone) tile).isRunning
-                            && ((TEMasterStone) tile).getCurrentRitual().equals(forceSpawnRitual)) {
-                        if (event.x > coords.xCoord - coords.horizRadius && event.x < coords.xCoord + coords.horizRadius
-                                && event.z > coords.zCoord - coords.horizRadius
-                                && event.z < coords.zCoord + coords.horizRadius
-                                && event.y > coords.yCoord - coords.vertRadius
-                                && event.y < coords.yCoord + coords.vertRadius) {
-                            switch (event.getResult()) {
-                                case ALLOW:
-                                    break;
-                                case DEFAULT:
-                                    event.setResult(Result.ALLOW);
-                                    break;
-                                case DENY:
-                                    event.setResult(Result.DEFAULT);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        }
-                    } else {
+                    if (!(tile instanceof TEMasterStone stone) || !stone.isRunning
+                            || !stone.getCurrentRitual().equals(forceSpawnRitual)) {
                         list.remove(coords);
+                        continue;
                     }
+                    if (event.x <= coords.xCoord - coords.horizRadius || !(event.x < coords.xCoord + coords.horizRadius)
+                            || !(event.z > coords.zCoord - coords.horizRadius)
+                            || !(event.z < coords.zCoord + coords.horizRadius)
+                            || !(event.y > coords.yCoord - coords.vertRadius)
+                            || !(event.y < coords.yCoord + coords.vertRadius)) {
+                        continue;
+                    }
+                    switch (event.getResult()) {
+                        case DEFAULT -> event.setResult(Result.ALLOW);
+                        case DENY -> event.setResult(Result.DEFAULT);
+                    }
+                    break;
                 }
             }
         }
@@ -397,11 +366,6 @@ public class AlchemicalWizardryEventHooks {
 
     @SubscribeEvent
     public void onLivingJumpEvent(LivingJumpEvent event) {
-        // event.entityLiving.getEntityAttribute(SharedMonsterAttributes.maxHealth).removeModifier(new
-        // AttributeModifier(new UUID(493295, 1), "HealthModifier", 2, 0));
-        // event.entityLiving.getEntityAttribute(SharedMonsterAttributes.maxHealth).applyModifier(new
-        // AttributeModifier(new UUID(493295, 1), "HealthModifier", 2, 0));
-
         if (event.entityLiving.isPotionActive(AlchemicalWizardry.customPotionBoost)) {
             int i = event.entityLiving.getActivePotionEffect(AlchemicalWizardry.customPotionBoost).getAmplifier();
             event.entityLiving.motionY += (0.1f) * (2 + i);
@@ -426,7 +390,7 @@ public class AlchemicalWizardryEventHooks {
         if (entityAttacked.isPotionActive(AlchemicalWizardry.customPotionReciprocation)) {
             Entity entityAttacking = event.source.getSourceOfDamage();
 
-            if (entityAttacking != null && entityAttacking instanceof EntityLivingBase) {
+            if (entityAttacking instanceof EntityLivingBase) {
                 int i = event.entityLiving.getActivePotionEffect(AlchemicalWizardry.customPotionReciprocation)
                         .getAmplifier();
                 float damageRecieve = event.ammount / 2 * (i + 1);
@@ -439,29 +403,13 @@ public class AlchemicalWizardryEventHooks {
 
             Entity entityAttacking = event.source.getSourceOfDamage();
 
-            if (entityAttacking != null && entityAttacking instanceof EntityLivingBase
-                    && !entityAttacking.isImmuneToFire()
-                    && !((EntityLivingBase) entityAttacking).isPotionActive(Potion.fireResistance)) {
+            if (entityAttacking instanceof EntityLivingBase entity && !entityAttacking.isImmuneToFire()
+                    && !entity.isPotionActive(Potion.fireResistance)) {
                 entityAttacking.attackEntityFrom(DamageSource.inFire, 2 * i + 2);
                 entityAttacking.setFire(3);
             }
         }
     }
-
-    // @SubscribeEvent
-    // public void onFOVUpdate(FOVUpdateEvent event)
-    // {
-    // event.setResult(Result.DENY);
-    // }
-    // @SubscribeEvent
-    // public void onPlayerTickEnd(PlayerTickEvent event)
-    // {
-    // if(event.type.equals(Type.PLAYER) && event.phase.equals(TickEvent.Phase.END))
-    // {
-    // ObfuscationReflectionHelper.setPrivateValue(PlayerCapabilities.class, event.player.capabilities,
-    // Float.valueOf(0.1f), new String[]{"walkSpeed", "g", "field_75097_g"});
-    // }
-    // }
 
     @SubscribeEvent
     public void onEntityUpdate(LivingUpdateEvent event) {
@@ -475,23 +423,18 @@ public class AlchemicalWizardryEventHooks {
         int yPos = (int) (blockVector.yCoord);
         int zPos = (int) (blockVector.zCoord);
 
-        if (entityLiving instanceof EntityPlayer) {
+        if (entityLiving instanceof EntityPlayerMP player) {
             if (!entityLiving.worldObj.isRemote && entityLiving.worldObj.getTotalWorldTime() % 20 == 0) {
-                if (entityLiving instanceof EntityPlayerMP) {
-                    String ownerName = SoulNetworkHandler.getUsername((EntityPlayer) entityLiving);
-                    NewPacketHandler.INSTANCE.sendTo(
-                            NewPacketHandler.getLPPacket(
-                                    SoulNetworkHandler.getCurrentEssence(ownerName),
-                                    SoulNetworkHandler.getMaxEssence(ownerName)),
-                            (EntityPlayerMP) entityLiving);
-                }
+                String ownerName = SoulNetworkHandler.getUsername(player);
+                NewPacketHandler.INSTANCE.sendTo(
+                        NewPacketHandler.getLPPacket(
+                                SoulNetworkHandler.getCurrentEssence(ownerName),
+                                SoulNetworkHandler.getMaxEssence(ownerName)),
+                        player);
             }
-            // ObfuscationReflectionHelper.setPrivateValue(PlayerCapabilities.class, ((EntityPlayer)
-            // event.entityLiving).capabilities, 0.1F, "walkSpeed", "g", "field_75097_g");
         }
 
-        if (entityLiving instanceof EntityPlayer && entityLiving.worldObj.isRemote) {
-            EntityPlayer entityPlayer = (EntityPlayer) entityLiving;
+        if (entityLiving instanceof EntityPlayer entityPlayer && entityLiving.worldObj.isRemote) {
             boolean highStepListed = playersWith1Step.contains(entityPlayer.getDisplayName());
             boolean hasHighStep = entityPlayer.isPotionActive(AlchemicalWizardry.customPotionBoost);
 
@@ -523,26 +466,15 @@ public class AlchemicalWizardryEventHooks {
 
         if (event.entityLiving.isPotionActive(AlchemicalWizardry.customPotionBoost)) {
             int i = event.entityLiving.getActivePotionEffect(AlchemicalWizardry.customPotionBoost).getAmplifier();
-            // if(!entity.isSneaking())
-            {
+            if (!event.entityLiving.isSneaking() && event.entityLiving instanceof EntityPlayer entityPlayer) {
                 float percentIncrease = (i + 1) * 0.05f;
+                entityPlayer.stepHeight = 1.0f;
 
-                // AttributeModifier speedModifier = new AttributeModifier(new UUID(213241, 3), "Potion Boost",
-                // percentIncrease, 0);
-                //
-                //
-                // event.entityLiving.getEntityAttribute(SharedMonsterAttributes.movementSpeed).applyModifier(speedModifier);
-
-                if (event.entityLiving instanceof EntityPlayer) {
-                    EntityPlayer entityPlayer = (EntityPlayer) event.entityLiving;
-                    entityPlayer.stepHeight = 1.0f;
-
-                    if ((entityPlayer.onGround || entityPlayer.capabilities.isFlying) && entityPlayer.moveForward > 0F)
-                        entityPlayer.moveFlying(
-                                0F,
-                                1F,
-                                entityPlayer.capabilities.isFlying ? (percentIncrease / 2.0f) : percentIncrease);
-                }
+                if ((entityPlayer.onGround || entityPlayer.capabilities.isFlying) && entityPlayer.moveForward > 0F)
+                    entityPlayer.moveFlying(
+                            0F,
+                            1F,
+                            entityPlayer.capabilities.isFlying ? (percentIncrease / 2.0f) : percentIncrease);
             }
         }
 
@@ -556,30 +488,20 @@ public class AlchemicalWizardryEventHooks {
             AxisAlignedBB axisalignedbb = AxisAlignedBB
                     .getBoundingBox(posX - 0.5, posY - 0.5, posZ - 0.5, posX + 0.5, posY + 0.5, posZ + 0.5)
                     .expand(d0, d0, d0);
-            List list = event.entityLiving.worldObj.getEntitiesWithinAABB(Entity.class, axisalignedbb);
-            Iterator iterator = list.iterator();
+            List<Entity> list = event.entityLiving.worldObj.getEntitiesWithinAABB(Entity.class, axisalignedbb);
 
-            while (iterator.hasNext()) {
-                Entity projectile = (Entity) iterator.next();
-
-                if (projectile == null) {
-                    continue;
-                }
-
+            for (Entity projectile : list) {
                 if (!(projectile instanceof IProjectile)
                         || (AlchemicalWizardry.isBotaniaLoaded && isManaBurst(projectile))) {
                     continue;
                 }
 
-                Entity throwingEntity = null;
-
-                if (projectile instanceof EntityArrow) {
-                    throwingEntity = ((EntityArrow) projectile).shootingEntity;
-                } else if (projectile instanceof EnergyBlastProjectile) {
-                    throwingEntity = ((EnergyBlastProjectile) projectile).shootingEntity;
-                } else if (projectile instanceof EntityThrowable) {
-                    throwingEntity = ((EntityThrowable) projectile).getThrower();
-                }
+                Entity throwingEntity = switch (projectile) {
+                    case EntityArrow entityArrow -> entityArrow.shootingEntity;
+                    case EnergyBlastProjectile energyBlastProjectile -> energyBlastProjectile.shootingEntity;
+                    case EntityThrowable entityThrowable -> entityThrowable.getThrower();
+                    default -> null;
+                };
 
                 if (throwingEntity != null && throwingEntity.equals(entity)) {
                     continue;
@@ -621,15 +543,13 @@ public class AlchemicalWizardryEventHooks {
         }
 
         if (event.entityLiving.isPotionActive(AlchemicalWizardry.customPotionFlight)) {
-            if (event.entityLiving instanceof EntityPlayer) {
-                EntityPlayer entityPlayer = (EntityPlayer) event.entityLiving;
+            if (event.entityLiving instanceof EntityPlayer entityPlayer) {
                 String ownerName = SpellHelper.getUsername(entityPlayer);
                 playerFlightBuff.put(ownerName, true);
                 entityPlayer.capabilities.allowFlying = true;
             }
         } else {
-            if (event.entityLiving instanceof EntityPlayer) {
-                EntityPlayer entityPlayer = (EntityPlayer) event.entityLiving;
+            if (event.entityLiving instanceof EntityPlayer entityPlayer) {
                 String ownerName = SpellHelper.getUsername(entityPlayer);
 
                 if (!playerFlightBuff.containsKey(ownerName)) {
@@ -685,12 +605,11 @@ public class AlchemicalWizardryEventHooks {
 
             int r = event.entityLiving.getActivePotionEffect(AlchemicalWizardry.customPotionIceCloak).getAmplifier();
             int horizRange = r + 1;
-            int vertRange = 1;
 
             if (!entityLiving.worldObj.isRemote) {
                 for (int i = -horizRange; i <= horizRange; i++) {
                     for (int k = -horizRange; k <= horizRange; k++) {
-                        for (int j = -vertRange - 1; j <= vertRange - 1; j++) {
+                        for (int j = -2; j <= 0; j++) {
                             SpellHelper.freezeWaterBlock(entityLiving.worldObj, xPos + i, yPos + j, zPos + k);
                         }
                     }
@@ -743,56 +662,6 @@ public class AlchemicalWizardryEventHooks {
         }
     }
 
-    // @SubscribeEvent(priority = EventPriority.LOWEST)
-    // public void onTelepose(TeleposeEvent event) {
-    //
-    // AlchemicalWizardry.logger.info(event.initialBlock + ":" + event.initialMetadata);
-    // AlchemicalWizardry.logger.info(event.finalBlock + ":" + event.finalMetadata);
-    //
-    // for (int i = 0; i < BloodMagicConfiguration.teleposerBlacklist.length; i++) {
-    // String[] blockData = BloodMagicConfiguration.teleposerBlacklist[i].split(":");
-    //
-    // // If the block follows full syntax: modid:blockname:meta
-    // if (blockData.length == 3) {
-    //
-    // Block block = GameRegistry.findBlock(blockData[0], blockData[1]);
-    // int meta;
-    //
-    // // Check if it's an int, if so, parse it. If not, set meta to 0 to avoid crashing.
-    // if (isInteger(blockData[2]))
-    // meta = Integer.parseInt(blockData[2]);
-    // else if (blockData[2].equals("*"))
-    // meta = OreDictionary.WILDCARD_VALUE;
-    // else
-    // meta = 0;
-    //
-    // AlchemicalWizardry.logger.info(block + ":" + meta);
-    //
-    // if (block != null) {
-    // if ((block == event.initialBlock || block == event.finalBlock) && (meta == event.initialMetadata || meta ==
-    // event.finalMetadata || meta == OreDictionary.WILDCARD_VALUE)) {
-    // event.setCanceled(true);
-    // return;
-    // }
-    // }
-    //
-    // // If the block uses shorthand syntax: modid:blockname
-    // } else if (blockData.length == 2) {
-    //
-    // Block block = GameRegistry.findBlock(blockData[0], blockData[1]);
-    // int meta = 0;
-    //
-    // if (block != null) {
-    // if ((block == event.initialBlock && (meta == event.initialMetadata || meta == OreDictionary.WILDCARD_VALUE))
-    // || (block == event.finalBlock && (meta == event.finalMetadata || meta == OreDictionary.WILDCARD_VALUE))) {
-    // event.setCanceled(true);
-    // return;
-    // }
-    // }
-    // }
-    // }
-    // }
-
     @SubscribeEvent
     public void onTelepose(TeleposeEvent event) {
         BlockStack initialBlock = new BlockStack(event.initialBlock, event.initialMetadata);
@@ -806,13 +675,11 @@ public class AlchemicalWizardryEventHooks {
     public void onEntityDeath(LivingDeathEvent event) {
         EntityLivingBase entityLiving = event.entityLiving;
 
-        if (entityLiving instanceof IDemon && event.source.getEntity() instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) event.source.getEntity();
+        if (entityLiving instanceof IDemon && event.source.getEntity() instanceof EntityPlayer player) {
 
             player.addStat(ModAchievements.demonSpawn, 1);
         }
-        if (entityLiving instanceof IHoardDemon && event.source.getEntity() instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) event.source.getEntity();
+        if (entityLiving instanceof IHoardDemon && event.source.getEntity() instanceof EntityPlayer player) {
 
             player.addStat(ModAchievements.demons, 1);
         }
@@ -828,9 +695,10 @@ public class AlchemicalWizardryEventHooks {
 
     @Optional.Method(modid = "Botania")
     private boolean isManaBurst(Entity entity) {
-        if (entity instanceof IManaBurst) {
-            ItemStack lens = ((IManaBurst) entity).getSourceLens();
-            return !(lens.getItemDamage() != 8 && lens.getItemDamage() != 11);
-        } else return false;
+        if (entity instanceof IManaBurst burst) {
+            ItemStack lens = burst.getSourceLens();
+            return lens.getItemDamage() == 8 || lens.getItemDamage() == 11;
+        }
+        return false;
     }
 }

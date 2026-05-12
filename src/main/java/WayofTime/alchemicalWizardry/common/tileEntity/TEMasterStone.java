@@ -46,7 +46,6 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
     private String currentRitualString;
     private boolean isActive;
     private String owner;
-    private String varString1;
     private int cooldown;
     private int var1;
     private int direction;
@@ -63,14 +62,13 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
     public TEMasterStone() {
         tanks = new ReagentContainer[] { new ReagentContainer(1000), new ReagentContainer(1000),
                 new ReagentContainer(1000) };
-        this.attunedTankMap = new HashMap();
+        this.attunedTankMap = new HashMap<>();
 
         isActive = false;
         owner = "";
         cooldown = 0;
         var1 = 0;
         direction = 0;
-        varString1 = "";
         currentRitualString = "";
         isRunning = false;
         runningTime = 0;
@@ -101,10 +99,10 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
 
         NBTTagList tagList = new NBTTagList();
 
-        for (int i = 0; i < this.tanks.length; i++) {
+        for (ReagentContainer tank : this.tanks) {
             NBTTagCompound savedTag = new NBTTagCompound();
-            if (this.tanks[i] != null) {
-                this.tanks[i].writeToNBT(savedTag);
+            if (tank != null) {
+                tank.writeToNBT(savedTag);
             }
             tagList.appendTag(savedTag);
         }
@@ -170,10 +168,10 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
 
         NBTTagList tagList = new NBTTagList();
 
-        for (int i = 0; i < this.tanks.length; i++) {
+        for (ReagentContainer tank : this.tanks) {
             NBTTagCompound savedTag = new NBTTagCompound();
-            if (this.tanks[i] != null) {
-                this.tanks[i].writeToNBT(savedTag);
+            if (tank != null) {
+                tank.writeToNBT(savedTag);
             }
             tagList.appendTag(savedTag);
         }
@@ -209,7 +207,7 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
 
         String testRitual = Rituals.checkValidRitual(world, xCoord, yCoord, zCoord);
 
-        if (testRitual.equals("")) {
+        if (testRitual.isEmpty()) {
             player.addChatMessage(new ChatComponentTranslation("message.masterstone.nothinghappened"));
             return;
         }
@@ -281,7 +279,7 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
             }
         }
 
-        if (!this.currentRitualString.equals("")) {
+        if (!this.currentRitualString.isEmpty()) {
             Rituals.onRitualBroken(this, this.currentRitualString, RitualBreakMethod.ACTIVATE);
         }
         this.setOwner(eventOwnerKey);
@@ -289,7 +287,9 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
         var1 = 0;
         currentRitualString = testRitual;
         storage = Rituals.getLocalStorage(currentRitualString);
-        storage.setLocation(new Int3(xCoord, yCoord, zCoord));
+        if (storage != null) {
+            storage.setLocation(new Int3(xCoord, yCoord, zCoord));
+        }
         isActive = true;
         isRunning = true;
         direction = Rituals.getDirectionOfRitual(world, xCoord, yCoord, zCoord, testRitual);
@@ -368,30 +368,37 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
         performRitual(worldObj, xCoord, yCoord, zCoord, currentRitualString);
     }
 
+    @Override
     public void performRitual(World world, int x, int y, int z, String currentRitualString) {
         Rituals.performEffect(this, currentRitualString);
     }
 
+    @Override
     public String getOwner() {
         return owner;
     }
 
+    @Override
     public void setCooldown(int newCooldown) {
         this.cooldown = newCooldown;
     }
 
+    @Override
     public int getCooldown() {
         return this.cooldown;
     }
 
+    @Override
     public void setVar1(int newVar1) {
         this.var1 = newVar1;
     }
 
+    @Override
     public int getVar1() {
         return this.var1;
     }
 
+    @Override
     public void setActive(boolean active) {
         Rituals.onRitualBroken(this, this.currentRitualString, RitualBreakMethod.DEACTIVATE);
         this.isActive = active;
@@ -399,6 +406,7 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
     }
 
+    @Override
     public int getDirection() {
         return this.direction;
     }
@@ -444,16 +452,16 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
         readClientNBT(packet.func_148857_g());
     }
 
+    @Override
     public AxisAlignedBB getRenderBoundingBox() {
         double renderExtention = 1.0d;
-        AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(
+        return AxisAlignedBB.getBoundingBox(
                 xCoord - renderExtention,
                 yCoord - renderExtention,
                 zCoord - renderExtention,
                 xCoord + 1 + renderExtention,
                 yCoord + 1 + renderExtention,
                 zCoord + 1 + renderExtention);
-        return bb;
     }
 
     /* ISegmentedReagentHandler */
@@ -531,13 +539,13 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
         Reagent reagent = resource.reagent;
         int drained = 0;
 
-        for (int i = 0; i < tanks.length; i++) {
+        for (ReagentContainer tank : tanks) {
             if (drained >= maxDrain) {
                 break;
             }
 
-            if (resource.isReagentEqual(tanks[i].getReagent())) {
-                ReagentStack drainStack = tanks[i].drain(maxDrain - drained, doDrain);
+            if (resource.isReagentEqual(tank.getReagent())) {
+                ReagentStack drainStack = tank.drain(maxDrain - drained, doDrain);
                 if (drainStack != null) {
                     drained += drainStack.amount;
                 }
@@ -550,8 +558,8 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
     /* Only returns the amount from the first available tank */
     @Override
     public ReagentStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-        for (int i = 0; i < tanks.length; i++) {
-            ReagentStack stack = tanks[i].drain(maxDrain, doDrain);
+        for (ReagentContainer tank : tanks) {
+            ReagentStack stack = tank.drain(maxDrain, doDrain);
             if (stack != null) {
                 if (doDrain) {
                     worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -611,9 +619,10 @@ public class TEMasterStone extends TileEntity implements IMasterRitualStone, IBl
         return this.attunedTankMap;
     }
 
+    @Override
     public boolean areTanksEmpty() {
-        for (int i = 0; i < this.tanks.length; i++) {
-            if (tanks[i] != null && tanks[i].getReagent() != null) {
+        for (ReagentContainer tank : this.tanks) {
+            if (tank != null && tank.getReagent() != null) {
                 return false;
             }
         }

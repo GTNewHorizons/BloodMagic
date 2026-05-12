@@ -11,35 +11,20 @@ public class ItemSpellModifierBlock extends ItemBlock {
         setHasSubtypes(true);
     }
 
+    @Override
     public String getUnlocalizedName(ItemStack itemstack) {
-        String name;
-
-        switch (itemstack.getItemDamage()) {
-            case 0: {
-                name = "default";
-                break;
-            }
-
-            case 1: {
-                name = "offensive";
-                break;
-            }
-
-            case 2:
-                name = "defensive";
-                break;
-
-            case 3:
-                name = "environmental";
-                break;
-
-            default:
-                name = "broken";
-        }
+        String name = switch (itemstack.getItemDamage()) {
+            case 0 -> "default";
+            case 1 -> "offensive";
+            case 2 -> "defensive";
+            case 3 -> "environmental";
+            default -> "broken";
+        };
 
         return getUnlocalizedName() + "." + name;
     }
 
+    @Override
     public int getMetadata(int par1) {
 
         return par1;

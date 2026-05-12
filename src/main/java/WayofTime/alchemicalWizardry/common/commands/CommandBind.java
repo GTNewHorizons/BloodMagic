@@ -32,10 +32,6 @@ public class CommandBind extends CommandBase {
         ItemStack item = entityplayermp.getCurrentEquippedItem();
         EntityPlayerMP targetPlayer = getPlayer(iCommandSender, astring[0]);
 
-        if (targetPlayer == null) {
-            throw new CommandException("commands.bind.failed.noPlayer");
-        }
-
         if (item != null && item.getItem() instanceof IBindable) {
             if (IBindable.getOwnerName(item).isEmpty()) {
                 IBindable.checkAndSetItemOwner(item, targetPlayer);
@@ -48,7 +44,7 @@ public class CommandBind extends CommandBase {
         }
     }
 
-    public List addTabCompletionOptions(ICommandSender iCommandSender, String[] astring) {
+    public List<String> addTabCompletionOptions(ICommandSender iCommandSender, String[] astring) {
         return getListOfStringsMatchingLastWord(astring, this.getPlayer());
     }
 

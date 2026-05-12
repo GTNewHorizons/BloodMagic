@@ -26,6 +26,7 @@ public class CreativeDagger extends Item {
         setFull3D();
     }
 
+    @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (this.canUseForSacrifice(stack)) {
             player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
@@ -55,9 +56,9 @@ public class CreativeDagger extends Item {
         double posY = player.posY;
         double posZ = player.posZ;
         world.playSoundEffect(
-                (double) ((float) posX + 0.5F),
-                (double) ((float) posY + 0.5F),
-                (double) ((float) posZ + 0.5F),
+                (float) posX + 0.5F,
+                (float) posY + 0.5F,
+                (float) posZ + 0.5F,
                 "random.fizz",
                 0.5F,
                 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);

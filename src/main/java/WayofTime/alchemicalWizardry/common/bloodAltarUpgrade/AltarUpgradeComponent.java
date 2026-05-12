@@ -2,29 +2,16 @@ package WayofTime.alchemicalWizardry.common.bloodAltarUpgrade;
 
 public class AltarUpgradeComponent {
 
-    private int speedUpgrades;
-    private int efficiencyUpgrades;
-    private int sacrificeUpgrades;
-    private int selfSacrificeUpgrades;
-    private int displacementUpgrades;
-    private int altarCapacitiveUpgrades;
-    private int orbCapacitiveUpgrades;
-    private int betterCapacitiveUpgrades;
-    private int accelerationUpgrades;
-    private int quicknessUpgrades;
-
-    public AltarUpgradeComponent() {
-        speedUpgrades = 0;
-        efficiencyUpgrades = 0;
-        sacrificeUpgrades = 0;
-        selfSacrificeUpgrades = 0;
-        displacementUpgrades = 0;
-        altarCapacitiveUpgrades = 0;
-        orbCapacitiveUpgrades = 0;
-        betterCapacitiveUpgrades = 0;
-        accelerationUpgrades = 0;
-        quicknessUpgrades = 0;
-    }
+    private int speedUpgrades = 0;
+    private int efficiencyUpgrades = 0;
+    private int sacrificeUpgrades = 0;
+    private int selfSacrificeUpgrades = 0;
+    private int displacementUpgrades = 0;
+    private int altarCapacitiveUpgrades = 0;
+    private int orbCapacitiveUpgrades = 0;
+    private int betterCapacitiveUpgrades = 0;
+    private int accelerationUpgrades = 0;
+    private int quicknessUpgrades = 0;
 
     public void addSpeedUpgrade() {
         speedUpgrades++;

@@ -29,48 +29,43 @@ public class DemonPacketMinorGrunt extends DemonHoardPacket {
     @Override
     public int summonDemons(TEDemonPortal teDemonPortal, World world, int x, int y, int z, DemonType type, int tier,
             boolean spawnGuardian) {
-        EntityMinorDemonGrunt entity;
-
-        {
-            switch (type) {
-                case FIRE:
-                    if (spawnGuardian) {
-                        entity = new EntityMinorDemonGruntGuardianFire(world);
-                    } else {
-                        entity = new EntityMinorDemonGruntFire(world);
-                    }
-                    break;
-                case ICE:
-                    if (spawnGuardian) {
-                        entity = new EntityMinorDemonGruntGuardianIce(world);
-                    } else {
-                        entity = new EntityMinorDemonGruntIce(world);
-                    }
-                    break;
-                case EARTH:
-                    if (spawnGuardian) {
-                        entity = new EntityMinorDemonGruntGuardianEarth(world);
-                    } else {
-                        entity = new EntityMinorDemonGruntEarth(world);
-                    }
-                    break;
-                case WIND:
-                    if (spawnGuardian) {
-                        entity = new EntityMinorDemonGruntGuardianWind(world);
-                    } else {
-                        entity = new EntityMinorDemonGruntWind(world);
-                    }
-                    break;
-                case NORMAL:
-                default:
-                    if (spawnGuardian) {
-                        entity = new EntityMinorDemonGruntGuardian(world);
-                    } else {
-                        entity = new EntityMinorDemonGrunt(world);
-                    }
-                    break;
+        EntityMinorDemonGrunt entity = switch (type) {
+            case FIRE -> {
+                if (spawnGuardian) {
+                    yield new EntityMinorDemonGruntGuardianFire(world);
+                } else {
+                    yield new EntityMinorDemonGruntFire(world);
+                }
             }
-        }
+            case ICE -> {
+                if (spawnGuardian) {
+                    yield new EntityMinorDemonGruntGuardianIce(world);
+                } else {
+                    yield new EntityMinorDemonGruntIce(world);
+                }
+            }
+            case EARTH -> {
+                if (spawnGuardian) {
+                    yield new EntityMinorDemonGruntGuardianEarth(world);
+                } else {
+                    yield new EntityMinorDemonGruntEarth(world);
+                }
+            }
+            case WIND -> {
+                if (spawnGuardian) {
+                    yield new EntityMinorDemonGruntGuardianWind(world);
+                } else {
+                    yield new EntityMinorDemonGruntWind(world);
+                }
+            }
+            default -> {
+                if (spawnGuardian) {
+                    yield new EntityMinorDemonGruntGuardian(world);
+                } else {
+                    yield new EntityMinorDemonGrunt(world);
+                }
+            }
+        };
 
         entity.setPosition(x, y, z);
 

@@ -58,9 +58,9 @@ public class UpgradedAltars {
 
     private static boolean checkAltarComponent(AltarComponent altarComponent, IBlockAccess world, int x, int y, int z,
             int altarTier) {
-        int compX = x + altarComponent.getX();
-        int compY = y + altarComponent.getY();
-        int compZ = z + altarComponent.getZ();
+        int compX = x + altarComponent.x();
+        int compY = y + altarComponent.y();
+        int compZ = z + altarComponent.z();
         if (altarComponent.anyBlockMatches()) {
             return !world.isAirBlock(compX, compY, compZ);
         }
@@ -77,7 +77,7 @@ public class UpgradedAltars {
         }
 
         for (BlockStack rune : runes) {
-            if (altarComponent.isUpgradeSlot() ? block == rune.getBlock() && meta == rune.getMeta()
+            if (altarComponent.isUpgradeSlot() ? block == rune.block() && meta == rune.meta()
                     : altarComponent.matches(block, meta)) {
                 return true;
             }
@@ -101,10 +101,9 @@ public class UpgradedAltars {
                 continue;
             }
 
-            Block block = world
-                    .getBlock(x + altarComponent.getX(), y + altarComponent.getY(), z + altarComponent.getZ());
+            Block block = world.getBlock(x + altarComponent.x(), y + altarComponent.y(), z + altarComponent.z());
             int metadata = world
-                    .getBlockMetadata(x + altarComponent.getX(), y + altarComponent.getY(), z + altarComponent.getZ());
+                    .getBlockMetadata(x + altarComponent.x(), y + altarComponent.y(), z + altarComponent.z());
             BlockStack blockStack = new BlockStack(block, metadata);
             switch (runes.indexOf(blockStack)) {
                 case 1 -> upgrades.addSpeedUpgrade();

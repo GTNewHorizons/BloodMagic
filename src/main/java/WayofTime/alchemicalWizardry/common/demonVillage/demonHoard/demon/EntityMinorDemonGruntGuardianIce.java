@@ -2,39 +2,30 @@ package WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.DamageSource;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.common.entity.projectile.EnergyBlastProjectile;
 import WayofTime.alchemicalWizardry.common.entity.projectile.IceProjectile;
 
 public class EntityMinorDemonGruntGuardianIce extends EntityMinorDemonGruntGuardian {
 
-    public EntityMinorDemonGruntGuardianIce(World par1World) {
-        super(par1World);
+    public EntityMinorDemonGruntGuardianIce(World world) {
+        super(world);
         this.setDemonID(AlchemicalWizardry.entityMinorDemonGruntGuardianIceID);
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        int i = this.isTamed() ? 25 : 25;
-
-        if (par1Entity instanceof IHoardDemon && ((IHoardDemon) par1Entity).isSamePortal(this)) {
-            return false;
+    public void causeEffect(Entity entity) {
+        if (entity instanceof EntityLivingBase e) {
+            e.addPotionEffect(new PotionEffect(Potion.moveSlowdown.id, 200, 4));
         }
-
-        return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) i);
     }
 
-    /**
-     * Attack the specified entity using a ranged attack.
-     */
     @Override
-    public void attackEntityWithRangedAttack(EntityLivingBase par1EntityLivingBase, float par2) {
-        if (par1EntityLivingBase instanceof IHoardDemon && ((IHoardDemon) par1EntityLivingBase).isSamePortal(this)) {
-            return;
-        }
-        IceProjectile hol = new IceProjectile(worldObj, this, par1EntityLivingBase, 1.8f, 0f, 20, 600);
-        this.worldObj.spawnEntityInWorld(hol);
+    protected EnergyBlastProjectile attackProjectile(EntityLivingBase target) {
+        return new IceProjectile(worldObj, this, target, 1.8f, 0f, 20, 600);
     }
 }

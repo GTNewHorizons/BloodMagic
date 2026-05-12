@@ -16,6 +16,7 @@ public class BlockDemonChest extends BlockChest implements IBlockPortalNode {
         this.setCreativeTab(AlchemicalWizardry.tabBloodMagic);
     }
 
+    @Override
     public IInventory func_149951_m(World world, int x, int y, int z) {
         return (IInventory) world.getTileEntity(x, y, z);
     }

@@ -10,7 +10,7 @@ import net.minecraft.stats.Achievement;
 
 public class AchievementsMod extends Achievement {
 
-    public static List<Achievement> achievements = new ArrayList();
+    public static List<Achievement> achievements = new ArrayList<>();
 
     public AchievementsMod(String name, int x, int y, ItemStack icon, Achievement parent) {
         super("achievement.alchemicalwizardry:" + name, "alchemicalwizardry:" + name, x, y, icon, parent);

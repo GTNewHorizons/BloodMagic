@@ -41,21 +41,13 @@ public class TESchematicSaver extends TileEntity {
                     }
                 }
             }
-
-            AlchemicalWizardry.logger.info("" + i);
         }
-
-        AlchemicalWizardry.logger.info("I got here!");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(schematic);
-        AlchemicalWizardry.logger.info("Here, too!");
-        Writer writer;
-        try {
-            writer = new FileWriter("config/BloodMagic/schematics/" + new Random().nextInt() + ".json");
+        try (Writer writer = new FileWriter("config/BloodMagic/schematics/" + new Random().nextInt() + ".json")) {
             writer.write(json);
-            writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            AlchemicalWizardry.logger.error(e);
         }
     }
 

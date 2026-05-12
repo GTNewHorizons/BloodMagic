@@ -22,7 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class SigilOfHolding extends EnergyItems implements ISigil {
 
-    private static int invSize = 5;
+    private static final int invSize = 5;
 
     private static final String NBT_CURRENT_SIGIL = "CurrentSigil";
 
@@ -40,142 +40,142 @@ public class SigilOfHolding extends EnergyItems implements ISigil {
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        if (!(stack.getTagCompound() == null)) {
-            ItemStack[] inv = getInternalInventory(stack);
+        if (stack.getTagCompound() == null) {
+            return this.itemIcon;
+        }
+        ItemStack[] inv = getInternalInventory(stack);
 
-            if (inv == null) {
-                return this.itemIcon;
-            }
+        if (inv == null) {
+            return this.itemIcon;
+        }
 
-            ItemStack item = getCurrentSigil(stack);
+        ItemStack item = getCurrentSigil(stack);
 
-            if (item != null) {
-                return item.getIconIndex();
-            }
+        if (item != null) {
+            return item.getIconIndex();
         }
 
         return this.itemIcon;
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.sigilofholding.desc"));
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.sigilofholding.desc"));
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            addBindingInformation(par1ItemStack, par3List);
+        if (item.getTagCompound() == null) {
+            return;
+        }
+        addBindingInformation(item, tooltip);
 
-            ItemStack[] inv = getInternalInventory(par1ItemStack);
+        ItemStack[] inv = getInternalInventory(item);
 
-            if (inv == null) {
-                return;
-            }
+        if (inv == null) {
+            return;
+        }
 
-            int currentSlot = getCurrentItem(par1ItemStack);
-            ItemStack item = inv[currentSlot];
+        int currentSlot = getCurrentItem(item);
+        ItemStack stack = inv[currentSlot];
 
-            if (item != null) {
-                par3List.add(StatCollector.translateToLocal("tooltip.item.currentitem") + " " + item.getDisplayName());
-            }
+        if (stack != null) {
+            tooltip.add(StatCollector.translateToLocal("tooltip.item.currentitem") + " " + stack.getDisplayName());
+        }
 
-            for (int i = 0; i < invSize; i++) {
-                if (inv[i] != null) {
-                    par3List.add(
-                            StatCollector.translateToLocal("tooltip.item.iteminslot") + " "
-                                    + (i + 1)
-                                    + ": "
-                                    + inv[i].getDisplayName());
-                }
+        for (int i = 0; i < invSize; i++) {
+            if (inv[i] != null) {
+                tooltip.add(
+                        StatCollector.translateToLocal("tooltip.item.iteminslot") + " "
+                                + (i + 1)
+                                + ": "
+                                + inv[i].getDisplayName());
             }
         }
     }
 
     @Override
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4,
-            int par5, int par6, int par7, float par8, float par9, float par10) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par2EntityPlayer)) {
-            int currentSlot = getCurrentItem(par1ItemStack);
-            ItemStack[] inv = getInternalInventory(par1ItemStack);
+    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, int par4, int par5, int par6, int par7,
+            float par8, float par9, float par10) {
+        if (!IBindable.checkAndSetItemOwner(item, player)) {
+            return false;
+        }
+        int currentSlot = getCurrentItem(item);
+        ItemStack[] inv = getInternalInventory(item);
 
-            if (inv == null) {
-                return false;
-            }
-
-            ItemStack itemUsed = inv[currentSlot];
-
-            if (itemUsed == null) {
-                return false;
-            }
-
-            boolean bool = itemUsed.getItem()
-                    .onItemUse(par1ItemStack, par2EntityPlayer, par3World, par4, par5, par6, par7, par8, par9, par10);
-
-            saveInventory(par1ItemStack, inv);
-
-            return bool;
+        if (inv == null) {
+            return false;
         }
 
-        return false;
+        ItemStack itemUsed = inv[currentSlot];
+
+        if (itemUsed == null || itemUsed.getItem() == null) {
+            return false;
+        }
+
+        boolean result = itemUsed.getItem().onItemUse(item, player, world, par4, par5, par6, par7, par8, par9, par10);
+
+        saveInventory(item, inv);
+
+        return result;
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)) {
-            if (par3EntityPlayer.isSneaking()) {
-                InventoryHolding.setUUID(par1ItemStack);
-                par3EntityPlayer.openGui(
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player)) {
+            if (player.isSneaking()) {
+                InventoryHolding.setUUID(item);
+                player.openGui(
                         AlchemicalWizardry.instance,
                         3,
-                        par3EntityPlayer.worldObj,
-                        (int) par3EntityPlayer.posX,
-                        (int) par3EntityPlayer.posY,
-                        (int) par3EntityPlayer.posZ);
-                return par1ItemStack;
+                        player.worldObj,
+                        (int) player.posX,
+                        (int) player.posY,
+                        (int) player.posZ);
+                return item;
             }
 
-            int currentSlot = getCurrentItem(par1ItemStack);
-            ItemStack[] inv = getInternalInventory(par1ItemStack);
+            int currentSlot = getCurrentItem(item);
+            ItemStack[] inv = getInternalInventory(item);
 
             if (inv == null) {
-                return par1ItemStack;
+                return item;
             }
 
             ItemStack itemUsed = inv[currentSlot];
 
-            if (itemUsed == null) {
-                return par1ItemStack;
+            if (itemUsed == null || itemUsed.getItem() == null) {
+                return item;
             }
 
-            itemUsed.getItem().onItemRightClick(itemUsed, par2World, par3EntityPlayer);
-            saveInventory(par1ItemStack, inv);
+            itemUsed.getItem().onItemRightClick(itemUsed, world, player);
+            saveInventory(item, inv);
         }
-        return par1ItemStack;
+        return item;
     }
 
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
             float hitX, float hitY, float hitZ) {
-        if (IBindable.checkAndSetItemOwner(stack, player)) {
-            int currentSlot = getCurrentItem(stack);
-            ItemStack[] inv = getInternalInventory(stack);
+        if (!IBindable.checkAndSetItemOwner(stack, player)) {
+            return false;
+        }
+        int currentSlot = getCurrentItem(stack);
+        ItemStack[] inv = getInternalInventory(stack);
 
-            if (inv == null) {
-                return false;
-            }
-
-            ItemStack itemUsed = inv[currentSlot];
-
-            if (itemUsed == null) {
-                return false;
-            }
-
-            boolean bool = itemUsed.getItem().onItemUseFirst(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
-
-            saveInventory(stack, inv);
-
-            return bool;
+        if (inv == null) {
+            return false;
         }
 
-        return false;
+        ItemStack itemUsed = inv[currentSlot];
+
+        if (itemUsed == null || itemUsed.getItem() == null) {
+            return false;
+        }
+
+        boolean bool = itemUsed.getItem().onItemUseFirst(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
+
+        saveInventory(stack, inv);
+
+        return bool;
+
     }
 
     public static int next(int mode) {
@@ -256,12 +256,6 @@ public class SigilOfHolding extends EnergyItems implements ISigil {
     }
 
     public void saveInventory(ItemStack itemStack, ItemStack[] inventory) {
-        NBTTagCompound itemTag = itemStack.getTagCompound();
-
-        if (itemTag == null) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-
         NBTTagList itemList = new NBTTagList();
 
         for (int i = 0; i < invSize; i++) {
@@ -273,7 +267,7 @@ public class SigilOfHolding extends EnergyItems implements ISigil {
             }
         }
 
-        itemTag.setTag(InventoryHolding.NBT_ITEMS, itemList);
+        IBindable.getTag(itemStack).setTag(InventoryHolding.NBT_ITEMS, itemList);
     }
 
     public static void cycleSigil(ItemStack itemStack, int mode) {
@@ -284,26 +278,26 @@ public class SigilOfHolding extends EnergyItems implements ISigil {
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5) {
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            this.tickInternalInventory(par1ItemStack, par2World, par3Entity, par4, par5);
+    public void onUpdate(ItemStack item, World world, Entity entity, int slot, boolean held) {
+        if (!(item.getTagCompound() == null)) {
+            this.tickInternalInventory(item, world, entity, slot, held);
         }
     }
 
-    public void tickInternalInventory(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4,
-            boolean par5) {
-        ItemStack[] inv = getInternalInventory(par1ItemStack);
+    public void tickInternalInventory(ItemStack item, World world, Entity entity, int par4, boolean par5) {
+        ItemStack[] inv = getInternalInventory(item);
 
         if (inv == null) {
             return;
         }
 
         for (int i = 0; i < invSize; i++) {
-            if (inv[i] == null) {
+            ItemStack stack = inv[i];
+            if (stack == null || stack.getItem() == null) {
                 continue;
             }
 
-            inv[i].getItem().onUpdate(inv[i], par2World, par3Entity, par4, par5);
+            stack.getItem().onUpdate(stack, world, entity, par4, par5);
         }
     }
 

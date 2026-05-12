@@ -10,7 +10,6 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import WayofTime.alchemicalWizardry.ModItems;
-import WayofTime.alchemicalWizardry.common.items.armour.BoundArmour;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -23,12 +22,11 @@ public class POVArmourModelWrapper extends ModelRenderer {
     public POVArmourModelWrapper(ModelBase model) {
         super(model);
         ItemStack plateStack = new ItemStack(ModItems.boundPlateFire);
-        ModelBiped bipedModel = ((BoundArmour) ModItems.boundPlateFire)
+        ModelBiped bipedModel = ModItems.boundPlateFire
                 .getArmorModel(Minecraft.getMinecraft().thePlayer, plateStack, 1);
         armModel = bipedModel.bipedRightArm;
         resource = new ResourceLocation(
-                ((BoundArmour) ModItems.boundPlateFire)
-                        .getArmorTexture(plateStack, Minecraft.getMinecraft().thePlayer, 1, "POV"));
+                ModItems.boundPlateFire.getArmorTexture(plateStack, Minecraft.getMinecraft().thePlayer, 1, "POV"));
         addBox(0, 0, 0, 0, 0, 0); // Adds in a blank box as it's required in certain cases such as rendering arrows in
                                   // entities
     }
@@ -36,7 +34,6 @@ public class POVArmourModelWrapper extends ModelRenderer {
     @Override
     public void render(float partialTicks) {
         GL11.glPushMatrix();
-        // GL11.glTranslated(0.3, -.1, 0);
         Minecraft.getMinecraft().renderEngine.bindTexture(resource);
         armModel.rotateAngleX = this.rotateAngleX;
         armModel.rotateAngleY = this.rotateAngleY;

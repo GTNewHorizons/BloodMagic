@@ -2,7 +2,6 @@ package WayofTime.alchemicalWizardry.common.items.armour;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ public abstract class OmegaArmour extends BoundArmour {
     protected boolean storeYLevel = false;
     protected boolean storeSeesSky = false;
 
-    protected List<Enchantment> illegalEnchantmentList = new LinkedList();
+    protected List<Enchantment> illegalEnchantmentList = new LinkedList<>();
 
     public float reagentDrainPerDamage = 0.1f;
 
@@ -64,11 +63,6 @@ public abstract class OmegaArmour extends BoundArmour {
     @Override
     public boolean isAffectedBySoulHarden() {
         return false;
-    }
-
-    @Override
-    public double getBaseArmourReduction() {
-        return 0.9;
     }
 
     @Override
@@ -138,30 +132,29 @@ public abstract class OmegaArmour extends BoundArmour {
             omegaStack.setTagCompound(tag);
         }
         this.setContainedArmourStack(omegaStack, boundStack);
+        assert boundStack != null;
         IBindable.checkAndSetItemOwner(omegaStack, SoulNetworkHandler.getOwnerName(boundStack));
         this.setItemEnchantability(omegaStack, Math.min(enchantability, 70));
 
-        EnchantmentHelper.setEnchantments(new HashMap(), omegaStack);
+        EnchantmentHelper.setEnchantments(new HashMap<>(), omegaStack);
 
-        List enchantList = new ArrayList();
+        List<EnchantmentData> enchantList = new ArrayList<>();
 
         int adjustedEnchantLevel = Math.min(enchantmentLevel, 30);
         int additionalPasses = enchantmentLevel - adjustedEnchantLevel;
 
         for (int i = 0; i < 1 + additionalPasses; i++) {
-            List lst = EnchantmentHelper.buildEnchantmentList(rand, omegaStack, adjustedEnchantLevel);
+            List<EnchantmentData> lst = EnchantmentHelper.buildEnchantmentList(rand, omegaStack, adjustedEnchantLevel);
             if (lst != null) {
                 enchantList.addAll(lst);
             }
         }
 
-        Map<Enchantment, Map<Integer, Integer>> map = new HashMap();
+        Map<Enchantment, Map<Integer, Integer>> map = new HashMap<>();
 
-        for (Object obj : enchantList) {
-            EnchantmentData enchantmentdata = (EnchantmentData) obj;
-
+        for (EnchantmentData enchantmentdata : enchantList) {
             if (!map.containsKey(enchantmentdata.enchantmentobj)) {
-                map.put(enchantmentdata.enchantmentobj, new HashMap());
+                map.put(enchantmentdata.enchantmentobj, new HashMap<>());
             }
 
             Map<Integer, Integer> numMap = map.get(enchantmentdata.enchantmentobj);
@@ -173,12 +166,10 @@ public abstract class OmegaArmour extends BoundArmour {
         }
 
         for (Enchantment ench : this.illegalEnchantmentList) {
-            if (map.containsKey(ench)) {
-                map.remove(ench);
-            }
+            map.remove(ench);
         }
 
-        List newEnchantList = new ArrayList();
+        List<EnchantmentData> newEnchantList = new ArrayList<>();
 
         for (Entry<Enchantment, Map<Integer, Integer>> entry : map.entrySet()) {
             Enchantment ench = entry.getKey();
@@ -196,9 +187,7 @@ public abstract class OmegaArmour extends BoundArmour {
 
                 if (enchantLevel >= enchantValues.length) {
                     int[] newEnchantValues = new int[enchantLevel + 1];
-                    for (int i = 0; i < enchantValues.length; i++) {
-                        newEnchantValues[i] = enchantValues[i];
-                    }
+                    System.arraycopy(enchantValues, 0, newEnchantValues, 0, enchantValues.length);
 
                     enchantValues = newEnchantValues;
                 }
@@ -212,9 +201,7 @@ public abstract class OmegaArmour extends BoundArmour {
                 int number = enchantValues[i];
                 if (number >= 2 && i + 1 >= size) {
                     int[] newEnchantValues = new int[i + 2];
-                    for (int z = 0; z < enchantValues.length; z++) {
-                        newEnchantValues[z] = enchantValues[z];
-                    }
+                    System.arraycopy(enchantValues, 0, newEnchantValues, 0, enchantValues.length);
 
                     enchantValues = newEnchantValues;
                     enchantValues[i + 1] += number / 2;
@@ -226,18 +213,8 @@ public abstract class OmegaArmour extends BoundArmour {
             newEnchantList.add(new EnchantmentData(ench, enchantValues.length - 1));
         }
 
-        Iterator iterator = newEnchantList.iterator();
-
-        while (iterator.hasNext()) {
-            EnchantmentData enchantmentdata = (EnchantmentData) iterator.next();
-
-            {
-                omegaStack.addEnchantment(enchantmentdata.enchantmentobj, enchantmentdata.enchantmentLevel);
-            }
-        }
-
-        for (int i = 0; i < 1; i++) {
-            // omegaStack = EnchantmentHelper.addRandomEnchantment(new Random(), omegaStack, 30);
+        for (EnchantmentData enchantmentdata : newEnchantList) {
+            omegaStack.addEnchantment(enchantmentdata.enchantmentobj, enchantmentdata.enchantmentLevel);
         }
         return omegaStack;
     }
@@ -266,9 +243,8 @@ public abstract class OmegaArmour extends BoundArmour {
         }
 
         NBTTagCompound tag = omegaTag.getCompoundTag("armour");
-        ItemStack armourStack = ItemStack.loadItemStackFromNBT(tag);
 
-        return armourStack;
+        return ItemStack.loadItemStackFromNBT(tag);
     }
 
     @Override
@@ -294,54 +270,55 @@ public abstract class OmegaArmour extends BoundArmour {
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
-        if (tryComplexRendering) {
-            int type = ((ItemArmor) itemStack.getItem()).armorType;
-            if (this.model1 == null) {
-                this.model1 = getChestModel();
-            }
-            if (this.model2 == null) {
-                this.model2 = getLegsModel();
-            }
-
-            if (type == 1 || type == 3 || type == 0) {
-                this.model = model1;
-            } else {
-                this.model = model2;
-            }
-
-            if (this.model != null) {
-                this.model.bipedHead.showModel = (type == 0);
-                this.model.bipedHeadwear.showModel = (type == 0);
-                this.model.bipedBody.showModel = ((type == 1) || (type == 2));
-                this.model.bipedLeftArm.showModel = (type == 1);
-                this.model.bipedRightArm.showModel = (type == 1);
-                this.model.bipedLeftLeg.showModel = (type == 2 || type == 3);
-                this.model.bipedRightLeg.showModel = (type == 2 || type == 3);
-                this.model.isSneak = entityLiving.isSneaking();
-
-                this.model.isRiding = entityLiving.isRiding();
-                this.model.isChild = entityLiving.isChild();
-
-                this.model.aimedBow = false;
-                this.model.heldItemRight = (entityLiving.getHeldItem() != null ? 1 : 0);
-
-                if ((entityLiving instanceof EntityPlayer)) {
-                    if (((EntityPlayer) entityLiving).getItemInUseDuration() > 0) {
-                        EnumAction enumaction = ((EntityPlayer) entityLiving).getItemInUse().getItemUseAction();
-                        if (enumaction == EnumAction.block) {
-                            this.model.heldItemRight = 3;
-                        } else if (enumaction == EnumAction.bow) {
-                            this.model.aimedBow = true;
-                        }
-                    }
-                }
-            }
-
-            return model;
-
-        } else {
+        ItemArmor item = (ItemArmor) itemStack.getItem();
+        if (!tryComplexRendering || item == null) {
             return super.getArmorModel(entityLiving, itemStack, armorSlot);
         }
+        int type = item.armorType;
+        if (this.model1 == null) {
+            this.model1 = getChestModel();
+        }
+        if (this.model2 == null) {
+            this.model2 = getLegsModel();
+        }
+
+        if (type == 1 || type == 3 || type == 0) {
+            this.model = model1;
+        } else {
+            this.model = model2;
+        }
+
+        if (this.model == null) {
+            return model;
+        }
+        this.model.bipedHead.showModel = (type == 0);
+        this.model.bipedHeadwear.showModel = (type == 0);
+        this.model.bipedBody.showModel = ((type == 1) || (type == 2));
+        this.model.bipedLeftArm.showModel = (type == 1);
+        this.model.bipedRightArm.showModel = (type == 1);
+        this.model.bipedLeftLeg.showModel = (type == 2 || type == 3);
+        this.model.bipedRightLeg.showModel = (type == 2 || type == 3);
+        this.model.isSneak = entityLiving.isSneaking();
+
+        this.model.isRiding = entityLiving.isRiding();
+        this.model.isChild = entityLiving.isChild();
+
+        this.model.aimedBow = false;
+        this.model.heldItemRight = (entityLiving.getHeldItem() != null ? 1 : 0);
+
+        if ((entityLiving instanceof EntityPlayer player)) {
+            if (player.getItemInUseDuration() > 0) {
+                EnumAction enumaction = player.getItemInUse().getItemUseAction();
+                if (enumaction == EnumAction.block) {
+                    this.model.heldItemRight = 3;
+                } else if (enumaction == EnumAction.bow) {
+                    this.model.aimedBow = true;
+                }
+            }
+        }
+
+        return model;
+
     }
 
     public void onOmegaKeyPressed(EntityPlayer player, ItemStack stack) {

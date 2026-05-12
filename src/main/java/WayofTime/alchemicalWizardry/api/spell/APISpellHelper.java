@@ -10,8 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -21,14 +19,12 @@ import net.minecraft.world.World;
 import WayofTime.alchemicalWizardry.ModItems;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class APISpellHelper {
 
     /**
      * Thanks Kihira! <3
      * 
-     * @param player
      * @return persistent data tag
      */
     private static NBTTagCompound getPersistentDataTag(EntityPlayer player) {
@@ -174,22 +170,15 @@ public class APISpellHelper {
     }
 
     public static ItemStack getOrbForLevel(int level) {
-        switch (level) {
-            case 1:
-                return new ItemStack(ModItems.weakBloodOrb);
-            case 2:
-                return new ItemStack(ModItems.apprenticeBloodOrb);
-            case 3:
-                return new ItemStack(ModItems.magicianBloodOrb);
-            case 4:
-                return new ItemStack(ModItems.masterBloodOrb);
-            case 5:
-                return new ItemStack(ModItems.archmageBloodOrb);
-            case 6:
-                return new ItemStack(ModItems.transcendentBloodOrb);
-            default:
-                return new ItemStack(Blocks.fire);
-        }
+        return switch (level) {
+            case 1 -> new ItemStack(ModItems.weakBloodOrb);
+            case 2 -> new ItemStack(ModItems.apprenticeBloodOrb);
+            case 3 -> new ItemStack(ModItems.magicianBloodOrb);
+            case 4 -> new ItemStack(ModItems.masterBloodOrb);
+            case 5 -> new ItemStack(ModItems.archmageBloodOrb);
+            case 6 -> new ItemStack(ModItems.transcendentBloodOrb);
+            default -> new ItemStack(Blocks.fire);
+        };
     }
 
     public static MovingObjectPosition raytraceFromEntity(World world, Entity player, boolean par3, double range) {
@@ -207,10 +196,6 @@ public class APISpellHelper {
         float f6 = MathHelper.sin(-f1 * 0.017453292F);
         float f7 = f4 * f5;
         float f8 = f3 * f5;
-        // if (player instanceof EntityPlayerMP)
-        {
-            // d3 = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance();
-        }
         Vec3 vec31 = vec3.addVector((double) f7 * range, (double) f6 * range, (double) f8 * range);
         return world.func_147447_a(vec3, vec31, par3, !par3, par3);
     }
@@ -259,90 +244,18 @@ public class APISpellHelper {
     }
 
     public static String getNumeralForInt(int num) {
-        switch (num) {
-            case 1:
-                return "I";
-            case 2:
-                return "II";
-            case 3:
-                return "III";
-            case 4:
-                return "IV";
-            case 5:
-                return "V";
-            case 6:
-                return "VI";
-            case 7:
-                return "VII";
-            case 8:
-                return "VIII";
-            case 9:
-                return "IX";
-            case 10:
-                return "X";
-            default:
-                return "";
-        }
-    }
-
-    public static Block getBlockForString(String str) {
-        String[] parts = str.split(":");
-        String modId = parts[0];
-        String name = parts[1];
-        return GameRegistry.findBlock(modId, name);
-    }
-
-    public static Item getItemForString(String str) {
-        String[] parts = str.split(":");
-        String modId = parts[0];
-        String name = parts[1];
-        return GameRegistry.findItem(modId, name);
-    }
-
-    public static ItemStack getItemStackForString(String str) {
-        String[] parts = str.split(":");
-        int meta = 0;
-        if (parts.length >= 3) {
-            meta = Integer.decode(parts[2]);
-        } else if (parts.length < 2) {
-            return null;
-        }
-        String modId = parts[0];
-        String name = parts[1];
-
-        String itemString = modId + ":" + name;
-        Item item = APISpellHelper.getItemForString(itemString);
-        if (item != null) {
-            return new ItemStack(item, 1, meta);
-        }
-
-        Block block = APISpellHelper.getBlockForString(itemString);
-        if (block != null) {
-            return new ItemStack(block, 1, meta);
-        }
-
-        return null;
-    }
-
-    public static IRecipe getRecipeForItemStack(ItemStack reqStack) // Does not match NBT. Durrr! -smack-
-    {
-        if (reqStack == null) {
-            return null; // Why are you even doing this to yourself!? You know this can't be healthy!
-        }
-        List craftingList = CraftingManager.getInstance().getRecipeList();
-        for (Object posRecipe : craftingList) {
-            if (posRecipe instanceof IRecipe) {
-                ItemStack outputStack = ((IRecipe) posRecipe).getRecipeOutput();
-                if (outputStack != null) {
-                    if (outputStack.getItem() == reqStack.getItem() && (outputStack.getItem().getHasSubtypes()
-                            ? outputStack.getItemDamage() == reqStack.getItemDamage()
-                            : true)) {
-                        return (IRecipe) posRecipe;
-                    }
-                }
-            }
-        }
-
-        return null;
+        return switch (num) {
+            case 1 -> "I";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            case 5 -> "V";
+            case 6 -> "VI";
+            case 7 -> "VII";
+            case 8 -> "VIII";
+            case 9 -> "IX";
+            case 10 -> "X";
+            default -> "";
+        };
     }
 }

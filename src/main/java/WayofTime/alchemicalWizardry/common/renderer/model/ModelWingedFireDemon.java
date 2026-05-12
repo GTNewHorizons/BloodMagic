@@ -89,7 +89,6 @@ public class ModelWingedFireDemon extends ModelBase {
         setRotation(head, 0F, 0F, 0F);
         rightShoulder = new ModelRenderer(this, 0, 29);
         rightShoulder.mirror = true;
-        rightShoulder.mirror = true;
         rightShoulder.addBox(-8F, -5F, -4F, 8, 7, 8);
         rightShoulder.setRotationPoint(-5F, -10F, 0F);
         rightShoulder.setTextureSize(64, 64);
@@ -97,7 +96,6 @@ public class ModelWingedFireDemon extends ModelBase {
         setRotation(rightShoulder, 0F, 0F, 0F);
         rightShoulder.mirror = false;
         rightArm = new ModelRenderer(this, 32, 0);
-        rightArm.mirror = true;
         rightArm.mirror = true;
         rightArm.addBox(-7F, 2F, -2F, 4, 12, 4);
         rightArm.setRotationPoint(-5F, -10F, 0F);
@@ -149,6 +147,7 @@ public class ModelWingedFireDemon extends ModelBase {
         rightHorn2.mirror = false;
     }
 
+    @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         super.render(entity, f, f1, f2, f3, f4, f5);
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
@@ -177,6 +176,7 @@ public class ModelWingedFireDemon extends ModelBase {
         model.rotateAngleZ = z;
     }
 
+    @Override
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         this.head.rotateAngleX = f4 / (180F / (float) Math.PI);

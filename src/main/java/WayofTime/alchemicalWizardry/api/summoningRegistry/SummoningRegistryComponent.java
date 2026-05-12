@@ -74,22 +74,11 @@ public class SummoningRegistryComponent {
             return false;
         }
 
-        switch (ring) {
-            case 1:
-                recipe = ring1;
-                break;
-
-            case 2:
-                recipe = ring2;
-                break;
-
-            case 3:
-                recipe = ring3;
-                break;
-
-            default:
-                recipe = ring1;
-        }
+        recipe = switch (ring) {
+            case 2 -> ring2;
+            case 3 -> ring3;
+            default -> ring1;
+        };
 
         if (recipe.length != 6) {
             ItemStack[] newRecipe = new ItemStack[6];
@@ -175,19 +164,12 @@ public class SummoningRegistryComponent {
     }
 
     public ItemStack[] getRingRecipeForRing(int ring) {
-        switch (ring) {
-            case 1:
-                return ring1;
-
-            case 2:
-                return ring2;
-
-            case 3:
-                return ring3;
-
-            default:
-                return null;
-        }
+        return switch (ring) {
+            case 1 -> ring1;
+            case 2 -> ring2;
+            case 3 -> ring3;
+            default -> null;
+        };
     }
 
     public String getSummoningHelperID() {

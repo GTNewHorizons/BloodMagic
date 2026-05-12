@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
@@ -39,10 +38,10 @@ public class SigilOfTheBridge extends EnergyItems implements ArmourUpgrade, ISig
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.sigilofthebridge.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.sigilofthebridge.desc2"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.sigilofthebridge.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.sigilofthebridge.desc2"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
@@ -64,8 +63,8 @@ public class SigilOfTheBridge extends EnergyItems implements ArmourUpgrade, ISig
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
-        if (par1 == 1) {
+    public IIcon getIconFromDamage(int meta) {
+        if (meta == 1) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;
@@ -73,103 +72,66 @@ public class SigilOfTheBridge extends EnergyItems implements ArmourUpgrade, ISig
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
+        toggleSigil(item, world, player);
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5) {
-        if (!(par3Entity instanceof EntityPlayer)) {
+    public void onUpdate(ItemStack item, World world, Entity entity, int slot, boolean held) {
+        if (!(entity instanceof EntityPlayer player)) {
             return;
         }
 
-        EntityPlayer par3EntityPlayer = (EntityPlayer) par3Entity;
-
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
+        if (!IBindable.isActive(item)) {
+            return;
+        }
+        checkPassiveDrain(item, world, player);
+        if (!player.onGround && !player.isSneaking()) {
+            return;
         }
 
-        if (IBindable.isActive(par1ItemStack)) {
-            checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
-            if (!par3EntityPlayer.onGround && !par3EntityPlayer.isSneaking()) {
-                return;
-            }
+        int range = 2;
+        int verticalOffset = -1;
 
-            int range = 2;
-            int verticalOffset = -1;
+        if (player.isSneaking()) {
+            verticalOffset--;
+        }
 
-            if (par3EntityPlayer.isSneaking()) {
-                verticalOffset--;
-            }
+        if (world.isRemote) {
+            verticalOffset--;
+        }
 
-            if (par2World.isRemote) {
-                verticalOffset--;
-            }
+        int posX = (int) Math.round(player.posX - 0.5f);
+        int posY = (int) player.posY;
+        int posZ = (int) Math.round(player.posZ - 0.5f);
 
-            int posX = (int) Math.round(par3Entity.posX - 0.5f);
-            int posY = (int) par3Entity.posY;
-            int posZ = (int) Math.round(par3Entity.posZ - 0.5f);
-            int incremented = 0;
+        for (int ix = posX - range; ix <= posX + range; ix++) {
+            for (int iz = posZ - range; iz <= posZ + range; iz++) {
+                {
+                    Block block = world.getBlock(ix, posY + verticalOffset, iz);
 
-            for (int ix = posX - range; ix <= posX + range; ix++) {
-                for (int iz = posZ - range; iz <= posZ + range; iz++) {
-                    {
-                        Block block = par2World.getBlock(ix, posY + verticalOffset, iz);
+                    if (world.isAirBlock(ix, posY + verticalOffset, iz)) {
+                        world.setBlock(ix, posY + verticalOffset, iz, ModBlocks.spectralBlock, 0, 3);
 
-                        if (par2World.isAirBlock(ix, posY + verticalOffset, iz)) {
-                            par2World.setBlock(ix, posY + verticalOffset, iz, ModBlocks.spectralBlock, 0, 3);
-
-                            TileEntity tile = par2World.getTileEntity(ix, posY + verticalOffset, iz);
-                            if (tile instanceof TESpectralBlock) {
-                                ((TESpectralBlock) tile).setDuration(100);
-                            }
-
-                            if (par2World.rand.nextInt(2) == 0) {
-                                incremented++;
-                            }
-                        } else if (block == ModBlocks.spectralBlock) {
-                            TileEntity tile = par2World.getTileEntity(ix, posY + verticalOffset, iz);
-                            if (tile instanceof TESpectralBlock) {
-                                ((TESpectralBlock) tile).setDuration(100);
-                            }
+                        TileEntity tile = world.getTileEntity(ix, posY + verticalOffset, iz);
+                        if (tile instanceof TESpectralBlock) {
+                            ((TESpectralBlock) tile).setDuration(100);
+                        }
+                    } else if (block == ModBlocks.spectralBlock) {
+                        TileEntity tile = world.getTileEntity(ix, posY + verticalOffset, iz);
+                        if (tile instanceof TESpectralBlock) {
+                            ((TESpectralBlock) tile).setDuration(100);
                         }
                     }
                 }
             }
-
-            this.incrimentLPUSed(par1ItemStack, incremented);
         }
-    }
-
-    public int getLPUsed(ItemStack par1ItemStack) {
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        return par1ItemStack.getTagCompound().getInteger("LPUsed");
-    }
-
-    public void incrimentLPUSed(ItemStack par1ItemStack, int addedLP) {
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        par1ItemStack.getTagCompound()
-                .setInteger("LPUsed", par1ItemStack.getTagCompound().getInteger("LPUsed") + addedLP);
-    }
-
-    public void setLPUsed(ItemStack par1ItemStack, int newLP) {
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        par1ItemStack.getTagCompound().setInteger("LPUsed", newLP);
     }
 
     @Override
@@ -188,21 +150,17 @@ public class SigilOfTheBridge extends EnergyItems implements ArmourUpgrade, ISig
         int posX = (int) Math.round(player.posX - 0.5f);
         int posY = (int) player.posY;
         int posZ = (int) Math.round(player.posZ - 0.5f);
-        for (int ix = posX - range; ix <= posX + range; ix++) {
-            for (int iz = posZ - range; iz <= posZ + range; iz++) {
-                Block block = world.getBlock(ix, posY + verticalOffset, iz);
+        for (int x = posX - range; x <= posX + range; x++) {
+            for (int z = posZ - range; z <= posZ + range; z++) {
+                Block block = world.getBlock(x, posY + verticalOffset, z);
 
-                if (world.isAirBlock(ix, posY + verticalOffset, iz)) {
-                    world.setBlock(ix, posY + verticalOffset, iz, ModBlocks.spectralBlock, 0, 3);
-
-                    TileEntity tile = world.getTileEntity(ix, posY + verticalOffset, iz);
-                    if (tile instanceof TESpectralBlock) {
-                        ((TESpectralBlock) tile).setDuration(100);
-                    }
-                } else if (block == ModBlocks.spectralBlock) {
-                    TileEntity tile = world.getTileEntity(ix, posY + verticalOffset, iz);
-                    if (tile instanceof TESpectralBlock) {
-                        ((TESpectralBlock) tile).setDuration(100);
+                if (world.isAirBlock(x, posY + verticalOffset, z)) {
+                    world.setBlock(x, posY + verticalOffset, z, ModBlocks.spectralBlock, 0, 3);
+                }
+                if (block == ModBlocks.spectralBlock) {
+                    TileEntity tile = world.getTileEntity(x, posY + verticalOffset, z);
+                    if (tile instanceof TESpectralBlock b) {
+                        b.setDuration(100);
                     }
                 }
             }

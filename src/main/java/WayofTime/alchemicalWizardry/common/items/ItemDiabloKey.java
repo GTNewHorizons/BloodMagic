@@ -36,26 +36,25 @@ public class ItemDiabloKey extends EnergyItems {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.diablokey.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.diablokey.desc"));
+        addBindingInformation(item, tooltip);
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        World world = par3EntityPlayer.worldObj;
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)
-                || par3EntityPlayer instanceof FakePlayer) {
-            return par1ItemStack;
+    @Override
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player instanceof FakePlayer) {
+            return item;
         }
 
         if (world != null) {
-            double posX = par3EntityPlayer.posX;
-            double posY = par3EntityPlayer.posY;
-            double posZ = par3EntityPlayer.posZ;
+            double posX = player.posX;
+            double posY = player.posY;
+            double posZ = player.posZ;
             world.playSoundEffect(
-                    (double) ((float) posX + 0.5F),
-                    (double) ((float) posY + 0.5F),
-                    (double) ((float) posZ + 0.5F),
+                    (float) posX + 0.5F,
+                    (float) posY + 0.5F,
+                    (float) posZ + 0.5F,
                     "random.fizz",
                     0.5F,
                     2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
@@ -72,46 +71,46 @@ public class ItemDiabloKey extends EnergyItems {
                     posZ);
         }
 
-        if (par3EntityPlayer.worldObj.isRemote) {
-            return par1ItemStack;
+        if (player.worldObj.isRemote) {
+            return item;
         }
 
-        if (par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+        if (player.isSneaking()) {
+            return item;
         }
 
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
+        NBTTagCompound itemTag = item.getTagCompound();
 
-        if (itemTag == null || itemTag.getString("ownerName").equals("")) {
-            return par1ItemStack;
+        if (itemTag == null || itemTag.getString("ownerName").isEmpty()) {
+            return item;
         }
 
         String ownerName = itemTag.getString("ownerName");
-        ItemStack[] inv = par3EntityPlayer.inventory.mainInventory;
+        ItemStack[] inv = player.inventory.mainInventory;
 
         for (ItemStack itemStack : inv) {
             if (itemStack == null) {
                 continue;
             }
 
-            Item item = itemStack.getItem();
+            Item i = itemStack.getItem();
 
-            if (item instanceof ItemDiabloKey) {
+            if (i instanceof ItemDiabloKey) {
                 continue;
             }
 
-            if (item instanceof IBindable) {
+            if (i instanceof IBindable) {
                 IBindable.checkAndSetItemOwner(itemStack, ownerName);
             }
         }
-        par3EntityPlayer.inventoryContainer.detectAndSendChanges();
+        player.inventoryContainer.detectAndSendChanges();
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item id, CreativeTabs creativeTab, List list) {
+    public void getSubItems(Item id, CreativeTabs creativeTab, List<ItemStack> list) {
         list.add(new ItemStack(ModItems.itemKeyOfDiablo));
         ItemStack boundKey = new ItemStack(ModItems.itemKeyOfDiablo);
         IBindable.checkAndSetItemOwner(boundKey, "Server-wide Soul Network");

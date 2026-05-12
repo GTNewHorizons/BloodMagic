@@ -55,8 +55,7 @@ public class RitualDivinerRender {
         double posZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.partialTicks;
 
         if (player.inventory.getCurrentItem() != null
-                && player.inventory.getCurrentItem().getItem() instanceof ItemRitualDiviner) {
-            ItemRitualDiviner ritualDiviner = (ItemRitualDiviner) player.inventory.getCurrentItem().getItem();
+                && player.inventory.getCurrentItem().getItem() instanceof ItemRitualDiviner ritualDiviner) {
             int direction = ritualDiviner.getDirection(player.inventory.getCurrentItem());
             RitualEffect ritualEffect = getEffectFromString(
                     ritualDiviner.getCurrentRitual(player.inventory.getCurrentItem()));
@@ -70,19 +69,16 @@ public class RitualDivinerRender {
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             for (RitualComponent ritualComponent : ritualEffect.getRitualComponentList()) {
                 Vector3 vX = vec3.add(
-                        new Vector3(
-                                ritualComponent.getX(direction),
-                                ritualComponent.getY(),
-                                ritualComponent.getZ(direction)));
-                double minX = vX.x - posX;
-                double minY = vX.y - posY;
-                double minZ = vX.z - posZ;
+                        new Vector3(ritualComponent.x(direction), ritualComponent.y(), ritualComponent.z(direction)));
+                double minX = vX.x() - posX;
+                double minY = vX.y() - posY;
+                double minZ = vX.z() - posZ;
 
-                if (!world.getBlock(vX.x, vX.y, vX.z).isOpaqueCube()) {
+                if (!world.getBlock(vX.x(), vX.y(), vX.z()).isOpaqueCube()) {
                     RenderFakeBlocks.drawFakeBlock(
                             vX,
                             ModBlocks.ritualStone,
-                            ritualComponent.getStoneType(),
+                            ritualComponent.stoneType(),
                             minX,
                             minY,
                             minZ,

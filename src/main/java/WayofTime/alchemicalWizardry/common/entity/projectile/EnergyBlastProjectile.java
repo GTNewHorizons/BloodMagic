@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.common.entity.projectile;
 
-import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -39,35 +38,35 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
 
     protected int ticksInAir = 0;
     protected int maxTicksInAir = 600;
-    private int ricochetCounter = 0;
-    private boolean scheduledForDeath = false;
+    protected int ricochetCounter = 0;
+    protected boolean scheduledForDeath = false;
     protected int projectileDamage;
 
-    public EnergyBlastProjectile(World par1World) {
-        super(par1World);
+    public EnergyBlastProjectile(World world) {
+        super(world);
         this.setSize(0.5F, 0.5F);
         this.maxTicksInAir = 600;
     }
 
-    public EnergyBlastProjectile(World par1World, double par2, double par4, double par6) {
-        super(par1World);
+    public EnergyBlastProjectile(World world, double x, double y, double z) {
+        super(world);
         this.setSize(0.5F, 0.5F);
-        this.setPosition(par2, par4, par6);
+        this.setPosition(x, y, z);
         yOffset = 0.0F;
         this.maxTicksInAir = 600;
     }
 
-    public EnergyBlastProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage) {
-        super(par1World);
-        shootingEntity = par2EntityPlayer;
+    public EnergyBlastProjectile(World world, EntityLivingBase player, int damage) {
+        super(world);
+        shootingEntity = player;
         float par3 = 0.8F;
         this.setSize(0.5F, 0.5F);
         this.setLocationAndAngles(
-                par2EntityPlayer.posX,
-                par2EntityPlayer.posY + par2EntityPlayer.getEyeHeight(),
-                par2EntityPlayer.posZ,
-                par2EntityPlayer.rotationYaw,
-                par2EntityPlayer.rotationPitch);
+                player.posX,
+                player.posY + player.getEyeHeight(),
+                player.posZ,
+                player.rotationYaw,
+                player.rotationPitch);
         posX -= MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
         posY -= 0.2D;
         posZ -= MathHelper.sin(rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
@@ -83,11 +82,10 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
         this.maxTicksInAir = 600;
     }
 
-    public EnergyBlastProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage, int maxTicksInAir,
-            double posX, double posY, double posZ, float rotationYaw, float rotationPitch) {
-        super(par1World);
-        shootingEntity = par2EntityPlayer;
-        float par3 = 0.8F;
+    public EnergyBlastProjectile(World world, EntityLivingBase player, int damage, int maxTicksInAir, double posX,
+            double posY, double posZ, float rotationYaw, float rotationPitch) {
+        super(world);
+        shootingEntity = player;
         this.setSize(0.5F, 0.5F);
         this.setLocationAndAngles(posX, posY, posZ, rotationYaw, rotationPitch);
         posX -= MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI) * 0.16F;
@@ -100,36 +98,29 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
         motionZ = MathHelper.cos(rotationYaw / 180.0F * (float) Math.PI)
                 * MathHelper.cos(rotationPitch / 180.0F * (float) Math.PI);
         motionY = -MathHelper.sin(rotationPitch / 180.0F * (float) Math.PI);
-        this.setThrowableHeading(motionX, motionY, motionZ, par3 * 1.5F, 1.0F);
+        this.setThrowableHeading(motionX, motionY, motionZ, 1.2f, 1.0F);
         this.projectileDamage = damage;
         this.maxTicksInAir = maxTicksInAir;
     }
 
-    public EnergyBlastProjectile(World par1World, EntityLivingBase par2EntityLivingBase,
-            EntityLivingBase par3EntityLivingBase, float par4, float par5, int damage, int maxTicksInAir) {
-        super(par1World);
+    public EnergyBlastProjectile(World world, EntityLivingBase shooter, EntityLivingBase target, float velocity,
+            float inaccuracy, int damage, int maxTicksInAir) {
+        super(world);
         this.renderDistanceWeight = 10.0D;
-        this.shootingEntity = par2EntityLivingBase;
-        this.posY = par2EntityLivingBase.posY + (double) par2EntityLivingBase.getEyeHeight() - 0.10000000149011612D;
-        double d0 = par3EntityLivingBase.posX - par2EntityLivingBase.posX;
-        double d1 = par3EntityLivingBase.boundingBox.minY + (double) (par3EntityLivingBase.height / 1.5F) - this.posY;
-        double d2 = par3EntityLivingBase.posZ - par2EntityLivingBase.posZ;
-        double d3 = (double) MathHelper.sqrt_double(d0 * d0 + d2 * d2);
-
-        if (d3 >= 1.0E-7D) {
-            float f2 = (float) (Math.atan2(d2, d0) * 180.0D / Math.PI) - 90.0F;
-            float f3 = (float) (-(Math.atan2(d1, d3) * 180.0D / Math.PI));
-            double d4 = d0 / d3;
-            double d5 = d2 / d3;
-            this.setLocationAndAngles(
-                    par2EntityLivingBase.posX + d4,
-                    this.posY,
-                    par2EntityLivingBase.posZ + d5,
-                    f2,
-                    f3);
+        this.shootingEntity = shooter;
+        this.posY = shooter.posY + (double) shooter.getEyeHeight() - 0.1D;
+        double deltaX = target.posX - shooter.posX;
+        double deltaY = target.boundingBox.minY + (double) (target.height / 1.5F) - this.posY;
+        double deltaZ = target.posZ - shooter.posZ;
+        double horizontalDistance = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
+        if (horizontalDistance >= 1.0E-7D) {
+            float yaw = (float) (Math.atan2(deltaZ, deltaX) * 180.0D / Math.PI) - 90.0F;
+            float pitch = (float) (-(Math.atan2(deltaY, horizontalDistance) * 180.0D / Math.PI));
+            double normalizedX = deltaX / horizontalDistance;
+            double normalizedZ = deltaZ / horizontalDistance;
+            this.setLocationAndAngles(shooter.posX + normalizedX, this.posY, shooter.posZ + normalizedZ, yaw, pitch);
             this.yOffset = 0.0F;
-            float f4 = (float) d3 * 0.2F;
-            this.setThrowableHeading(d0, d1, d2, par4, par5);
+            this.setThrowableHeading(deltaX, deltaY, deltaZ, velocity, inaccuracy);
         }
 
         this.projectileDamage = damage;
@@ -138,58 +129,56 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
 
     @Override
     protected void entityInit() {
-        dataWatcher.addObject(16, Byte.valueOf((byte) 0));
+        dataWatcher.addObject(16, (byte) 0);
     }
 
     /**
      * Similar to setArrowHeading, it's point the throwable entity to a x, y, z direction.
      */
     @Override
-    public void setThrowableHeading(double var1, double var3, double var5, float var7, float var8) {
-        float var9 = MathHelper.sqrt_double(var1 * var1 + var3 * var3 + var5 * var5);
-        var1 /= var9;
-        var3 /= var9;
-        var5 /= var9;
-        var1 += rand.nextGaussian() * 0.007499999832361937D * var8;
-        var3 += rand.nextGaussian() * 0.007499999832361937D * var8;
-        var5 += rand.nextGaussian() * 0.007499999832361937D * var8;
-        var1 *= var7;
-        var3 *= var7;
-        var5 *= var7;
-        motionX = var1;
-        motionY = var3;
-        motionZ = var5;
-        float var10 = MathHelper.sqrt_double(var1 * var1 + var5 * var5);
-        prevRotationYaw = rotationYaw = (float) (Math.atan2(var1, var5) * 180.0D / Math.PI);
-        prevRotationPitch = rotationPitch = (float) (Math.atan2(var3, var10) * 180.0D / Math.PI);
+    public void setThrowableHeading(double x, double y, double z, float velocity, float inaccuracy) {
+        float magnitude = MathHelper.sqrt_double(x * x + y * y + z * z);
+        x /= magnitude;
+        y /= magnitude;
+        z /= magnitude;
+
+        double spread = 0.0075D;
+        x += rand.nextGaussian() * spread * inaccuracy;
+        y += rand.nextGaussian() * spread * inaccuracy;
+        z += rand.nextGaussian() * spread * inaccuracy;
+
+        x *= velocity;
+        y *= velocity;
+        z *= velocity;
+
+        motionX = x;
+        motionY = y;
+        motionZ = z;
+
+        float horizontalSpeed = MathHelper.sqrt_double(x * x + z * z);
+
+        prevRotationYaw = rotationYaw = (float) (Math.atan2(x, z) * 180.0D / Math.PI);
+        prevRotationPitch = rotationPitch = (float) (Math.atan2(y, horizontalSpeed) * 180.0D / Math.PI);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    /**
-     * Sets the position and rotation. Only difference from the other one is no bounding on the rotation. Args: posX,
-     * posY, posZ, yaw, pitch
-     */
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
-        this.setPosition(par1, par3, par5);
-        this.setRotation(par7, par8);
+    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int rotationIncrements) {
+        this.setPosition(x, y, z);
+        this.setRotation(yaw, pitch);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    /**
-     * Sets the velocity to the args. Args: x, y, z
-     */
-    public void setVelocity(double par1, double par3, double par5) {
-        motionX = par1;
-        motionY = par3;
-        motionZ = par5;
+    public void setVelocity(double x, double y, double z) {
+        motionX = x;
+        motionY = y;
+        motionZ = z;
 
         if (prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
-            float var7 = MathHelper.sqrt_double(par1 * par1 + par5 * par5);
-            prevRotationYaw = rotationYaw = (float) (Math.atan2(par1, par5) * 180.0D / Math.PI);
-            prevRotationPitch = rotationPitch = (float) (Math.atan2(par3, var7) * 180.0D / Math.PI);
-            prevRotationPitch = rotationPitch;
+            prevRotationYaw = rotationYaw = (float) (Math.atan2(x, z) * 180.0D / Math.PI);
+            float horizontalSpeed = MathHelper.sqrt_double(x * x + z * z);
+            prevRotationPitch = rotationPitch = (float) (Math.atan2(y, horizontalSpeed) * 180.0D / Math.PI);
             prevRotationYaw = rotationYaw;
             this.setLocationAndAngles(posX, posY, posZ, rotationYaw, rotationPitch);
         }
@@ -207,19 +196,19 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
         }
 
         if (shootingEntity == null) {
-            List players = worldObj.getEntitiesWithinAABB(
+            List<EntityPlayer> players = worldObj.getEntitiesWithinAABB(
                     EntityPlayer.class,
                     AxisAlignedBB.getBoundingBox(posX - 1, posY - 1, posZ - 1, posX + 1, posY + 1, posZ + 1));
-            Iterator i = players.iterator();
+
             double closestDistance = Double.MAX_VALUE;
             EntityPlayer closestPlayer = null;
 
-            while (i.hasNext()) {
-                EntityPlayer e = (EntityPlayer) i.next();
-                double distance = e.getDistanceToEntity(this);
+            for (EntityPlayer player : players) {
+                double distance = player.getDistanceToEntity(this);
 
                 if (distance < closestDistance) {
-                    closestPlayer = e;
+                    closestPlayer = player;
+                    closestDistance = distance;
                 }
             }
 
@@ -229,79 +218,71 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
         }
 
         if (prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
-            float var1 = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
+            float horizontalSpeed = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
             prevRotationYaw = rotationYaw = (float) (Math.atan2(motionX, motionZ) * 180.0D / Math.PI);
-            prevRotationPitch = rotationPitch = (float) (Math.atan2(motionY, var1) * 180.0D / Math.PI);
+            prevRotationPitch = rotationPitch = (float) (Math.atan2(motionY, horizontalSpeed) * 180.0D / Math.PI);
         }
 
-        Block var16 = worldObj.getBlock(xTile, yTile, zTile);
+        Block block = worldObj.getBlock(xTile, yTile, zTile);
 
-        if (var16 != null) {
-            var16.setBlockBoundsBasedOnState(worldObj, xTile, yTile, zTile);
-            AxisAlignedBB var2 = var16.getCollisionBoundingBoxFromPool(worldObj, xTile, yTile, zTile);
+        if (block != null) {
+            block.setBlockBoundsBasedOnState(worldObj, xTile, yTile, zTile);
+            AxisAlignedBB collisionBox = block.getCollisionBoundingBoxFromPool(worldObj, xTile, yTile, zTile);
 
-            if (var2 != null && var2.isVecInside(SpellHelper.createVec3(posX, posY, posZ))) {
+            if (collisionBox != null && collisionBox.isVecInside(SpellHelper.createVec3(posX, posY, posZ))) {
                 inGround = true;
             }
         }
 
-        if (inGround) {
-            Block var18 = worldObj.getBlock(xTile, yTile, zTile);
-            int var19 = worldObj.getBlockMetadata(xTile, yTile, zTile);
-
-            if (var18.equals(Block.getBlockById(inTile)) && var19 == inData) {}
-        } else {
+        if (!inGround) {
             ++ticksInAir;
 
-            if (ticksInAir > 1 && ticksInAir < 3) {
-                for (int particles = 0; particles < 3; particles++) {
+            if (ticksInAir == 2) {
+                for (int i = 0; i < 3; i++) {
                     this.doFiringParticles();
                 }
             }
 
-            Vec3 var17 = SpellHelper.createVec3(posX, posY, posZ);
-            Vec3 var3 = SpellHelper.createVec3(posX + motionX, posY + motionY, posZ + motionZ);
-            MovingObjectPosition var4 = worldObj.func_147447_a(var17, var3, true, false, false);
-            var17 = SpellHelper.createVec3(posX, posY, posZ);
-            var3 = SpellHelper.createVec3(posX + motionX, posY + motionY, posZ + motionZ);
+            Vec3 startVec = SpellHelper.createVec3(posX, posY, posZ);
+            Vec3 endVec = SpellHelper.createVec3(posX + motionX, posY + motionY, posZ + motionZ);
+            MovingObjectPosition blockHit = worldObj.func_147447_a(startVec, endVec, true, false, false);
+            startVec = SpellHelper.createVec3(posX, posY, posZ);
+            endVec = SpellHelper.createVec3(posX + motionX, posY + motionY, posZ + motionZ);
 
-            if (var4 != null) {
-                var3 = SpellHelper.createVec3(var4.hitVec.xCoord, var4.hitVec.yCoord, var4.hitVec.zCoord);
+            if (blockHit != null) {
+                endVec = SpellHelper.createVec3(blockHit.hitVec.xCoord, blockHit.hitVec.yCoord, blockHit.hitVec.zCoord);
             }
 
-            Entity var5 = null;
-            List var6 = worldObj.getEntitiesWithinAABBExcludingEntity(
+            Entity closestHitEntity = null;
+            List<Entity> nearbyEntities = worldObj.getEntitiesWithinAABBExcludingEntity(
                     this,
                     boundingBox.addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
-            double var7 = 0.0D;
-            Iterator var9 = var6.iterator();
-            float var11;
 
-            while (var9.hasNext()) {
-                Entity var10 = (Entity) var9.next();
+            double closestHitDistance = 0.0D;
 
-                if (var10.canBeCollidedWith() && (var10 != shootingEntity || ticksInAir >= 5)) {
-                    var11 = 0.3F;
-                    AxisAlignedBB var12 = var10.boundingBox.expand(var11, var11, var11);
-                    MovingObjectPosition var13 = var12.calculateIntercept(var17, var3);
+            for (Entity entity : nearbyEntities) {
+                if (!entity.canBeCollidedWith() || (entity == shootingEntity && ticksInAir < 5)) {
+                    continue;
+                }
 
-                    if (var13 != null) {
-                        double var14 = var17.distanceTo(var13.hitVec);
+                AxisAlignedBB expandedBoundingBox = entity.boundingBox.expand(0.3F, 0.3F, 0.3F);
 
-                        if (var14 < var7 || var7 == 0.0D) {
-                            var5 = var10;
-                            var7 = var14;
-                        }
+                MovingObjectPosition entityIntercept = expandedBoundingBox.calculateIntercept(startVec, endVec);
+                if (entityIntercept != null) {
+                    double hitDistance = startVec.distanceTo(entityIntercept.hitVec);
+                    if (hitDistance < closestHitDistance || closestHitDistance == 0.0D) {
+                        closestHitEntity = entity;
+                        closestHitDistance = hitDistance;
                     }
                 }
             }
 
-            if (var5 != null) {
-                var4 = new MovingObjectPosition(var5);
+            if (closestHitEntity != null) {
+                blockHit = new MovingObjectPosition(closestHitEntity);
             }
 
-            if (var4 != null) {
-                this.onImpact(var4);
+            if (blockHit != null) {
+                this.onImpact(blockHit);
 
                 if (scheduledForDeath) {
                     this.setDead();
@@ -311,7 +292,6 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
             posX += motionX;
             posY += motionY;
             posZ += motionZ;
-            MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
             this.setPosition(posX, posY, posZ);
         }
     }
@@ -328,36 +308,32 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
         worldObj.spawnParticle("flame", posX, posY, posZ, gaussian(motionX), gaussian(motionY), gaussian(motionZ));
     }
 
-    /**
-     * (abstract) Protected helper method to write subclass entity data to NBT.
-     */
     @Override
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        par1NBTTagCompound.setShort("xTile", (short) xTile);
-        par1NBTTagCompound.setShort("yTile", (short) yTile);
-        par1NBTTagCompound.setShort("zTile", (short) zTile);
-        par1NBTTagCompound.setByte("inTile", (byte) inTile);
-        par1NBTTagCompound.setByte("inData", (byte) inData);
-        par1NBTTagCompound.setByte("inGround", (byte) (inGround ? 1 : 0));
-        par1NBTTagCompound.setInteger("ticksInAir", ticksInAir);
-        par1NBTTagCompound.setInteger("maxTicksInAir", maxTicksInAir);
-        par1NBTTagCompound.setInteger("projectileDamage", this.projectileDamage);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        tag.setShort("xTile", (short) xTile);
+        tag.setShort("yTile", (short) yTile);
+        tag.setShort("zTile", (short) zTile);
+        tag.setByte("inTile", (byte) inTile);
+        tag.setByte("inData", (byte) inData);
+        tag.setByte("inGround", (byte) (inGround ? 1 : 0));
+        tag.setInteger("ticksInAir", ticksInAir);
+        tag.setInteger("maxTicksInAir", maxTicksInAir);
+        tag.setInteger("projectileDamage", this.projectileDamage);
+        tag.setInteger("ricochetCounter", this.ricochetCounter);
     }
 
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
     @Override
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        xTile = par1NBTTagCompound.getShort("xTile");
-        yTile = par1NBTTagCompound.getShort("yTile");
-        zTile = par1NBTTagCompound.getShort("zTile");
-        inTile = par1NBTTagCompound.getByte("inTile") & 255;
-        inData = par1NBTTagCompound.getByte("inData") & 255;
-        inGround = par1NBTTagCompound.getByte("inGround") == 1;
-        ticksInAir = par1NBTTagCompound.getInteger("ticksInAir");
-        maxTicksInAir = par1NBTTagCompound.getInteger("maxTicksInAir");
-        projectileDamage = par1NBTTagCompound.getInteger("projectileDamage");
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        xTile = tag.getShort("xTile");
+        yTile = tag.getShort("yTile");
+        zTile = tag.getShort("zTile");
+        inTile = tag.getByte("inTile") & 255;
+        inData = tag.getByte("inData") & 255;
+        inGround = tag.getByte("inGround") == 1;
+        ticksInAir = tag.getInteger("ticksInAir");
+        maxTicksInAir = tag.getInteger("maxTicksInAir");
+        projectileDamage = tag.getInteger("projectileDamage");
+        ricochetCounter = tag.getInteger("ricochetCounter");
     }
 
     /**
@@ -376,37 +352,11 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
     }
 
     /**
-     * Sets the amount of knockback the arrow applies when it hits a mob.
-     */
-    public void setKnockbackStrength(int par1) {}
-
-    /**
      * If returns false, the item will not inflict any damage against entities.
      */
     @Override
     public boolean canAttackWithItem() {
         return false;
-    }
-
-    /**
-     * Whether the arrow has a stream of critical hit particles flying behind it.
-     */
-    public void setIsCritical(boolean par1) {
-        byte var2 = dataWatcher.getWatchableObjectByte(16);
-
-        if (par1) {
-            dataWatcher.updateObject(16, Byte.valueOf((byte) (var2 | 1)));
-        } else {
-            dataWatcher.updateObject(16, Byte.valueOf((byte) (var2 & -2)));
-        }
-    }
-
-    /**
-     * Whether the arrow has a stream of critical hit particles flying behind it.
-     */
-    public boolean getIsCritical() {
-        byte var1 = dataWatcher.getWatchableObjectByte(16);
-        return (var1 & 1) != 0;
     }
 
     public void onImpact(MovingObjectPosition mop) {
@@ -422,15 +372,15 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
         }
     }
 
-    public void onImpact(Entity mop) {
-        if (mop == shootingEntity && ticksInAir > 3) {
+    public void onImpact(Entity target) {
+        if (target == shootingEntity && ticksInAir > 3) {
             shootingEntity.attackEntityFrom(DamageSource.causeMobDamage(shootingEntity), 1);
             this.setDead();
         } else {
-            if (mop instanceof EntityLivingBase) {
-                ((EntityLivingBase) mop).addPotionEffect(new PotionEffect(Potion.weakness.id, 60, 2));
+            if (target instanceof EntityLivingBase entity) {
+                entity.addPotionEffect(new PotionEffect(Potion.weakness.id, 60, 2));
             }
-            doDamage(projectileDamage, mop);
+            doDamage(projectileDamage, target);
             worldObj.createExplosion(shootingEntity, this.posX, this.posY, this.posZ, (float) (0.1), true);
         }
 
@@ -438,16 +388,12 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
         this.setDead();
     }
 
-    private int d6() {
-        return rand.nextInt(6) + 1;
-    }
-
-    protected void spawnHitParticles(String string, int i) {
-        for (int particles = 0; particles < i; particles++) {
+    protected void spawnHitParticles(String string, int particleCount) {
+        for (int i = 0; i < particleCount; i++) {
             worldObj.spawnParticle(
                     string,
                     posX,
-                    posY - (string == "portal" ? 1 : 0),
+                    posY - (string.equals("portal") ? 1 : 0),
                     posZ,
                     gaussian(motionX),
                     gaussian(motionY),
@@ -471,18 +417,13 @@ public class EnergyBlastProjectile extends Entity implements IProjectile, IThrow
         return d + d * ((rand.nextFloat() - 0.5D) / 4);
     }
 
-    private int getRicochetMax() {
-        return 0;
-    }
-
     @Override
     public Entity getThrower() {
-        // TODO Auto-generated method stub
         return this.shootingEntity;
     }
 
     @Override
     public void setThrower(Entity entity) {
-        if (entity instanceof EntityLivingBase) this.shootingEntity = (EntityLivingBase) entity;
+        if (entity instanceof EntityLivingBase e) this.shootingEntity = e;
     }
 }

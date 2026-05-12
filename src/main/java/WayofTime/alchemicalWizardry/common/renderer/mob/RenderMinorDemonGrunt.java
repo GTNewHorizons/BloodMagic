@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityMinorDemonGrunt;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityMinorDemonGruntEarth;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityMinorDemonGruntFire;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityMinorDemonGruntIce;
@@ -13,41 +12,34 @@ import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityM
 
 public class RenderMinorDemonGrunt extends RenderLiving {
 
-    private static final ResourceLocation normalTexture = new ResourceLocation(
+    private static final ResourceLocation NORMAL_GRUNT = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/MinorDemonGrunt_normal.png");
-    private static final ResourceLocation fireTexture = new ResourceLocation(
+    private static final ResourceLocation FIRE_GRUNT = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/MinorDemonGrunt_fire.png");
-    private static final ResourceLocation iceTexture = new ResourceLocation(
+    private static final ResourceLocation ICE_GRUNT = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/MinorDemonGrunt_ice.png");
-    private static final ResourceLocation windTexture = new ResourceLocation(
+    private static final ResourceLocation WIND_GRUNT = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/MinorDemonGrunt_wind.png");
-    private static final ResourceLocation earthTexture = new ResourceLocation(
+    private static final ResourceLocation EARTH_GRUNT = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/MinorDemonGrunt_earth.png");
 
-    public RenderMinorDemonGrunt(ModelBase par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
+    public RenderMinorDemonGrunt(ModelBase mainModel, float shadowSize) {
+        super(mainModel, shadowSize);
     }
 
-    public ResourceLocation func_110832_a(EntityMinorDemonGrunt entity) {
-        if (entity instanceof EntityMinorDemonGruntFire) {
-            return fireTexture;
-        } else if (entity instanceof EntityMinorDemonGruntWind) {
-            return windTexture;
-        } else if (entity instanceof EntityMinorDemonGruntIce) {
-            return iceTexture;
-        } else if (entity instanceof EntityMinorDemonGruntEarth) {
-            return earthTexture;
-        }
-
-        return normalTexture;
-    }
-
+    @Override
     public ResourceLocation getEntityTexture(Entity entity) {
-        return this.func_110832_a((EntityMinorDemonGrunt) entity);
+        return switch (entity) {
+            case EntityMinorDemonGruntFire _ -> FIRE_GRUNT;
+            case EntityMinorDemonGruntWind _ -> WIND_GRUNT;
+            case EntityMinorDemonGruntIce _ -> ICE_GRUNT;
+            case EntityMinorDemonGruntEarth _ -> EARTH_GRUNT;
+            default -> NORMAL_GRUNT;
+        };
     }
 }

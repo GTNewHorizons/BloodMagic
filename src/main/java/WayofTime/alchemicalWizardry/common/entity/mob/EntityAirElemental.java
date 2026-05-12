@@ -16,19 +16,14 @@ public class EntityAirElemental extends EntityElemental implements IMob {
         super(world, AlchemicalWizardry.entityAirElementalID);
     }
 
+    @Override
     public void inflictEffectOnEntity(Entity target) {
-        if (target instanceof EntityPlayer) {
-            SpellHelper.setPlayerSpeedFromServer(
-                    (EntityPlayer) target,
-                    target.motionX,
-                    target.motionY + 3,
-                    target.motionZ);
-            ((EntityLivingBase) target)
-                    .addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionInhibit.id, 150, 0));
-        } else if (target instanceof EntityLivingBase) {
-            ((EntityLivingBase) target).motionY += 3.0D;
-            ((EntityLivingBase) target)
-                    .addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionInhibit.id, 150, 0));
+        if (target instanceof EntityPlayer p) {
+            SpellHelper.setPlayerSpeedFromServer(p, target.motionX, target.motionY + 3, target.motionZ);
+            p.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionInhibit.id, 150, 0));
+        } else if (target instanceof EntityLivingBase t) {
+            target.motionY += 3.0D;
+            t.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionInhibit.id, 150, 0));
         }
     }
 }

@@ -26,7 +26,7 @@ public class TileSegmentedReagentHandler extends TileEntity implements ISegmente
     public TileSegmentedReagentHandler(int numberOfTanks, int tankSize) {
         super();
 
-        this.attunedTankMap = new HashMap();
+        this.attunedTankMap = new HashMap<>();
         this.tanks = new ReagentContainer[numberOfTanks];
         for (int i = 0; i < numberOfTanks; i++) {
             this.tanks[i] = new ReagentContainer(tankSize);
@@ -62,10 +62,10 @@ public class TileSegmentedReagentHandler extends TileEntity implements ISegmente
 
         NBTTagList tagList = new NBTTagList();
 
-        for (int i = 0; i < this.tanks.length; i++) {
+        for (ReagentContainer tank : this.tanks) {
             NBTTagCompound savedTag = new NBTTagCompound();
-            if (this.tanks[i] != null) {
-                this.tanks[i].writeToNBT(savedTag);
+            if (tank != null) {
+                tank.writeToNBT(savedTag);
             }
             tagList.appendTag(savedTag);
         }
@@ -101,8 +101,8 @@ public class TileSegmentedReagentHandler extends TileEntity implements ISegmente
                 ReagentStack remainingStack = resource.copy();
                 remainingStack.amount = maxFill - totalFill;
 
-                boolean doesReagentMatch = tanks[i].getReagent() == null ? false
-                        : tanks[i].getReagent().isReagentEqual(remainingStack);
+                boolean doesReagentMatch = tanks[i].getReagent() != null
+                        && tanks[i].getReagent().isReagentEqual(remainingStack);
 
                 if (doesReagentMatch) {
                     totalFill += tanks[i].fill(remainingStack, doFill);
@@ -151,13 +151,13 @@ public class TileSegmentedReagentHandler extends TileEntity implements ISegmente
         Reagent reagent = resource.reagent;
         int drained = 0;
 
-        for (int i = 0; i < tanks.length; i++) {
+        for (ReagentContainer tank : tanks) {
             if (drained >= maxDrain) {
                 break;
             }
 
-            if (resource.isReagentEqual(tanks[i].getReagent())) {
-                ReagentStack drainStack = tanks[i].drain(maxDrain - drained, doDrain);
+            if (resource.isReagentEqual(tank.getReagent())) {
+                ReagentStack drainStack = tank.drain(maxDrain - drained, doDrain);
                 if (drainStack != null) {
                     drained += drainStack.amount;
                 }
@@ -170,8 +170,8 @@ public class TileSegmentedReagentHandler extends TileEntity implements ISegmente
     /* Only returns the amount from the first available tank */
     @Override
     public ReagentStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-        for (int i = 0; i < tanks.length; i++) {
-            ReagentStack stack = tanks[i].drain(maxDrain, doDrain);
+        for (ReagentContainer tank : tanks) {
+            ReagentStack stack = tank.drain(maxDrain, doDrain);
             if (stack != null) {
                 return stack;
             }
@@ -225,15 +225,5 @@ public class TileSegmentedReagentHandler extends TileEntity implements ISegmente
     @Override
     public Map<Reagent, Integer> getAttunedTankMap() {
         return this.attunedTankMap;
-    }
-
-    public boolean areTanksEmpty() {
-        for (int i = 0; i < this.tanks.length; i++) {
-            if (tanks[i] != null && tanks[i].reagentStack != null) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

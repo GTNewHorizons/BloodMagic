@@ -10,31 +10,12 @@ import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 
 public class EntityEnergyBazookaMainProjectile extends EnergyBlastProjectile {
 
-    public EntityEnergyBazookaMainProjectile(World par1World) {
-        super(par1World);
+    public EntityEnergyBazookaMainProjectile(World world) {
+        super(world);
     }
 
-    public EntityEnergyBazookaMainProjectile(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
-    }
-
-    public EntityEnergyBazookaMainProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage) {
-        super(par1World, par2EntityPlayer, damage);
-    }
-
-    public EntityEnergyBazookaMainProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage,
-            int maxTicksInAir, double posX, double posY, double posZ, float rotationYaw, float rotationPitch) {
-        super(par1World, par2EntityPlayer, damage, maxTicksInAir, posX, posY, posZ, rotationYaw, rotationPitch);
-    }
-
-    public EntityEnergyBazookaMainProjectile(World par1World, EntityLivingBase par2EntityLivingBase,
-            EntityLivingBase par3EntityLivingBase, float par4, float par5, int damage, int maxTicksInAir) {
-        super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5, damage, maxTicksInAir);
-    }
-
-    @Override
-    public DamageSource getDamageSource() {
-        return DamageSource.causeMobDamage(shootingEntity);
+    public EntityEnergyBazookaMainProjectile(World world, EntityLivingBase player, int damage) {
+        super(world, player, damage);
     }
 
     @Override
@@ -46,7 +27,7 @@ public class EntityEnergyBazookaMainProjectile extends EnergyBlastProjectile {
 
             this.onImpact(mop.entityHit);
         } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-            worldObj.createExplosion(this.shootingEntity, this.posX, this.posY, this.posZ, (float) (5.0f), false);
+            worldObj.createExplosion(this.shootingEntity, this.posX, this.posY, this.posZ, 5.0f, false);
             this.spawnSecondaryProjectiles();
         }
 
@@ -54,16 +35,16 @@ public class EntityEnergyBazookaMainProjectile extends EnergyBlastProjectile {
     }
 
     @Override
-    public void onImpact(Entity mop) {
-        if (mop == shootingEntity && ticksInAir > 3) {
+    public void onImpact(Entity target) {
+        if (target == shootingEntity && ticksInAir > 3) {
             shootingEntity.attackEntityFrom(DamageSource.causeMobDamage(shootingEntity), 1);
             this.setDead();
         } else {
-            if (mop instanceof EntityLivingBase) {
+            if (target instanceof EntityLivingBase) {
                 spawnSecondaryProjectiles();
             }
 
-            worldObj.createExplosion(this.shootingEntity, this.posX, this.posY, this.posZ, (float) (5.0f), false);
+            worldObj.createExplosion(this.shootingEntity, this.posX, this.posY, this.posZ, 5.0f, false);
         }
 
         spawnHitParticles("magicCrit", 8);
@@ -71,16 +52,7 @@ public class EntityEnergyBazookaMainProjectile extends EnergyBlastProjectile {
     }
 
     public void spawnSecondaryProjectiles() {
-        int secondaryDamage = 0;
-        if (this.projectileDamage == AlchemicalWizardry.energyBazookaDamage) {
-            secondaryDamage = AlchemicalWizardry.energyBazookaSecondaryDamage;
-        }
-        if (this.projectileDamage == AlchemicalWizardry.energyBazookaSecondTierDamage) {
-            secondaryDamage = AlchemicalWizardry.energyBazookaSecondTierSecondaryDamage;
-        }
-        if (this.projectileDamage == AlchemicalWizardry.energyBazookaThirdTierDamage) {
-            secondaryDamage = AlchemicalWizardry.energyBazookaThirdTierSecondaryDamage;
-        }
+        int secondaryDamage = getSecondaryDamage();
         for (int i = 0; i < 20; i++) {
             EntityEnergyBazookaSecondaryProjectile secProj = new EntityEnergyBazookaSecondaryProjectile(
                     worldObj,
@@ -98,5 +70,18 @@ public class EntityEnergyBazookaMainProjectile extends EnergyBlastProjectile {
             secProj.motionZ = zVel * wantedVel;
             worldObj.spawnEntityInWorld(secProj);
         }
+    }
+
+    private int getSecondaryDamage() {
+        if (this.projectileDamage == AlchemicalWizardry.energyBazookaDamage) {
+            return AlchemicalWizardry.energyBazookaSecondaryDamage;
+        }
+        if (this.projectileDamage == AlchemicalWizardry.energyBazookaSecondTierDamage) {
+            return AlchemicalWizardry.energyBazookaSecondTierSecondaryDamage;
+        }
+        if (this.projectileDamage == AlchemicalWizardry.energyBazookaThirdTierDamage) {
+            return AlchemicalWizardry.energyBazookaThirdTierSecondaryDamage;
+        }
+        return 0;
     }
 }

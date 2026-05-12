@@ -16,39 +16,36 @@ public class OmegaStructureHandler {
 
     public static OmegaStructureParameters getStructureStabilityFactor(World world, int x, int y, int z, int expLim,
             Int3 offset) {
-        int range = expLim;
 
-        int[][][] boolList = new int[range * 2 + 1][range * 2 + 1][range * 2 + 1]; // 0 indicates unchecked, 1 indicates
-                                                                                   // checked and is air, -1 indicates
-                                                                                   // checked to be right
+        // 0 indicates unchecked, 1 indicates checked and is air, -1 indicates checked to be right
         // next to air blocks in question but is NOT air
+        int[][][] boolList = new int[expLim * 2 + 1][expLim * 2 + 1][expLim * 2 + 1];
 
-        for (int i = 0; i < 2 * range + 1; i++) {
-            for (int j = 0; j < 2 * range + 1; j++) {
-                for (int k = 0; k < 2 * range + 1; k++) {
+        for (int i = 0; i < 2 * expLim + 1; i++) {
+            for (int j = 0; j < 2 * expLim + 1; j++) {
+                for (int k = 0; k < 2 * expLim + 1; k++) {
                     boolList[i][j][k] = 0;
                 }
             }
         }
 
-        boolList[range + offset.xCoord][range + offset.yCoord][range + offset.zCoord] = 1;
+        boolList[expLim + offset.x()][expLim + offset.y()][expLim + offset.z()] = 1;
         boolean isReady = false;
 
         while (!isReady) {
             isReady = true;
 
-            for (int i = 0; i < 2 * range + 1; i++) {
-                for (int j = 0; j < 2 * range + 1; j++) {
-                    for (int k = 0; k < 2 * range + 1; k++) {
+            for (int i = 0; i < 2 * expLim + 1; i++) {
+                for (int j = 0; j < 2 * expLim + 1; j++) {
+                    for (int k = 0; k < 2 * expLim + 1; k++) {
                         if (boolList[i][j][k] == 1) {
                             if (i - 1 >= 0 && !(boolList[i - 1][j][k] == 1 || boolList[i - 1][j][k] == -1)) {
-                                Block block = world.getBlock(x - range + i - 1, y - range + j, z - range + k);
-                                if (world.isAirBlock(x - range + i - 1, y - range + j, z - range + k)
+                                Block block = world.getBlock(x - expLim + i - 1, y - expLim + j, z - expLim + k);
+                                if (world.isAirBlock(x - expLim + i - 1, y - expLim + j, z - expLim + k)
                                         || block == ModBlocks.blockSpectralContainer) {
-                                    if (i - 1 == 0) // One of the found air blocks is at the range boundary, and thus
-                                                    // the
-                                    // container is incomplete
-                                    {
+                                    // One of the found air blocks is at the range boundary, and thus
+                                    // the container is incomplete
+                                    if (i - 1 == 0) {
                                         return emptyParam;
                                     }
                                     boolList[i - 1][j][k] = 1;
@@ -59,8 +56,8 @@ public class OmegaStructureHandler {
                             }
 
                             if (j - 1 >= 0 && !(boolList[i][j - 1][k] == 1 || boolList[i][j - 1][k] == -1)) {
-                                Block block = world.getBlock(x - range + i, y - range + j - 1, z - range + k);
-                                if (world.isAirBlock(x - range + i, y - range + j - 1, z - range + k)
+                                Block block = world.getBlock(x - expLim + i, y - expLim + j - 1, z - expLim + k);
+                                if (world.isAirBlock(x - expLim + i, y - expLim + j - 1, z - expLim + k)
                                         || block == ModBlocks.blockSpectralContainer) {
                                     if (j - 1 == 0) {
                                         return emptyParam;
@@ -73,8 +70,8 @@ public class OmegaStructureHandler {
                             }
 
                             if (k - 1 >= 0 && !(boolList[i][j][k - 1] == 1 || boolList[i][j][k - 1] == -1)) {
-                                Block block = world.getBlock(x - range + i, y - range + j, z - range + k - 1);
-                                if (world.isAirBlock(x - range + i, y - range + j, z - range + k - 1)
+                                Block block = world.getBlock(x - expLim + i, y - expLim + j, z - expLim + k - 1);
+                                if (world.isAirBlock(x - expLim + i, y - expLim + j, z - expLim + k - 1)
                                         || block == ModBlocks.blockSpectralContainer) {
                                     if (k - 1 == 0) {
                                         return emptyParam;
@@ -86,11 +83,11 @@ public class OmegaStructureHandler {
                                 }
                             }
 
-                            if (i + 1 <= 2 * range && !(boolList[i + 1][j][k] == 1 || boolList[i + 1][j][k] == -1)) {
-                                Block block = world.getBlock(x - range + i + 1, y - range + j, z - range + k);
-                                if (world.isAirBlock(x - range + i + 1, y - range + j, z - range + k)
+                            if (i + 1 <= 2 * expLim && !(boolList[i + 1][j][k] == 1 || boolList[i + 1][j][k] == -1)) {
+                                Block block = world.getBlock(x - expLim + i + 1, y - expLim + j, z - expLim + k);
+                                if (world.isAirBlock(x - expLim + i + 1, y - expLim + j, z - expLim + k)
                                         || block == ModBlocks.blockSpectralContainer) {
-                                    if (i + 1 == range * 2) {
+                                    if (i + 1 == expLim * 2) {
                                         return emptyParam;
                                     }
                                     boolList[i + 1][j][k] = 1;
@@ -100,11 +97,11 @@ public class OmegaStructureHandler {
                                 }
                             }
 
-                            if (j + 1 <= 2 * range && !(boolList[i][j + 1][k] == 1 || boolList[i][j + 1][k] == -1)) {
-                                Block block = world.getBlock(x - range + i, y - range + j + 1, z - range + k);
-                                if (world.isAirBlock(x - range + i, y - range + j + 1, z - range + k)
+                            if (j + 1 <= 2 * expLim && !(boolList[i][j + 1][k] == 1 || boolList[i][j + 1][k] == -1)) {
+                                Block block = world.getBlock(x - expLim + i, y - expLim + j + 1, z - expLim + k);
+                                if (world.isAirBlock(x - expLim + i, y - expLim + j + 1, z - expLim + k)
                                         || block == ModBlocks.blockSpectralContainer) {
-                                    if (j + 1 == range * 2) {
+                                    if (j + 1 == expLim * 2) {
                                         return emptyParam;
                                     }
                                     boolList[i][j + 1][k] = 1;
@@ -114,11 +111,11 @@ public class OmegaStructureHandler {
                                 }
                             }
 
-                            if (k + 1 <= 2 * range && !(boolList[i][j][k + 1] == 1 || boolList[i][j][k + 1] == -1)) {
-                                Block block = world.getBlock(x - range + i, y - range + j, z - range + k + 1);
-                                if (world.isAirBlock(x - range + i, y - range + j, z - range + k + 1)
+                            if (k + 1 <= 2 * expLim && !(boolList[i][j][k + 1] == 1 || boolList[i][j][k + 1] == -1)) {
+                                Block block = world.getBlock(x - expLim + i, y - expLim + j, z - expLim + k + 1);
+                                if (world.isAirBlock(x - expLim + i, y - expLim + j, z - expLim + k + 1)
                                         || block == ModBlocks.blockSpectralContainer) {
-                                    if (k + 1 == range * 2) {
+                                    if (k + 1 == expLim * 2) {
                                         return emptyParam;
                                     }
                                     boolList[i][j][k + 1] = 1;
@@ -137,9 +134,9 @@ public class OmegaStructureHandler {
         int enchantability = 0;
         int enchantmentLevel = 0;
 
-        for (int i = 0; i < 2 * range + 1; i++) {
-            for (int j = 0; j < 2 * range + 1; j++) {
-                for (int k = 0; k < 2 * range + 1; k++) {
+        for (int i = 0; i < 2 * expLim + 1; i++) {
+            for (int j = 0; j < 2 * expLim + 1; j++) {
+                for (int k = 0; k < 2 * expLim + 1; k++) {
                     if (boolList[i][j][k] != -1) {
                         continue;
                     }
@@ -158,39 +155,39 @@ public class OmegaStructureHandler {
                         indTally++;
                     }
 
-                    if (i + 1 <= 2 * range && boolList[i + 1][j][k] == 1) {
+                    if (i + 1 <= 2 * expLim && boolList[i + 1][j][k] == 1) {
                         indTally++;
                     }
 
-                    if (j + 1 <= 2 * range && boolList[i][j + 1][k] == 1) {
+                    if (j + 1 <= 2 * expLim && boolList[i][j + 1][k] == 1) {
                         indTally++;
                     }
 
-                    if (k + 1 <= 2 * range && boolList[i][j][k + 1] == 1) {
+                    if (k + 1 <= 2 * expLim && boolList[i][j][k + 1] == 1) {
                         indTally++;
                     }
 
-                    Block block = world.getBlock(x - range + i, y - range + j, z - range + k);
-                    int meta = world.getBlockMetadata(x - range + i, y - range + j, z - range + k);
+                    Block block = world.getBlock(x - expLim + i, y - expLim + j, z - expLim + k);
+                    int meta = world.getBlockMetadata(x - expLim + i, y - expLim + j, z - expLim + k);
 
-                    if (block instanceof IEnchantmentGlyph) {
-                        tally += ((IEnchantmentGlyph) block).getAdditionalStabilityForFaceCount(
+                    if (block instanceof IEnchantmentGlyph glyph) {
+                        tally += glyph.getAdditionalStabilityForFaceCount(
                                 world,
-                                x - range + i,
-                                y - range + j,
-                                z - range + k,
+                                x - expLim + i,
+                                y - expLim + j,
+                                z - expLim + k,
                                 meta,
                                 indTally);
-                        enchantability += ((IEnchantmentGlyph) block)
-                                .getEnchantability(world, x - range + i, y - range + j, z - range + k, meta);
-                        enchantmentLevel += ((IEnchantmentGlyph) block)
-                                .getEnchantmentLevel(world, x - range + i, y - range + j, z - range + k, meta);
+                        enchantability += glyph
+                                .getEnchantability(world, x - expLim + i, y - expLim + j, z - expLim + k, meta);
+                        enchantmentLevel += glyph
+                                .getEnchantmentLevel(world, x - expLim + i, y - expLim + j, z - expLim + k, meta);
                     } else if (block instanceof IStabilityGlyph) {
                         tally += ((IStabilityGlyph) block).getAdditionalStabilityForFaceCount(
                                 world,
-                                x - range + i,
-                                y - range + j,
-                                z - range + k,
+                                x - expLim + i,
+                                y - expLim + j,
+                                z - expLim + k,
                                 meta,
                                 indTally);
                     } else {

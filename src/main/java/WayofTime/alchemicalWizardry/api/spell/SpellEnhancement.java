@@ -6,7 +6,7 @@ public class SpellEnhancement {
     public static final int EFFICIENCY = 1;
     public static final int POTENCY = 2;
 
-    private int state = POWER;
+    private final int state;
 
     protected SpellEnhancement(int state) {
         this.state = state;

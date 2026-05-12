@@ -1,15 +1,11 @@
 package WayofTime.alchemicalWizardry.common.rituals;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
@@ -34,114 +30,65 @@ public class RitualEffectBinding extends RitualEffect {
         int z = ritualStone.getZCoord();
 
         if (currentEssence < this.getCostPerRefresh()) {
-            EntityPlayer entityOwner = SpellHelper.getPlayerForUsername(owner);
+            SoulNetworkHandler.causeNauseaToPlayer(owner);
+            return;
+        }
+        if (ritualStone.getVar1() == 0) {
+            AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(x, y + 1, z, x + 1, y + 2, z + 1);
+            List<EntityItem> list = world.getEntitiesWithinAABB(EntityItem.class, axisalignedbb);
 
-            if (entityOwner == null) {
-                return;
+            for (EntityItem item : list) {
+                ItemStack itemStack = item.getEntityItem();
+
+                if (itemStack == null) {
+                    continue;
+                }
+
+                if (BindingRegistry.isRequiredItemValid(itemStack)) {
+                    ritualStone.setVar1(BindingRegistry.getIndexForItem(itemStack) + 1);
+                    itemStack.stackSize--;
+                    world.addWeatherEffect(new EntityLightningBolt(world, x, y + 1, z));
+                    ritualStone.setCooldown(ritualStone.getCooldown() - 1);
+                    if (itemStack.stackSize <= 0) {
+                        item.setDead();
+                    }
+                    break;
+                }
+
+                if (world.rand.nextInt(10) == 0) {
+                    SpellHelper
+                            .sendIndexedParticleToAllAround(world, x, y, z, 20, world.provider.dimensionId, 1, x, y, z);
+                }
             }
 
-            entityOwner.addPotionEffect(new PotionEffect(Potion.confusion.id, 80));
+            SoulNetworkHandler.syphonFromNetwork(owner, getCostPerRefresh());
         } else {
-            if (ritualStone.getVar1() == 0) {
-                int d0 = 0;
-                AxisAlignedBB axisalignedbb = AxisAlignedBB.getBoundingBox(
-                        (double) x,
-                        (double) y + 1,
-                        (double) z,
-                        (double) (x + 1),
-                        (double) (y + 2),
-                        (double) (z + 1)).expand(d0, d0, d0);
-                List list = world.getEntitiesWithinAABB(EntityItem.class, axisalignedbb);
-                Iterator iterator = list.iterator();
-                EntityItem item;
+            ritualStone.setCooldown(ritualStone.getCooldown() - 1);
 
-                while (iterator.hasNext()) {
-                    item = (EntityItem) iterator.next();
-                    ItemStack itemStack = item.getEntityItem();
+            if (world.rand.nextInt(20) == 0) {
+                int lightningPoint = world.rand.nextInt(8);
 
-                    if (itemStack == null) {
-                        continue;
-                    }
+                switch (lightningPoint) {
+                    case 0 -> world.addWeatherEffect(new EntityLightningBolt(world, x + 4, y + 3, z));
+                    case 1 -> world.addWeatherEffect(new EntityLightningBolt(world, x - 4, y + 3, z));
+                    case 2 -> world.addWeatherEffect(new EntityLightningBolt(world, x, y + 3, z + 4));
+                    case 3 -> world.addWeatherEffect(new EntityLightningBolt(world, x, y + 3, z - 4));
+                    case 4 -> world.addWeatherEffect(new EntityLightningBolt(world, x + 3, y + 3, z + 3));
+                    case 5 -> world.addWeatherEffect(new EntityLightningBolt(world, x - 3, y + 3, z + 3));
+                    case 6 -> world.addWeatherEffect(new EntityLightningBolt(world, x + 3, y + 3, z - 3));
+                    case 7 -> world.addWeatherEffect(new EntityLightningBolt(world, x - 3, y + 3, z - 3));
+                }
+            }
 
-                    if (BindingRegistry.isRequiredItemValid(itemStack)) {
-                        ritualStone.setVar1(BindingRegistry.getIndexForItem(itemStack) + 1);
-                        itemStack.stackSize--;
-                        world.addWeatherEffect(new EntityLightningBolt(world, x, y + 1, z));
-                        ritualStone.setCooldown(ritualStone.getCooldown() - 1);
-                        if (itemStack.stackSize <= 0) {
-                            item.setDead();
-                        }
-                        break;
-                    }
+            if (ritualStone.getCooldown() <= 0) {
+                ItemStack spawnedItem = BindingRegistry.getOutputForIndex(ritualStone.getVar1() - 1);
 
-                    if (world.rand.nextInt(10) == 0) {
-                        SpellHelper.sendIndexedParticleToAllAround(
-                                world,
-                                x,
-                                y,
-                                z,
-                                20,
-                                world.provider.dimensionId,
-                                1,
-                                x,
-                                y,
-                                z);
-                    }
+                if (spawnedItem != null) {
+                    EntityItem newItem = new EntityItem(world, x + 0.5, y + 1, z + 0.5, spawnedItem.copy());
+                    world.spawnEntityInWorld(newItem);
                 }
 
-                SoulNetworkHandler.syphonFromNetwork(owner, getCostPerRefresh());
-            } else {
-                ritualStone.setCooldown(ritualStone.getCooldown() - 1);
-
-                if (world.rand.nextInt(20) == 0) {
-                    int lightningPoint = world.rand.nextInt(8);
-
-                    switch (lightningPoint) {
-                        case 0:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x + 4, y + 3, z));
-                            break;
-
-                        case 1:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x - 4, y + 3, z));
-                            break;
-
-                        case 2:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x, y + 3, z + 4));
-                            break;
-
-                        case 3:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x, y + 3, z - 4));
-                            break;
-
-                        case 4:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x + 3, y + 3, z + 3));
-                            break;
-
-                        case 5:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x - 3, y + 3, z + 3));
-                            break;
-
-                        case 6:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x + 3, y + 3, z - 3));
-                            break;
-
-                        case 7:
-                            world.addWeatherEffect(new EntityLightningBolt(world, x - 3, y + 3, z - 3));
-                            break;
-                    }
-                }
-
-                if (ritualStone.getCooldown() <= 0) {
-
-                    ItemStack spawnedItem = BindingRegistry.getOutputForIndex(ritualStone.getVar1() - 1);
-
-                    if (spawnedItem != null) {
-                        EntityItem newItem = new EntityItem(world, x + 0.5, y + 1, z + 0.5, spawnedItem.copy());
-                        world.spawnEntityInWorld(newItem);
-                    }
-
-                    ritualStone.setActive(false);
-                }
+                ritualStone.setActive(false);
             }
         }
     }
@@ -158,7 +105,7 @@ public class RitualEffectBinding extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> boundSoulRitual = new ArrayList();
+        ArrayList<RitualComponent> boundSoulRitual = new ArrayList<>();
         boundSoulRitual.add(new RitualComponent(3, 0, 0, 2));
         boundSoulRitual.add(new RitualComponent(-3, 0, 0, 2));
         boundSoulRitual.add(new RitualComponent(0, 0, 3, 2));

@@ -32,6 +32,7 @@ public class SummoningHelperAW extends SummoningHelper {
         super(id);
     }
 
+    @Override
     public EntityLivingBase getEntity(World worldObj) {
         if (this.id.equals(AlchemicalWizardry.entityFallenAngelID)) {
             return new EntityFallenAngel(worldObj);
@@ -112,7 +113,4 @@ public class SummoningHelperAW extends SummoningHelper {
         return new EntityPig(worldObj);
     }
 
-    public String getSummoningHelperID() {
-        return id;
-    }
 }

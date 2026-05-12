@@ -14,7 +14,7 @@ public class SpellParadigmSelf extends SpellParadigm {
     public List<ISelfSpellEffect> selfSpellEffectList;
 
     public SpellParadigmSelf() {
-        selfSpellEffectList = new ArrayList();
+        selfSpellEffectList = new ArrayList<>();
     }
 
     @Override

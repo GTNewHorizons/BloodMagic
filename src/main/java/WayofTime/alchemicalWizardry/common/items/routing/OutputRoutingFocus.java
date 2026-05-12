@@ -32,16 +32,15 @@ public class OutputRoutingFocus extends RoutingFocus implements ILimitedRoutingF
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List,
-            boolean par4) {
-        super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-        if (!(par1ItemStack.getItem() instanceof OutputRoutingFocus focus)) return;
-        par3List.addAll(focus.getLogic(par1ItemStack).getDescription());
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        super.addInformation(item, player, tooltip, adv);
+        if (!(item.getItem() instanceof OutputRoutingFocus focus)) return;
+        tooltip.addAll(focus.getLogic(item).getDescription());
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            int limit = this.getRoutingFocusLimit(par1ItemStack);
+        if (item.getTagCompound() != null) {
+            int limit = this.getRoutingFocusLimit(item);
             if (limit > 0) {
-                par3List.add(StatCollector.translateToLocal("tooltip.routingFocus.limit") + " " + limit);
+                tooltip.add(StatCollector.translateToLocal("tooltip.routingFocus.limit") + " " + limit);
             }
         }
     }
@@ -56,6 +55,7 @@ public class OutputRoutingFocus extends RoutingFocus implements ILimitedRoutingF
         this.globalIcon = iconRegister.registerIcon("AlchemicalWizardry:OutputRoutingFocusGlobal");
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int damage) {
         return switch (damage) {
@@ -95,6 +95,7 @@ public class OutputRoutingFocus extends RoutingFocus implements ILimitedRoutingF
         return 0;
     }
 
+    @Override
     public int getRoutingFocusLimit(ItemStack itemStack) {
         if (!(itemStack.getTagCompound() == null)) {
             return itemStack.getTagCompound().getInteger("stackLimit");
@@ -103,6 +104,7 @@ public class OutputRoutingFocus extends RoutingFocus implements ILimitedRoutingF
         }
     }
 
+    @Override
     public void setRoutingFocusLimit(ItemStack itemStack, int amt) {
         if ((itemStack.getTagCompound() == null)) {
             itemStack.setTagCompound(new NBTTagCompound());

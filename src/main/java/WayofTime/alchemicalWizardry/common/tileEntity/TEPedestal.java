@@ -26,21 +26,21 @@ public class TEPedestal extends TEInventory {
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readFromNBT(par1NBTTagCompound);
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
 
-        resultID = par1NBTTagCompound.getInteger("resultID");
-        resultDamage = par1NBTTagCompound.getInteger("resultDamage");
-        isActive = par1NBTTagCompound.getBoolean("isActive");
+        resultID = tag.getInteger("resultID");
+        resultDamage = tag.getInteger("resultDamage");
+        isActive = tag.getBoolean("isActive");
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeToNBT(par1NBTTagCompound);
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
 
-        par1NBTTagCompound.setInteger("resultID", resultID);
-        par1NBTTagCompound.setInteger("resultDamage", resultDamage);
-        par1NBTTagCompound.setBoolean("isActive", isActive);
+        tag.setInteger("resultID", resultID);
+        tag.setInteger("resultDamage", resultDamage);
+        tag.setBoolean("isActive", isActive);
     }
 
     @Override
@@ -78,16 +78,11 @@ public class TEPedestal extends TEInventory {
         }
 
         if (intData.length == 3) {
-            for (int i = 0; i < 1; i++) {
-                if (intData[i * 3 + 2] != 0) {
-                    ItemStack is = new ItemStack(
-                            Item.getItemById(intData[i * 3]),
-                            intData[i * 3 + 2],
-                            intData[i * 3 + 1]);
-                    inv[i] = is;
-                } else {
-                    inv[i] = null;
-                }
+            if (intData[2] != 0) {
+                ItemStack is = new ItemStack(Item.getItemById(intData[0]), intData[2], intData[1]);
+                inv[0] = is;
+            } else {
+                inv[0] = null;
             }
         }
     }

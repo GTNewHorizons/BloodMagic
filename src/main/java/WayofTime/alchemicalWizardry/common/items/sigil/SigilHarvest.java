@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -37,9 +36,9 @@ public class SigilHarvest extends EnergyItems implements IHolding, ArmourUpgrade
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.harvestsigil.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.harvestsigil.desc"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
@@ -61,8 +60,8 @@ public class SigilHarvest extends EnergyItems implements IHolding, ArmourUpgrade
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
-        if (par1 == 1) {
+    public IIcon getIconFromDamage(int meta) {
+        if (meta == 1) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;
@@ -70,45 +69,39 @@ public class SigilHarvest extends EnergyItems implements IHolding, ArmourUpgrade
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
+        toggleSigil(item, world, player);
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5) {
-        if ((!(par3Entity instanceof EntityPlayer)) || par2World.isRemote) {
+    public void onUpdate(ItemStack item, World world, Entity entity, int slot, boolean held) {
+        if ((!(entity instanceof EntityPlayer player)) || world.isRemote) {
             return;
         }
 
-        EntityPlayer par3EntityPlayer = (EntityPlayer) par3Entity;
-
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
-        }
-
-        if (IBindable.isActive(par1ItemStack)) {
+        if (IBindable.isActive(item)) {
             int range = 3;
             int verticalRange = 1;
-            int posX = (int) Math.round(par3Entity.posX - 0.5f);
-            int posY = (int) par3Entity.posY;
-            int posZ = (int) Math.round(par3Entity.posZ - 0.5f);
+            int posX = (int) Math.round(player.posX - 0.5f);
+            int posY = (int) player.posY;
+            int posZ = (int) Math.round(player.posZ - 0.5f);
 
-            for (int ix = posX - range; ix <= posX + range; ix++) {
-                for (int iz = posZ - range; iz <= posZ + range; iz++) {
-                    for (int iy = posY - verticalRange; iy <= posY + verticalRange; iy++) {
-                        HarvestRegistry.harvestBlock(par2World, ix, iy, iz);
+            for (int x = posX - range; x <= posX + range; x++) {
+                for (int z = posZ - range; z <= posZ + range; z++) {
+                    for (int y = posY - verticalRange; y <= posY + verticalRange; y++) {
+                        HarvestRegistry.harvestBlock(world, x, y, z);
                     }
                 }
             }
         }
 
-        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
+        checkPassiveDrain(item, world, player);
     }
 
     @Override
@@ -122,10 +115,10 @@ public class SigilHarvest extends EnergyItems implements IHolding, ArmourUpgrade
         int posY = (int) player.posY;
         int posZ = (int) Math.round(player.posZ - 0.5f);
 
-        for (int ix = posX - range; ix <= posX + range; ix++) {
-            for (int iz = posZ - range; iz <= posZ + range; iz++) {
-                for (int iy = posY - verticalRange; iy <= posY + verticalRange; iy++) {
-                    HarvestRegistry.harvestBlock(world, ix, iy, iz);
+        for (int x = posX - range; x <= posX + range; x++) {
+            for (int z = posZ - range; z <= posZ + range; z++) {
+                for (int y = posY - verticalRange; y <= posY + verticalRange; y++) {
+                    HarvestRegistry.harvestBlock(world, x, y, z);
                 }
             }
         }
@@ -133,13 +126,11 @@ public class SigilHarvest extends EnergyItems implements IHolding, ArmourUpgrade
 
     @Override
     public boolean isUpgrade() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     public int getEnergyForTenSeconds() {
-        // TODO Auto-generated method stub
         return 500;
     }
 }

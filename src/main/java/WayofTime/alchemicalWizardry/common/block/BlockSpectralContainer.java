@@ -41,9 +41,10 @@ public class BlockSpectralContainer extends BlockContainer {
     }
 
     @Override
-    public void addCollisionBoxesToList(World par1World, int par2, int par3, int par4, AxisAlignedBB par5AxisAlignedBB,
-            List par6List, Entity par7Entity) {}
+    public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB axisAlignedBB,
+            List<AxisAlignedBB> mask, Entity entity) {}
 
+    @Override
     public int quantityDropped(Random par1Random) {
         return 0;
     }
@@ -59,7 +60,7 @@ public class BlockSpectralContainer extends BlockContainer {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World var1, int var2) {
+    public TileEntity createNewTileEntity(World world, int meta) {
         return new TESpectralContainer();
     }
 }

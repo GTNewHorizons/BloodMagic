@@ -11,12 +11,12 @@ import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 
 public class SpellParadigmMelee extends SpellParadigm {
 
-    private List<IMeleeSpellEntityEffect> entityEffectList;
-    private List<IMeleeSpellWorldEffect> worldEffectList;
+    private final List<IMeleeSpellEntityEffect> entityEffectList;
+    private final List<IMeleeSpellWorldEffect> worldEffectList;
 
     public SpellParadigmMelee() {
-        this.entityEffectList = new ArrayList();
-        this.worldEffectList = new ArrayList();
+        this.entityEffectList = new ArrayList<>();
+        this.worldEffectList = new ArrayList<>();
     }
 
     @Override

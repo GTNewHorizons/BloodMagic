@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 
 public abstract class SpellParadigm {
 
-    protected List<SpellEffect> bufferedEffectList = new LinkedList();
+    protected List<SpellEffect> bufferedEffectList = new LinkedList<>();
 
     public void addBufferedEffect(SpellEffect effect) {
         if (effect != null) {
@@ -55,7 +55,7 @@ public abstract class SpellParadigm {
         if (bufferedEffectList.isEmpty()) {
             return null;
         } else {
-            return bufferedEffectList.get(bufferedEffectList.size() - 1);
+            return bufferedEffectList.getLast();
         }
     }
 

@@ -5,23 +5,18 @@ import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-import WayofTime.alchemicalWizardry.common.entity.mob.EntityIceDemon;
-
 public class RenderIceDemon extends RenderLiving {
 
-    private static final ResourceLocation field_110833_a = new ResourceLocation(
+    private static final ResourceLocation ICE_DEMON = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/IceDemon.png");
 
-    public RenderIceDemon(ModelBase par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
+    public RenderIceDemon(ModelBase mainModel, float shadowSize) {
+        super(mainModel, shadowSize);
     }
 
-    public ResourceLocation func_110832_a(EntityIceDemon par1EntityIceDemon) {
-        return field_110833_a;
-    }
-
-    public ResourceLocation getEntityTexture(Entity par1Entity) {
-        return this.func_110832_a((EntityIceDemon) par1Entity);
+    @Override
+    public ResourceLocation getEntityTexture(Entity entity) {
+        return ICE_DEMON;
     }
 }

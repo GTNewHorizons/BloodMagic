@@ -37,9 +37,9 @@ public class SigilOfTheFastMiner extends EnergyItems implements ArmourUpgrade, I
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.sigilofthefastminer.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.sigilofthefastminer.desc"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
@@ -61,8 +61,8 @@ public class SigilOfTheFastMiner extends EnergyItems implements ArmourUpgrade, I
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
-        if (par1 == 1) {
+    public IIcon getIconFromDamage(int meta) {
+        if (meta == 1) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;
@@ -70,35 +70,29 @@ public class SigilOfTheFastMiner extends EnergyItems implements ArmourUpgrade, I
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (toggleSigil(par1ItemStack, par2World, par3EntityPlayer)) {
-            par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 2, 1, true));
+        if (toggleSigil(item, world, player)) {
+            player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 2, 1, true));
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5) {
-        if (!(par3Entity instanceof EntityPlayer)) {
+    public void onUpdate(ItemStack item, World world, Entity entity, int slot, boolean held) {
+        if (!(entity instanceof EntityPlayer player)) {
             return;
         }
 
-        EntityPlayer par3EntityPlayer = (EntityPlayer) par3Entity;
-
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
+        if (IBindable.isActive(item)) {
+            player.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 2, 1, true));
         }
 
-        if (IBindable.isActive(par1ItemStack)) {
-            par3EntityPlayer.addPotionEffect(new PotionEffect(Potion.digSpeed.id, 2, 1, true));
-        }
-
-        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
+        checkPassiveDrain(item, world, player);
     }
 
     @Override

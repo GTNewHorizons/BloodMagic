@@ -40,7 +40,7 @@ public class ContainerTeleposer extends Container {
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slot) {
         ItemStack stack = null;
-        Slot slotObject = (Slot) inventorySlots.get(slot);
+        Slot slotObject = inventorySlots.get(slot);
         int slots = inventorySlots.size();
 
         if (slotObject != null && slotObject.getHasStack()) {
@@ -48,11 +48,7 @@ public class ContainerTeleposer extends Container {
             stack = stackInSlot.copy();
 
             if (stack.getItem() instanceof TelepositionFocus) {
-                if (slot <= slots) {
-                    if (!this.mergeItemStack(stackInSlot, 0, slots, false)) {
-                        return null;
-                    }
-                } else if (!this.mergeItemStack(stackInSlot, slots, 36 + slots, false)) {
+                if (!this.mergeItemStack(stackInSlot, 0, slots, false)) {
                     return null;
                 }
             }
@@ -73,7 +69,7 @@ public class ContainerTeleposer extends Container {
         return stack;
     }
 
-    private class SlotTeleposer extends Slot {
+    private static class SlotTeleposer extends Slot {
 
         public SlotTeleposer(IInventory inventory, int slotIndex, int x, int y) {
             super(inventory, slotIndex, x, y);

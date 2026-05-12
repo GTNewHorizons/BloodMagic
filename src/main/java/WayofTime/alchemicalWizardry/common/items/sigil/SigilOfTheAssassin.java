@@ -40,9 +40,9 @@ public class SigilOfTheAssassin extends EnergyItems implements ArmourUpgrade, IS
     }
 
     @Override
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
+    public void onCreated(ItemStack item, World world, EntityPlayer player) {
+        if (item.getTagCompound() == null) {
+            item.setTagCompound(new NBTTagCompound());
         }
     }
 
@@ -61,29 +61,28 @@ public class SigilOfTheAssassin extends EnergyItems implements ArmourUpgrade, IS
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.sigiloftheassassin.desc"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.sigiloftheassassin.desc"));
+        addBindingInformation(item, tooltip);
     }
 
     /**
      * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
      */
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    @Override
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
         float f = 10.0F;
 
-        MovingObjectPosition movingobjectposition = SpellHelper
-                .raytraceFromEntity(par2World, par3EntityPlayer, false, f);
+        MovingObjectPosition movingobjectposition = SpellHelper.raytraceFromEntity(world, player, false, f);
 
         if (movingobjectposition == null) {
             AlchemicalWizardry.logger.info("I saw nothing.");
-            return par1ItemStack;
         } else {
-            AlchemicalWizardry.logger.info("Got something! Type of hit: " + movingobjectposition.typeOfHit);
+            AlchemicalWizardry.logger.info("Got something! Type of hit: {}", movingobjectposition.typeOfHit);
 
             if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
                 Entity hitEntity = movingobjectposition.entityHit;
@@ -94,19 +93,12 @@ public class SigilOfTheAssassin extends EnergyItems implements ArmourUpgrade, IS
                 if (hitEntity instanceof EntityLivingBase) {
                     AlchemicalWizardry.logger.info("It's a living entity!");
 
-                    teleportTo(
-                            par3EntityPlayer,
-                            x,
-                            y,
-                            z,
-                            par3EntityPlayer.posX,
-                            par3EntityPlayer.posY,
-                            par3EntityPlayer.posZ);
+                    teleportTo(player, x, y, z, player.posX, player.posY, player.posZ);
                 }
             }
 
-            return par1ItemStack;
         }
+        return item;
     }
 
     protected static boolean teleportTo(EntityLivingBase entityLiving, double par1, double par3, double par5,
@@ -117,9 +109,6 @@ public class SigilOfTheAssassin extends EnergyItems implements ArmourUpgrade, IS
             return false;
         }
 
-        double d3 = lastX;
-        double d4 = lastY;
-        double d5 = lastZ;
         SpellTeleport.moveEntityViaTeleport(entityLiving, event.targetX, event.targetY, event.targetZ);
         boolean flag = false;
         int i = MathHelper.floor_double(entityLiving.posX);
@@ -153,7 +142,7 @@ public class SigilOfTheAssassin extends EnergyItems implements ArmourUpgrade, IS
         }
 
         if (!flag) {
-            SpellTeleport.moveEntityViaTeleport(entityLiving, d3, d4, d5);
+            SpellTeleport.moveEntityViaTeleport(entityLiving, lastX, lastY, lastZ);
             return false;
         } else {
             short short1 = 128;
@@ -163,13 +152,13 @@ public class SigilOfTheAssassin extends EnergyItems implements ArmourUpgrade, IS
                 float f = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
                 float f1 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
                 float f2 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                double d7 = d3 + (entityLiving.posX - d3) * d6
+                double d7 = lastX + (entityLiving.posX - lastX) * d6
                         + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
-                double d8 = d4 + (entityLiving.posY - d4) * d6
+                double d8 = lastY + (entityLiving.posY - lastY) * d6
                         + entityLiving.worldObj.rand.nextDouble() * (double) entityLiving.height;
-                double d9 = d5 + (entityLiving.posZ - d5) * d6
+                double d9 = lastZ + (entityLiving.posZ - lastZ) * d6
                         + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
-                entityLiving.worldObj.spawnParticle("portal", d7, d8, d9, (double) f, (double) f1, (double) f2);
+                entityLiving.worldObj.spawnParticle("portal", d7, d8, d9, f, f1, f2);
             }
             return true;
         }

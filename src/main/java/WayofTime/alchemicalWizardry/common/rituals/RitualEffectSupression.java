@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -54,45 +51,38 @@ public class RitualEffectSupression extends RitualEffect {
         }
 
         if (currentEssence < this.getCostPerRefresh() * costMod) {
-            EntityPlayer entityOwner = SpellHelper.getPlayerForUsername(owner);
+            SoulNetworkHandler.causeNauseaToPlayer(owner);
+            return;
+        }
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = (expansion ? -radius : yIndex); j <= (expansion ? radius : yIndex); j++) {
+                for (int k = -radius; k <= radius; k++) {
+                    if (i * i + j * j + k * k >= (radius + 0.50f) * (radius + 0.50f)) {
+                        continue;
+                    }
 
-            if (entityOwner == null) {
-                return;
-            }
+                    Block block = world.getBlock(x + i, y + j, z + k);
 
-            entityOwner.addPotionEffect(new PotionEffect(Potion.confusion.id, 80));
-        } else {
-            for (int i = -radius; i <= radius; i++) {
-                for (int j = (expansion ? -radius : yIndex); j <= (expansion ? radius : yIndex); j++) {
-                    for (int k = -radius; k <= radius; k++) {
-                        if (i * i + j * j + k * k >= (radius + 0.50f) * (radius + 0.50f)) {
-                            continue;
-                        }
-
-                        Block block = world.getBlock(x + i, y + j, z + k);
-
-                        if (SpellHelper.isBlockFluid(block)) {
-                            TESpectralContainer
-                                    .createSpectralBlockAtLocation(world, x + i, y + j, z + k, 3 * masterRadius);
-                        } else {
-                            TileEntity tile = world.getTileEntity(x + i, y + j, z + k);
-                            if (tile instanceof TESpectralContainer) {
-                                ((TESpectralContainer) tile).resetDuration(3 * masterRadius);
-                            }
+                    if (SpellHelper.isBlockFluid(block)) {
+                        TESpectralContainer.createSpectralBlockAtLocation(world, x + i, y + j, z + k, 3 * masterRadius);
+                    } else {
+                        TileEntity tile = world.getTileEntity(x + i, y + j, z + k);
+                        if (tile instanceof TESpectralContainer container) {
+                            container.resetDuration(3 * masterRadius);
                         }
                     }
                 }
             }
+        }
 
-            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * costMod);
+        SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * costMod);
 
-            if (world.getTotalWorldTime() % 100 == 0) {
-                if (hasAquasalus) {
-                    this.canDrainReagent(ritualStone, ReagentRegistry.aquasalusReagent, aquasalusDrain, true);
-                }
-                if (hasAether) {
-                    this.canDrainReagent(ritualStone, ReagentRegistry.aetherReagent, aetherDrain, true);
-                }
+        if (world.getTotalWorldTime() % 100 == 0) {
+            if (hasAquasalus) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.aquasalusReagent, aquasalusDrain, true);
+            }
+            if (hasAether) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.aetherReagent, aetherDrain, true);
             }
         }
     }
@@ -104,7 +94,7 @@ public class RitualEffectSupression extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> supressionRitual = new ArrayList();
+        ArrayList<RitualComponent> supressionRitual = new ArrayList<>();
         supressionRitual.add(new RitualComponent(2, 0, 2, RitualComponent.WATER));
         supressionRitual.add(new RitualComponent(2, 0, -2, RitualComponent.WATER));
         supressionRitual.add(new RitualComponent(-2, 0, 2, RitualComponent.WATER));

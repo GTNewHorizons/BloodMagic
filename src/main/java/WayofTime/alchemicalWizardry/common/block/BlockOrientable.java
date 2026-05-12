@@ -34,8 +34,7 @@ public class BlockOrientable extends BlockContainer {
 
         TileEntity tile = world.getTileEntity(x, y, z);
 
-        if (tile instanceof TEOrientable) {
-            TEOrientable newTile = (TEOrientable) tile;
+        if (tile instanceof TEOrientable newTile) {
             if (player.isSneaking()) {
                 int nextSide = TEOrientable.getIntForForgeDirection(newTile.getInputDirection()) + 1;
 

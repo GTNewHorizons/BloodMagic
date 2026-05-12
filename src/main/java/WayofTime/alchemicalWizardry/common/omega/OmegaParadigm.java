@@ -57,12 +57,12 @@ public class OmegaParadigm {
                 && bootsStack.getItem() == ModItems.boundBoots) {
             long worldSeed = player.worldObj.getSeed();
             Random rand = new Random(
-                    worldSeed + stability * (affinity + 7) * 94
-                            + 84321 * x
-                            - 17423 * y
-                            + 76 * z
-                            - 1623451 * enchantability
-                            + 2 * enchantmentLevel);
+                    worldSeed + (long) stability * (affinity + 7) * 94
+                            + 84321L * x
+                            - 17423L * y
+                            + 76L * z
+                            - 1623451L * enchantability
+                            + 2L * enchantmentLevel);
             ItemStack omegaHelmetStack = helmet
                     .getSubstituteStack(helmetStack, stability, affinity, enchantability, enchantmentLevel, rand);
             ItemStack omegaChestStack = chestPiece
@@ -96,8 +96,9 @@ public class OmegaParadigm {
 
         ItemStack chestStack = armours[2];
 
-        if (chestStack != null && chestStack.getItem() == this.chestPiece) {
-            ((OmegaArmour) chestStack.getItem()).setOmegaStallingDuration(chestStack, duration);
+        if (chestStack != null && chestStack.getItem() == this.chestPiece
+                && chestStack.getItem() instanceof OmegaArmour armor) {
+            armor.setOmegaStallingDuration(chestStack, duration);
             return true;
         }
 
@@ -113,8 +114,9 @@ public class OmegaParadigm {
 
         ItemStack chestStack = armours[2];
 
-        if (chestStack != null && chestStack.getItem() == this.chestPiece) {
-            return !((OmegaArmour) chestStack.getItem()).hasOmegaStalling(chestStack);
+        if (chestStack != null && chestStack.getItem() == this.chestPiece
+                && chestStack.getItem() instanceof OmegaArmour armor) {
+            return !armor.hasOmegaStalling(chestStack);
         }
         return true;
     }
@@ -148,13 +150,6 @@ public class OmegaParadigm {
         return false;
     }
 
-    /**
-     *
-     * @param stack
-     * @param player
-     * @param entity
-     * @return False if it does not do damage
-     */
     public boolean onBoundSwordLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         return true;
     }

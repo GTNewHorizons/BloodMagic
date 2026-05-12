@@ -20,7 +20,7 @@ import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 
 public class TECrucible extends TEInventory {
 
-    private int radius = 5;
+    private final int radius = 5;
 
     public float rColour;
     public float gColour;
@@ -37,7 +37,7 @@ public class TECrucible extends TEInventory {
 
     public TECrucible() {
         super(1);
-        float f = (float) 1.0F;
+        float f = 1.0F;
         float f1 = f * 0.6F + 0.4F;
         float f2 = f * f * 0.7F - 0.5F;
         float f3 = f * f * 0.6F - 0.7F;
@@ -54,8 +54,7 @@ public class TECrucible extends TEInventory {
 
         if (ticksRemaining <= 0) {
             ItemStack stack = this.getStackInSlot(0);
-            if (stack != null && stack.getItem() instanceof IIncense) {
-                IIncense incense = (IIncense) stack.getItem();
+            if (stack != null && stack.getItem() instanceof IIncense incense) {
 
                 rColour = incense.getRedColour(stack);
                 gColour = incense.getGreenColour(stack);

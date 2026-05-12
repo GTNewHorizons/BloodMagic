@@ -19,15 +19,15 @@ public class EntityAIOccasionalRangedAttack extends EntityAIBase {
      */
     private int rangedAttackTime;
 
-    private double entityMoveSpeed;
+    private final double entityMoveSpeed;
     private int field_75318_f;
-    private int field_96561_g;
+    private final int field_96561_g;
     /** The maximum time the AI has to wait before peforming another ranged attack. */
-    private int maxRangedAttackTime;
+    private final int maxRangedAttackTime;
 
-    private float field_96562_i;
-    private float field_82642_h;
-    private double range;
+    private final float field_96562_i;
+    private final float field_82642_h;
+    private final double range;
 
     public EntityAIOccasionalRangedAttack(IOccasionalRangedAttackMob p_i1649_1_, double p_i1649_2_, int p_i1649_4_,
             float p_i1649_5_, double range) {
@@ -56,6 +56,7 @@ public class EntityAIOccasionalRangedAttack extends EntityAIBase {
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
+    @Override
     public boolean shouldExecute() {
         EntityLivingBase entitylivingbase = this.entityHost.getAttackTarget();
 
@@ -72,6 +73,7 @@ public class EntityAIOccasionalRangedAttack extends EntityAIBase {
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
+    @Override
     public boolean continueExecuting() {
         return this.shouldExecute()
                 || !this.entityHost.getNavigator().noPath() && this.rangedAttackEntityHost.shouldUseRangedAttack();
@@ -91,6 +93,7 @@ public class EntityAIOccasionalRangedAttack extends EntityAIBase {
     /**
      * Resets the task
      */
+    @Override
     public void resetTask() {
         this.attackTarget = null;
         this.field_75318_f = 0;
@@ -100,6 +103,7 @@ public class EntityAIOccasionalRangedAttack extends EntityAIBase {
     /**
      * Updates the task
      */
+    @Override
     public void updateTask() {
         double d0 = this.entityHost
                 .getDistanceSq(this.attackTarget.posX, this.attackTarget.boundingBox.minY, this.attackTarget.posZ);
@@ -126,15 +130,8 @@ public class EntityAIOccasionalRangedAttack extends EntityAIBase {
             }
 
             f = MathHelper.sqrt_double(d0) / this.field_96562_i;
-            float f1 = f;
 
-            if (f < 0.1F) {
-                f1 = 0.1F;
-            }
-
-            if (f1 > 1.0F) {
-                f1 = 1.0F;
-            }
+            float f1 = Math.min(1.0F, Math.max(f, 0.1F));
 
             this.rangedAttackEntityHost.attackEntityWithRangedAttack(this.attackTarget, f1);
             this.rangedAttackTime = MathHelper.floor_float(

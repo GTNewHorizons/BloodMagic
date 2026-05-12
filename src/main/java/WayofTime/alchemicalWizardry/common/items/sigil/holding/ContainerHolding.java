@@ -14,7 +14,7 @@ public class ContainerHolding extends Container {
     protected final int PLAYER_INVENTORY_ROWS = 3;
     protected final int PLAYER_INVENTORY_COLUMNS = 9;
 
-    private int inventoryColumns = 5;
+    private final int inventoryColumns = 5;
 
     private final EntityPlayer player;
     public final InventoryHolding inventoryHolding;
@@ -76,51 +76,52 @@ public class ContainerHolding extends Container {
     @Override
     public ItemStack transferStackInSlot(EntityPlayer entityPlayer, int slotIndex) {
         ItemStack stack = null;
-        Slot slotObject = (Slot) inventorySlots.get(slotIndex);
+        Slot slotObject = inventorySlots.get(slotIndex);
         int slots = inventorySlots.size();
 
-        if (slotObject != null && slotObject.getHasStack()) {
-            ItemStack stackInSlot = slotObject.getStack();
-            stack = stackInSlot.copy();
+        if (slotObject == null || !slotObject.getHasStack()) {
+            return null;
+        }
+        ItemStack stackInSlot = slotObject.getStack();
+        stack = stackInSlot.copy();
 
-            if (stack.getItem() instanceof ISigil) {
-                if (slotIndex < inventoryColumns) {
-                    if (!this.mergeItemStack(stackInSlot, inventoryColumns, slots, false)) {
-                        return null;
-                    }
-                } else if (!this.mergeItemStack(stackInSlot, 0, inventoryColumns, false)) {
+        if (stack.getItem() instanceof ISigil) {
+            if (slotIndex < inventoryColumns) {
+                if (!this.mergeItemStack(stackInSlot, inventoryColumns, slots, false)) {
                     return null;
                 }
-            } else if (stack.getItem() instanceof SigilOfHolding) {
-                if (slotIndex < inventoryColumns + (PLAYER_INVENTORY_ROWS * PLAYER_INVENTORY_COLUMNS)) {
-                    if (!this.mergeItemStack(
-                            stackInSlot,
-                            inventoryColumns + (PLAYER_INVENTORY_ROWS * PLAYER_INVENTORY_COLUMNS),
-                            inventorySlots.size(),
-                            false)) {
-                        return null;
-                    }
-                } else if (!this.mergeItemStack(
-                        stackInSlot,
-                        inventoryColumns,
-                        inventoryColumns + (PLAYER_INVENTORY_ROWS * PLAYER_INVENTORY_COLUMNS),
-                        false)) {
-                            return null;
-                        }
-            }
-
-            if (stackInSlot.stackSize == 0) {
-                slotObject.putStack(null);
-            } else {
-                slotObject.onSlotChanged();
-            }
-
-            if (stackInSlot.stackSize == stack.stackSize) {
+            } else if (!this.mergeItemStack(stackInSlot, 0, inventoryColumns, false)) {
                 return null;
             }
-
-            slotObject.onPickupFromSlot(player, stackInSlot);
+        } else if (stack.getItem() instanceof SigilOfHolding) {
+            if (slotIndex < inventoryColumns + (PLAYER_INVENTORY_ROWS * PLAYER_INVENTORY_COLUMNS)) {
+                if (!this.mergeItemStack(
+                        stackInSlot,
+                        inventoryColumns + (PLAYER_INVENTORY_ROWS * PLAYER_INVENTORY_COLUMNS),
+                        inventorySlots.size(),
+                        false)) {
+                    return null;
+                }
+            } else if (!this.mergeItemStack(
+                    stackInSlot,
+                    inventoryColumns,
+                    inventoryColumns + (PLAYER_INVENTORY_ROWS * PLAYER_INVENTORY_COLUMNS),
+                    false)) {
+                        return null;
+                    }
         }
+
+        if (stackInSlot.stackSize == 0) {
+            slotObject.putStack(null);
+        } else {
+            slotObject.onSlotChanged();
+        }
+
+        if (stackInSlot.stackSize == stack.stackSize) {
+            return null;
+        }
+
+        slotObject.onPickupFromSlot(player, stackInSlot);
 
         return stack;
     }
@@ -129,10 +130,10 @@ public class ContainerHolding extends Container {
         inventoryHolding.onGuiSaved(entityPlayer);
     }
 
-    private class SlotHolding extends Slot {
+    private static class SlotHolding extends Slot {
 
         private final EntityPlayer player;
-        private ContainerHolding containerHolding;
+        private final ContainerHolding containerHolding;
 
         public SlotHolding(ContainerHolding containerHolding, IInventory inventory, EntityPlayer player, int slotIndex,
                 int x, int y) {
@@ -156,7 +157,7 @@ public class ContainerHolding extends Container {
         }
     }
 
-    private class SlotDisabled extends Slot {
+    private static class SlotDisabled extends Slot {
 
         public SlotDisabled(IInventory inventory, int slotIndex, int x, int y) {
             super(inventory, slotIndex, x, y);

@@ -40,14 +40,15 @@ public class BlockSpellEnhancement extends BlockOrientable {
         return false;
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> items) {
         if (this.equals(ModBlocks.blockSpellEnhancement)) {
             for (int i = 0; i < 15; i++) {
-                par3List.add(new ItemStack(par1, 1, i));
+                items.add(new ItemStack(item, 1, i));
             }
         } else {
-            super.getSubBlocks(par1, par2CreativeTabs, par3List);
+            super.getSubBlocks(item, tab, items);
         }
     }
 }

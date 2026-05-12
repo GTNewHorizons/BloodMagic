@@ -81,15 +81,13 @@ public class CommandSN extends CommandBase {
             } else {
                 throw new CommandException("commands.soulnetwork.notACommand");
             }
-        } else if (astring.length == 0) {
-            throw new CommandException("commands.soulnetwork.noPlayer");
         } else if (astring.length == 1) {
             throw new CommandException("commands.soulnetwork.noCommand");
         }
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender iCommandSender, String[] astring) {
+    public List<String> addTabCompletionOptions(ICommandSender iCommandSender, String[] astring) {
         if (astring.length == 1) {
             return getListOfStringsMatchingLastWord(astring, this.getPlayer());
         } else if (astring.length == 2) {

@@ -12,7 +12,7 @@ import WayofTime.alchemicalWizardry.common.ICatalyst;
 
 public class PowerCatalyst extends Item implements ICatalyst {
 
-    private int catalystStrength;
+    private final int catalystStrength;
 
     public PowerCatalyst(int catalystStrength) {
         super();
@@ -31,8 +31,7 @@ public class PowerCatalyst extends Item implements ICatalyst {
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List,
-            boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.alchemy.usedinalchemy"));
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.usedinalchemy"));
     }
 }

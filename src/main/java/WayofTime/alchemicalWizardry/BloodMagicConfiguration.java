@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityEnderman;
@@ -49,7 +50,7 @@ public class BloodMagicConfiguration {
     public static void init(File configFile) {
         for (String s : DEFAULT_COLOR_LIST.split(";")) {
             String[] ct = s.split(",");
-            colorList.add(new ColourThreshold(Integer.valueOf(ct[0].trim()), ct[1].trim()));
+            colorList.add(new ColourThreshold(Integer.parseInt(ct[0].trim()), ct[1].trim()));
         }
 
         config = new Configuration(configFile);
@@ -109,15 +110,12 @@ public class BloodMagicConfiguration {
                 0,
                 Integer.MAX_VALUE,
                 "The default LP cost to use for meteors if the \"cost\" property is not present in its config file.\n");
-        AlchemicalWizardry.defaultMeteorBlock = config.getString(
-                "defaultMeteorBlock",
-                "meteor",
-                "",
-                "The block to use for filler in meteors if none is provided in the meteor's config file and "
-                        + "that\nmeteor's fillerChance is greater than 0. Also used as a fallback for empty ore "
-                        + "lists in meteor configs.\nSpecify the block with the "
-                        + "format:\n\"modId:itemName:meta\"\nDefaults to minecraft:stone:0 if no block is provided or "
-                        + "the provided block cannot be found.");
+        AlchemicalWizardry.defaultMeteorBlock = config.getString("defaultMeteorBlock", "meteor", "", """
+                The block to use for filler in meteors if none is provided in the meteor's config file and that
+                meteor's fillerChance is greater than 0. Also used as a fallback for empty ore lists in meteor configs.
+                Specify the block with the format:
+                "modId:itemName:meta"
+                Defaults to minecraft:stone:0 if no block is provided or the provided block cannot be found.""");
         MeteorComponent.setDefaultMeteorBlock();
         AlchemicalWizardry.allowedCrushedOresArray = config.get(
                 "oreCrushing",
@@ -639,10 +637,11 @@ public class BloodMagicConfiguration {
                 "altar blocks",
                 "fifthTierBeacons",
                 new String[] { "minecraft:beacon", "etfuturum:beacon", "chisel:beacon:*" },
-                "Valid blocks for the Blood Altar's tier 5 beacons:\n"
-                        + "Use the following format for all of these entries: mod:block(:meta). Meta * or 32767 allows for any meta.\n"
-                        + "An empty entry allows for any non-air block to be used for that part of the structure.\n"
-                        + "Invalid or missing blocks are skipped. If all entries are invalid, any block can be used as a fallback.");
+                """
+                        Valid blocks for the Blood Altar's tier 5 beacons:
+                        Use the following format for all of these entries: mod:block(:meta). Meta * or 32767 allows for any meta.
+                        An empty entry allows for any non-air block to be used for that part of the structure.
+                        Invalid or missing blocks are skipped. If all entries are invalid, any block can be used as a fallback.""");
         AlchemicalWizardry.thirdTierCaps = readBlockConfig(
                 "altar blocks",
                 "thirdTierCaps",
@@ -680,10 +679,9 @@ public class BloodMagicConfiguration {
 
     public static void loadCustomLPValues() {
         AlchemicalWizardry.lpPerSactificeCustom = new HashMap<>();
-        for (Object object : EntityList.stringToClassMapping.entrySet()) {
-            Entry entry = (Entry) object;
-            String entityName = (String) entry.getKey();
-            Class entityClass = (Class) entry.getValue();
+        for (Entry<String, Class<? extends Entity>> entry : EntityList.stringToClassMapping.entrySet()) {
+            String entityName = entry.getKey();
+            Class<? extends Entity> entityClass = entry.getValue();
             if (EntityLivingBase.class.isAssignableFrom(entityClass)
                     && !Modifier.isAbstract(entityClass.getModifiers())) {
                 int lpAmount = 500;
@@ -717,15 +715,13 @@ public class BloodMagicConfiguration {
     }
 
     public static void loadBlacklist() {
-        AlchemicalWizardry.wellBlacklist = new ArrayList<Class>();
-        for (Object o : stringToClassMapping.entrySet()) {
-            Entry entry = (Entry) o;
-            Class curClass = (Class) entry.getValue();
+        AlchemicalWizardry.wellBlacklist = new ArrayList<>();
+        for (Entry<String, Class<? extends Entity>> entry : stringToClassMapping.entrySet()) {
+            Class<? extends Entity> curClass = entry.getValue();
             boolean valid = EntityLivingBase.class.isAssignableFrom(curClass)
                     && !Modifier.isAbstract(curClass.getModifiers());
             if (valid) {
-                boolean blacklisted = config.get("wellOfSufferingBlackList", entry.getKey().toString(), false)
-                        .getBoolean();
+                boolean blacklisted = config.get("wellOfSufferingBlackList", entry.getKey(), false).getBoolean();
                 if (blacklisted) AlchemicalWizardry.wellBlacklist.add(curClass);
             }
         }

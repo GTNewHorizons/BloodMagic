@@ -10,7 +10,7 @@ import WayofTime.alchemicalWizardry.common.items.armour.OmegaArmour;
 
 public class OmegaRegistry {
 
-    public static HashMap<Reagent, OmegaParadigm> omegaList = new HashMap();
+    public static HashMap<Reagent, OmegaParadigm> omegaList = new HashMap<>();
 
     public static void registerParadigm(Reagent reagent, OmegaParadigm parad) {
         omegaList.put(reagent, parad);

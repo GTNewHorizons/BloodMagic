@@ -22,59 +22,55 @@ public class SpellLightningBolt extends HomSpell {
     }
 
     @Override
-    public ItemStack onOffensiveRangedRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onOffensiveRangedRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveRangedEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveRangedEnergy());
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        world.playSoundAtEntity(player, "random.fizz", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
-        if (!par2World.isRemote) {
-            par2World.spawnEntityInWorld(new LightningBoltProjectile(par2World, par3EntityPlayer, 8, false));
+        if (!world.isRemote) {
+            world.spawnEntityInWorld(new LightningBoltProjectile(world, player, 8, false));
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onOffensiveMeleeRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
+    public ItemStack onOffensiveMeleeRightClick(ItemStack item, World world, EntityPlayer player) {
         // TODO Make it work better...?
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems
-                    .syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getOffensiveMeleeEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getOffensiveMeleeEnergy());
         }
 
-        double xCoord = par3EntityPlayer.posX;
-        double yCoord = par3EntityPlayer.posY;
-        double zCoord = par3EntityPlayer.posZ;
-        par2World.getWorldInfo().setRaining(true);
-        if (par2World.isRemote) {
-            par2World.setRainStrength(1.0f);
-            par2World.setThunderStrength(1.0f);
+        double xCoord = player.posX;
+        double yCoord = player.posY;
+        double zCoord = player.posZ;
+        world.getWorldInfo().setRaining(true);
+        if (world.isRemote) {
+            world.setRainStrength(1.0f);
+            world.setThunderStrength(1.0f);
         }
 
-        par2World.getWorldInfo().setThunderTime(0);
-        par2World.getWorldInfo().setThundering(true);
+        world.getWorldInfo().setThunderTime(0);
+        world.getWorldInfo().setThundering(true);
 
         for (int i = 0; i < 5; i++) {
             SpellHelper.sendParticleToAllAround(
-                    par2World,
+                    world,
                     xCoord,
                     yCoord,
                     zCoord,
                     30,
-                    par2World.provider.dimensionId,
+                    world.provider.dimensionId,
                     "mobSpell",
                     xCoord + itemRand.nextFloat() - itemRand.nextFloat(),
                     yCoord + itemRand.nextFloat() - itemRand.nextFloat(),
@@ -84,27 +80,27 @@ public class SpellLightningBolt extends HomSpell {
                     1.0F);
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onDefensiveRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onDefensiveRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getDefensiveEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getDefensiveEnergy());
         }
 
-        double xCoord = par3EntityPlayer.posX;
-        double yCoord = par3EntityPlayer.posY;
-        double zCoord = par3EntityPlayer.posZ;
+        double xCoord = player.posX;
+        double yCoord = player.posY;
+        double zCoord = player.posZ;
 
         for (int i = 0; i < 5; i++) {
-            par2World.addWeatherEffect(
+            world.addWeatherEffect(
                     new EntityLightningBolt(
-                            par2World,
+                            world,
                             xCoord + itemRand.nextInt(64) - 32,
                             yCoord + itemRand.nextInt(8) - 8,
                             zCoord + itemRand.nextInt(64) - 32));
@@ -112,12 +108,12 @@ public class SpellLightningBolt extends HomSpell {
 
         for (int i = 0; i < 8; i++) {
             SpellHelper.sendParticleToAllAround(
-                    par2World,
+                    world,
                     xCoord,
                     yCoord,
                     zCoord,
                     30,
-                    par2World.provider.dimensionId,
+                    world.provider.dimensionId,
                     "mobSpell",
                     xCoord + itemRand.nextFloat() - itemRand.nextFloat(),
                     yCoord + itemRand.nextFloat() - itemRand.nextFloat(),
@@ -127,24 +123,23 @@ public class SpellLightningBolt extends HomSpell {
                     1.0F);
         }
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public ItemStack onEnvironmentalRightClick(ItemStack par1ItemStack, World par2World,
-            EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onEnvironmentalRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (!par3EntityPlayer.capabilities.isCreativeMode) {
-            EnergyItems.syphonAndDamageWhileInContainer(par1ItemStack, par3EntityPlayer, this.getEnvironmentalEnergy());
+        if (!player.capabilities.isCreativeMode) {
+            EnergyItems.syphonAndDamageWhileInContainer(item, player, this.getEnvironmentalEnergy());
         }
 
-        if (!par2World.isRemote) {
-            par2World.spawnEntityInWorld(new LightningBoltProjectile(par2World, par3EntityPlayer, 8, true));
+        if (!world.isRemote) {
+            world.spawnEntityInWorld(new LightningBoltProjectile(world, player, 8, true));
         }
 
-        return par1ItemStack;
+        return item;
     }
 }

@@ -6,13 +6,12 @@ public class GridSpace {
 
     public static final int EMPTY = 0;
     public static final int MAIN_PORTAL = 1;
-    public static final int MINI_PORTAL = 2;
     public static final int ROAD = 3;
     public static final int CROSSROAD = 4;
     public static final int HOUSE = 5;
 
-    private int yLevel;
-    private int type;
+    private final int yLevel;
+    private final int type;
 
     public GridSpace() {
         this(EMPTY, -1);
@@ -23,20 +22,8 @@ public class GridSpace {
         this.yLevel = yLevel;
     }
 
-    public int getGridType() {
-        return this.type;
-    }
-
-    public void setGridType(int type) {
-        this.type = type;
-    }
-
     public int getYLevel() {
         return this.yLevel;
-    }
-
-    public void setYLevel(int yLevel) {
-        this.yLevel = yLevel;
     }
 
     public boolean isEmpty() {

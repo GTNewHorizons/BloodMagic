@@ -20,9 +20,9 @@ public class DemonBuilding {
     public DemonBuilding(BuildingSchematic schematic) {
         this.schematic = schematic;
         this.buildingType = schematic.buildingType;
-        this.buildingTier = schematic.buildingTier;
+        this.buildingTier = 0;
         this.area = this.createGSHForSchematic(schematic);
-        this.doorGridSpace = schematic.getGridSpotOfDoor();
+        this.doorGridSpace = new Int3(0, 0, 0);
     }
 
     public String getName() {
@@ -53,34 +53,18 @@ public class DemonBuilding {
     }
 
     public Int3 getDoorSpace(ForgeDirection dir) {
-        int x;
-        int z;
-        switch (dir) {
-            case SOUTH:
-                x = -doorGridSpace.xCoord;
-                z = -doorGridSpace.zCoord;
-                break;
-            case WEST:
-                x = doorGridSpace.zCoord;
-                z = -doorGridSpace.xCoord;
-                break;
-            case EAST:
-                x = -doorGridSpace.zCoord;
-                z = doorGridSpace.xCoord;
-                break;
-            default:
-                x = doorGridSpace.xCoord;
-                z = doorGridSpace.zCoord;
-                break;
-        }
-
-        return new Int3(x, doorGridSpace.yCoord, z);
+        return switch (dir) {
+            case SOUTH -> new Int3(-doorGridSpace.x(), doorGridSpace.y(), -doorGridSpace.z());
+            case WEST -> new Int3(doorGridSpace.z(), doorGridSpace.y(), -doorGridSpace.x());
+            case EAST -> new Int3(-doorGridSpace.z(), doorGridSpace.y(), doorGridSpace.x());
+            default -> new Int3(doorGridSpace.x(), doorGridSpace.y(), doorGridSpace.z());
+        };
     }
 
     public Int3 getGridOffsetFromRoad(ForgeDirection sideOfRoad, int yLevel) {
         Int3 doorSpace = this.getDoorSpace(sideOfRoad);
-        int x = doorSpace.xCoord;
-        int z = doorSpace.zCoord;
+        int x = doorSpace.x();
+        int z = doorSpace.z();
 
         switch (sideOfRoad) {
             case SOUTH:

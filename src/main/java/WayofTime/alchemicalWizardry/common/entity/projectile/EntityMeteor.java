@@ -18,35 +18,35 @@ public class EntityMeteor extends EnergyBlastProjectile {
 
     public ArrayList<Reagent> reagentList = new ArrayList<>();
 
-    public EntityMeteor(World par1World) {
-        super(par1World);
+    public EntityMeteor(World world) {
+        super(world);
         this.meteorID = 0;
     }
 
-    public EntityMeteor(World par1World, double par2, double par4, double par6, int meteorID) {
-        super(par1World, par2, par4, par6);
+    public EntityMeteor(World world, double x, double y, double z, int meteorID) {
+        super(world, x, y, z);
         this.meteorID = meteorID;
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeEntityToNBT(par1NBTTagCompound);
+    public void writeEntityToNBT(NBTTagCompound tag) {
+        super.writeEntityToNBT(tag);
 
-        par1NBTTagCompound.setInteger("meteorID", meteorID);
+        tag.setInteger("meteorID", meteorID);
 
         for (Reagent r : reagentList) {
-            par1NBTTagCompound.setBoolean("reagent." + r.name, true);
+            tag.setBoolean("reagent." + r.name(), true);
         }
 
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readEntityFromNBT(par1NBTTagCompound);
+    public void readEntityFromNBT(NBTTagCompound tag) {
+        super.readEntityFromNBT(tag);
 
-        meteorID = par1NBTTagCompound.getInteger("meteorID");
+        meteorID = tag.getInteger("meteorID");
         for (Reagent r : ReagentRegistry.reagentList.values()) {
-            if (par1NBTTagCompound.getBoolean("reagent." + r.name)) {
+            if (tag.getBoolean("reagent." + r.name())) {
                 reagentList.add(r);
             }
         }
@@ -73,7 +73,7 @@ public class EntityMeteor extends EnergyBlastProjectile {
     }
 
     @Override
-    public void onImpact(Entity mop) {
+    public void onImpact(Entity target) {
         MeteorRegistry
                 .createMeteorImpact(worldObj, (int) this.posX, (int) this.posY, (int) this.posZ, meteorID, reagentList);
 

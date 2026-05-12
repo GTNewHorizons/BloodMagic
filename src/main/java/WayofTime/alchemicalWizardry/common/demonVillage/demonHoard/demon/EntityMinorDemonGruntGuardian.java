@@ -1,40 +1,26 @@
 package WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
+import WayofTime.alchemicalWizardry.common.entity.projectile.EnergyBlastProjectile;
 import WayofTime.alchemicalWizardry.common.entity.projectile.HolyProjectile;
 
 public class EntityMinorDemonGruntGuardian extends EntityMinorDemonGrunt {
 
-    public EntityMinorDemonGruntGuardian(World par1World) {
-        super(par1World);
+    public EntityMinorDemonGruntGuardian(World world) {
+        super(world);
         this.setDemonID(AlchemicalWizardry.entityMinorDemonGruntGuardianID);
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity par1Entity) {
-        int i = this.isTamed() ? 25 : 25;
-
-        if (par1Entity instanceof IHoardDemon && ((IHoardDemon) par1Entity).isSamePortal(this)) {
-            return false;
-        }
-
-        return par1Entity.attackEntityFrom(DamageSource.causeMobDamage(this), (float) i);
+    protected EnergyBlastProjectile attackProjectile(EntityLivingBase target) {
+        return new HolyProjectile(worldObj, this, target, 1.8f, 0f, 20, 600);
     }
 
-    /**
-     * Attack the specified entity using a ranged attack.
-     */
     @Override
-    public void attackEntityWithRangedAttack(EntityLivingBase par1EntityLivingBase, float par2) {
-        if (par1EntityLivingBase instanceof IHoardDemon && ((IHoardDemon) par1EntityLivingBase).isSamePortal(this)) {
-            return;
-        }
-        HolyProjectile hol = new HolyProjectile(worldObj, this, par1EntityLivingBase, 1.8f, 0f, 20, 600);
-        this.worldObj.spawnEntityInWorld(hol);
+    protected float meleeDamage() {
+        return 25f;
     }
 }

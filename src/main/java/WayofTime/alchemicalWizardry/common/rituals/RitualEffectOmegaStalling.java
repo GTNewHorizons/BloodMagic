@@ -25,7 +25,6 @@ public class RitualEffectOmegaStalling extends RitualEffect {
     public void performEffect(IMasterRitualStone ritualStone) {
         String owner = ritualStone.getOwner();
 
-        int currentEssence = SoulNetworkHandler.getCurrentEssence(owner);
         World world = ritualStone.getWorld();
         int x = ritualStone.getXCoord();
         int y = ritualStone.getYCoord();
@@ -36,27 +35,25 @@ public class RitualEffectOmegaStalling extends RitualEffect {
         }
 
         TileEntity tile = world.getTileEntity(x, y + 5, z);
-        if (tile instanceof TileEntityBeacon) {
-            int levels = ((TileEntityBeacon) tile).getLevels();
-            if (levels >= 4) {
-                int horizontalRadius = 100;
-                int verticalRadius = 100;
+        if (!(tile instanceof TileEntityBeacon beacon) || beacon.getLevels() < 4) {
+            return;
+        }
+        int horizontalRadius = 100;
+        int verticalRadius = 100;
 
-                List<EntityPlayer> playerList = SpellHelper
-                        .getPlayersInRange(world, x + 0.5, y + 0.5, z + 0.5, horizontalRadius, verticalRadius);
+        List<EntityPlayer> playerList = SpellHelper
+                .getPlayersInRange(world, x + 0.5, y + 0.5, z + 0.5, horizontalRadius, verticalRadius);
 
-                for (EntityPlayer player : playerList) {
-                    if (SoulNetworkHandler.canSyphonFromOnlyNetwork(owner, getCostPerRefresh())) {
-                        Reagent reagent = APISpellHelper.getPlayerReagentType(player);
-                        OmegaParadigm parad = OmegaRegistry.getParadigmForReagent(reagent);
-                        if (parad != null) {
-                            float costOffset = parad.getCostPerTickOfUse(player);
-                            parad.setOmegaStalling(player, 100);
-                            SoulNetworkHandler
-                                    .syphonFromNetwork(owner, (int) (getCostPerRefresh() * Math.min(costOffset, 1)));
-                        }
-                    }
-                }
+        for (EntityPlayer player : playerList) {
+            if (!SoulNetworkHandler.canSyphonFromOnlyNetwork(owner, getCostPerRefresh())) {
+                continue;
+            }
+            Reagent reagent = APISpellHelper.getPlayerReagentType(player);
+            OmegaParadigm parad = OmegaRegistry.getParadigmForReagent(reagent);
+            if (parad != null) {
+                float costOffset = parad.getCostPerTickOfUse(player);
+                parad.setOmegaStalling(player, 100);
+                SoulNetworkHandler.syphonFromNetwork(owner, (int) (getCostPerRefresh() * Math.min(costOffset, 1)));
             }
         }
     }
@@ -68,7 +65,7 @@ public class RitualEffectOmegaStalling extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> omegaRitual = new ArrayList();
+        ArrayList<RitualComponent> omegaRitual = new ArrayList<>();
 
         this.addCornerRunes(omegaRitual, 1, 0, RitualComponent.FIRE);
         this.addOffsetRunes(omegaRitual, 2, 1, 0, RitualComponent.DUSK);

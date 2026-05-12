@@ -40,21 +40,21 @@ public class TETeleposer extends TEInventory implements IBloodMagicWailaProvider
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readFromNBT(par1NBTTagCompound);
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
 
-        resultID = par1NBTTagCompound.getInteger("resultID");
-        resultDamage = par1NBTTagCompound.getInteger("resultDamage");
-        hasRedstone = par1NBTTagCompound.getBoolean("hasRedstone");
+        resultID = tag.getInteger("resultID");
+        resultDamage = tag.getInteger("resultDamage");
+        hasRedstone = tag.getBoolean("hasRedstone");
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeToNBT(par1NBTTagCompound);
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
 
-        par1NBTTagCompound.setInteger("resultID", resultID);
-        par1NBTTagCompound.setInteger("resultDamage", resultDamage);
-        par1NBTTagCompound.setBoolean("hasRedstone", hasRedstone);
+        tag.setInteger("resultID", resultID);
+        tag.setInteger("resultDamage", resultDamage);
+        tag.setBoolean("hasRedstone", hasRedstone);
     }
 
     @Override

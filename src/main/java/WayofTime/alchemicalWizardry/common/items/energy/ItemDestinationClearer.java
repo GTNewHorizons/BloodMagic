@@ -33,9 +33,9 @@ public class ItemDestinationClearer extends Item implements IReagentManipulator 
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.destclearer.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.destclearer.desc2"));
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.destclearer.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.destclearer.desc2"));
     }
 
     @Override
@@ -48,24 +48,21 @@ public class ItemDestinationClearer extends Item implements IReagentManipulator 
 
         if (movingobjectposition == null) {
             return itemStack;
-        } else {
-            if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                int x = movingobjectposition.blockX;
-                int y = movingobjectposition.blockY;
-                int z = movingobjectposition.blockZ;
+        }
+        if (movingobjectposition.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            int x = movingobjectposition.blockX;
+            int y = movingobjectposition.blockY;
+            int z = movingobjectposition.blockZ;
 
-                TileEntity tile = world.getTileEntity(x, y, z);
+            TileEntity tile = world.getTileEntity(x, y, z);
 
-                if (!(tile instanceof TEReagentConduit)) {
-                    return itemStack;
-                }
-
-                TEReagentConduit relay = (TEReagentConduit) tile;
-
-                relay.reagentTargetList.clear();
-
-                player.addChatComponentMessage(new ChatComponentTranslation("message.destinationclearer.cleared"));
+            if (!(tile instanceof TEReagentConduit relay)) {
+                return itemStack;
             }
+
+            relay.reagentTargetList.clear();
+
+            player.addChatComponentMessage(new ChatComponentTranslation("message.destinationclearer.cleared"));
         }
 
         return itemStack;

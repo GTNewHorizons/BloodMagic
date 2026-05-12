@@ -94,6 +94,7 @@ public class AdvancedCompressionHandler extends CompressionHandler {
         }
         InventoryCrafting inventory = new InventoryCrafting(new Container() {
 
+            @Override
             public boolean canInteractWith(EntityPlayer player) {
                 return false;
             }
@@ -106,15 +107,11 @@ public class AdvancedCompressionHandler extends CompressionHandler {
             return false;
         }
 
-        ItemStack compressedStack = null;
-        switch (gridSize) {
-            case 2:
-                compressedStack = get22Recipe(returnStack, world);
-                break;
-            case 3:
-                compressedStack = get33Recipe(returnStack, world);
-                break;
-        }
+        ItemStack compressedStack = switch (gridSize) {
+            case 2 -> get22Recipe(returnStack, world);
+            case 3 -> get33Recipe(returnStack, world);
+            default -> null;
+        };
 
         if (compressedStack == null) {
             return false;
@@ -126,6 +123,7 @@ public class AdvancedCompressionHandler extends CompressionHandler {
     public static ItemStack getRecipe(ItemStack stack, World world, int gridSize) {
         InventoryCrafting inventory = new InventoryCrafting(new Container() {
 
+            @Override
             public boolean canInteractWith(EntityPlayer player) {
                 return false;
             }

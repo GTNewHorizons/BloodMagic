@@ -33,18 +33,17 @@ public class BlockStabilityGlyph extends Block implements IStabilityGlyph {
 
     @Override
     public int getAdditionalStabilityForFaceCount(World world, int x, int y, int z, int meta, int faceCount) {
-        switch (meta) {
-            case 0:
-                return faceCount * 2;
-            default:
-                return faceCount;
+        if (meta == 0) {
+            return faceCount * 2;
         }
+        return faceCount;
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> items) {
         for (int i = 0; i < 1; i++) {
-            par3List.add(new ItemStack(par1, 1, i));
+            items.add(new ItemStack(item, 1, i));
         }
     }
 }

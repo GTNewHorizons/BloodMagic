@@ -82,61 +82,57 @@ public class EnergyBlast extends EnergyItems {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (getDelay(par1ItemStack) > 0 && IBindable.isActive(par1ItemStack) && !par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (getDelay(item) > 0 && IBindable.isActive(item) && !player.isSneaking()) {
+            return item;
         }
 
-        if (checkRightClick(par1ItemStack, par2World, par3EntityPlayer)) {
-            setDelay(par1ItemStack, drainTicks());
-            return par1ItemStack;
+        if (checkRightClick(item, world, player)) {
+            setDelay(item, drainTicks());
+            return item;
         }
 
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
+        world.playSoundAtEntity(player, "random.bow", 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
 
-        if (!par2World.isRemote) {
-            shoot(par2World, par3EntityPlayer);
-            this.setDelay(par1ItemStack, getShotDelay());
+        if (!world.isRemote) {
+            shoot(world, player);
+            this.setDelay(item, getShotDelay());
         }
 
-        return par1ItemStack;
+        return item;
     }
 
-    public void shoot(World par2World, EntityPlayer par3EntityPlayer) {
-        par2World.spawnEntityInWorld(new EnergyBlastProjectile(par2World, par3EntityPlayer, this.damage));
+    public void shoot(World world, EntityPlayer player) {
+        world.spawnEntityInWorld(new EnergyBlastProjectile(world, player, this.damage));
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5) {
-        if (!(par3Entity instanceof EntityPlayer)) {
+    public void onUpdate(ItemStack item, World world, Entity entity, int par4, boolean par5) {
+        if (!(entity instanceof EntityPlayer player)) {
             return;
         }
-        EntityPlayer par3EntityPlayer = (EntityPlayer) par3Entity;
 
-        int delay = this.getDelay(par1ItemStack);
+        int delay = this.getDelay(item);
 
-        if (!par2World.isRemote && delay > 0) {
-            this.setDelay(par1ItemStack, delay - 1);
+        if (!world.isRemote && delay > 0) {
+            this.setDelay(item, delay - 1);
         }
 
-        checkPassiveDrain(par1ItemStack, par2World, par3EntityPlayer);
+        checkPassiveDrain(item, world, player);
 
-        par1ItemStack.setItemDamage(0);
+        item.setItemDamage(0);
     }
 
     /**
      * The delay between firing multiple shots.
      */
     public int getShotDelay() {
-        switch (this.tier) {
-            case 1:
-                return AlchemicalWizardry.energyBlastMaxDelay;
-            case 2:
-                return AlchemicalWizardry.energyBlastSecondTierMaxDelay;
-            case 3:
-                return AlchemicalWizardry.energyBlastThirdTierMaxDelay;
-        }
-        return 1;
+        return switch (this.tier) {
+            case 1 -> AlchemicalWizardry.energyBlastMaxDelay;
+            case 2 -> AlchemicalWizardry.energyBlastSecondTierMaxDelay;
+            case 3 -> AlchemicalWizardry.energyBlastThirdTierMaxDelay;
+            default -> 1;
+        };
     }
 
     /**
@@ -144,28 +140,22 @@ public class EnergyBlast extends EnergyItems {
      */
     @Override
     public int drainTicks() {
-        switch (this.tier) {
-            case 1:
-                return AlchemicalWizardry.energyBlastMaxDelayAfterActivation;
-            case 2:
-                return AlchemicalWizardry.energyBlastSecondTierMaxDelayAfterActivation;
-            case 3:
-                return AlchemicalWizardry.energyBlastThirdTierMaxDelayAfterActivation;
-        }
-        return 1;
+        return switch (this.tier) {
+            case 1 -> AlchemicalWizardry.energyBlastMaxDelayAfterActivation;
+            case 2 -> AlchemicalWizardry.energyBlastSecondTierMaxDelayAfterActivation;
+            case 3 -> AlchemicalWizardry.energyBlastThirdTierMaxDelayAfterActivation;
+            default -> 1;
+        };
     }
 
     @Override
     public int drainCost() {
-        switch (this.tier) {
-            case 1:
-                return AlchemicalWizardry.energyBlastLPPerActivation;
-            case 2:
-                return AlchemicalWizardry.energyBlastSecondTierLPPerActivation;
-            case 3:
-                return AlchemicalWizardry.energyBlastThirdTierLPPerActivation;
-        }
-        return 0;
+        return switch (this.tier) {
+            case 1 -> AlchemicalWizardry.energyBlastLPPerActivation;
+            case 2 -> AlchemicalWizardry.energyBlastSecondTierLPPerActivation;
+            case 3 -> AlchemicalWizardry.energyBlastThirdTierLPPerActivation;
+            default -> 0;
+        };
     }
 
     @Override
@@ -175,19 +165,18 @@ public class EnergyBlast extends EnergyItems {
 
     @Override
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.energyblast.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.energyblast.desc2"));
-        par3List.add(StatCollector.translateToLocal("tooltip.alchemy.damage") + " " + this.damage);
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.energyblast.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.energyblast.desc2"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.alchemy.damage") + " " + this.damage);
+        addBindingInformation(item, tooltip);
     }
 
-    public void setDelay(ItemStack par1ItemStack, int delay) {
-        IBindable.getTag(par1ItemStack).setInteger("delay", delay);
+    public void setDelay(ItemStack item, int delay) {
+        IBindable.getTag(item).setInteger("delay", delay);
     }
 
-    public int getDelay(ItemStack par1ItemStack) {
-        return IBindable.getTag(par1ItemStack).getInteger("delay");
+    public int getDelay(ItemStack item) {
+        return IBindable.getTag(item).getInteger("delay");
     }
 }

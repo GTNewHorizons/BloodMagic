@@ -10,7 +10,7 @@ import WayofTime.alchemicalWizardry.common.demonVillage.tileEntity.TEDemonPortal
 
 public class DemonPacketRegistry {
 
-    public static Map<String, DemonHoardPacket> packetMap = new HashMap();
+    public static Map<String, DemonHoardPacket> packetMap = new HashMap<>();
 
     public static boolean registerDemonPacket(String string, DemonHoardPacket packet) {
         if (!packetMap.containsValue(string) && packet != null) {

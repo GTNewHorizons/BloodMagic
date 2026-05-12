@@ -11,12 +11,12 @@ public class RenderMasterStone extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double d0, double d1, double d2, float f) {
-        if (tileEntity instanceof TEMasterStone) {
-            String str = ((TEMasterStone) tileEntity).getCurrentRitual();
+        if (tileEntity instanceof TEMasterStone stone) {
+            String str = stone.getCurrentRitual();
             MRSRenderer renderer = Rituals.getRendererForKey(str);
 
             if (renderer != null) {
-                renderer.renderAt(((TEMasterStone) tileEntity), d0, d1, d2);
+                renderer.renderAt(stone, d0, d1, d2);
             }
         }
     }

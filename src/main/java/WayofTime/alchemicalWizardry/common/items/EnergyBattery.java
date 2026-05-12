@@ -23,7 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class EnergyBattery extends Item implements ArmourUpgrade, IBindable, IBloodOrb {
 
-    private int maxEssence;
+    private final int maxEssence;
     protected int orbLevel;
 
     public EnergyBattery(int damage) {
@@ -41,27 +41,26 @@ public class EnergyBattery extends Item implements ArmourUpgrade, IBindable, IBl
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.energybattery.desc"));
-        par3List.add(StatCollector.translateToLocalFormatted("tooltip.energybattery.capacity", this.getMaxEssence()));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.energybattery.desc"));
+        tooltip.add(StatCollector.translateToLocalFormatted("tooltip.energybattery.capacity", this.getMaxEssence()));
+        addBindingInformation(item, tooltip);
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer)) {
-            return par1ItemStack;
+    @Override
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player)) {
+            return item;
         }
 
-        World world = par3EntityPlayer.worldObj;
-
         if (world != null) {
-            double posX = par3EntityPlayer.posX;
-            double posY = par3EntityPlayer.posY;
-            double posZ = par3EntityPlayer.posZ;
+            double posX = player.posX;
+            double posY = player.posY;
+            double posZ = player.posZ;
             world.playSoundEffect(
-                    (double) ((float) posX + 0.5F),
-                    (double) ((float) posY + 0.5F),
-                    (double) ((float) posZ + 0.5F),
+                    (float) posX + 0.5F,
+                    (float) posY + 0.5F,
+                    (float) posZ + 0.5F,
                     "random.fizz",
                     0.5F,
                     2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
@@ -77,40 +76,40 @@ public class EnergyBattery extends Item implements ArmourUpgrade, IBindable, IBl
                     posY,
                     posZ);
         }
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
+        NBTTagCompound itemTag = item.getTagCompound();
 
-        if (SpellHelper.isFakePlayer(par2World, par3EntityPlayer)) {
-            return par1ItemStack;
+        if (SpellHelper.isFakePlayer(world, player)) {
+            return item;
         }
 
-        if (itemTag == null || itemTag.getString("ownerName").equals("")) {
-            return par1ItemStack;
+        if (itemTag == null || itemTag.getString("ownerName").isEmpty()) {
+            return item;
         }
 
         if (world.isRemote) {
-            return par1ItemStack;
+            return item;
         }
 
-        if (itemTag.getString("ownerName").equals(SpellHelper.getUsername(par3EntityPlayer))) {
+        if (itemTag.getString("ownerName").equals(SpellHelper.getUsername(player))) {
             SoulNetworkHandler.setMaxOrbToMax(itemTag.getString("ownerName"), this.orbLevel);
         }
 
         SoulNetworkHandler.addCurrentEssenceToMaximum(itemTag.getString("ownerName"), 200, this.getMaxEssence());
-        EnergyItems.hurtPlayer(par3EntityPlayer, 200);
-        return par1ItemStack;
+        EnergyItems.hurtPlayer(player, 200);
+        return item;
     }
 
     /*
      * @return the damage that was not deducted
      */
-    public int damageItem(ItemStack par1ItemStack, int par2int) {
+    public int damageItem(ItemStack item, int par2int) {
         if (par2int == 0) {
             return 0;
         }
 
-        int before = this.getDamage(par1ItemStack);
-        this.setDamage(par1ItemStack, this.getDamage(par1ItemStack) + par2int);
-        return par2int - (this.getDamage(par1ItemStack) - before);
+        int before = this.getDamage(item);
+        this.setDamage(item, this.getDamage(item) + par2int);
+        return par2int - (this.getDamage(item) - before);
     }
 
     protected void damagePlayer(World world, EntityPlayer player, int damage) {
@@ -119,9 +118,9 @@ public class EnergyBattery extends Item implements ArmourUpgrade, IBindable, IBl
             double posY = player.posY;
             double posZ = player.posZ;
             world.playSoundEffect(
-                    (double) ((float) posX + 0.5F),
-                    (double) ((float) posY + 0.5F),
-                    (double) ((float) posZ + 0.5F),
+                    (float) posX + 0.5F,
+                    (float) posY + 0.5F,
+                    (float) posZ + 0.5F,
                     "random.fizz",
                     0.5F,
                     2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
@@ -153,10 +152,12 @@ public class EnergyBattery extends Item implements ArmourUpgrade, IBindable, IBl
         }
     }
 
+    @Override
     public int getMaxEssence() {
         return this.maxEssence;
     }
 
+    @Override
     public int getOrbLevel() {
         return orbLevel;
     }
@@ -186,14 +187,14 @@ public class EnergyBattery extends Item implements ArmourUpgrade, IBindable, IBl
 
     // @SideOnly(Side.SERVER)
     @Deprecated
-    public int getCurrentEssence(ItemStack par1ItemStack) {
-        if (par1ItemStack == null) {
+    public int getCurrentEssence(ItemStack item) {
+        if (item == null) {
             return 0;
         }
 
-        NBTTagCompound itemTag = par1ItemStack.getTagCompound();
+        NBTTagCompound itemTag = item.getTagCompound();
 
-        if (itemTag == null || itemTag.getString("ownerName").equals("")) {
+        if (itemTag == null || itemTag.getString("ownerName").isEmpty()) {
             return 0;
         }
 

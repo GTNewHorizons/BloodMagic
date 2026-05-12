@@ -42,6 +42,7 @@ public class SpectralBlock extends BlockContainer {
         return 0;
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess p_149646_1_, int p_149646_2_, int p_149646_3_, int p_149646_4_,
             int p_149646_5_) {
@@ -58,10 +59,10 @@ public class SpectralBlock extends BlockContainer {
             return false;
         }
 
-        return block != this
-                && super.shouldSideBeRendered(p_149646_1_, p_149646_2_, p_149646_3_, p_149646_4_, p_149646_5_);
+        return super.shouldSideBeRendered(p_149646_1_, p_149646_2_, p_149646_3_, p_149646_4_, p_149646_5_);
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     /**
      * Returns which pass should this block be rendered on. 0 for solids and 1 for alpha

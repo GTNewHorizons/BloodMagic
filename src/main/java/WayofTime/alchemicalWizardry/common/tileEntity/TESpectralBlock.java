@@ -15,17 +15,17 @@ public class TESpectralBlock extends TileEntity {
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readFromNBT(par1NBTTagCompound);
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
 
-        ticksRemaining = par1NBTTagCompound.getInteger("ticksRemaining");
+        ticksRemaining = tag.getInteger("ticksRemaining");
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeToNBT(par1NBTTagCompound);
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
 
-        par1NBTTagCompound.setInteger("ticksRemaining", ticksRemaining);
+        tag.setInteger("ticksRemaining", ticksRemaining);
     }
 
     @Override

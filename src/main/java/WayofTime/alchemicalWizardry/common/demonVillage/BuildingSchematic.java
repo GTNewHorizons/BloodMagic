@@ -13,13 +13,9 @@ import WayofTime.alchemicalWizardry.common.demonVillage.tileEntity.TEDemonPortal
 
 public class BuildingSchematic {
 
-    public String name;
-    public int doorX;
-    public int doorZ;
-    public int doorY;
-    public int buildingTier;
-    public int buildingType;
-    public List<BlockSet> blockList;
+    public final String name;
+    public final int buildingType = DemonBuilding.BUILDING_HOUSE;
+    public final List<BlockSet> blockList = new ArrayList<>();
 
     public BuildingSchematic() {
         this("");
@@ -27,12 +23,6 @@ public class BuildingSchematic {
 
     public BuildingSchematic(String name) {
         this.name = name;
-        blockList = new ArrayList();
-        this.doorX = 0;
-        this.doorZ = 0;
-        this.doorY = 0;
-        this.buildingTier = 0;
-        this.buildingType = DemonBuilding.BUILDING_HOUSE;
     }
 
     public void addBlockWithMeta(Block block, int meta, int xOffset, int yOffset, int zOffset) {
@@ -51,7 +41,7 @@ public class BuildingSchematic {
     public void buildAll(TEDemonPortal teDemonPortal, World world, int xCoord, int yCoord, int zCoord,
             ForgeDirection dir, boolean populateInventories) {
         for (BlockSet set : blockList) {
-            set.buildAll(teDemonPortal, world, xCoord, yCoord, zCoord, dir, populateInventories, this.buildingTier);
+            set.buildAll(teDemonPortal, world, xCoord, yCoord, zCoord, dir, populateInventories, 0);
         }
     }
 
@@ -60,8 +50,8 @@ public class BuildingSchematic {
 
         for (BlockSet set : blockList) {
             for (Int3 coords : set.getPositions()) {
-                int gridX = (int) ((coords.xCoord + 2 * Math.signum(coords.xCoord)) / 5);
-                int gridZ = (int) ((coords.zCoord + 2 * Math.signum(coords.zCoord)) / 5);
+                int gridX = (int) ((coords.x() + 2 * Math.signum(coords.x())) / 5);
+                int gridZ = (int) ((coords.z() + 2 * Math.signum(coords.z())) / 5);
 
                 holder.setGridSpace(gridX, gridZ, new GridSpace(GridSpace.HOUSE, 0));
             }
@@ -70,37 +60,29 @@ public class BuildingSchematic {
         return holder;
     }
 
-    public Int3 getGridSpotOfDoor() {
-        int gridX = (int) ((doorX + 2 * Math.signum(doorX)) / 5);
-        int gridZ = (int) ((doorZ + 2 * Math.signum(doorZ)) / 5);
-
-        return new Int3(gridX, doorY, gridZ);
-    }
-
     public List<Int3> getGriddedPositions(ForgeDirection dir) {
-        List<Int3> positionList = new ArrayList();
+        List<Int3> positionList = new ArrayList<>();
 
         for (BlockSet blockSet : blockList) {
             for (Int3 pos : blockSet.getPositions()) {
-                int xOff = pos.xCoord;
-                int zOff = pos.zCoord;
+                int xOff = pos.x();
+                int zOff = pos.z();
 
                 switch (dir) {
-                    case SOUTH:
+                    case SOUTH -> {
                         xOff *= -1;
                         zOff *= -1;
-                        break;
-                    case WEST:
+                    }
+                    case WEST -> {
                         int temp = zOff;
                         zOff = xOff * -1;
                         xOff = temp;
-                        break;
-                    case EAST:
+                    }
+                    case EAST -> {
                         int temp2 = zOff * -1;
                         zOff = xOff;
                         xOff = temp2;
-                        break;
-                    default:
+                    }
                 }
 
                 Int3 nextPos = new Int3(xOff, 0, zOff);
@@ -121,9 +103,9 @@ public class BuildingSchematic {
 
         for (int i = this.getMinY(); i <= this.getMaxY(); i++) {
             for (Int3 pos : positionList) {
-                Block block = world.getBlock(xCoord + pos.xCoord, yCoord + i, zCoord + pos.zCoord);
+                Block block = world.getBlock(xCoord + pos.x(), yCoord + i, zCoord + pos.z());
                 if (block != ModBlocks.blockDemonPortal) {
-                    world.setBlockToAir(xCoord + pos.xCoord, yCoord + i, zCoord + pos.zCoord);
+                    world.setBlockToAir(xCoord + pos.x(), yCoord + i, zCoord + pos.z());
                 }
             }
         }
@@ -133,8 +115,8 @@ public class BuildingSchematic {
         int min = 0;
         for (BlockSet set : blockList) {
             for (Int3 pos : set.getPositions()) {
-                if (pos.yCoord < min) {
-                    min = pos.yCoord;
+                if (pos.y() < min) {
+                    min = pos.y();
                 }
             }
         }
@@ -146,8 +128,8 @@ public class BuildingSchematic {
         int max = 0;
         for (BlockSet set : blockList) {
             for (Int3 pos : set.getPositions()) {
-                if (pos.yCoord > max) {
-                    max = pos.yCoord;
+                if (pos.y() > max) {
+                    max = pos.y();
                 }
             }
         }

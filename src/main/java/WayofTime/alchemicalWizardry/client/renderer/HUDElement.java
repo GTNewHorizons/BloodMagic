@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.opengl.GL11;
 
@@ -22,7 +23,7 @@ public class HUDElement {
     private int itemNameW;
     private String itemDamage = "";
     private int itemDamageW;
-    private Minecraft mc = Minecraft.getMinecraft();
+    private final Minecraft mc = Minecraft.getMinecraft();
 
     private static final int offset = 5;
 
@@ -63,26 +64,9 @@ public class HUDElement {
                 maxDamage = itemStack.getMaxDamage() + 1;
                 damage = maxDamage - itemStack.getItemDamageForDisplay();
 
-                boolean showSpecialValue = true;
-                boolean showValue = false;
-                boolean showPercent = false;
-
-                boolean showMaxDamage = true;
-                boolean thresholdPercent = true;
-
-                if (showSpecialValue) {
-                    itemDamage = "\247" + ColourThreshold.getColorCode(
-                            BloodMagicConfiguration.colorList,
-                            (thresholdPercent ? damage * 100 / maxDamage : damage)) + this.value;
-                } else if (showValue) itemDamage = "\247"
-                        + ColourThreshold.getColorCode(
-                                BloodMagicConfiguration.colorList,
-                                (thresholdPercent ? damage * 100 / maxDamage : damage))
-                        + damage
-                        + (showMaxDamage ? "/" + maxDamage : "");
-                else if (showPercent) itemDamage = "\247" + ColourThreshold.getColorCode(
-                        BloodMagicConfiguration.colorList,
-                        (thresholdPercent ? damage * 100 / maxDamage : damage)) + (damage * 100 / maxDamage) + "%";
+                itemDamage = "§"
+                        + ColourThreshold.getColorCode(BloodMagicConfiguration.colorList, damage * 100 / maxDamage)
+                        + this.value;
             }
 
             itemDamageW = mc.fontRenderer.getStringWidth(HUDUtils.stripCtrl(itemDamage));
@@ -106,49 +90,30 @@ public class HUDElement {
         RenderHelper.enableGUIStandardItemLighting();
         itemRenderer.zLevel = 200.0F;
 
-        // if (ArmorStatusHUD.alignMode.toLowerCase().contains("right"))
-        boolean toRight = true;
-        if (toRight) {
-            itemRenderer.renderItemAndEffectIntoGUI(
-                    mc.fontRenderer,
-                    mc.getTextureManager(),
-                    itemStack,
-                    x - (iconW + padW),
-                    y);
-            HUDUtils.renderItemOverlayIntoGUI(
-                    mc.fontRenderer,
-                    itemStack,
-                    x - (iconW + padW),
-                    y,
-                    showDamageOverlay,
-                    showItemCount);
+        itemRenderer
+                .renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), itemStack, x - (iconW + padW), y);
+        HUDUtils.renderItemOverlayIntoGUI(
+                mc.fontRenderer,
+                itemStack,
+                x - (iconW + padW),
+                y,
+                showDamageOverlay,
+                showItemCount);
 
-            RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(32826 /* GL_RESCALE_NORMAL_EXT */);
-            GL11.glDisable(GL11.GL_BLEND);
+        RenderHelper.disableStandardItemLighting();
+        GL11.glDisable(32826 /* GL_RESCALE_NORMAL_EXT */);
+        GL11.glDisable(GL11.GL_BLEND);
 
-            mc.fontRenderer
-                    .drawStringWithShadow(itemName + "\247r", x - (padW + iconW + padW) - itemNameW, y, 0xffffff);
-            mc.fontRenderer.drawStringWithShadow(
-                    itemDamage + "\247r",
-                    x - (padW + iconW + padW) - itemDamageW,
-                    y + (enableItemName ? elementH / 2 : elementH / 4),
-                    0xffffff);
-        } else {
-            itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), itemStack, x, y);
-            HUDUtils.renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, x, y, showDamageOverlay, showItemCount);
-
-            RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(32826 /* GL_RESCALE_NORMAL_EXT */);
-            GL11.glDisable(GL11.GL_BLEND);
-
-            mc.fontRenderer.drawStringWithShadow(itemName + "\247r", x + iconW + padW, y, 0xffffff);
-            mc.fontRenderer.drawStringWithShadow(
-                    itemDamage + "\247r",
-                    x + iconW + padW,
-                    y + (enableItemName ? elementH / 2 : elementH / 4),
-                    0xffffff);
-        }
+        mc.fontRenderer.drawStringWithShadow(
+                itemName + EnumChatFormatting.RESET,
+                x - (padW + iconW + padW) - itemNameW,
+                y,
+                0xffffff);
+        mc.fontRenderer.drawStringWithShadow(
+                itemDamage + EnumChatFormatting.RESET,
+                x - (padW + iconW + padW) - itemDamageW,
+                y + (enableItemName ? elementH / 2 : elementH / 4),
+                0xffffff);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

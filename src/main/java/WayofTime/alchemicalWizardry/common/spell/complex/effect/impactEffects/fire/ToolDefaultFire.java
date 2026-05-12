@@ -16,7 +16,7 @@ public class ToolDefaultFire extends ItemManipulator {
 
     @Override
     public List<ItemStack> handleItemsOnBlockBroken(ItemStack toolStack, List<ItemStack> itemList) {
-        LinkedList<ItemStack> newList = new LinkedList();
+        LinkedList<ItemStack> newList = new LinkedList<>();
         for (ItemStack item : itemList) {
             ItemStack newItem = FurnaceRecipes.smelting().getSmeltingResult(item);
             if (newItem != null) {

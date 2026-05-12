@@ -25,25 +25,14 @@ public class CSEToolDefaultWind extends ComplexSpellEffect {
         if (parad instanceof SpellParadigmTool) {
             String toolClass = "axe";
 
-            float digSpeed = 7.0f;
-
-            switch (this.powerEnhancement) {
-                case 1:
-                    digSpeed = 9.0f;
-                    break;
-                case 2:
-                    digSpeed = 12.0f;
-                    break;
-                case 3:
-                    digSpeed = 16.0f;
-                    break;
-                case 4:
-                    digSpeed = 21.0f;
-                    break;
-                case 5:
-                    digSpeed = 27.0f;
-                    break;
-            }
+            float digSpeed = switch (this.powerEnhancement) {
+                case 1 -> 9.0f;
+                case 2 -> 12.0f;
+                case 3 -> 16.0f;
+                case 4 -> 21.0f;
+                case 5 -> 27.0f;
+                default -> 7.0f;
+            };
 
             ((SpellParadigmTool) parad).setDigSpeed(toolClass, digSpeed);
 

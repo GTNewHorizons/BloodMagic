@@ -9,12 +9,11 @@ import WayofTime.alchemicalWizardry.api.BlockStack;
 public class CompatChecks {
 
     public static boolean checkChiselBlock(BlockStack blockStack, String groupName) {
-        if (blockStack.getBlock() == null) return false;
+        if (blockStack.block() == null) return false;
 
-        ICarvingGroup group = CarvingUtils.getChiselRegistry().getGroup(blockStack.getBlock(), blockStack.getMeta());
+        ICarvingGroup group = CarvingUtils.getChiselRegistry().getGroup(blockStack.block(), blockStack.meta());
         if (group != null) {
-            String check = CarvingUtils.getChiselRegistry().getGroup(blockStack.getBlock(), blockStack.getMeta())
-                    .getName();
+            String check = CarvingUtils.getChiselRegistry().getGroup(blockStack.block(), blockStack.meta()).getName();
 
             if (Strings.isNullOrEmpty(check)) return false;
 

@@ -5,23 +5,18 @@ import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
-import WayofTime.alchemicalWizardry.common.entity.mob.EntitySmallEarthGolem;
-
 public class RenderSmallEarthGolem extends RenderLiving {
 
-    private static final ResourceLocation field_110833_a = new ResourceLocation(
+    private static final ResourceLocation SMALL_EARTH_GOLEM = new ResourceLocation(
             "alchemicalwizardry",
             "textures/models/SmallEarthGolem.png");
 
-    public RenderSmallEarthGolem(ModelBase par1ModelBase, float par2) {
-        super(par1ModelBase, par2);
+    public RenderSmallEarthGolem(ModelBase mainModel, float shadowSize) {
+        super(mainModel, shadowSize);
     }
 
-    public ResourceLocation func_110832_a(EntitySmallEarthGolem par1EntitySmallEarthGolem) {
-        return field_110833_a;
-    }
-
-    public ResourceLocation getEntityTexture(Entity par1Entity) {
-        return this.func_110832_a((EntitySmallEarthGolem) par1Entity);
+    @Override
+    public ResourceLocation getEntityTexture(Entity entity) {
+        return SMALL_EARTH_GOLEM;
     }
 }

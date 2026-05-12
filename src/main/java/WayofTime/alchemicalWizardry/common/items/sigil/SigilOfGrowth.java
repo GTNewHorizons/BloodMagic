@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -41,10 +40,10 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.sigilofgrowth.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.sigilofgrowth.desc2"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.sigilofgrowth.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.sigilofgrowth.desc2"));
+        addBindingInformation(item, tooltip);
     }
 
     @Override
@@ -66,8 +65,8 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
-        if (par1 == 1) {
+    public IIcon getIconFromDamage(int meta) {
+        if (meta == 1) {
             return this.activeIcon;
         } else {
             return this.passiveIcon;
@@ -75,78 +74,70 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
     }
 
     @Override
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4,
-            int par5, int par6, int par7, float par8, float par9, float par10) {
-        if (IBindable.checkAndSetItemOwner(par1ItemStack, par2EntityPlayer)) {
-            if (applyBonemeal(par1ItemStack, par3World, par4, par5, par6, par2EntityPlayer)) {
-                EnergyItems.syphonBatteries(par1ItemStack, par2EntityPlayer, getEnergyUsed());
+    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, int x, int y, int z, int par7,
+            float par8, float par9, float par10) {
+        if (IBindable.checkAndSetItemOwner(item, player) && applyBonemeal(world, x, y, z, player)) {
+            EnergyItems.syphonBatteries(item, player, getEnergyUsed());
 
-                if (par3World.isRemote) {
-                    par3World.playAuxSFX(2005, par4, par5, par6, 0);
-                    return true;
-                }
-
+            if (world.isRemote) {
+                world.playAuxSFX(2005, x, y, z, 0);
                 return true;
             }
+
+            return true;
         }
         return false;
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        if (!IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer) || par3EntityPlayer.isSneaking()) {
-            return par1ItemStack;
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+            return item;
         }
 
-        if (par2World.isRemote) {
-            return par1ItemStack;
+        if (world.isRemote) {
+            return item;
         }
 
-        toggleSigil(par1ItemStack, par2World, par3EntityPlayer);
+        toggleSigil(item, world, player);
 
-        return par1ItemStack;
+        return item;
     }
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5) {
-        if (!(par3Entity instanceof EntityPlayer) || par2World.isRemote) {
+    public void onUpdate(ItemStack item, World world, Entity entity, int par4, boolean par5) {
+        if (!(entity instanceof EntityPlayer player) || world.isRemote) {
             return;
         }
 
-        if (par1ItemStack.getTagCompound() == null) {
-            par1ItemStack.setTagCompound(new NBTTagCompound());
+        if (!IBindable.isActive(item)) {
+            return;
         }
 
-        if (IBindable.isActive(par1ItemStack)) {
+        checkPassiveDrain(item, world, player);
+        int range = 3;
+        int verticalRange = 2;
+        int posX = (int) Math.round(entity.posX - 0.5f);
+        int posY = (int) entity.posY;
+        int posZ = (int) Math.round(entity.posZ - 0.5f);
 
-            checkPassiveDrain(par1ItemStack, par2World, (EntityPlayer) par3Entity);
-            int range = 3;
-            int verticalRange = 2;
-            int posX = (int) Math.round(par3Entity.posX - 0.5f);
-            int posY = (int) par3Entity.posY;
-            int posZ = (int) Math.round(par3Entity.posZ - 0.5f);
+        for (int x = posX - range; x <= posX + range; x++) {
+            for (int z = posZ - range; z <= posZ + range; z++) {
+                for (int y = posY - verticalRange; y <= posY + verticalRange; y++) {
+                    Block block = world.getBlock(x, y, z);
 
-            for (int ix = posX - range; ix <= posX + range; ix++) {
-                for (int iz = posZ - range; iz <= posZ + range; iz++) {
-                    for (int iy = posY - verticalRange; iy <= posY + verticalRange; iy++) {
-                        Block block = par2World.getBlock(ix, iy, iz);
-
-                        if (block instanceof IPlantable || block instanceof IGrowable) {
-                            if (par2World.rand.nextInt(50) == 0) {
-                                block.updateTick(par2World, ix, iy, iz, par2World.rand);
-                            }
-                        }
+                    if ((block instanceof IPlantable || block instanceof IGrowable) && world.rand.nextInt(50) == 0) {
+                        block.updateTick(world, x, y, z, world.rand);
                     }
                 }
             }
         }
     }
 
-    public static boolean applyBonemeal(ItemStack p_150919_0_, World p_150919_1_, int p_150919_2_, int p_150919_3_,
-            int p_150919_4_, EntityPlayer player) {
-        Block block = p_150919_1_.getBlock(p_150919_2_, p_150919_3_, p_150919_4_);
+    public static boolean applyBonemeal(World world, int x, int y, int z, EntityPlayer player) {
+        Block block = world.getBlock(x, y, z);
 
-        BonemealEvent event = new BonemealEvent(player, p_150919_1_, block, p_150919_2_, p_150919_3_, p_150919_4_);
+        BonemealEvent event = new BonemealEvent(player, world, block, x, y, z);
         if (MinecraftForge.EVENT_BUS.post(event)) {
             return false;
         }
@@ -155,18 +146,12 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
             return true;
         }
 
-        if (block instanceof IGrowable) {
-            IGrowable igrowable = (IGrowable) block;
-
-            if (igrowable.func_149851_a(p_150919_1_, p_150919_2_, p_150919_3_, p_150919_4_, p_150919_1_.isRemote)) {
-                if (!p_150919_1_.isRemote) {
-                    if (igrowable.func_149852_a(p_150919_1_, p_150919_1_.rand, p_150919_2_, p_150919_3_, p_150919_4_)) {
-                        igrowable.func_149853_b(p_150919_1_, p_150919_1_.rand, p_150919_2_, p_150919_3_, p_150919_4_);
-                    }
-                }
-
-                return true;
+        if (block instanceof IGrowable igrowable && igrowable.func_149851_a(world, x, y, z, world.isRemote)) {
+            if (!world.isRemote && igrowable.func_149852_a(world, world.rand, x, y, z)) {
+                igrowable.func_149853_b(world, world.rand, x, y, z);
             }
+
+            return true;
         }
 
         return false;
@@ -189,15 +174,13 @@ public class SigilOfGrowth extends EnergyItems implements ArmourUpgrade, ISigil 
         int posY = (int) player.posY;
         int posZ = (int) Math.round(player.posZ - 0.5f);
 
-        for (int ix = posX - range; ix <= posX + range; ix++) {
-            for (int iz = posZ - range; iz <= posZ + range; iz++) {
-                for (int iy = posY - verticalRange; iy <= posY + verticalRange; iy++) {
-                    Block block = world.getBlock(ix, iy, iz);
+        for (int x = posX - range; x <= posX + range; x++) {
+            for (int z = posZ - range; z <= posZ + range; z++) {
+                for (int y = posY - verticalRange; y <= posY + verticalRange; y++) {
+                    Block block = world.getBlock(x, y, z);
 
-                    if (block instanceof IPlantable) {
-                        if (world.rand.nextInt(100) == 0) {
-                            block.updateTick(world, ix, iy, iz, world.rand);
-                        }
+                    if (block instanceof IPlantable && world.rand.nextInt(100) == 0) {
+                        block.updateTick(world, x, y, z, world.rand);
                     }
                 }
             }

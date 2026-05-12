@@ -30,7 +30,7 @@ public class RightClickTunnel extends RightClickEffect {
             return 0;
         }
 
-        List<Vec3> vectorLine = new LinkedList();
+        List<Vec3> vectorLine = new LinkedList<>();
 
         double initialX = mop.blockX;
         double initialY = mop.blockY;

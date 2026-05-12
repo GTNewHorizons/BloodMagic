@@ -40,21 +40,16 @@ public class RitualEffectSphereCreator extends RitualEffect {
         // boolean hasPotentia = this.canDrainReagent(ritualStone, ReagentRegistry.potentiaReagent,
         // potentiaDrain, false);
 
-        if (world.getTotalWorldTime() % 1 != 0) {
-            return;
-        }
-
         if (currentEssence < this.getCostPerRefresh()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
         } else {
             TileEntity tile = world.getTileEntity(x, y + 1, z);
-            if (!(tile instanceof IInventory)) {
+            if (!(tile instanceof IInventory inv)) {
                 return;
             }
 
             int negYOffset = 0;
-            int radius = 0;
-            IInventory inv = (IInventory) tile;
+            int radius;
 
             int invSize = inv.getSizeInventory();
             if (invSize < 1) {
@@ -92,9 +87,9 @@ public class RitualEffectSphereCreator extends RitualEffect {
             int k = -radius;
 
             if (lastPos != null) {
-                j = Math.min(radius, Math.max(-radius, lastPos.yCoord));
-                i = Math.min(radius, Math.max(-radius, lastPos.xCoord));
-                k = Math.min(radius, Math.max(-radius, lastPos.zCoord));
+                j = Math.min(radius, Math.max(-radius, lastPos.y()));
+                i = Math.min(radius, Math.max(-radius, lastPos.x()));
+                k = Math.min(radius, Math.max(-radius, lastPos.z()));
             }
 
             int yP = y + negYOffset;
@@ -174,7 +169,7 @@ public class RitualEffectSphereCreator extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> magneticRitual = new ArrayList();
+        ArrayList<RitualComponent> magneticRitual = new ArrayList<>();
         magneticRitual.add(new RitualComponent(1, 0, 1, RitualComponent.EARTH));
         magneticRitual.add(new RitualComponent(1, 0, -1, RitualComponent.EARTH));
         magneticRitual.add(new RitualComponent(-1, 0, 1, RitualComponent.EARTH));

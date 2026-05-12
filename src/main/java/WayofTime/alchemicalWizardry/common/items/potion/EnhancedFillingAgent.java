@@ -29,10 +29,7 @@ public class EnhancedFillingAgent extends WeakFillingAgent {
                 case 3:
                     return 3;
 
-                case 4:
-                    return 2;
-
-                case 5:
+                case 4, 5:
                     return 2;
             }
         }

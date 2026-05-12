@@ -16,6 +16,7 @@ public class EntityEarthElemental extends EntityElemental implements IMob {
         super(world, AlchemicalWizardry.entityEarthElementalID);
     }
 
+    @Override
     public void inflictEffectOnEntity(Entity target) {
         if (target instanceof EntityLivingBase) {
             target.attackEntityFrom(DamageSource.causeMobDamage(this), 10);

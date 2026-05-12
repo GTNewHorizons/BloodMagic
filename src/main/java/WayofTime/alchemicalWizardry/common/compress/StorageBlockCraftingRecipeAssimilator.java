@@ -2,6 +2,7 @@ package WayofTime.alchemicalWizardry.common.compress;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +15,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -28,8 +28,8 @@ public class StorageBlockCraftingRecipeAssimilator {
     public List<IRecipe> getPackingRecipes() {
         // grab all recipes potentially suitable for packing or unpacking
 
-        List<PackingRecipe> packingRecipes = new LinkedList<PackingRecipe>();
-        List<IRecipe> unpackingRecipes = new ArrayList<IRecipe>();
+        List<PackingRecipe> packingRecipes = new LinkedList<>();
+        List<IRecipe> unpackingRecipes = new ArrayList<>();
 
         for (IRecipe recipe : getCraftingRecipes()) {
             ItemStack output = recipe.getRecipeOutput();
@@ -52,9 +52,8 @@ public class StorageBlockCraftingRecipeAssimilator {
         InventoryCrafting inventoryUnpack = new InventoryCrafting(container, 2, 2);
         InventoryCrafting inventory2x2 = new InventoryCrafting(container, 2, 2);
         InventoryCrafting inventory3x3 = new InventoryCrafting(container, 3, 3);
-        World world = null; // TODO: use a proper dummy world?
 
-        List<IRecipe> ret = new ArrayList<IRecipe>();
+        List<IRecipe> ret = new ArrayList<>();
 
         for (IRecipe recipeUnpack : unpackingRecipes) {
             ItemStack unpacked = recipeUnpack.getRecipeOutput();
@@ -102,7 +101,7 @@ public class StorageBlockCraftingRecipeAssimilator {
 
                     // check if the packing recipe accepts the unpacked item stack
 
-                    matched = recipePack.recipe.matches(inventory, world);
+                    matched = recipePack.recipe.matches(inventory, null);
                 }
 
                 if (matched) {
@@ -111,10 +110,10 @@ public class StorageBlockCraftingRecipeAssimilator {
                     ItemStack packOutput = recipePack.recipe.getRecipeOutput();
                     inventoryUnpack.setInventorySlotContents(0, packOutput.copy());
 
-                    if (recipeUnpack.matches(inventoryUnpack, world)) {
+                    if (recipeUnpack.matches(inventoryUnpack, null)) {
                         ret.add(recipePack.recipe);
                         AlchemicalWizardry.logger
-                                .info("Adding the following recipe to the Compression Handler: " + packOutput);
+                                .info("Adding the following recipe to the Compression Handler: {}", packOutput);
                         it.remove();
                     }
                 }
@@ -124,7 +123,6 @@ public class StorageBlockCraftingRecipeAssimilator {
         return ret;
     }
 
-    @SuppressWarnings("unchecked")
     private List<IRecipe> getCraftingRecipes() {
         return CraftingManager.getInstance().getRecipeList();
     }
@@ -144,14 +142,14 @@ public class StorageBlockCraftingRecipeAssimilator {
 
         List<?> inputs;
 
-        if (recipe instanceof ShapedRecipes) {
-            inputs = Arrays.asList(((ShapedRecipes) recipe).recipeItems);
-        } else if (recipe instanceof ShapelessRecipes) {
-            inputs = ((ShapelessRecipes) recipe).recipeItems;
-        } else if (recipe instanceof ShapedOreRecipe) {
-            inputs = Arrays.asList(((ShapedOreRecipe) recipe).getInput());
-        } else if (recipe instanceof ShapelessOreRecipe) {
-            inputs = ((ShapelessOreRecipe) recipe).getInput();
+        if (recipe instanceof ShapedRecipes shapedRecipes) {
+            inputs = Arrays.asList(shapedRecipes.recipeItems);
+        } else if (recipe instanceof ShapelessRecipes shapelessRecipes) {
+            inputs = shapelessRecipes.recipeItems;
+        } else if (recipe instanceof ShapedOreRecipe shapedOreRecipe) {
+            inputs = Arrays.asList(shapedOreRecipe.getInput());
+        } else if (recipe instanceof ShapelessOreRecipe shapelessOreRecipe) {
+            inputs = shapelessOreRecipe.getInput();
         } else {
             return new PackingRecipe(recipe, null, -1);
         }
@@ -178,7 +176,7 @@ public class StorageBlockCraftingRecipeAssimilator {
      * Determine the item stacks from the provided inputs which are suitable for every input element.
      *
      * @param inputs List of all inputs, null elements are being ignored.
-     * @return List List of all options.
+     * @return List of all options.
      */
     @SuppressWarnings("unchecked")
     private List<ItemStack> getIdenticalInputs(List<?> inputs) {
@@ -189,8 +187,8 @@ public class StorageBlockCraftingRecipeAssimilator {
 
             List<ItemStack> offers;
 
-            if (input instanceof ItemStack) {
-                offers = Arrays.asList((ItemStack) input);
+            if (input instanceof ItemStack item) {
+                offers = Collections.singletonList(item);
             } else if (input instanceof List) {
                 offers = (List<ItemStack>) input;
 
@@ -200,7 +198,7 @@ public class StorageBlockCraftingRecipeAssimilator {
             }
 
             if (options == null) {
-                options = new ArrayList<ItemStack>(offers);
+                options = new ArrayList<>(offers);
                 continue;
             }
 
@@ -240,24 +238,13 @@ public class StorageBlockCraftingRecipeAssimilator {
             AlchemicalWizardry.logger
                     .error("A mod in this instance has registered an item with a null input. Known problem mods are:");
 
-            String err = "";
-            for (String problem : problemMods) err += (err.length() > 0 ? ", " : "") + problem;
-            AlchemicalWizardry.logger.error(err);
+            StringBuilder err = new StringBuilder();
+            for (String problem : problemMods) err.append(err.length() > 0 ? ", " : "").append(problem);
+            AlchemicalWizardry.logger.error(err.toString());
 
             return false;
         }
     }
 
-    private static class PackingRecipe {
-
-        PackingRecipe(IRecipe recipe, List<ItemStack> possibleInputs, int inputCount) {
-            this.recipe = recipe;
-            this.possibleInputs = possibleInputs;
-            this.inputCount = inputCount;
-        }
-
-        final IRecipe recipe;
-        final List<ItemStack> possibleInputs;
-        final int inputCount;
-    }
+    private record PackingRecipe(IRecipe recipe, List<ItemStack> possibleInputs, int inputCount) {}
 }

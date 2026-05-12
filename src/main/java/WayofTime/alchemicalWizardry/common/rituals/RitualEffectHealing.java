@@ -48,7 +48,6 @@ public class RitualEffectHealing extends RitualEffect {
         List<EntityLivingBase> list = SpellHelper
                 .getLivingEntitiesInRange(world, x + 0.5, y + 0.5, z + 0.5, range, vertRange);
         int entityCount = 0;
-        boolean flag = false;
 
         for (EntityLivingBase livingEntity : list) {
             if (livingEntity instanceof EntityPlayer) {
@@ -65,50 +64,47 @@ public class RitualEffectHealing extends RitualEffect {
 
         if (currentEssence < cost * entityCount) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            entityCount = 0;
+            return;
+        }
+        entityCount = 0;
 
-            boolean hasReductus = this
-                    .canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
+        boolean hasReductus = this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
 
-            for (EntityLivingBase livingEntity : list) {
-                hasReductus = hasReductus
-                        && this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
-                if (hasReductus && !(livingEntity instanceof EntityPlayer)) {
-                    continue;
-                }
-
-                if (livingEntity.getHealth() + 0.1f < livingEntity.getMaxHealth()) {
-                    PotionEffect effect = livingEntity.getActivePotionEffect(Potion.regeneration);
-                    if (effect == null || (effect != null && effect.getAmplifier() <= potency
-                            && effect.getDuration() <= timeDelay)) {
-                        if (!hasVirtus || (this
-                                .canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false))) {
-                            livingEntity
-                                    .addPotionEffect(new PotionEffect(Potion.regeneration.id, timeDelay + 2, potency));
-                            if (hasReductus) {
-                                this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, true);
-                            }
-                            if (hasVirtus) {
-                                this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, true);
-                            }
-
-                            if (livingEntity instanceof EntityPlayer) {
-                                entityCount += 10;
-                            } else {
-                                entityCount++;
-                            }
-                        }
-                    }
-                }
+        for (EntityLivingBase livingEntity : list) {
+            hasReductus = hasReductus
+                    && this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, false);
+            if (hasReductus && !(livingEntity instanceof EntityPlayer)) {
+                continue;
             }
 
-            if (entityCount > 0) {
-                if (hasPraesidium) {
-                    this.canDrainReagent(ritualStone, ReagentRegistry.praesidiumReagent, praesidiumDrain, true);
-                }
-                SoulNetworkHandler.syphonFromNetwork(owner, cost * entityCount);
+            if (!(livingEntity.getHealth() + 0.1f < livingEntity.getMaxHealth())) {
+                continue;
             }
+            PotionEffect effect = livingEntity.getActivePotionEffect(Potion.regeneration);
+            if ((effect != null && (effect.getAmplifier() > potency || effect.getDuration() > timeDelay)) || (hasVirtus
+                    && (!this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, false)))) {
+                continue;
+            }
+            livingEntity.addPotionEffect(new PotionEffect(Potion.regeneration.id, timeDelay + 2, potency));
+            if (hasReductus) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.reductusReagent, reductusDrain, true);
+            }
+            if (hasVirtus) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.virtusReagent, virtusDrain, true);
+            }
+
+            if (livingEntity instanceof EntityPlayer) {
+                entityCount += 10;
+            } else {
+                entityCount++;
+            }
+        }
+
+        if (entityCount > 0) {
+            if (hasPraesidium) {
+                this.canDrainReagent(ritualStone, ReagentRegistry.praesidiumReagent, praesidiumDrain, true);
+            }
+            SoulNetworkHandler.syphonFromNetwork(owner, cost * entityCount);
         }
     }
 
@@ -119,7 +115,7 @@ public class RitualEffectHealing extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> healingRitual = new ArrayList();
+        ArrayList<RitualComponent> healingRitual = new ArrayList<>();
         healingRitual.add(new RitualComponent(4, 0, 0, RitualComponent.AIR));
         healingRitual.add(new RitualComponent(5, 0, -1, RitualComponent.AIR));
         healingRitual.add(new RitualComponent(5, 0, 1, RitualComponent.AIR));

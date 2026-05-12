@@ -20,10 +20,9 @@ import WayofTime.alchemicalWizardry.common.commands.sub.SubCommandOrb;
 
 public class CommandBloodMagic extends CommandBase {
 
-    private final List aliases = new ArrayList();
+    private final List<String> aliases = new ArrayList<>();
     private final Map<String, ISubCommand> subCommands = new HashMap<String, ISubCommand>();
 
-    @SuppressWarnings("unchecked")
     public CommandBloodMagic() {
         aliases.add("BloodMagic");
         aliases.add("bloodmagic");
@@ -52,7 +51,7 @@ public class CommandBloodMagic extends CommandBase {
     }
 
     @Override
-    public List getCommandAliases() {
+    public List<String> getCommandAliases() {
         return aliases;
     }
 

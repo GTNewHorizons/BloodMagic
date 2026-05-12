@@ -1,8 +1,6 @@
 package WayofTime.alchemicalWizardry.api.items;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -22,8 +20,8 @@ import WayofTime.alchemicalWizardry.api.items.interfaces.IBloodOrb;
  */
 public class ShapelessBloodOrbRecipe implements IRecipe {
 
-    private ItemStack output = null;
-    private ArrayList<Object> input = new ArrayList<Object>();
+    private final ItemStack output;
+    private final ArrayList<Object> input = new ArrayList<>();
 
     public ShapelessBloodOrbRecipe(Block result, Object... recipe) {
         this(new ItemStack(result), recipe);
@@ -36,34 +34,33 @@ public class ShapelessBloodOrbRecipe implements IRecipe {
     public ShapelessBloodOrbRecipe(ItemStack result, Object... recipe) {
         output = result.copy();
         for (Object in : recipe) {
-            if (in instanceof IBloodOrb) { // If the item is an instanceof IBloodOrb then save the level of the orb
-                input.add(((IBloodOrb) in).getOrbLevel());
-            } else if (in instanceof ItemStack) {
-                if (((ItemStack) in).getItem() instanceof IBloodOrb) {
-                    input.add(((IBloodOrb) ((ItemStack) in).getItem()).getOrbLevel());
-                } else input.add(((ItemStack) in).copy());
-            } else if (in instanceof Item) {
-                input.add(new ItemStack((Item) in));
-            } else if (in instanceof Block) {
-                input.add(new ItemStack((Block) in));
-            } else if (in instanceof String) {
-                input.add(OreDictionary.getOres((String) in));
+            if (in instanceof IBloodOrb orb) {
+                input.add(orb.getOrbLevel());
+            } else if (in instanceof ItemStack stack && stack.getItem() instanceof IBloodOrb orb) {
+                input.add(orb.getOrbLevel());
+            } else if (in instanceof ItemStack stack) {
+                input.add(stack.copy());
+            } else if (in instanceof Item item) {
+                input.add(new ItemStack(item));
+            } else if (in instanceof Block block) {
+                input.add(new ItemStack(block, 1, OreDictionary.WILDCARD_VALUE));
+            } else if (in instanceof String string) {
+                input.add(OreDictionary.getOres(string));
             } else {
-                String ret = "Invalid shapeless ore recipe: ";
+                StringBuilder ret = new StringBuilder("Invalid shapeless ore recipe: ");
                 for (Object tmp : recipe) {
-                    ret += tmp + ", ";
+                    ret.append(tmp).append(", ");
                 }
-                ret += output;
-                throw new RuntimeException(ret);
+                ret.append(output);
+                throw new RuntimeException(ret.toString());
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
     ShapelessBloodOrbRecipe(ShapelessRecipes recipe, Map<ItemStack, String> replacements) {
         output = recipe.getRecipeOutput();
 
-        for (ItemStack ingred : ((List<ItemStack>) recipe.recipeItems)) {
+        for (ItemStack ingred : recipe.recipeItems) {
             Object finalObj = ingred;
             for (Entry<ItemStack, String> replace : replacements.entrySet()) {
                 if (OreDictionary.itemMatches(replace.getKey(), ingred, false)) {
@@ -92,36 +89,35 @@ public class ShapelessBloodOrbRecipe implements IRecipe {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean matches(InventoryCrafting var1, World world) {
-        ArrayList<Object> required = new ArrayList<Object>(input);
+    public boolean matches(InventoryCrafting inv, World world) {
+        ArrayList<Object> required = new ArrayList<>(input);
 
-        for (int x = 0; x < var1.getSizeInventory(); x++) {
-            ItemStack slot = var1.getStackInSlot(x);
+        for (int x = 0; x < inv.getSizeInventory(); x++) {
+            ItemStack slot = inv.getStackInSlot(x);
 
             if (slot != null) {
                 boolean inRecipe = false;
-                Iterator<Object> req = required.iterator();
 
-                while (req.hasNext()) {
+                for (Object next : required) {
                     boolean match = false;
 
-                    Object next = req.next();
-
-                    // If target is integer, then we should be check the blood orb value of the item instead
-                    if (next instanceof Integer) {
-                        if (slot != null && slot.getItem() instanceof IBloodOrb) {
-                            IBloodOrb orb = (IBloodOrb) slot.getItem();
-                            if (orb.getOrbLevel() < (Integer) next) {
-                                return false;
-                            }
-                        } else return false;
+                    // If target is integer, then we should check the blood orb value of the item instead
+                    if (next instanceof Integer orbLevel) {
+                        if (!(slot.getItem() instanceof IBloodOrb orb)) {
+                            return false;
+                        }
+                        if (orb.getOrbLevel() < orbLevel) {
+                            return false;
+                        }
                         match = true;
-                    } else if (next instanceof ItemStack) {
-                        match = OreDictionary.itemMatches((ItemStack) next, slot, false);
+                    } else if (next instanceof ItemStack item) {
+                        match = OreDictionary.itemMatches(item, slot, false);
                     } else if (next instanceof ArrayList) {
-                        Iterator<ItemStack> itr = ((ArrayList<ItemStack>) next).iterator();
-                        while (itr.hasNext() && !match) {
-                            match = OreDictionary.itemMatches(itr.next(), slot, false);
+                        for (ItemStack item : ((ArrayList<ItemStack>) next)) {
+                            if (OreDictionary.itemMatches(item, slot, false)) {
+                                match = true;
+                                break;
+                            }
                         }
                     }
 

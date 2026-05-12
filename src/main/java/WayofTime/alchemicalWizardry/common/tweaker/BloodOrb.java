@@ -112,7 +112,7 @@ public class BloodOrb {
 
         @Override
         public void apply() {
-            for (IRecipe r : (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
+            for (IRecipe r : CraftingManager.getInstance().getRecipeList()) {
                 if ((r instanceof ShapedBloodOrbRecipe || r instanceof ShapelessBloodOrbRecipe)
                         && r.getRecipeOutput() != null
                         && r.getRecipeOutput().isItemEqual(output)) {

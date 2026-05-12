@@ -1,6 +1,7 @@
 package WayofTime.alchemicalWizardry.common.tileEntity;
 
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ISidedInventory;
@@ -39,8 +40,10 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
 
     private int progress;
     private int amountUsed;
-
     private int accelerationTime;
+
+    private static final int[] inputSides = { 0, 1, 2, 3, 4, 5 };
+    private static final int[] outputSides = { 6 };
 
     public TEWritingTable() {
         super(sizeInv);
@@ -73,11 +76,8 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-        switch (i) {
-            case 0:
-                if (itemstack != null) {
-                    return itemstack.getItem() instanceof IBloodOrb;
-                }
+        if (i == 0 && itemstack != null) {
+            return itemstack.getItem() instanceof IBloodOrb;
         }
         return i != 6;
     }
@@ -129,9 +129,7 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
     public ItemStack getResultingItemStack() {
         ItemStack[] composedRecipe = new ItemStack[5];
 
-        for (int i = 0; i < 5; i++) {
-            composedRecipe[i] = inv[i + 1];
-        }
+        System.arraycopy(inv, 1, composedRecipe, 0, 5);
 
         return AlchemyRecipeRegistry.getResult(composedRecipe, inv[0]);
     }
@@ -143,9 +141,7 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
     public int getAmountNeeded(ItemStack bloodOrb) {
         ItemStack[] composedRecipe = new ItemStack[5];
 
-        for (int i = 0; i < 5; i++) {
-            composedRecipe[i] = inv[i + 1];
-        }
+        System.arraycopy(inv, 1, composedRecipe, 0, 5);
 
         return AlchemyRecipeRegistry.getAmountNeeded(composedRecipe, bloodOrb);
     }
@@ -166,11 +162,7 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
     }
 
     public boolean containsCombinationCatalyst() {
-        if (getCombinationCatalystPosition() != -1) {
-            return true;
-        } else {
-            return false;
-        }
+        return getCombinationCatalystPosition() != -1;
     }
 
     public int getCombinationCatalystPosition() {
@@ -190,9 +182,7 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
     public int getRegisteredPotionIngredientPosition() {
         ItemStack[] composedRecipe = new ItemStack[5];
 
-        for (int i = 0; i < 5; i++) {
-            composedRecipe[i] = inv[i + 1];
-        }
+        System.arraycopy(inv, 1, composedRecipe, 0, 5);
 
         int location = AlchemicalPotionCreationHandler.getRegisteredPotionIngredientPosition(composedRecipe);
 
@@ -306,8 +296,10 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
                         }
 
                         int potionID = AlchemicalPotionCreationHandler.getPotionIDForStack(ingredientStack);
-                        int catalystLevel = ((ICatalyst) catalystStack.getItem()).getCatalystLevel();
-                        boolean isConcentration = ((ICatalyst) catalystStack.getItem()).isConcentration();
+                        ICatalyst catalyst = (ICatalyst) catalystStack.getItem();
+                        assert catalyst != null;
+                        int catalystLevel = catalyst.getCatalystLevel();
+                        boolean isConcentration = catalyst.isConcentration();
 
                         if (potionID == -1 || catalystLevel < 0) {
                             progress = 0;
@@ -319,12 +311,12 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
                             return;
                         }
 
+                        AlchemyFlask flask = (AlchemyFlask) flaskStack.getItem();
+                        assert flask != null;
                         if (isConcentration) {
-                            ((AlchemyFlask) flaskStack.getItem())
-                                    .setConcentrationOfPotion(flaskStack, potionID, catalystLevel);
+                            flask.setConcentrationOfPotion(flaskStack, potionID, catalystLevel);
                         } else {
-                            ((AlchemyFlask) flaskStack.getItem())
-                                    .setDurationFactorOfPotion(flaskStack, potionID, catalystLevel);
+                            flask.setDurationFactorOfPotion(flaskStack, potionID, catalystLevel);
                         }
                         this.setInventorySlotContents(6, flaskStack);
                         this.decrStackSize(this.getPotionFlaskPosition(), 1);
@@ -370,13 +362,15 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
                             return;
                         }
 
-                        int potionEffectNumber = ((AlchemyFlask) flaskStack.getItem())
-                                .getNumberOfPotionEffects(flaskStack);
+                        AlchemyFlask flask = (AlchemyFlask) flaskStack.getItem();
+                        assert flask != null;
+                        int potionEffectNumber = flask.getNumberOfPotionEffects(flaskStack);
                         int potionID = AlchemicalPotionCreationHandler.getPotionIDForStack(ingredientStack);
                         int tickDuration = AlchemicalPotionCreationHandler
                                 .getPotionTickDurationForStack(ingredientStack);
-                        float successChance = ((IBindingAgent) agentStack.getItem())
-                                .getSuccessRateForPotionNumber(potionEffectNumber);
+                        IBindingAgent binder = (IBindingAgent) agentStack.getItem();
+                        assert binder != null;
+                        float successChance = binder.getSuccessRateForPotionNumber(potionEffectNumber);
                         if (potionID == -1) {
                             progress = 0;
 
@@ -387,7 +381,7 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
                             return;
                         }
 
-                        ((AlchemyFlask) flaskStack.getItem()).addPotionEffect(flaskStack, potionID, tickDuration);
+                        flask.addPotionEffect(flaskStack, potionID, tickDuration);
                         if (successChance > worldObj.rand.nextFloat()) {
                             this.setInventorySlotContents(6, flaskStack);
                         } else {
@@ -436,7 +430,9 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
 
                         return;
                     }
-                    ((AlchemyFlask) flaskStack.getItem()).setIsPotionThrowable(true, flaskStack);
+                    AlchemyFlask flask = (AlchemyFlask) flaskStack.getItem();
+                    assert flask != null;
+                    flask.setIsPotionThrowable(true, flaskStack);
                     this.setInventorySlotContents(6, flaskStack);
                     this.decrStackSize(this.getPotionFlaskPosition(), 1);
                     this.decrStackSize(this.getBlankSlatePosition(), 1);
@@ -478,9 +474,12 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
 
                         return;
                     }
-                    int potionEffects = ((AlchemyFlask) flaskStack.getItem()).getNumberOfPotionEffects(flaskStack);
-                    int potionFillAmount = ((IFillingAgent) fillingAgent.getItem())
-                            .getFilledAmountForPotionNumber(potionEffects);
+                    AlchemyFlask flask = (AlchemyFlask) flaskStack.getItem();
+                    assert flask != null;
+                    int potionEffects = flask.getNumberOfPotionEffects(flaskStack);
+                    IFillingAgent fillingAgentItem = (IFillingAgent) fillingAgent.getItem();
+                    assert fillingAgentItem != null;
+                    int potionFillAmount = fillingAgentItem.getFilledAmountForPotionNumber(potionEffects);
                     flaskStack.setItemDamage(Math.max(0, flaskStack.getItemDamage() - potionFillAmount));
                     this.setInventorySlotContents(6, flaskStack);
                     this.decrStackSize(this.getPotionFlaskPosition(), 1);
@@ -585,9 +584,7 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
 
                     ItemStack[] composedRecipe = new ItemStack[5];
 
-                    for (int i = 0; i < 5; i++) {
-                        composedRecipe[i] = inv[i + 1];
-                    }
+                    System.arraycopy(inv, 1, composedRecipe, 0, 5);
 
                     this.decrementSlots(this.getRecipeForItems(composedRecipe, inv[0]));
 
@@ -628,9 +625,7 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
 
                                     ItemStack[] composedRecipe = new ItemStack[5];
 
-                                    for (int i = 0; i < 5; i++) {
-                                        composedRecipe[i] = inv[i + 1];
-                                    }
+                                    System.arraycopy(inv, 1, composedRecipe, 0, 5);
 
                                     this.decrementSlots(this.getRecipeForItems(composedRecipe, inv[0]));
 
@@ -642,8 +637,7 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
         }
     }
 
-    public void decrementSlots(ItemStack[] recipe) // TODO Fix this. This doesn't work.
-    {
+    public void decrementSlots(ItemStack[] recipe) {
         boolean[] decrementedList = new boolean[] { false, false, false, false, false };
 
         for (int i = 0; i < (Math.min(recipe.length, 5)); i++) {
@@ -660,7 +654,7 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
                         && (testStack.isItemEqual(decStack) || (testStack.getItem() == decStack.getItem()
                                 && decStack.getItemDamage() == OreDictionary.WILDCARD_VALUE))
                         && !(decrementedList[j])) {
-                    if (testStack.getItem().hasContainerItem(testStack)) {
+                    if (testStack.getItem() != null && testStack.getItem().hasContainerItem(testStack)) {
                         this.inv[j + 1] = testStack.getItem().getContainerItem(testStack);
                     } else {
                         this.decrStackSize(j + 1, 1);
@@ -708,12 +702,10 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
         ForgeDirection dir = ForgeDirection.getOrientation(side);
-        switch (dir) {
-            case DOWN:
-                return new int[] { 6 };
-            default:
-                return new int[] { 0, 1, 2, 3, 4, 5 };
+        if (Objects.requireNonNull(dir) == ForgeDirection.DOWN) {
+            return outputSides;
         }
+        return inputSides;
     }
 
     @Override

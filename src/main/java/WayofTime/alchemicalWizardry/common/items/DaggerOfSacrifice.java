@@ -9,8 +9,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.boss.IBossDisplayData;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
@@ -27,15 +29,13 @@ import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class DaggerOfSacrifice extends EnergyItems {
+public class DaggerOfSacrifice extends Item {
 
     public DaggerOfSacrifice() {
         super();
         this.maxStackSize = 1;
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
-        setEnergyUsed(100);
         setFull3D();
-        setMaxDamage(100);
     }
 
     @Override
@@ -45,43 +45,39 @@ public class DaggerOfSacrifice extends EnergyItems {
     }
 
     @Override
-    public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLivingBase,
-            EntityLivingBase par3EntityLivingBase) {
-        if (par3EntityLivingBase == null || par2EntityLivingBase == null
-                || par3EntityLivingBase.worldObj.isRemote
-                || (par3EntityLivingBase instanceof EntityPlayer && SpellHelper
-                        .isFakePlayer(par3EntityLivingBase.worldObj, (EntityPlayer) par3EntityLivingBase))) {
+    public boolean hitEntity(ItemStack item, EntityLivingBase target, EntityLivingBase attacker) {
+        if (attacker == null || target == null
+                || attacker.worldObj.isRemote
+                || (attacker instanceof EntityPlayer
+                        && SpellHelper.isFakePlayer(attacker.worldObj, (EntityPlayer) attacker))) {
             return false;
         }
 
-        if (par2EntityLivingBase instanceof IHoardDemon) {
+        if ((!(target instanceof EntityMob) && target.isChild()) || target instanceof EntityPlayer
+                || target instanceof IBossDisplayData
+                || target instanceof IHoardDemon) {
             return false;
         }
 
-        if (par2EntityLivingBase.isChild() || par2EntityLivingBase instanceof EntityPlayer
-                || par2EntityLivingBase instanceof IBossDisplayData) {
+        World world = target.worldObj;
+
+        if (target.isDead || target.getHealth() < 0.5f) {
             return false;
         }
 
-        World world = par2EntityLivingBase.worldObj;
-
-        if (par2EntityLivingBase.isDead || par2EntityLivingBase.getHealth() < 0.5f) {
-            return false;
+        if (target instanceof IDemon demon) {
+            demon.setDropCrystal(false);
+            this.findAndNotifyAltarOfDemon(world, target);
         }
 
-        if (par2EntityLivingBase instanceof IDemon) {
-            ((IDemon) par2EntityLivingBase).setDropCrystal(false);
-            this.findAndNotifyAltarOfDemon(world, par2EntityLivingBase);
-        }
-
-        int lifeEssence = AlchemicalWizardry.lpPerSactificeCustom.containsKey(par2EntityLivingBase.getClass())
-                ? AlchemicalWizardry.lpPerSactificeCustom.get(par2EntityLivingBase.getClass())
+        int lifeEssence = AlchemicalWizardry.lpPerSactificeCustom.containsKey(target.getClass())
+                ? AlchemicalWizardry.lpPerSactificeCustom.get(target.getClass())
                 : AlchemicalWizardry.lpPerSacrificeBase;
 
-        if (findAndFillAltar(par2EntityLivingBase.worldObj, par2EntityLivingBase, lifeEssence)) {
-            double posX = par2EntityLivingBase.posX;
-            double posY = par2EntityLivingBase.posY;
-            double posZ = par2EntityLivingBase.posZ;
+        if (findAndFillAltar(target.worldObj, target, lifeEssence)) {
+            double posX = target.posX;
+            double posY = target.posY;
+            double posZ = target.posZ;
 
             for (int i = 0; i < 8; i++) {
                 SpellHelper.sendIndexedParticleToAllAround(
@@ -97,29 +93,25 @@ public class DaggerOfSacrifice extends EnergyItems {
                         posZ);
             }
 
-            par2EntityLivingBase.setHealth(-1);
-            par2EntityLivingBase.onDeath(DamageSource.generic);
+            target.setHealth(-1);
+            target.onDeath(DamageSource.generic);
         }
 
         return false;
     }
 
-    public float func_82803_g() {
-        return 4.0F;
+    @Override
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.caution.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.caution.desc2"));
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.caution.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.caution.desc2"));
-    }
-
-    @Override
-    public float func_150893_a(ItemStack par1ItemStack, Block par2Block) {
-        if (par2Block == Blocks.web) {
+    public float func_150893_a(ItemStack item, Block block) {
+        if (block == Blocks.web) {
             return 15.0F;
         } else {
-            Material material = par2Block.getMaterial();
+            Material material = block.getMaterial();
             return material != Material.plants && material != Material.vine
                     && material != Material.coral
                     && material != Material.leaves
@@ -128,13 +120,8 @@ public class DaggerOfSacrifice extends EnergyItems {
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack) {
-        return false;
-    }
-
-    @Override
-    public Multimap getItemAttributeModifiers() {
-        Multimap multimap = super.getItemAttributeModifiers();
+    public Multimap<String, AttributeModifier> getItemAttributeModifiers() {
+        Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers();
         multimap.put(
                 SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
                 new AttributeModifier(field_111210_e, "Tool modifier", 1.0d, 0));

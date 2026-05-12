@@ -43,8 +43,7 @@ public class OrbRecipeRenderer implements IRecipeRenderer {
                 guiLeft + guiBase.xSize / 2,
                 guiTop + 12,
                 0);
-        if (recipe instanceof ShapelessBloodOrbRecipe) {
-            ShapelessBloodOrbRecipe shapelessBloodOrbRecipe = (ShapelessBloodOrbRecipe) recipe;
+        if (recipe instanceof ShapelessBloodOrbRecipe shapelessBloodOrbRecipe) {
             List<Object> list = shapelessBloodOrbRecipe.getInput();
 
             int width = 3;
@@ -60,24 +59,23 @@ public class OrbRecipeRenderer implements IRecipeRenderer {
 
                     Object component = list.get(y * width + x);
                     if (component != null) {
-                        if (component instanceof ItemStack) {
-                            GuiHelper.drawItemStack((ItemStack) component, stackX, stackY);
+                        if (component instanceof ItemStack item) {
+                            GuiHelper.drawItemStack(item, stackX, stackY);
                             if (GuiHelper.isMouseBetween(mouseX, mouseY, stackX, stackY, 15, 15)) {
-                                guiBase.renderToolTip((ItemStack) component, stackX, stackY);
+                                guiBase.renderToolTip(item, stackX, stackY);
                             }
-                        } else if (component instanceof Integer) {
-                            GuiHelper.drawItemStack(APISpellHelper.getOrbForLevel((Integer) component), stackX, stackY);
+                        } else if (component instanceof Integer integer) {
+                            GuiHelper.drawItemStack(APISpellHelper.getOrbForLevel(integer), stackX, stackY);
                             if (GuiHelper.isMouseBetween(mouseX, mouseY, stackX, stackY, 15, 15)) {
-                                guiBase.renderToolTip(
-                                        APISpellHelper.getOrbForLevel((Integer) component),
-                                        stackX,
-                                        stackY);
+                                guiBase.renderToolTip(APISpellHelper.getOrbForLevel(integer), stackX, stackY);
                             }
                         } else {
-                            if (((ArrayList<ItemStack>) component).isEmpty()) return;
-                            GuiHelper.drawItemStack(((ArrayList<ItemStack>) component).get(0), stackX, stackY);
+                            @SuppressWarnings("unchecked")
+                            ArrayList<ItemStack> items = (ArrayList<ItemStack>) component;
+                            if (items.isEmpty()) return;
+                            GuiHelper.drawItemStack(items.get(0), stackX, stackY);
                             if (GuiHelper.isMouseBetween(mouseX, mouseY, stackX, stackY, 15, 15)) {
-                                guiBase.renderToolTip(((ArrayList<ItemStack>) component).get(0), stackX, stackY);
+                                guiBase.renderToolTip(items.get(0), stackX, stackY);
                             }
                         }
                     }
@@ -99,24 +97,23 @@ public class OrbRecipeRenderer implements IRecipeRenderer {
                     int stackY = (y + 1) * 18 + (guiTop + guiBase.ySize / 5);
                     Object component = shapedBloodOrbRecipe.getInput()[y * width + x];
                     if (component != null) {
-                        if (component instanceof ItemStack) {
-                            GuiHelper.drawItemStack((ItemStack) component, stackX, stackY);
+                        if (component instanceof ItemStack item) {
+                            GuiHelper.drawItemStack(item, stackX, stackY);
                             if (GuiHelper.isMouseBetween(mouseX, mouseY, stackX, stackY, 15, 15)) {
-                                guiBase.renderToolTip((ItemStack) component, stackX, stackY);
+                                guiBase.renderToolTip(item, stackX, stackY);
                             }
-                        } else if (component instanceof Integer) {
-                            GuiHelper.drawItemStack(APISpellHelper.getOrbForLevel((Integer) component), stackX, stackY);
+                        } else if (component instanceof Integer integer) {
+                            GuiHelper.drawItemStack(APISpellHelper.getOrbForLevel(integer), stackX, stackY);
                             if (GuiHelper.isMouseBetween(mouseX, mouseY, stackX, stackY, 15, 15)) {
-                                guiBase.renderToolTip(
-                                        APISpellHelper.getOrbForLevel((Integer) component),
-                                        stackX,
-                                        stackY);
+                                guiBase.renderToolTip(APISpellHelper.getOrbForLevel(integer), stackX, stackY);
                             }
                         } else {
-                            if (((ArrayList<ItemStack>) component).isEmpty()) return;
-                            GuiHelper.drawItemStack(((ArrayList<ItemStack>) component).get(0), stackX, stackY);
+                            @SuppressWarnings("unchecked")
+                            ArrayList<ItemStack> items = (ArrayList<ItemStack>) component;
+                            if (items.isEmpty()) return;
+                            GuiHelper.drawItemStack(items.get(0), stackX, stackY);
                             if (GuiHelper.isMouseBetween(mouseX, mouseY, stackX, stackY, 15, 15)) {
-                                guiBase.renderToolTip(((ArrayList<ItemStack>) component).get(0), stackX, stackY);
+                                guiBase.renderToolTip(items.get(0), stackX, stackY);
                             }
                         }
                     }

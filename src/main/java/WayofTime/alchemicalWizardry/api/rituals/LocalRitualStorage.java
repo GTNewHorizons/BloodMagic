@@ -32,8 +32,8 @@ public class LocalRitualStorage {
     }
 
     public void setLocation(Int3 location) {
-        this.xCoord = location.xCoord;
-        this.yCoord = location.yCoord;
-        this.zCoord = location.zCoord;
+        this.xCoord = location.x();
+        this.yCoord = location.y();
+        this.zCoord = location.z();
     }
 }

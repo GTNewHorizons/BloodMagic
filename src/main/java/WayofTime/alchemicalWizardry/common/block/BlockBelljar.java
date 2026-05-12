@@ -61,13 +61,14 @@ public class BlockBelljar extends BlockContainer {
         this.otherIcon = iconRegister.registerIcon("minecraft:glass");
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> items) {
         if (this.equals(ModBlocks.blockCrystalBelljar)) {
-            par3List.add(new ItemStack(par1, 1, 0));
+            items.add(new ItemStack(item, 1, 0));
 
             for (Reagent reagent : ReagentRegistry.reagentList.values()) {
-                ItemStack stack = new ItemStack(par1, 1, 0);
+                ItemStack stack = new ItemStack(item, 1, 0);
                 NBTTagCompound tag = new NBTTagCompound();
 
                 ReagentContainer[] tanks = new ReagentContainer[1];
@@ -76,19 +77,17 @@ public class BlockBelljar extends BlockContainer {
                 NBTTagList tagList = new NBTTagList();
 
                 NBTTagCompound savedTag = new NBTTagCompound();
-                if (tanks[0] != null) {
-                    tanks[0].writeToNBT(savedTag);
-                }
+                tanks[0].writeToNBT(savedTag);
                 tagList.appendTag(savedTag);
 
                 tag.setTag("reagentTanks", tagList);
 
                 stack.setTagCompound(tag);
 
-                par3List.add(stack);
+                items.add(stack);
             }
         } else {
-            super.getSubBlocks(par1, par2CreativeTabs, par3List);
+            super.getSubBlocks(item, tab, items);
         }
     }
 
@@ -151,14 +150,14 @@ public class BlockBelljar extends BlockContainer {
 
     @Override
     public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
-        ArrayList<ItemStack> list = new ArrayList();
+        ArrayList<ItemStack> list = new ArrayList<>();
 
         TileEntity tile = world.getTileEntity(x, y, z);
 
-        if (tile instanceof TEBellJar) {
+        if (tile instanceof TEBellJar bellJar) {
             ItemStack drop = new ItemStack(this);
             NBTTagCompound tag = new NBTTagCompound();
-            ((TEBellJar) tile).writeTankNBT(tag);
+            bellJar.writeTankNBT(tag);
             drop.setTagCompound(tag);
 
             list.add(drop);

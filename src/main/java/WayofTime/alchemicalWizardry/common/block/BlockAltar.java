@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -106,62 +107,52 @@ public class BlockAltar extends BlockContainer {
             return false;
         }
 
-        ItemStack playerItem = player.getCurrentEquippedItem();
+        ItemStack stack = player.getCurrentEquippedItem();
 
-        if (playerItem != null) {
-            if (playerItem.getItem().equals(ModItems.divinationSigil)) {
-                if (player.worldObj.isRemote) {
-                    world.markBlockForUpdate(x, y, z);
-                } else {
-                    tileEntity.sendChatInfoToPlayer(player);
-                }
-
+        if (stack != null && stack.getItem() != null) {
+            Item item = stack.getItem();
+            if (showAltarInfo(world, x, y, z, player, item, tileEntity)) {
                 return true;
-            } else if (playerItem.getItem().equals(ModItems.itemSeerSigil)) {
-                if (player.worldObj.isRemote) {
-                    world.markBlockForUpdate(x, y, z);
-                } else {
-                    tileEntity.sendMoreChatInfoToPlayer(player);
-                }
-
-                return true;
-            } else if (playerItem.getItem() instanceof IAltarManipulator) {
+            } else if (item instanceof IAltarManipulator) {
                 return false;
-            } else if (playerItem.getItem().equals(ModItems.sigilOfHolding)) {
-                ItemStack item = SigilOfHolding.getCurrentSigil(playerItem);
+            } else if (item == ModItems.sigilOfHolding) {
+                ItemStack sigilStack = SigilOfHolding.getCurrentSigil(stack);
 
-                if (item != null && item.getItem().equals(ModItems.divinationSigil)) {
-                    if (player.worldObj.isRemote) {
-                        world.markBlockForUpdate(x, y, z);
-                    } else {
-                        tileEntity.sendChatInfoToPlayer(player);
-                    }
-
-                    return true;
-                } else if (item != null && item.getItem().equals(ModItems.itemSeerSigil)) {
-                    if (player.worldObj.isRemote) {
-                        world.markBlockForUpdate(x, y, z);
-                    } else {
-                        tileEntity.sendMoreChatInfoToPlayer(player);
-                    }
-
-                    return true;
+                if (sigilStack != null) {
+                    Item sigilItem = sigilStack.getItem();
+                    if (showAltarInfo(world, x, y, z, player, sigilItem, tileEntity)) return true;
                 }
             }
         }
 
-        if (tileEntity.getStackInSlot(0) == null && playerItem != null) {
-            ItemStack newItem = playerItem.copy();
+        if (tileEntity.getStackInSlot(0) == null && stack != null) {
+            ItemStack newItem = stack.copy();
             newItem.stackSize = 1;
-            --playerItem.stackSize;
+            --stack.stackSize;
             tileEntity.setInventorySlotContents(0, newItem);
             tileEntity.startCycle();
-        } else if (tileEntity.getStackInSlot(0) != null && playerItem == null) {
+        } else if (tileEntity.getStackInSlot(0) != null && stack == null) {
             player.inventory.addItemStackToInventory(tileEntity.getStackInSlot(0));
             tileEntity.setInventorySlotContents(0, null);
             tileEntity.setActive();
         }
         world.markBlockForUpdate(x, y, z);
+        return true;
+    }
+
+    private static boolean showAltarInfo(World world, int x, int y, int z, EntityPlayer player, Item sigilItem,
+            TEAltar tileEntity) {
+        boolean sightSigil = sigilItem == ModItems.itemSeerSigil;
+        if (!sightSigil && sigilItem != ModItems.divinationSigil) {
+            return false;
+        }
+        if (world.isRemote) {
+            world.markBlockForUpdate(x, y, z);
+        } else if (sightSigil) {
+            tileEntity.sendMoreChatInfoToPlayer(player);
+        } else {
+            tileEntity.sendChatInfoToPlayer(player);
+        }
         return true;
     }
 
@@ -175,11 +166,9 @@ public class BlockAltar extends BlockContainer {
         Random rand = new Random();
         TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-        if (!(tileEntity instanceof IInventory)) {
+        if (!(tileEntity instanceof IInventory inventory)) {
             return;
         }
-
-        IInventory inventory = (IInventory) tileEntity;
 
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack item = inventory.getStackInSlot(i);

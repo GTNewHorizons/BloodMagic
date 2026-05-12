@@ -48,61 +48,54 @@ public class RitualEffectDemonPortal extends RitualEffect {
 
         if (currentEssence < this.getCostPerRefresh()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            NBTTagCompound tag = ritualStone.getCustomRitualTag();
+            return;
+        }
+        NBTTagCompound tag = ritualStone.getCustomRitualTag();
 
-            boolean reagentsFulfilled = true;
+        boolean reagentsFulfilled = true;
 
-            for (Reagent reagent : reagents) {
-                int reagentAmount = tag.getInteger(ReagentRegistry.getKeyForReagent(reagent));
-                if (reagentAmount < neededAmount) {
-                    reagentsFulfilled = false;
-                    // System.out.println("Reagents not fulfilled. Missing: " +
-                    // ReagentRegistry.getKeyForReagent(reagent));
-                    int drainAmount = Math.min(drainRate, neededAmount - reagentAmount);
+        for (Reagent reagent : reagents) {
+            int reagentAmount = tag.getInteger(ReagentRegistry.getKeyForReagent(reagent));
+            if (reagentAmount < neededAmount) {
+                reagentsFulfilled = false;
+                int drainAmount = Math.min(drainRate, neededAmount - reagentAmount);
 
-                    if (drainAmount <= 0) {
-                        continue;
+                if (drainAmount <= 0) {
+                    continue;
+                }
+
+                if (this.canDrainReagent(ritualStone, reagent, drainAmount, true)) {
+                    if (rand.nextInt(10) == 0) {
+                        this.createRandomLightning(world, x, y, z);
                     }
+                    reagentAmount += drainAmount;
 
-                    if (this.canDrainReagent(ritualStone, reagent, drainAmount, true)) {
-                        if (rand.nextInt(10) == 0) {
-                            this.createRandomLightning(world, x, y, z);
-                        }
-                        reagentAmount += drainAmount;
-
-                        tag.setInteger(ReagentRegistry.getKeyForReagent(reagent), reagentAmount);
-                        break;
-                    }
+                    tag.setInteger(ReagentRegistry.getKeyForReagent(reagent), reagentAmount);
+                    break;
                 }
             }
-
-            ritualStone.setCustomRitualTag(tag);
-
-            if (reagentsFulfilled && checkCreatePortal(ritualStone)) {
-                world.setBlock(x, y + 1, z, ModBlocks.blockDemonPortal);
-
-                TEDemonPortal portal = (TEDemonPortal) world.getTileEntity(x, y + 1, z);
-                portal.start();
-
-                ritualStone.setActive(false);
-            }
-
-            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
         }
+
+        ritualStone.setCustomRitualTag(tag);
+
+        if (reagentsFulfilled && checkCreatePortal(ritualStone)) {
+            world.setBlock(x, y + 1, z, ModBlocks.blockDemonPortal);
+
+            TEDemonPortal portal = (TEDemonPortal) world.getTileEntity(x, y + 1, z);
+            portal.start();
+
+            ritualStone.setActive(false);
+        }
+
+        SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
     }
 
     public boolean checkCreatePortal(IMasterRitualStone ritualStone) {
         TileEntity entity = ritualStone.getWorld()
                 .getTileEntity(ritualStone.getXCoord(), ritualStone.getYCoord() + 1, ritualStone.getZCoord());
-        if (entity instanceof IBloodAltar) {
-            IBloodAltar altar = (IBloodAltar) entity;
-            if (altar.hasDemonBlood() && ritualStone.getWorld()
-                    .isAirBlock(ritualStone.getXCoord(), ritualStone.getYCoord() + 2, ritualStone.getZCoord())) {
-                return true;
-            }
-        }
-        return false;
+        return entity instanceof IBloodAltar altar && altar.hasDemonBlood()
+                && ritualStone.getWorld()
+                        .isAirBlock(ritualStone.getXCoord(), ritualStone.getYCoord() + 2, ritualStone.getZCoord());
     }
 
     @Override
@@ -138,8 +131,7 @@ public class RitualEffectDemonPortal extends RitualEffect {
         int z = ritualStone.getZCoord();
 
         for (Int3 pos : jarLocations) {
-            if (!(ritualStone.getWorld()
-                    .getTileEntity(x + pos.xCoord, y + pos.yCoord, z + pos.zCoord) instanceof TEBellJar)) {
+            if (!(ritualStone.getWorld().getTileEntity(x + pos.x(), y + pos.y(), z + pos.z()) instanceof TEBellJar)) {
                 return false;
             }
         }
@@ -149,7 +141,7 @@ public class RitualEffectDemonPortal extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> demonRitual = new ArrayList();
+        ArrayList<RitualComponent> demonRitual = new ArrayList<>();
         this.addParallelRunes(demonRitual, 3, 0, RitualComponent.FIRE);
         this.addParallelRunes(demonRitual, 5, 0, RitualComponent.FIRE);
         this.addCornerRunes(demonRitual, 2, 0, RitualComponent.AIR);

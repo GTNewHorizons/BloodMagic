@@ -120,71 +120,66 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         return 5;
     }
 
+    @Override
     public void addToDemonBloodDuration(int dur) {
         this.demonBloodDuration += dur;
     }
 
+    @Override
     public boolean hasDemonBlood() {
         return this.demonBloodDuration > 0;
     }
 
+    @Override
     public void decrementDemonBlood() {
         this.demonBloodDuration = Math.max(0, this.demonBloodDuration - 1);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readFromNBT(par1NBTTagCompound);
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
 
-        resultID = par1NBTTagCompound.getInteger("resultID");
-        resultDamage = par1NBTTagCompound.getInteger("resultDamage");
+        resultID = tag.getInteger("resultID");
+        resultDamage = tag.getInteger("resultDamage");
 
-        if (!par1NBTTagCompound.hasKey("Empty")) {
-            FluidStack fluid = this.fluid.loadFluidStackFromNBT(par1NBTTagCompound);
+        if (!tag.hasKey("Empty")) {
+            FluidStack fluid = FluidStack.loadFluidStackFromNBT(tag);
 
             if (fluid != null) {
                 setMainFluid(fluid);
             }
 
-            FluidStack fluidOut = new FluidStack(
-                    AlchemicalWizardry.lifeEssenceFluid,
-                    par1NBTTagCompound.getInteger("outputAmount"));
+            FluidStack fluidOut = new FluidStack(AlchemicalWizardry.lifeEssenceFluid, tag.getInteger("outputAmount"));
 
-            if (fluidOut != null) {
-                setOutputFluid(fluidOut);
-            }
+            setOutputFluid(fluidOut);
 
-            FluidStack fluidIn = new FluidStack(
-                    AlchemicalWizardry.lifeEssenceFluid,
-                    par1NBTTagCompound.getInteger("inputAmount"));
+            FluidStack fluidIn = new FluidStack(AlchemicalWizardry.lifeEssenceFluid, tag.getInteger("inputAmount"));
 
-            if (fluidIn != null) {
-                setInputFluid(fluidIn);
-            }
+            setInputFluid(fluidIn);
         }
 
-        upgradeLevel = par1NBTTagCompound.getInteger("upgradeLevel");
-        isActive = par1NBTTagCompound.getBoolean("isActive");
-        liquidRequired = par1NBTTagCompound.getInteger("liquidRequired");
-        canBeFilled = par1NBTTagCompound.getBoolean("canBeFilled");
-        isUpgraded = par1NBTTagCompound.getBoolean("isUpgraded");
-        consumptionRate = par1NBTTagCompound.getInteger("consumptionRate");
-        drainRate = par1NBTTagCompound.getInteger("drainRate");
-        consumptionMultiplier = par1NBTTagCompound.getFloat("consumptionMultiplier");
-        efficiencyMultiplier = par1NBTTagCompound.getFloat("efficiencyMultiplier");
-        selfSacrificeEfficiencyMultiplier = par1NBTTagCompound.getFloat("selfSacrificeEfficiencyMultiplier");
-        sacrificeEfficiencyMultiplier = par1NBTTagCompound.getFloat("sacrificeEfficiencyMultiplier");
-        capacityMultiplier = par1NBTTagCompound.getFloat("capacityMultiplier");
-        orbCapacityMultiplier = par1NBTTagCompound.getFloat("orbCapacityMultiplier");
-        dislocationMultiplier = par1NBTTagCompound.getFloat("dislocationMultiplier");
-        capacity = par1NBTTagCompound.getInteger("capacity");
-        bufferCapacity = par1NBTTagCompound.getInteger("bufferCapacity");
-        progress = par1NBTTagCompound.getInteger("progress");
-        isResultBlock = par1NBTTagCompound.getBoolean("isResultBlock");
-        lockdownDuration = par1NBTTagCompound.getInteger("lockdownDuration");
-        accelerationUpgrades = par1NBTTagCompound.getInteger("accelerationUpgrades");
-        demonBloodDuration = par1NBTTagCompound.getInteger("demonBloodDuration");
-        cooldownAfterCrafting = par1NBTTagCompound.getInteger("cooldownAfterCrafting");
+        upgradeLevel = tag.getInteger("upgradeLevel");
+        isActive = tag.getBoolean("isActive");
+        liquidRequired = tag.getInteger("liquidRequired");
+        canBeFilled = tag.getBoolean("canBeFilled");
+        isUpgraded = tag.getBoolean("isUpgraded");
+        consumptionRate = tag.getInteger("consumptionRate");
+        drainRate = tag.getInteger("drainRate");
+        consumptionMultiplier = tag.getFloat("consumptionMultiplier");
+        efficiencyMultiplier = tag.getFloat("efficiencyMultiplier");
+        selfSacrificeEfficiencyMultiplier = tag.getFloat("selfSacrificeEfficiencyMultiplier");
+        sacrificeEfficiencyMultiplier = tag.getFloat("sacrificeEfficiencyMultiplier");
+        capacityMultiplier = tag.getFloat("capacityMultiplier");
+        orbCapacityMultiplier = tag.getFloat("orbCapacityMultiplier");
+        dislocationMultiplier = tag.getFloat("dislocationMultiplier");
+        capacity = tag.getInteger("capacity");
+        bufferCapacity = tag.getInteger("bufferCapacity");
+        progress = tag.getInteger("progress");
+        isResultBlock = tag.getBoolean("isResultBlock");
+        lockdownDuration = tag.getInteger("lockdownDuration");
+        accelerationUpgrades = tag.getInteger("accelerationUpgrades");
+        demonBloodDuration = tag.getInteger("demonBloodDuration");
+        cooldownAfterCrafting = tag.getInteger("cooldownAfterCrafting");
     }
 
     public void setMainFluid(FluidStack fluid) {
@@ -200,48 +195,48 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
-        super.writeToNBT(par1NBTTagCompound);
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
 
-        par1NBTTagCompound.setInteger("resultID", resultID);
-        par1NBTTagCompound.setInteger("resultDamage", resultDamage);
+        tag.setInteger("resultID", resultID);
+        tag.setInteger("resultDamage", resultDamage);
 
         if (fluid != null) {
-            fluid.writeToNBT(par1NBTTagCompound);
+            fluid.writeToNBT(tag);
         } else {
-            par1NBTTagCompound.setString("Empty", "");
+            tag.setString("Empty", "");
         }
 
         if (fluidOutput != null) {
-            par1NBTTagCompound.setInteger("outputAmount", fluidOutput.amount);
+            tag.setInteger("outputAmount", fluidOutput.amount);
         }
 
         if (fluidInput != null) {
-            par1NBTTagCompound.setInteger("inputAmount", fluidInput.amount);
+            tag.setInteger("inputAmount", fluidInput.amount);
         }
 
-        par1NBTTagCompound.setInteger("upgradeLevel", upgradeLevel);
-        par1NBTTagCompound.setBoolean("isActive", isActive);
-        par1NBTTagCompound.setInteger("liquidRequired", liquidRequired);
-        par1NBTTagCompound.setBoolean("canBeFilled", canBeFilled);
-        par1NBTTagCompound.setBoolean("isUpgraded", isUpgraded);
-        par1NBTTagCompound.setInteger("consumptionRate", consumptionRate);
-        par1NBTTagCompound.setInteger("drainRate", drainRate);
-        par1NBTTagCompound.setFloat("consumptionMultiplier", consumptionMultiplier);
-        par1NBTTagCompound.setFloat("efficiencyMultiplier", efficiencyMultiplier);
-        par1NBTTagCompound.setFloat("sacrificeEfficiencyMultiplier", sacrificeEfficiencyMultiplier);
-        par1NBTTagCompound.setFloat("selfSacrificeEfficiencyMultiplier", selfSacrificeEfficiencyMultiplier);
-        par1NBTTagCompound.setBoolean("isResultBlock", isResultBlock);
-        par1NBTTagCompound.setFloat("capacityMultiplier", capacityMultiplier);
-        par1NBTTagCompound.setFloat("orbCapacityMultiplier", orbCapacityMultiplier);
-        par1NBTTagCompound.setFloat("dislocationMultiplier", dislocationMultiplier);
-        par1NBTTagCompound.setInteger("capacity", capacity);
-        par1NBTTagCompound.setInteger("progress", progress);
-        par1NBTTagCompound.setInteger("bufferCapacity", bufferCapacity);
-        par1NBTTagCompound.setInteger("lockdownDuration", lockdownDuration);
-        par1NBTTagCompound.setInteger("accelerationUpgrades", this.accelerationUpgrades);
-        par1NBTTagCompound.setInteger("demonBloodDuration", demonBloodDuration);
-        par1NBTTagCompound.setInteger("cooldownAfterCrafting", cooldownAfterCrafting);
+        tag.setInteger("upgradeLevel", upgradeLevel);
+        tag.setBoolean("isActive", isActive);
+        tag.setInteger("liquidRequired", liquidRequired);
+        tag.setBoolean("canBeFilled", canBeFilled);
+        tag.setBoolean("isUpgraded", isUpgraded);
+        tag.setInteger("consumptionRate", consumptionRate);
+        tag.setInteger("drainRate", drainRate);
+        tag.setFloat("consumptionMultiplier", consumptionMultiplier);
+        tag.setFloat("efficiencyMultiplier", efficiencyMultiplier);
+        tag.setFloat("sacrificeEfficiencyMultiplier", sacrificeEfficiencyMultiplier);
+        tag.setFloat("selfSacrificeEfficiencyMultiplier", selfSacrificeEfficiencyMultiplier);
+        tag.setBoolean("isResultBlock", isResultBlock);
+        tag.setFloat("capacityMultiplier", capacityMultiplier);
+        tag.setFloat("orbCapacityMultiplier", orbCapacityMultiplier);
+        tag.setFloat("dislocationMultiplier", dislocationMultiplier);
+        tag.setInteger("capacity", capacity);
+        tag.setInteger("progress", progress);
+        tag.setInteger("bufferCapacity", bufferCapacity);
+        tag.setInteger("lockdownDuration", lockdownDuration);
+        tag.setInteger("accelerationUpgrades", this.accelerationUpgrades);
+        tag.setInteger("demonBloodDuration", demonBloodDuration);
+        tag.setInteger("cooldownAfterCrafting", cooldownAfterCrafting);
     }
 
     @Override
@@ -340,16 +335,14 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
 
         if (fluidInput == null) {
             fluidInput = new FluidStack(resource, Math.min(bufferCapacity, resource.amount));
-            if (tile != null) {
-                FluidEvent.fireEvent(
-                        new FluidEvent.FluidFillingEvent(
-                                fluidInput,
-                                tile.getWorldObj(),
-                                tile.xCoord,
-                                tile.yCoord,
-                                tile.zCoord,
-                                this));
-            }
+            FluidEvent.fireEvent(
+                    new FluidEvent.FluidFillingEvent(
+                            fluidInput,
+                            tile.getWorldObj(),
+                            tile.xCoord,
+                            tile.yCoord,
+                            tile.zCoord,
+                            this));
 
             return fluidInput.amount;
         }
@@ -367,16 +360,14 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
             fluidInput.amount = bufferCapacity;
         }
 
-        if (tile != null) {
-            FluidEvent.fireEvent(
-                    new FluidEvent.FluidFillingEvent(
-                            fluidInput,
-                            tile.getWorldObj(),
-                            tile.xCoord,
-                            tile.yCoord,
-                            tile.zCoord,
-                            this));
-        }
+        FluidEvent.fireEvent(
+                new FluidEvent.FluidFillingEvent(
+                        fluidInput,
+                        tile.getWorldObj(),
+                        tile.xCoord,
+                        tile.yCoord,
+                        tile.zCoord,
+                        this));
 
         return filled;
     }
@@ -402,16 +393,14 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
                 fluidOutput = null;
             }
 
-            if (this != null) {
-                FluidEvent.fireEvent(
-                        new FluidEvent.FluidDrainingEvent(
-                                fluidOutput,
-                                this.worldObj,
-                                this.xCoord,
-                                this.yCoord,
-                                this.zCoord,
-                                this));
-            }
+            FluidEvent.fireEvent(
+                    new FluidEvent.FluidDrainingEvent(
+                            fluidOutput,
+                            this.worldObj,
+                            this.xCoord,
+                            this.yCoord,
+                            this.zCoord,
+                            this));
         }
 
         if (fluidOutput == null) {
@@ -625,7 +614,7 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
 
             String ownerName = itemTag.getString("ownerName");
 
-            if (ownerName.equals("")) {
+            if (ownerName.isEmpty()) {
                 return;
             }
 
@@ -710,14 +699,14 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         return isActive;
     }
 
+    @Override
     public void sacrificialDaggerCall(int amount, boolean isSacrifice) {
         if (!isSacrifice && this.lockdownDuration > 0) {
-            int amt = (int) Math.min(
-                    bufferCapacity - fluidInput.amount,
-                    (isSacrifice ? 1 + sacrificeEfficiencyMultiplier : 1 + selfSacrificeEfficiencyMultiplier) * amount);
+            int amt = (int) Math
+                    .min(bufferCapacity - fluidInput.amount, (1 + selfSacrificeEfficiencyMultiplier) * amount);
             fluidInput.amount += amt;
         } else {
-            fluid.amount += Math.min(
+            fluid.amount += (int) Math.min(
                     capacity - fluid.amount,
                     (isSacrifice ? 1 + sacrificeEfficiencyMultiplier : 1 + selfSacrificeEfficiencyMultiplier) * amount);
         }
@@ -734,16 +723,11 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         }
 
         if (intData.length == 3) {
-            for (int i = 0; i < 1; i++) {
-                if (intData[i * 3 + 2] != 0) {
-                    ItemStack is = new ItemStack(
-                            Item.getItemById(intData[i * 3]),
-                            intData[i * 3 + 2],
-                            intData[i * 3 + 1]);
-                    inv[i] = is;
-                } else {
-                    inv[i] = null;
-                }
+            if (intData[2] != 0) {
+                ItemStack is = new ItemStack(Item.getItemById(intData[0]), intData[2], intData[1]);
+                inv[0] = is;
+            } else {
+                inv[0] = null;
             }
         }
 
@@ -777,6 +761,7 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         return sortList;
     }
 
+    @Override
     public void startCycle() {
         if (worldObj != null) {
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);

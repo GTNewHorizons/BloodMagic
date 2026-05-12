@@ -38,13 +38,11 @@ public class LavaCrystal extends EnergyItems {
      */
     @Override
     public ItemStack getContainerItem(ItemStack itemStack) {
-        {
-            syphonWhileInContainer(itemStack, this.getEnergyUsed());
-            ItemStack copiedStack = itemStack.copy();
-            copiedStack.setItemDamage(copiedStack.getItemDamage());
-            copiedStack.stackSize = 1;
-            return copiedStack;
-        }
+        syphonWhileInContainer(itemStack, this.getEnergyUsed());
+        ItemStack copiedStack = itemStack.copy();
+        copiedStack.setItemDamage(copiedStack.getItemDamage());
+        copiedStack.stackSize = 1;
+        return copiedStack;
     }
 
     @Override
@@ -52,27 +50,27 @@ public class LavaCrystal extends EnergyItems {
         return true;
     }
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
-        return par1ItemStack;
+    @Override
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        IBindable.checkAndSetItemOwner(item, player);
+        return item;
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.lavacrystal.desc1"));
-        par3List.add(StatCollector.translateToLocal("tooltip.lavacrystal.desc2"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.lavacrystal.desc1"));
+        tooltip.add(StatCollector.translateToLocal("tooltip.lavacrystal.desc2"));
+        addBindingInformation(item, tooltip);
     }
 
     public boolean hasEnoughEssence(ItemStack itemStack) {
-        if (itemStack.getTagCompound() != null && !(itemStack.getTagCompound().getString("ownerName").equals(""))) {
+        if (itemStack.getTagCompound() != null && !(itemStack.getTagCompound().getString("ownerName").isEmpty())) {
             String ownerName = itemStack.getTagCompound().getString("ownerName");
 
             if (FMLCommonHandler.instance().getMinecraftServerInstance() == null) {
                 return false;
             }
 
-            // World world = MinecraftServer.getServer().worldServers[0];
             WorldProvider provider = DimensionManager.getProvider(0);
             if (provider == null || provider.worldObj == null) {
                 return false;

@@ -2,7 +2,6 @@ package WayofTime.alchemicalWizardry.api.items;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -25,8 +24,8 @@ public class ShapedBloodOrbRecipe implements IRecipe {
     private static final int MAX_CRAFT_GRID_WIDTH = 3;
     private static final int MAX_CRAFT_GRID_HEIGHT = 3;
 
-    private ItemStack output = null;
-    private Object[] input = null;
+    private final ItemStack output;
+    private final Object[] input;
     public int width = 0;
     public int height = 0;
     private boolean mirrored = true;
@@ -42,7 +41,7 @@ public class ShapedBloodOrbRecipe implements IRecipe {
     public ShapedBloodOrbRecipe(ItemStack result, Object... recipe) {
         output = result.copy();
 
-        String shape = "";
+        StringBuilder shape = new StringBuilder();
         int idx = 0;
 
         if (recipe[idx] instanceof Boolean) {
@@ -59,26 +58,26 @@ public class ShapedBloodOrbRecipe implements IRecipe {
 
             for (String s : parts) {
                 width = s.length();
-                shape += s;
+                shape.append(s);
             }
 
             height = parts.length;
         } else {
             while (recipe[idx] instanceof String) {
                 String s = (String) recipe[idx++];
-                shape += s;
+                shape.append(s);
                 width = s.length();
                 height++;
             }
         }
 
         if (width * height != shape.length()) {
-            String ret = "Invalid shaped ore recipe: ";
+            StringBuilder ret = new StringBuilder("Invalid shaped ore recipe: ");
             for (Object tmp : recipe) {
-                ret += tmp + ", ";
+                ret.append(tmp).append(", ");
             }
-            ret += output;
-            throw new RuntimeException(ret);
+            ret.append(output);
+            throw new RuntimeException(ret.toString());
         }
 
         HashMap<Character, Object> itemMap = new HashMap<Character, Object>();
@@ -87,36 +86,31 @@ public class ShapedBloodOrbRecipe implements IRecipe {
             Character chr = (Character) recipe[idx];
             Object in = recipe[idx + 1];
 
-            if (in instanceof IBloodOrb
-                    || (in instanceof ItemStack && ((ItemStack) in).getItem() instanceof IBloodOrb)) { // If the item is
-                                                                                                       // an instanceof
-                                                                                                       // IBloodOrb then
-                                                                                                       // save the level
-                                                                                                       // of the
-                // orb
-                if (in instanceof ItemStack) itemMap.put(chr, ((IBloodOrb) ((ItemStack) in).getItem()).getOrbLevel());
-                else itemMap.put(chr, ((IBloodOrb) in).getOrbLevel());
-            } else if (in instanceof ItemStack) {
-                itemMap.put(chr, ((ItemStack) in).copy());
-            } else if (in instanceof Item) {
-                itemMap.put(chr, new ItemStack((Item) in));
-            } else if (in instanceof Block) {
-                itemMap.put(chr, new ItemStack((Block) in, 1, OreDictionary.WILDCARD_VALUE));
-            } else if (in instanceof String) {
-                itemMap.put(chr, OreDictionary.getOres((String) in));
+            if (in instanceof IBloodOrb orb) {
+                itemMap.put(chr, orb.getOrbLevel());
+            } else if (in instanceof ItemStack stack && stack.getItem() instanceof IBloodOrb orb) {
+                itemMap.put(chr, orb.getOrbLevel());
+            } else if (in instanceof ItemStack stack) {
+                itemMap.put(chr, stack.copy());
+            } else if (in instanceof Item item) {
+                itemMap.put(chr, new ItemStack(item));
+            } else if (in instanceof Block block) {
+                itemMap.put(chr, new ItemStack(block, 1, OreDictionary.WILDCARD_VALUE));
+            } else if (in instanceof String string) {
+                itemMap.put(chr, OreDictionary.getOres(string));
             } else {
-                String ret = "Invalid shaped ore recipe: ";
+                StringBuilder ret = new StringBuilder("Invalid shaped ore recipe: ");
                 for (Object tmp : recipe) {
-                    ret += tmp + ", ";
+                    ret.append(tmp).append(", ");
                 }
-                ret += output;
-                throw new RuntimeException(ret);
+                ret.append(output);
+                throw new RuntimeException(ret.toString());
             }
         }
 
         input = new Object[width * height];
         int x = 0;
-        for (char chr : shape.toCharArray()) {
+        for (char chr : shape.toString().toCharArray()) {
             input[x++] = itemMap.get(chr);
         }
     }
@@ -193,29 +187,27 @@ public class ShapedBloodOrbRecipe implements IRecipe {
                 }
 
                 ItemStack slot = inv.getStackInRowAndColumn(x, y);
-                // If target is integer, then we should be check the blood orb value of the item instead
-                if (target instanceof Integer) {
-                    if (slot != null && slot.getItem() instanceof IBloodOrb) {
-                        IBloodOrb orb = (IBloodOrb) slot.getItem();
-                        if (orb.getOrbLevel() < (Integer) target) {
-                            return false;
-                        }
-                    } else return false;
-                } else if (target instanceof ItemStack) {
-                    if (!OreDictionary.itemMatches((ItemStack) target, slot, false)) {
+                // If target is integer, then we should check the blood orb value of the item instead
+                if (target instanceof Integer orbLevel) {
+                    if (slot == null || !(slot.getItem() instanceof IBloodOrb orb)) {
+                        return false;
+                    }
+                    if (orb.getOrbLevel() < orbLevel) {
+                        return false;
+                    }
+                } else if (target instanceof ItemStack stack) {
+                    if (!OreDictionary.itemMatches(stack, slot, false)) {
                         return false;
                     }
                 } else if (target instanceof ArrayList) {
                     boolean matched = false;
-
-                    Iterator<ItemStack> itr = ((ArrayList<ItemStack>) target).iterator();
-                    while (itr.hasNext() && !matched) {
-                        matched = OreDictionary.itemMatches(itr.next(), slot, false);
+                    for (ItemStack item : ((ArrayList<ItemStack>) target)) {
+                        if (OreDictionary.itemMatches(item, slot, false)) {
+                            matched = true;
+                            break;
+                        }
                     }
-
-                    if (!matched) {
-                        return false;
-                    }
+                    if (!matched) return false;
                 } else if (target == null && slot != null) {
                     return false;
                 }

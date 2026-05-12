@@ -35,64 +35,62 @@ public class RitualEffectContainment extends RitualEffect {
 
         if (currentEssence < this.getCostPerRefresh()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            final int crepitousDrain = 1;
-            final int terraeDrain = 5;
-            final int magicalesDrain = 10;
+            return;
+        }
+        final int crepitousDrain = 1;
+        final int terraeDrain = 5;
+        final int magicalesDrain = 10;
 
-            boolean flag = false;
-            boolean hasCrepitous = this
-                    .canDrainReagent(ritualStone, ReagentRegistry.crepitousReagent, crepitousDrain, false);
-            boolean hasTerrae = this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, terraeDrain, false);
-            boolean hasMagicales = this
-                    .canDrainReagent(ritualStone, ReagentRegistry.magicalesReagent, magicalesDrain, false);
-            int d0 = hasTerrae ? 10 : 5;
-            List<Entity> entityList = SpellHelper.getEntitiesInRange(world, x + 0.5, y + 0.5, z + 0.5, d0, d0);
+        boolean flag = false;
+        boolean hasCrepitous = this
+                .canDrainReagent(ritualStone, ReagentRegistry.crepitousReagent, crepitousDrain, false);
+        boolean hasTerrae = this.canDrainReagent(ritualStone, ReagentRegistry.terraeReagent, terraeDrain, false);
+        boolean hasMagicales = this
+                .canDrainReagent(ritualStone, ReagentRegistry.magicalesReagent, magicalesDrain, false);
+        int d0 = hasTerrae ? 10 : 5;
+        List<Entity> entityList = SpellHelper.getEntitiesInRange(world, x + 0.5, y + 0.5, z + 0.5, d0, d0);
 
-            for (Entity entity : entityList) {
-                if (!(entity instanceof EntityLivingBase)) {
-                    continue;
-                }
+        for (Entity entity : entityList) {
+            if (!(entity instanceof EntityLivingBase livingEntity)) {
+                continue;
+            }
 
-                EntityLivingBase livingEntity = (EntityLivingBase) entity;
+            if (livingEntity instanceof EntityPlayer) {
+                continue;
+            }
 
-                if (livingEntity instanceof EntityPlayer) {
-                    continue;
-                }
+            double xDif = livingEntity.posX - (x + 0.5);
+            double yDif = livingEntity.posY - (y + 3);
+            double zDif = livingEntity.posZ - (z + 0.5);
+            livingEntity.motionX = -0.05 * xDif;
+            livingEntity.motionY = -0.05 * yDif;
+            livingEntity.motionZ = -0.05 * zDif;
+            flag = true;
 
-                double xDif = livingEntity.posX - (x + 0.5);
-                double yDif = livingEntity.posY - (y + 3);
-                double zDif = livingEntity.posZ - (z + 0.5);
-                livingEntity.motionX = -0.05 * xDif;
-                livingEntity.motionY = -0.05 * yDif;
-                livingEntity.motionZ = -0.05 * zDif;
-                flag = true;
+            livingEntity.fallDistance = 0;
 
-                livingEntity.fallDistance = 0;
-
-                if (hasMagicales
-                        && this.canDrainReagent(ritualStone, ReagentRegistry.magicalesReagent, magicalesDrain, false)) {
-                    if (!livingEntity.isPotionActive(AlchemicalWizardry.customPotionPlanarBinding)) {
-                        livingEntity.addPotionEffect(
-                                new PotionEffect(AlchemicalWizardry.customPotionPlanarBinding.id, 100, 0));
-                        this.canDrainReagent(ritualStone, ReagentRegistry.magicalesReagent, magicalesDrain, true);
-                    }
-                }
-
-                if (hasCrepitous
-                        && this.canDrainReagent(ritualStone, ReagentRegistry.crepitousReagent, crepitousDrain, false)) {
-                    if (entity instanceof EntityCreeper) {
-                        ReflectionHelper
-                                .setPrivateValue(EntityCreeper.class, (EntityCreeper) entity, 2, TIME_SINCE_IGNITED);
-                        ((EntityCreeper) entity).setAttackTarget(null);
-                        this.canDrainReagent(ritualStone, ReagentRegistry.crepitousReagent, crepitousDrain, true);
-                    }
+            if (hasMagicales
+                    && this.canDrainReagent(ritualStone, ReagentRegistry.magicalesReagent, magicalesDrain, false)) {
+                if (!livingEntity.isPotionActive(AlchemicalWizardry.customPotionPlanarBinding)) {
+                    livingEntity
+                            .addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionPlanarBinding.id, 100, 0));
+                    this.canDrainReagent(ritualStone, ReagentRegistry.magicalesReagent, magicalesDrain, true);
                 }
             }
 
-            if (world.getTotalWorldTime() % 2 == 0 && flag) {
-                SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
+            if (hasCrepitous
+                    && this.canDrainReagent(ritualStone, ReagentRegistry.crepitousReagent, crepitousDrain, false)) {
+                if (entity instanceof EntityCreeper) {
+                    ReflectionHelper
+                            .setPrivateValue(EntityCreeper.class, (EntityCreeper) entity, 2, TIME_SINCE_IGNITED);
+                    ((EntityCreeper) entity).setAttackTarget(null);
+                    this.canDrainReagent(ritualStone, ReagentRegistry.crepitousReagent, crepitousDrain, true);
+                }
             }
+        }
+
+        if (world.getTotalWorldTime() % 2 == 0 && flag) {
+            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
         }
     }
 

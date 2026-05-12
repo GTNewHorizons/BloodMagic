@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
@@ -16,7 +13,6 @@ import WayofTime.alchemicalWizardry.api.rituals.IMasterRitualStone;
 import WayofTime.alchemicalWizardry.api.rituals.RitualComponent;
 import WayofTime.alchemicalWizardry.api.rituals.RitualEffect;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
-import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 
 public class RitualEffectHarvest extends RitualEffect {
 
@@ -32,36 +28,30 @@ public class RitualEffectHarvest extends RitualEffect {
         int maxCount = 100;
 
         if (currentEssence < this.getCostPerRefresh() * maxCount) {
-            EntityPlayer entityOwner = SpellHelper.getPlayerForUsername(owner);
+            SoulNetworkHandler.causeNauseaToPlayer(owner);
+            return;
+        }
+        if (world.getTotalWorldTime() % 5 != 0) {
+            return;
+        }
 
-            if (entityOwner == null) {
-                return;
-            }
+        Block block = world.getBlock(x, y - 1, z);
+        int count = 0;
+        int range = this.getRadiusForModifierBlock(block);
+        int vertRange = 4;
 
-            entityOwner.addPotionEffect(new PotionEffect(Potion.confusion.id, 80));
-        } else {
-            if (world.getTotalWorldTime() % 5 != 0) {
-                return;
-            }
-
-            Block block = world.getBlock(x, y - 1, z);
-            int flag = 0;
-            int range = this.getRadiusForModifierBlock(block);
-            int vertRange = 4;
-
-            for (int i = -range; i <= range; i++) {
-                for (int j = -vertRange; j <= vertRange; j++) {
-                    for (int k = -range; k <= range; k++) {
-                        if (HarvestRegistry.harvestBlock(world, x + i, y + j, z + k) && flag < maxCount) {
-                            flag++;
-                        }
+        for (int i = -range; i <= range; i++) {
+            for (int j = -vertRange; j <= vertRange; j++) {
+                for (int k = -range; k <= range; k++) {
+                    if (HarvestRegistry.harvestBlock(world, x + i, y + j, z + k) && count < maxCount) {
+                        count++;
                     }
                 }
             }
+        }
 
-            if (flag > 0) {
-                SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * Math.min(maxCount, flag));
-            }
+        if (count > 0) {
+            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh() * Math.min(maxCount, count));
         }
     }
 
@@ -92,7 +82,7 @@ public class RitualEffectHarvest extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> harvestRitual = new ArrayList();
+        ArrayList<RitualComponent> harvestRitual = new ArrayList<>();
 
         harvestRitual.add(new RitualComponent(1, 0, 1, RitualComponent.DUSK));
         harvestRitual.add(new RitualComponent(1, 0, -1, RitualComponent.DUSK));

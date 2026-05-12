@@ -48,7 +48,7 @@ import thaumcraft.api.nodes.IRevealer;
 public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialArmor, IBindable, IRevealer, IGoggles,
         IRunicArmor, ILPGauge, IHazardProtector {
 
-    private static int invSize = 9;
+    private static final int invSize = 9;
 
     @SideOnly(Side.CLIENT)
     private IIcon helmetIcon;
@@ -82,8 +82,8 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
     @Override
     @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
-        if (tryComplexRendering) {
-            int type = ((ItemArmor) itemStack.getItem()).armorType;
+        if (tryComplexRendering && itemStack.getItem() instanceof ItemArmor armor) {
+            int type = armor.armorType;
             if (this.model1 == null) {
                 this.model1 = new ModelOmegaArmour(1.0f, true, true, false, true);
             }
@@ -144,7 +144,7 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
+    public IIcon getIconFromDamage(int meta) {
         if (this.equals(ModItems.boundHelmet)) {
             return this.helmetIcon;
         }
@@ -165,7 +165,7 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack) {
+    public boolean getIsRepairable(ItemStack item, ItemStack par2ItemStack) {
         return false;
     }
 
@@ -277,12 +277,12 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.boundarmor.devprotect"));
-        addBindingInformation(par1ItemStack, par3List);
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.boundarmor.devprotect"));
+        addBindingInformation(item, tooltip);
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            ItemStack[] inv = getInternalInventory(par1ItemStack);
+        if (!(item.getTagCompound() == null)) {
+            ItemStack[] inv = getInternalInventory(item);
 
             if (inv == null) {
                 return;
@@ -290,7 +290,7 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
 
             for (int i = 0; i < invSize; i++) {
                 if (inv[i] != null) {
-                    par3List.add(
+                    tooltip.add(
                             StatCollector.translateToLocal("tooltip.item.iteminslot") + " "
                                     + i
                                     + ": "
@@ -330,9 +330,9 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) {
-        IBindable.checkAndSetItemOwner(par1ItemStack, par3EntityPlayer);
-        return super.onItemRightClick(par1ItemStack, par2World, par3EntityPlayer);
+    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
+        IBindable.checkAndSetItemOwner(item, player);
+        return super.onItemRightClick(item, world, player);
     }
 
     @Override
@@ -342,7 +342,7 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
         }
 
         if (!player.isPotionActive(AlchemicalWizardry.customPotionInhibit)) {
-            tickInternalInventory(itemStack, world, player, 0, false);
+            tickInternalInventory(itemStack, world, player);
         }
 
         this.setIsInvisible(itemStack, player.isPotionActive(Potion.invisibility.id));
@@ -362,33 +362,31 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
         }
     }
 
-    public void tickInternalInventory(ItemStack par1ItemStack, World par2World, EntityPlayer par3Entity, int par4,
-            boolean par5) {
-        ItemStack[] inv = getInternalInventory(par1ItemStack);
+    public void tickInternalInventory(ItemStack item, World world, EntityPlayer player) {
+        ItemStack[] inv = getInternalInventory(item);
 
         if (inv == null) {
             return;
         }
 
-        int blood = getMaxBloodShardLevel(par1ItemStack);
+        int blood = getMaxBloodShardLevel(item);
         for (int i = 0; i < invSize; i++) {
             if (inv[i] == null) {
                 continue;
             }
 
-            if (inv[i].getItem() instanceof ArmourUpgrade && blood > 0) {
-                if (((ArmourUpgrade) inv[i].getItem()).isUpgrade()) {
-                    ((ArmourUpgrade) inv[i].getItem()).onArmourUpdate(par2World, par3Entity, inv[i]);
+            if (inv[i].getItem() instanceof ArmourUpgrade upgrade && blood > 0) {
+                if (upgrade.isUpgrade()) {
+                    upgrade.onArmourUpdate(world, player, inv[i]);
                     blood--;
                 }
 
-                if (par2World.getTotalWorldTime() % 200 == 0) {
-                    if (getUpgradeCostMultiplier(par1ItemStack) > 0.02f) {
+                if (world.getTotalWorldTime() % 200 == 0) {
+                    if (getUpgradeCostMultiplier(item) > 0.02f) {
                         EnergyItems.syphonBatteries(
-                                par1ItemStack,
-                                par3Entity,
-                                (int) (((ArmourUpgrade) inv[i].getItem()).getEnergyForTenSeconds()
-                                        * getUpgradeCostMultiplier(par1ItemStack)));
+                                item,
+                                player,
+                                (int) (upgrade.getEnergyForTenSeconds() * getUpgradeCostMultiplier(item)));
                     }
                 }
             }
@@ -407,13 +405,13 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
         for (int i = 0; i < invSize; i++) {
             ItemStack itemStack = inv[i];
 
-            if (itemStack != null) {
+            if (itemStack != null && itemStack.getItem() != null) {
                 if (itemStack.getItem().equals(ModItems.weakBloodShard)) {
                     max = Math.max(max, 1);
                 }
 
                 if (itemStack.getItem().equals(ModItems.demonBloodShard)) {
-                    max = Math.max(max, 2);
+                    max = 2;
                 }
             }
         }
@@ -439,7 +437,6 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
 
             if (nextItem == null) {
                 candidateSlot = i;
-                continue;
             }
         }
 
@@ -484,12 +481,6 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
     }
 
     public void saveInternalInventory(ItemStack itemStack, ItemStack[] inventory) {
-        NBTTagCompound itemTag = itemStack.getTagCompound();
-
-        if (itemTag == null) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-
         NBTTagList itemList = new NBTTagList();
 
         for (int i = 0; i < invSize; i++) {
@@ -501,7 +492,7 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
             }
         }
 
-        itemTag.setTag("Inventory", itemList);
+        IBindable.getTag(itemStack).setTag("Inventory", itemList);
     }
 
     public boolean isImmuneToVoid(ItemStack itemStack) {
@@ -512,7 +503,7 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
         }
 
         for (ItemStack item : inv) {
-            if (item == null) {
+            if (item == null || item.getItem() == null) {
                 continue;
             }
 
@@ -625,6 +616,7 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
         return 1.0f;
     }
 
+    @Override
     public int getItemEnchantability(ItemStack stack) {
         NBTTagCompound tag = stack.getTagCompound();
         if (tag != null) {
@@ -635,18 +627,11 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
     }
 
     public void setItemEnchantability(ItemStack stack, int enchantability) {
-        NBTTagCompound tag = stack.getTagCompound();
-
-        if (tag == null) {
-            stack.setTagCompound(new NBTTagCompound());
-            tag = stack.getTagCompound();
-        }
-
-        tag.setInteger("enchantability", enchantability);
+        IBindable.getTag(stack).setInteger("enchantability", enchantability);
     }
 
-    public boolean getIsInvisible(ItemStack armourStack) {
-        NBTTagCompound tag = armourStack.getTagCompound();
+    public boolean getIsInvisible(ItemStack stack) {
+        NBTTagCompound tag = stack.getTagCompound();
         if (tag != null) {
             return tag.getBoolean("invisible");
         }
@@ -654,15 +639,8 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
         return false;
     }
 
-    public void setIsInvisible(ItemStack armourStack, boolean invisible) {
-        NBTTagCompound tag = armourStack.getTagCompound();
-
-        if (tag == null) {
-            armourStack.setTagCompound(new NBTTagCompound());
-            tag = armourStack.getTagCompound();
-        }
-
-        tag.setBoolean("invisible", invisible);
+    public void setIsInvisible(ItemStack stack, boolean invisible) {
+        IBindable.getTag(stack).setBoolean("invisible", invisible);
     }
 
     @Override
@@ -732,7 +710,7 @@ public class BoundArmour extends ItemArmor implements IAlchemyGoggles, ISpecialA
         }
 
         for (ItemStack item : inv) {
-            if (item == null) {
+            if (item == null || item.getItem() == null) {
                 continue;
             }
 

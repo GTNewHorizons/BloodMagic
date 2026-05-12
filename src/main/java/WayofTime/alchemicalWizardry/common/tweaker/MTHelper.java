@@ -59,7 +59,7 @@ public class MTHelper {
     public static Object[] toShapedObjects(IIngredient[][] ingredients) {
         if (ingredients == null) return null;
         else {
-            ArrayList prep = new ArrayList();
+            ArrayList<Object> prep = new ArrayList<>();
             prep.add("abc");
             prep.add("def");
             prep.add("ghi");
@@ -79,6 +79,6 @@ public class MTHelper {
     }
 
     public static String toString(IOreDictEntry entry) {
-        return ((IOreDictEntry) entry).getName();
+        return entry.getName();
     }
 }

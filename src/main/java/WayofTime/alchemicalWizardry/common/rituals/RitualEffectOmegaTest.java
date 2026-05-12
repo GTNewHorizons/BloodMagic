@@ -22,7 +22,6 @@ import WayofTime.alchemicalWizardry.api.alchemy.energy.ReagentStack;
 import WayofTime.alchemicalWizardry.api.rituals.IMasterRitualStone;
 import WayofTime.alchemicalWizardry.api.rituals.RitualComponent;
 import WayofTime.alchemicalWizardry.api.rituals.RitualEffect;
-import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.api.spell.APISpellHelper;
 import WayofTime.alchemicalWizardry.common.NewPacketHandler;
 import WayofTime.alchemicalWizardry.common.omega.OmegaParadigm;
@@ -33,14 +32,10 @@ import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 
 public class RitualEffectOmegaTest extends RitualEffect {
 
-    public static final boolean isTesting = false;
     public static final int drainTotal = 32 * 1000;
 
     @Override
     public void performEffect(IMasterRitualStone ritualStone) {
-        String owner = ritualStone.getOwner();
-
-        int currentEssence = SoulNetworkHandler.getCurrentEssence(owner);
         World world = ritualStone.getWorld();
         int x = ritualStone.getXCoord();
         int y = ritualStone.getYCoord();
@@ -60,38 +55,36 @@ public class RitualEffectOmegaTest extends RitualEffect {
             return;
         }
 
-        // System.out.println("Stability: " + stab + ", Enchantability: " + enchantability + ", Enchantment
-        // Level: " + enchantmentLevel);
-
         double range = 0.5;
 
-        List<EntityPlayer> playerList = SpellHelper.getPlayersInRange(world, x + 0.5, y + 1.5, z + 0.5, range, range);
+        List<EntityPlayer> playerList = SpellHelper
+                .getPlayersInRange(world, x + range, y + range, z + range, range, range);
 
         Reagent reagent = null;
 
-        Map<Reagent, Integer> reagentMap = new HashMap();
+        Map<Reagent, Integer> reagentMap = new HashMap<>();
         for (int i = 0; i < 4; i++) {
             Int3 jarLoc = this.getJarLocation(i);
-            TileEntity tile = world.getTileEntity(x + jarLoc.xCoord, y + jarLoc.yCoord, z + jarLoc.zCoord);
-            if (tile instanceof IReagentHandler) {
-                IReagentHandler container = (IReagentHandler) tile;
-                ReagentContainerInfo[] containerInfoArray = container.getContainerInfo(ForgeDirection.UP);
-                if (containerInfoArray == null) {
+            TileEntity tile = world.getTileEntity(x + jarLoc.x(), y + jarLoc.y(), z + jarLoc.z());
+            if (!(tile instanceof IReagentHandler container)) {
+                continue;
+            }
+            ReagentContainerInfo[] containerInfoArray = container.getContainerInfo(ForgeDirection.UP);
+            if (containerInfoArray == null) {
+                continue;
+            }
+
+            for (ReagentContainerInfo containerInfo : containerInfoArray) {
+                ReagentStack containedReagent = containerInfo.reagent;
+                if (containedReagent == null) {
                     continue;
                 }
-
-                for (ReagentContainerInfo containerInfo : containerInfoArray) {
-                    ReagentStack containedReagent = containerInfo.reagent;
-                    if (containedReagent == null) {
-                        continue;
-                    }
-                    Reagent rea = containedReagent.reagent;
-                    int amt = containedReagent.amount;
-                    if (reagentMap.containsKey(rea)) {
-                        reagentMap.put(rea, reagentMap.get(rea) + amt);
-                    } else {
-                        reagentMap.put(rea, amt);
-                    }
+                Reagent rea = containedReagent.reagent;
+                int amt = containedReagent.amount;
+                if (reagentMap.containsKey(rea)) {
+                    reagentMap.put(rea, reagentMap.get(rea) + amt);
+                } else {
+                    reagentMap.put(rea, amt);
                 }
             }
         }
@@ -107,55 +100,48 @@ public class RitualEffectOmegaTest extends RitualEffect {
             return;
         }
 
-        int tickDuration = isTesting ? 20 * 30 : 15 * 20 * 60 + (int) ((15 * 20 * 60) * Math.sqrt(stab / 700));
+        int tickDuration = 15 * 20 * 60 + (int) ((15 * 20 * 60) * Math.sqrt(stab / 700D));
 
         int affinity = 0;
 
         for (EntityPlayer player : playerList) {
-            OmegaParadigm waterParadigm = OmegaRegistry.getParadigmForReagent(reagent);
-            if (waterParadigm != null && waterParadigm
+            OmegaParadigm paradigm = OmegaRegistry.getParadigmForReagent(reagent);
+            if (paradigm == null || !paradigm
                     .convertPlayerArmour(player, x, y, z, stab, affinity, enchantability, enchantmentLevel)) {
-                APISpellHelper.setPlayerCurrentReagentAmount(player, tickDuration);
-                APISpellHelper.setPlayerMaxReagentAmount(player, tickDuration);
-                APISpellHelper.setPlayerReagentType(player, reagent);
-                APISpellHelper.setCurrentAdditionalMaxHP(player, waterParadigm.getMaxAdditionalHealth());
-                NewPacketHandler.INSTANCE.sendTo(
-                        NewPacketHandler.getReagentBarPacket(
-                                reagent,
-                                APISpellHelper.getPlayerCurrentReagentAmount(player),
-                                APISpellHelper.getPlayerMaxReagentAmount(player)),
-                        (EntityPlayerMP) player);
-
-                if (!isTesting) {
-                    int drainLeft = this.drainTotal;
-                    for (int i = 0; i < 4; i++) {
-                        if (drainLeft <= 0) {
-                            break;
-                        }
-                        Int3 jarLoc = this.getJarLocation(i);
-                        TileEntity tile = world.getTileEntity(x + jarLoc.xCoord, y + jarLoc.yCoord, z + jarLoc.zCoord);
-                        if (tile instanceof IReagentHandler) {
-                            IReagentHandler container = (IReagentHandler) tile;
-                            ReagentStack drained = container
-                                    .drain(ForgeDirection.UP, new ReagentStack(reagent, drainLeft), true);
-                            if (drained != null) {
-                                drainLeft -= drained.amount;
-                                world.markBlockForUpdate(x + jarLoc.xCoord, y + jarLoc.yCoord, z + jarLoc.zCoord);
-                                world.addWeatherEffect(
-                                        new EntityLightningBolt(
-                                                world,
-                                                x + jarLoc.xCoord,
-                                                y + jarLoc.yCoord,
-                                                z + jarLoc.zCoord));
-                            }
-                        }
-                    }
-
-                    ritualStone.setActive(false);
-                }
-
-                break;
+                continue;
             }
+            APISpellHelper.setPlayerCurrentReagentAmount(player, tickDuration);
+            APISpellHelper.setPlayerMaxReagentAmount(player, tickDuration);
+            APISpellHelper.setPlayerReagentType(player, reagent);
+            APISpellHelper.setCurrentAdditionalMaxHP(player, paradigm.getMaxAdditionalHealth());
+            NewPacketHandler.INSTANCE.sendTo(
+                    NewPacketHandler.getReagentBarPacket(
+                            reagent,
+                            APISpellHelper.getPlayerCurrentReagentAmount(player),
+                            APISpellHelper.getPlayerMaxReagentAmount(player)),
+                    (EntityPlayerMP) player);
+
+            int drainLeft = drainTotal;
+            for (int i = 0; i < 4; i++) {
+                if (drainLeft <= 0) {
+                    break;
+                }
+                Int3 jarLoc = this.getJarLocation(i);
+                TileEntity tile = world.getTileEntity(x + jarLoc.x(), y + jarLoc.y(), z + jarLoc.z());
+                if (tile instanceof IReagentHandler container) {
+                    ReagentStack drained = container
+                            .drain(ForgeDirection.UP, new ReagentStack(reagent, drainLeft), true);
+                    if (drained != null) {
+                        drainLeft -= drained.amount;
+                        world.markBlockForUpdate(x + jarLoc.x(), y + jarLoc.y(), z + jarLoc.z());
+                        world.addWeatherEffect(
+                                new EntityLightningBolt(world, x + jarLoc.x(), y + jarLoc.y(), z + jarLoc.z()));
+                    }
+                }
+            }
+
+            ritualStone.setActive(false);
+            break;
         }
     }
 
@@ -166,7 +152,7 @@ public class RitualEffectOmegaTest extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> omegaRitual = new ArrayList();
+        ArrayList<RitualComponent> omegaRitual = new ArrayList<>();
         this.addCornerRunes(omegaRitual, 1, 0, RitualComponent.DUSK);
         this.addCornerRunes(omegaRitual, 2, 0, RitualComponent.DUSK);
         this.addCornerRunes(omegaRitual, 3, 0, RitualComponent.BLANK);
@@ -231,17 +217,12 @@ public class RitualEffectOmegaTest extends RitualEffect {
     }
 
     public Int3 getJarLocation(int i) {
-        switch (i) {
-            case 0:
-                return new Int3(-3, 0, 0);
-            case 1:
-                return new Int3(3, 0, 0);
-            case 2:
-                return new Int3(0, 0, -3);
-            case 3:
-                return new Int3(0, 0, 3);
-            default:
-                return new Int3(0, 0, 0);
-        }
+        return switch (i) {
+            case 0 -> new Int3(-3, 0, 0);
+            case 1 -> new Int3(3, 0, 0);
+            case 2 -> new Int3(0, 0, -3);
+            case 3 -> new Int3(0, 0, 3);
+            default -> new Int3(0, 0, 0);
+        };
     }
 }

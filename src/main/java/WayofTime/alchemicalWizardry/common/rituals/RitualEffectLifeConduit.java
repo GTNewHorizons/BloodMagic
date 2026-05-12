@@ -30,24 +30,18 @@ public class RitualEffectLifeConduit extends RitualEffect {
         int z = ritualStone.getZCoord();
 
         IBloodAltar tileAltar = null;
-        boolean testFlag = false;
 
         for (int i = -5; i <= 5; i++) {
             for (int j = -5; j <= 5; j++) {
                 for (int k = -10; k <= 10; k++) {
-                    if (world.getTileEntity(x + i, y + k, z + j) instanceof IBloodAltar) {
-                        tileAltar = (IBloodAltar) world.getTileEntity(x + i, y + k, z + j);
-                        testFlag = true;
+                    if (world.getTileEntity(x + i, y + k, z + j) instanceof IBloodAltar altar) {
+                        tileAltar = altar;
                     }
                 }
             }
         }
 
-        if (!testFlag) {
-            return;
-        }
-
-        if (!(tileAltar instanceof IFluidHandler)) {
+        if (!(tileAltar instanceof IFluidHandler handler)) {
             return;
         }
 
@@ -60,6 +54,7 @@ public class RitualEffectLifeConduit extends RitualEffect {
         for (EntityPlayer player : list) {
             if (SpellHelper.getUsername(player).equals(owner)) {
                 entityOwner = player;
+                break;
             }
         }
 
@@ -69,17 +64,12 @@ public class RitualEffectLifeConduit extends RitualEffect {
 
         int fillAmount = Math.min(
                 currentEssence / 2,
-                ((IFluidHandler) tileAltar)
-                        .fill(ForgeDirection.UP, new FluidStack(AlchemicalWizardry.lifeEssenceFluid, 10000), false));
-
-        {
-            ((IFluidHandler) tileAltar)
-                    .fill(ForgeDirection.UP, new FluidStack(AlchemicalWizardry.lifeEssenceFluid, fillAmount), true);
-            if (entityOwner.getHealth() > 2.0f && fillAmount != 0) {
-                entityOwner.setHealth(2.0f);
-            }
-            SoulNetworkHandler.syphonFromNetwork(owner, fillAmount * 2);
+                handler.fill(ForgeDirection.UP, new FluidStack(AlchemicalWizardry.lifeEssenceFluid, 10000), false));
+        handler.fill(ForgeDirection.UP, new FluidStack(AlchemicalWizardry.lifeEssenceFluid, fillAmount), true);
+        if (entityOwner.getHealth() > 2.0f && fillAmount != 0) {
+            entityOwner.setHealth(2.0f);
         }
+        SoulNetworkHandler.syphonFromNetwork(owner, fillAmount * 2);
     }
 
     @Override
@@ -89,7 +79,7 @@ public class RitualEffectLifeConduit extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> conduitRitual = new ArrayList();
+        ArrayList<RitualComponent> conduitRitual = new ArrayList<>();
 
         conduitRitual.add(new RitualComponent(-1, 0, -1, RitualComponent.FIRE));
         conduitRitual.add(new RitualComponent(-1, 0, 1, RitualComponent.FIRE));

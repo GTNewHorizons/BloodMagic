@@ -14,7 +14,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -52,9 +51,9 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
     public TEReagentConduit(int numberOfTanks, int size) {
         super(numberOfTanks, size);
 
-        destinationList = new LinkedList();
-        reagentTargetList = new HashMap();
-        reagentTankDesignationList = new HashMap();
+        destinationList = new LinkedList<>();
+        reagentTargetList = new HashMap<>();
+        reagentTankDesignationList = new HashMap<>();
     }
 
     public Int3 getColour() {
@@ -67,9 +66,9 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
             if (container != null && container.getReagent() != null) {
                 Reagent reagent = container.getReagent().reagent;
 
-                redMap[i] = reagent.getColourRed();
-                greenMap[i] = reagent.getColourGreen();
-                blueMap[i] = reagent.getColourBlue();
+                redMap[i] = reagent.red();
+                greenMap[i] = reagent.green();
+                blueMap[i] = reagent.blue();
             }
         }
 
@@ -98,9 +97,9 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
 
         NBTTagList tagList = new NBTTagList();
 
-        for (int i = 0; i < destinationList.size(); i++) {
+        for (ColourAndCoords colourAndCoords : destinationList) {
             NBTTagCompound savedTag = new NBTTagCompound();
-            tagList.appendTag(destinationList.get(i).writeToNBT(savedTag));
+            tagList.appendTag(colourAndCoords.writeToNBT(savedTag));
         }
 
         tag.setTag("destinationList", tagList);
@@ -150,7 +149,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
 
         NBTTagList tagList = tag.getTagList("destinationList", Constants.NBT.TAG_COMPOUND);
 
-        destinationList = new LinkedList();
+        destinationList = new LinkedList<>();
 
         for (int i = 0; i < tagList.tagCount(); i++) {
             NBTTagCompound savedTag = tagList.getCompoundTagAt(i);
@@ -158,7 +157,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
             destinationList.add(ColourAndCoords.readFromNBT(savedTag));
         }
 
-        reagentTargetList = new HashMap();
+        reagentTargetList = new HashMap<>();
 
         NBTTagList reagentTagList = tag.getTagList("reagentTargetList", Constants.NBT.TAG_COMPOUND);
 
@@ -167,7 +166,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
 
             Reagent reagent = ReagentRegistry.getReagentForKey(savedTag.getString("reagent"));
 
-            List<Int3> coordList = new LinkedList();
+            List<Int3> coordList = new LinkedList<>();
 
             NBTTagList coordinateList = savedTag.getTagList("coordinateList", Constants.NBT.TAG_COMPOUND);
 
@@ -178,7 +177,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
             reagentTargetList.put(reagent, coordList);
         }
 
-        reagentTankDesignationList = new HashMap();
+        reagentTankDesignationList = new HashMap<>();
 
         NBTTagList tankDesignationList = tag.getTagList("tankDesignationList", Constants.NBT.TAG_COMPOUND);
 
@@ -187,14 +186,14 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
 
             this.reagentTankDesignationList.put(
                     ReagentRegistry.getReagentForKey(savedTag.getString("reagent")),
-                    new Integer(savedTag.getInteger("integer")));
+                    savedTag.getInteger("integer"));
         }
     }
 
     public void readClientNBT(NBTTagCompound tag) {
         NBTTagList tagList = tag.getTagList("destinationList", Constants.NBT.TAG_COMPOUND);
 
-        destinationList = new LinkedList();
+        destinationList = new LinkedList<>();
 
         for (int i = 0; i < tagList.tagCount(); i++) {
             NBTTagCompound savedTag = tagList.getCompoundTagAt(i);
@@ -216,19 +215,19 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
     public void writeClientNBT(NBTTagCompound tag) {
         NBTTagList tagList = new NBTTagList();
 
-        for (int i = 0; i < destinationList.size(); i++) {
+        for (ColourAndCoords colourAndCoords : destinationList) {
             NBTTagCompound savedTag = new NBTTagCompound();
-            tagList.appendTag(destinationList.get(i).writeToNBT(savedTag));
+            tagList.appendTag(colourAndCoords.writeToNBT(savedTag));
         }
 
         tag.setTag("destinationList", tagList);
 
         NBTTagList reagentTagList = new NBTTagList();
 
-        for (int i = 0; i < this.tanks.length; i++) {
+        for (ReagentContainer tank : this.tanks) {
             NBTTagCompound savedTag = new NBTTagCompound();
-            if (this.tanks[i] != null) {
-                this.tanks[i].writeToNBT(savedTag);
+            if (tank != null) {
+                tank.writeToNBT(savedTag);
             }
             reagentTagList.appendTag(savedTag);
         }
@@ -276,9 +275,9 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
                         continue;
                     }
 
-                    int x = xCoord + coord.xCoord;
-                    int y = yCoord + coord.yCoord;
-                    int z = zCoord + coord.zCoord;
+                    int x = xCoord + coord.x();
+                    int y = yCoord + coord.y();
+                    int z = zCoord + coord.z();
 
                     TileEntity tile = worldObj.getTileEntity(x, y, z);
                     if (tile instanceof IReagentHandler) {
@@ -315,25 +314,24 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
     public void sendPlayerStuffs() {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
-        World world = mc.theWorld;
         if (SpellHelper.canPlayerSeeAlchemy(player)) {
             for (ColourAndCoords colourSet : this.destinationList) {
                 if (!(worldObj.getTileEntity(
-                        xCoord + colourSet.xCoord,
-                        yCoord + colourSet.yCoord,
-                        zCoord + colourSet.zCoord) instanceof IReagentHandler)) {
+                        xCoord + colourSet.x(),
+                        yCoord + colourSet.y(),
+                        zCoord + colourSet.z()) instanceof IReagentHandler)) {
                     continue;
                 }
                 EntityParticleBeam beam = new EntityParticleBeam(worldObj, xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
-                double velocity = Math.sqrt(
-                        Math.pow(colourSet.xCoord, 2) + Math.pow(colourSet.yCoord, 2) + Math.pow(colourSet.zCoord, 2));
+                double velocity = Math
+                        .sqrt(Math.pow(colourSet.x(), 2) + Math.pow(colourSet.y(), 2) + Math.pow(colourSet.z(), 2));
                 double wantedVel = 0.3d;
                 beam.setVelocity(
-                        wantedVel * colourSet.xCoord / velocity,
-                        wantedVel * colourSet.yCoord / velocity,
-                        wantedVel * colourSet.zCoord / velocity);
-                beam.setColour(colourSet.colourRed / 255f, colourSet.colourGreen / 255f, colourSet.colourBlue / 255f);
-                beam.setDestination(xCoord + colourSet.xCoord, yCoord + colourSet.yCoord, zCoord + colourSet.zCoord);
+                        wantedVel * colourSet.x() / velocity,
+                        wantedVel * colourSet.y() / velocity,
+                        wantedVel * colourSet.z() / velocity);
+                beam.setColour(colourSet.red() / 255f, colourSet.green() / 255f, colourSet.blue() / 255f);
+                beam.setDestination(xCoord + colourSet.x(), yCoord + colourSet.y(), zCoord + colourSet.z());
                 worldObj.spawnEntityInWorld(beam);
             }
         }
@@ -353,7 +351,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
     }
 
     public List<ColourAndCoords> compileListForReagentTargets(Map<Reagent, List<Int3>> map) {
-        List<ColourAndCoords> list = new LinkedList();
+        List<ColourAndCoords> list = new LinkedList<>();
 
         for (Entry<Reagent, List<Int3>> entry : map.entrySet()) {
             if (entry.getValue() != null) {
@@ -368,13 +366,13 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
                     }
                     list.add(
                             new ColourAndCoords(
-                                    reagent.getColourRed(),
-                                    reagent.getColourGreen(),
-                                    reagent.getColourBlue(),
-                                    reagent.getColourIntensity(),
-                                    coord.xCoord,
-                                    coord.yCoord,
-                                    coord.zCoord));
+                                    reagent.red(),
+                                    reagent.green(),
+                                    reagent.blue(),
+                                    reagent.intensity(),
+                                    coord.x(),
+                                    coord.y(),
+                                    coord.z()));
                 }
             }
         }
@@ -440,7 +438,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
         if (this.reagentTargetList.containsKey(reagent)) {
             List<Int3> coordList = this.reagentTargetList.get(reagent);
             if (coordList == null) {
-                List<Int3> newCoordList = new LinkedList();
+                List<Int3> newCoordList = new LinkedList<>();
                 newCoordList.add(newCoord);
                 this.reagentTargetList.put(reagent, newCoordList);
             } else {
@@ -449,7 +447,7 @@ public class TEReagentConduit extends TileSegmentedReagentHandler {
 
             return true;
         } else {
-            List<Int3> newCoordList = new LinkedList();
+            List<Int3> newCoordList = new LinkedList<>();
             newCoordList.add(newCoord);
             this.reagentTargetList.put(reagent, newCoordList);
 

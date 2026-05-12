@@ -72,11 +72,9 @@ public class BlockPlinth extends BlockContainer {
         Random rand = new Random();
         TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-        if (!(tileEntity instanceof IInventory)) {
+        if (!(tileEntity instanceof IInventory inventory)) {
             return;
         }
-
-        IInventory inventory = (IInventory) tileEntity;
 
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack item = inventory.getStackInSlot(i);

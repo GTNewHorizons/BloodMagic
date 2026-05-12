@@ -12,7 +12,7 @@ import WayofTime.alchemicalWizardry.common.items.potion.AlchemyFlask;
 
 public class CombinedPotionRegistry {
 
-    public static List<CombinedPotionComponent> potionList = new ArrayList();
+    public static List<CombinedPotionComponent> potionList = new ArrayList<>();
 
     public static void registerCombinedPotionRecipe(Potion result, Potion pot1, Potion pot2) {
         potionList.add(new CombinedPotionComponent(result, pot1, pot2));

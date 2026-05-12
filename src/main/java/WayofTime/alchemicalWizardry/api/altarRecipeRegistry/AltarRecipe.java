@@ -50,7 +50,7 @@ public class AltarRecipe {
         }
 
         return tierCheck >= minTier && this.requiredItem.isItemEqual(comparedStack)
-                && (this.useTag ? this.areRequiredTagsEqual(comparedStack) : true);
+                && (!this.useTag || this.areRequiredTagsEqual(comparedStack));
     }
 
     public boolean areRequiredTagsEqual(ItemStack comparedStack) {
@@ -69,11 +69,10 @@ public class AltarRecipe {
     }
 
     protected boolean areTagsEqual(NBTTagCompound tag, NBTTagCompound comparedTag) {
-        Set set = tag.func_150296_c();
+        Set<String> set = tag.func_150296_c();
 
         for (Object obj : set) {
-            if (obj instanceof String) {
-                String str = (String) obj;
+            if (obj instanceof String str) {
 
                 NBTBase baseTag = comparedTag.getTag(str);
 

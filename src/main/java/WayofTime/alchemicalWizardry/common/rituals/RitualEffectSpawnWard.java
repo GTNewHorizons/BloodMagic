@@ -28,43 +28,41 @@ public class RitualEffectSpawnWard extends RitualEffect {
 
         if (currentEssence < this.getCostPerRefresh()) {
             SoulNetworkHandler.causeNauseaToPlayer(owner);
-        } else {
-            int horizRange = 32;
-            int vertRange = 32;
+            return;
+        }
+        int horizRange = 32;
+        int vertRange = 32;
 
-            int dimension = world.provider.dimensionId;
+        int dimension = world.provider.dimensionId;
 
-            if (AlchemicalWizardryEventHooks.respawnMap.containsKey(new Integer(dimension))) {
-                List<CoordAndRange> list = AlchemicalWizardryEventHooks.respawnMap.get(new Integer(dimension));
-                if (list != null) {
-                    if (!list.contains(new CoordAndRange(x, y, z, horizRange, vertRange))) {
-                        boolean hasFoundAndRemoved = false;
-                        for (CoordAndRange coords : list) {
-                            int xLocation = coords.xCoord;
-                            int yLocation = coords.yCoord;
-                            int zLocation = coords.zCoord;
+        if (AlchemicalWizardryEventHooks.respawnMap.containsKey(dimension)) {
+            List<CoordAndRange> list = AlchemicalWizardryEventHooks.respawnMap.get(dimension);
+            if (list != null) {
+                if (!list.contains(new CoordAndRange(x, y, z, horizRange, vertRange))) {
+                    for (CoordAndRange coords : list) {
+                        int xLocation = coords.xCoord;
+                        int yLocation = coords.yCoord;
+                        int zLocation = coords.zCoord;
 
-                            if (xLocation == x && yLocation == y && zLocation == z) {
-                                list.remove(coords);
-                                hasFoundAndRemoved = true;
-                                break;
-                            }
+                        if (xLocation == x && yLocation == y && zLocation == z) {
+                            list.remove(coords);
+                            break;
                         }
-                        list.add(new CoordAndRange(x, y, z, horizRange, vertRange));
                     }
-                } else {
-                    list = new LinkedList();
                     list.add(new CoordAndRange(x, y, z, horizRange, vertRange));
-                    AlchemicalWizardryEventHooks.respawnMap.put(new Integer(dimension), list);
                 }
             } else {
-                List<CoordAndRange> list = new LinkedList();
+                list = new LinkedList<>();
                 list.add(new CoordAndRange(x, y, z, horizRange, vertRange));
-                AlchemicalWizardryEventHooks.respawnMap.put(new Integer(dimension), list);
+                AlchemicalWizardryEventHooks.respawnMap.put(dimension, list);
             }
-
-            SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
+        } else {
+            List<CoordAndRange> list = new LinkedList<>();
+            list.add(new CoordAndRange(x, y, z, horizRange, vertRange));
+            AlchemicalWizardryEventHooks.respawnMap.put(dimension, list);
         }
+
+        SoulNetworkHandler.syphonFromNetwork(owner, this.getCostPerRefresh());
     }
 
     @Override
@@ -74,7 +72,7 @@ public class RitualEffectSpawnWard extends RitualEffect {
 
     @Override
     public List<RitualComponent> getRitualComponentList() {
-        ArrayList<RitualComponent> wardRitualRitual = new ArrayList();
+        ArrayList<RitualComponent> wardRitualRitual = new ArrayList<>();
 
         for (int i = 2; i <= 4; i++) {
             if (i <= 3) {

@@ -24,14 +24,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class SigilVoid extends ItemBucket implements ArmourUpgrade, ISigil {
 
-    private int isFull;
     private int energyUsed;
 
     public SigilVoid() {
         super(null);
         this.maxStackSize = 1;
         setEnergyUsed(AlchemicalWizardry.sigilVoidCost);
-        isFull = 0;
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
     }
 
@@ -42,9 +40,9 @@ public class SigilVoid extends ItemBucket implements ArmourUpgrade, ISigil {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.voidsigil.desc"));
-        addBindingInformation(stack, par3List);
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.voidsigil.desc"));
+        addBindingInformation(stack, tooltip);
     }
 
     @Override
@@ -63,6 +61,7 @@ public class SigilVoid extends ItemBucket implements ArmourUpgrade, ISigil {
         return this.energyUsed;
     }
 
+    @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         return stack;
     }
@@ -126,14 +125,6 @@ public class SigilVoid extends ItemBucket implements ArmourUpgrade, ISigil {
             return true;
         }
 
-        return false;
-    }
-
-    /**
-     * Attempts to place the liquid contained inside the bucket.
-     */
-    public boolean tryPlaceContainedLiquid(World par1World, double par2, double par4, double par6, int par8, int par9,
-            int par10) {
         return false;
     }
 

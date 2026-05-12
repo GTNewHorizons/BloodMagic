@@ -3,7 +3,6 @@ package WayofTime.alchemicalWizardry.common.entity.projectile;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
@@ -12,26 +11,17 @@ import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 
 public class WaterProjectile extends EnergyBlastProjectile {
 
-    public WaterProjectile(World par1World) {
-        super(par1World);
+    public WaterProjectile(World world) {
+        super(world);
     }
 
-    public WaterProjectile(World par1World, double par2, double par4, double par6) {
-        super(par1World, par2, par4, par6);
+    public WaterProjectile(World world, EntityLivingBase player, int damage) {
+        super(world, player, damage);
     }
 
-    public WaterProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage) {
-        super(par1World, par2EntityPlayer, damage);
-    }
-
-    public WaterProjectile(World par1World, EntityLivingBase par2EntityPlayer, int damage, int maxTicksInAir,
-            double posX, double posY, double posZ, float rotationYaw, float rotationPitch) {
-        super(par1World, par2EntityPlayer, damage, maxTicksInAir, posX, posY, posZ, rotationYaw, rotationPitch);
-    }
-
-    @Override
-    public DamageSource getDamageSource() {
-        return DamageSource.causeMobDamage(shootingEntity);
+    public WaterProjectile(World world, EntityLivingBase player, int damage, int maxTicksInAir, double posX,
+            double posY, double posZ, float rotationYaw, float rotationPitch) {
+        super(world, player, damage, maxTicksInAir, posX, posY, posZ, rotationYaw, rotationPitch);
     }
 
     @Override
@@ -42,26 +32,22 @@ public class WaterProjectile extends EnergyBlastProjectile {
             }
 
             this.onImpact(mop.entityHit);
-        } else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {}
+        }
 
         this.setDead();
     }
 
     @Override
-    public void onImpact(Entity mop) {
-        if (mop == shootingEntity && ticksInAir > 3) {
+    public void onImpact(Entity target) {
+        if (target == shootingEntity && ticksInAir > 3) {
             this.setDead();
-        } else {
-            if (mop instanceof EntityLivingBase) {
-                if (((EntityLivingBase) mop).isImmuneToFire()) {
-                    doDamage(projectileDamage * 2, mop);
-                    ((EntityLivingBase) mop)
-                            .addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionDrowning.id, 80, 1));
-                } else {
-                    doDamage(projectileDamage, mop);
-                    ((EntityLivingBase) mop)
-                            .addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionDrowning.id, 80, 0));
-                }
+        } else if (target instanceof EntityLivingBase entity) {
+            if (target.isImmuneToFire()) {
+                doDamage(projectileDamage * 2, target);
+                entity.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionDrowning.id, 80, 1));
+            } else {
+                doDamage(projectileDamage, target);
+                entity.addPotionEffect(new PotionEffect(AlchemicalWizardry.customPotionDrowning.id, 80, 0));
             }
         }
 

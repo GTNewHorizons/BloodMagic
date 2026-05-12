@@ -44,16 +44,17 @@ public class ItemBloodLetterPack extends ItemArmor implements ArmourUpgrade, IAl
     }
 
     @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        par3List.add(StatCollector.translateToLocal("tooltip.bloodletterpack.desc"));
+    public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
+        tooltip.add(StatCollector.translateToLocal("tooltip.bloodletterpack.desc"));
 
-        if (!(par1ItemStack.getTagCompound() == null)) {
-            par3List.add(StatCollector.translateToLocal("tooltip.lp.storedlp") + " " + this.getStoredLP(par1ItemStack));
+        if (!(item.getTagCompound() == null)) {
+            tooltip.add(StatCollector.translateToLocal("tooltip.lp.storedlp") + " " + this.getStoredLP(item));
         }
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
+    public IIcon getIconFromDamage(int meta) {
         return this.plateIcon;
     }
 
@@ -80,11 +81,9 @@ public class ItemBloodLetterPack extends ItemArmor implements ArmourUpgrade, IAl
 
                 TileEntity tile = world.getTileEntity(x, y, z);
 
-                if (!(tile instanceof TEAltar)) {
+                if (!(tile instanceof TEAltar altar)) {
                     return super.onItemRightClick(itemStack, world, player);
                 }
-
-                TEAltar altar = (TEAltar) tile;
 
                 if (!altar.isActive()) {
                     int amount = this.getStoredLP(itemStack);
