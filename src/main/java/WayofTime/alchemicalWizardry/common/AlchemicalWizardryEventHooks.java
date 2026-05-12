@@ -491,23 +491,17 @@ public class AlchemicalWizardryEventHooks {
             List<Entity> list = event.entityLiving.worldObj.getEntitiesWithinAABB(Entity.class, axisalignedbb);
 
             for (Entity projectile : list) {
-                if (projectile == null) {
-                    continue;
-                }
-
                 if (!(projectile instanceof IProjectile)
                         || (AlchemicalWizardry.isBotaniaLoaded && isManaBurst(projectile))) {
                     continue;
                 }
 
-                Entity throwingEntity = null;
-
-                switch (projectile) {
-                    case EntityArrow entityArrow -> throwingEntity = entityArrow.shootingEntity;
-                    case EnergyBlastProjectile energyBlastProjectile -> throwingEntity = energyBlastProjectile.shootingEntity;
-                    case EntityThrowable entityThrowable -> throwingEntity = entityThrowable.getThrower();
-                    default -> {}
-                }
+                Entity throwingEntity = switch (projectile) {
+                    case EntityArrow entityArrow -> entityArrow.shootingEntity;
+                    case EnergyBlastProjectile energyBlastProjectile -> energyBlastProjectile.shootingEntity;
+                    case EntityThrowable entityThrowable -> entityThrowable.getThrower();
+                    default -> null;
+                };
 
                 if (throwingEntity != null && throwingEntity.equals(entity)) {
                     continue;
