@@ -17,10 +17,10 @@ public class TESpellParadigmBlock extends TESpellBlock implements ISpellParadigm
     public SpellParadigm getSpellParadigm() {
         int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
         return switch (meta) {
-            case 1 -> new SpellParadigmSelf();
+            case 0 -> new SpellParadigmProjectile();
             case 2 -> new SpellParadigmMelee();
             case 3 -> new SpellParadigmTool();
-            default -> new SpellParadigmProjectile();
+            default -> new SpellParadigmSelf();
         };
     }
 
