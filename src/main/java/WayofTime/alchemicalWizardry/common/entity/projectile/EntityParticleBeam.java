@@ -97,9 +97,9 @@ public class EntityParticleBeam extends Entity implements IProjectile, IThrowabl
         motionZ = z;
 
         if (prevRotationPitch == 0.0F && prevRotationYaw == 0.0F) {
-            float var7 = MathHelper.sqrt_double(x * x + z * z);
+            float horizontalDistance = MathHelper.sqrt_double(x * x + z * z);
             prevRotationYaw = rotationYaw = (float) (Math.atan2(x, z) * 180.0D / Math.PI);
-            prevRotationPitch = rotationPitch = (float) (Math.atan2(y, var7) * 180.0D / Math.PI);
+            prevRotationPitch = rotationPitch = (float) (Math.atan2(y, horizontalDistance) * 180.0D / Math.PI);
             prevRotationYaw = rotationYaw;
             this.setLocationAndAngles(posX, posY, posZ, rotationYaw, rotationPitch);
         }
