@@ -201,24 +201,23 @@ public class SpellTeleport extends HomSpell {
         if (!clear) {
             SpellTeleport.moveEntityViaTeleport(entityLiving, lastX, lastY, lastZ);
             return false;
-        } else {
-            short short1 = 128;
-
-            for (posY = 0; posY < short1; ++posY) {
-                double d6 = (double) posY / ((double) short1 - 1.0D);
-                float f = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                float f1 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                float f2 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
-                double d7 = lastX + (entityLiving.posX - lastX) * d6
-                        + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
-                double d8 = lastY + (entityLiving.posY - lastY) * d6
-                        + entityLiving.worldObj.rand.nextDouble() * (double) entityLiving.height;
-                double d9 = lastZ + (entityLiving.posZ - lastZ) * d6
-                        + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
-                entityLiving.worldObj.spawnParticle("portal", d7, d8, d9, f, f1, f2);
-            }
-            return true;
         }
+        short short1 = 128;
+
+        for (posY = 0; posY < short1; ++posY) {
+            double d6 = (double) posY / ((double) short1 - 1.0D);
+            float f = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
+            float f1 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
+            float f2 = (entityLiving.worldObj.rand.nextFloat() - 0.5F) * 0.2F;
+            double d7 = lastX + (entityLiving.posX - lastX) * d6
+                    + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
+            double d8 = lastY + (entityLiving.posY - lastY) * d6
+                    + entityLiving.worldObj.rand.nextDouble() * (double) entityLiving.height;
+            double d9 = lastZ + (entityLiving.posZ - lastZ) * d6
+                    + (entityLiving.worldObj.rand.nextDouble() - 0.5D) * (double) entityLiving.width * 2.0D;
+            entityLiving.worldObj.spawnParticle("portal", d7, d8, d9, f, f1, f2);
+        }
+        return true;
     }
 
     public static void moveEntityViaTeleport(EntityLivingBase entityLiving, double x, double y, double z) {
