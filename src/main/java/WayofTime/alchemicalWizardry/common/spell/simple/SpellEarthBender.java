@@ -148,10 +148,9 @@ public class SpellEarthBender extends HomSpell {
             for (int i = -range; i <= range; i++) {
                 for (int j = -1; j <= 1; j++) {
                     for (int k = -range; k <= range; k++) {
-                        if (world.getBlock((int) player.posX + i, (int) player.posY + j, (int) player.posZ + k)
-                                == Blocks.water
-                                || world.getBlock((int) player.posX + i, (int) player.posY + j, (int) player.posZ + k)
-                                        == Blocks.flowing_water) {
+                        Block block = world
+                                .getBlock((int) player.posX + i, (int) player.posY + j, (int) player.posZ + k);
+                        if (block == Blocks.water || block == Blocks.flowing_water) {
                             if (world.rand.nextInt(2) == 0) {
                                 world.setBlock(
                                         (int) player.posX + i,
