@@ -111,7 +111,7 @@ public class BoundAxe extends ItemAxe implements IBindable {
                     }
 
                     // getStrVsBlock
-                    if (func_150893_a(item, block) <= 1 && !(block instanceof BlockLeavesBase)) {
+                    if (func_150893_a(item, block) <= 1f && !(block instanceof BlockLeavesBase)) {
                         continue;
                     }
                     if (silkTouch && block.canSilkHarvest(world, player, x, y, z, meta)) {
