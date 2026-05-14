@@ -134,22 +134,21 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
             return itemStack;
         }
 
-        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, false);
-
-        if (movingobjectposition == null) {
-            if (player.isSneaking()) {
+        // Sneak wipes the source first, then the reagent — regardless of where the cursor points.
+        if (player.isSneaking()) {
+            if (this.getHasSavedCoordinates(itemStack)) {
                 this.setHasSavedCoordinates(itemStack, false);
-                if (!itemStack.hasTagCompound()) {
-                    itemStack.setTagCompound(new NBTTagCompound());
-                }
-                itemStack.getTagCompound().setString("reagent", "");
                 player.addChatComponentMessage(new ChatComponentTranslation("message.attunedcrystal.clearing"));
+            } else if (this.getReagent(itemStack) != null) {
+                this.clearReagent(itemStack);
+                player.addChatComponentMessage(new ChatComponentTranslation("message.attunedcrystal.reagentcleared"));
             }
-
             return itemStack;
         }
 
-        if (movingobjectposition.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
+        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, false);
+        if (movingobjectposition == null
+                || movingobjectposition.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
             return itemStack;
         }
 
@@ -162,92 +161,30 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
             return itemStack;
         }
 
-        if (player.isSneaking()) {
-            if (this.getHasSavedCoordinates(itemStack)) {
-                Int3 coords = this.getCoordinates(itemStack);
-                int dimension = this.getDimension(itemStack);
-
-                if (coords == null) {
-                    return itemStack;
-                }
-
-                // Sneak+right-click saved source block again -> clear all of reagent's connections
-                if (coords.x() == x && coords.y() == y && coords.z() == z) {
-                    TileEntity pastTile = world.getTileEntity(coords.x(), coords.y(), coords.z());
-                    if (!(pastTile instanceof TEReagentConduit pastRelay)) {
-                        player.addChatComponentMessage(
-                                new ChatComponentTranslation("message.attunedcrystal.error.cannotfind"));
-                        return itemStack;
-                    }
-                    Reagent reagent = this.getReagent(itemStack);
-                    if (reagent == null) {
-                        player.addChatComponentMessage(
-                                new ChatComponentTranslation("message.attunedcrystal.error.noreagent"));
-                        return itemStack;
-                    }
-                    pastRelay.reagentTargetList.remove(reagent);
-                    this.setHasSavedCoordinates(itemStack, false);
-                    player.addChatComponentMessage(
-                            new ChatComponentTranslation("message.attunedcrystal.clearedreagent", reagent.name()));
-                    world.markBlockForUpdate(coords.x(), coords.y(), coords.z());
-                    return itemStack;
-                }
-
-                if (dimension != world.provider.dimensionId || Math.abs(coords.x() - x) > maxDistance
-                        || Math.abs(coords.y() - y) > maxDistance
-                        || Math.abs(coords.z() - z) > maxDistance) {
-                    player.addChatComponentMessage(
-                            new ChatComponentTranslation("message.attunedcrystal.error.toofar"));
-                    return itemStack;
-                }
-
-                TileEntity pastTile = world.getTileEntity(coords.x(), coords.y(), coords.z());
-                if (!(pastTile instanceof TEReagentConduit pastRelay)) {
-                    player.addChatComponentMessage(
-                            new ChatComponentTranslation("message.attunedcrystal.error.cannotfind"));
-                    return itemStack;
-                }
-
-                Reagent reagent = this.getReagent(itemStack);
-                if (reagent == null) {
-                    player.addChatComponentMessage(
-                            new ChatComponentTranslation("message.attunedcrystal.error.noreagent"));
-                    return itemStack;
-                }
-
-                boolean removed = pastRelay.removeReagentDestinationViaActual(reagent, x, y, z);
-                player.addChatComponentMessage(
-                        new ChatComponentTranslation(
-                                removed ? "message.attunedcrystal.removed"
-                                        : "message.attunedcrystal.error.notremoved"));
-                world.markBlockForUpdate(coords.x(), coords.y(), coords.z());
-                return itemStack;
-            }
-
-            // No saved coords -> cycle reagent selection
-            ReagentContainerInfo[] infos = relay.getContainerInfo(ForgeDirection.UNKNOWN);
-            if (infos != null) {
-                List<Reagent> reagentList = getReagents(infos);
-                if (reagentList.isEmpty()) {
-                    return itemStack;
-                }
-                Reagent pastReagent = this.getReagent(itemStack);
-                int reagentLocation = reagentList.indexOf(pastReagent);
-                if (reagentLocation == -1 || reagentLocation + 1 >= reagentList.size()) {
-                    this.setReagentWithNotification(itemStack, reagentList.getFirst(), player);
-                } else {
-                    this.setReagentWithNotification(itemStack, reagentList.get(reagentLocation + 1), player);
-                }
-            }
-            return itemStack;
-        }
-
-        // Not sneaking
         if (this.getHasSavedCoordinates(itemStack)) {
             Int3 coords = this.getCoordinates(itemStack);
             int dimension = this.getDimension(itemStack);
-
             if (coords == null) {
+                return itemStack;
+            }
+
+            // Re-clicking the saved source cycles its reagents, never tries to self-link.
+            if (dimension == world.provider.dimensionId && coords.x() == x
+                    && coords.y() == y
+                    && coords.z() == z) {
+                List<Reagent> reagentList = collectReagents(relay);
+                if (reagentList.size() <= 1) {
+                    player.addChatComponentMessage(
+                            new ChatComponentTranslation("message.attunedcrystal.error.cannotlinktoself"));
+                    return itemStack;
+                }
+
+                Reagent pastReagent = this.getReagent(itemStack);
+                int reagentLocation = reagentList.indexOf(pastReagent);
+                Reagent next = (reagentLocation == -1 || reagentLocation + 1 >= reagentList.size())
+                        ? reagentList.getFirst()
+                        : reagentList.get(reagentLocation + 1);
+                this.setReagentWithNotification(itemStack, next, player);
                 return itemStack;
             }
 
@@ -260,6 +197,8 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
 
             TileEntity pastTile = world.getTileEntity(coords.x(), coords.y(), coords.z());
             if (!(pastTile instanceof TEReagentConduit pastRelay)) {
+                // Saved source is gone — clear it so the player can start over without a manual reset.
+                this.setHasSavedCoordinates(itemStack, false);
                 player.addChatComponentMessage(
                         new ChatComponentTranslation("message.attunedcrystal.error.cannotfind"));
                 return itemStack;
@@ -280,21 +219,61 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
                 int max = pastRelay.maxConnextions;
                 player.addChatComponentMessage(
                         new ChatComponentTranslation("message.attunedcrystal.linked", reagent.name(), used, max));
+                // Successful link: clear the source so the next click starts a fresh link, but
+                // keep the reagent so the player can fan out to multiple destinations quickly.
+                this.setHasSavedCoordinates(itemStack, false);
             } else {
                 player.addChatComponentMessage(
                         new ChatComponentTranslation("message.attunedcrystal.error.noconnections"));
             }
             world.markBlockForUpdate(coords.x(), coords.y(), coords.z());
-        } else {
-            int dimension = world.provider.dimensionId;
-            this.setDimension(itemStack, dimension);
-            this.setCoordinates(itemStack, new Int3(x, y, z));
-
-            player.addChatComponentMessage(
-                    new ChatComponentTranslation("message.attunedcrystal.linking", x, y, z));
+            return itemStack;
         }
 
+        // No saved source — this click saves one and (when useful) copies its reagent.
+        if (tile instanceof TEReagentConduit conduit && conduit.getTotalConnections() >= conduit.maxConnextions) {
+            player.addChatComponentMessage(
+                    new ChatComponentTranslation("message.attunedcrystal.error.sourcefull"));
+            return itemStack;
+        }
+
+        List<Reagent> reagentList = collectReagents(relay);
+        Reagent currentReagent = this.getReagent(itemStack);
+        if (reagentList.isEmpty() && currentReagent == null) {
+            player.addChatComponentMessage(
+                    new ChatComponentTranslation("message.attunedcrystal.error.nothingtocopy"));
+            return itemStack;
+        }
+
+        // Keep the crystal's existing reagent if the source has it (or if the source is empty);
+        // otherwise replace with the source's first tank.
+        if (!reagentList.isEmpty() && (currentReagent == null || !reagentList.contains(currentReagent))) {
+            this.setReagentWithNotification(itemStack, reagentList.getFirst(), player);
+        }
+
+        this.setDimension(itemStack, world.provider.dimensionId);
+        this.setCoordinates(itemStack, new Int3(x, y, z));
+        player.addChatComponentMessage(new ChatComponentTranslation("message.attunedcrystal.linking", x, y, z));
+
         return itemStack;
+    }
+
+    private static List<Reagent> collectReagents(IReagentHandler relay) {
+        List<Reagent> reagentList = new LinkedList<>();
+        ReagentContainerInfo[] infos = relay.getContainerInfo(ForgeDirection.UNKNOWN);
+        if (infos == null) {
+            return reagentList;
+        }
+        for (ReagentContainerInfo info : infos) {
+            if (info == null) continue;
+            ReagentStack reagentStack = info.reagent;
+            if (reagentStack == null) continue;
+            Reagent reagent = reagentStack.reagent;
+            if (reagent != null && !reagentList.contains(reagent)) {
+                reagentList.add(reagent);
+            }
+        }
+        return reagentList;
     }
 
     public static List<Reagent> getReagents(ReagentContainerInfo[] infos) {
@@ -311,6 +290,13 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
             }
         }
         return reagentList;
+    }
+
+    public void clearReagent(ItemStack stack) {
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
+        }
+        stack.getTagCompound().setString("reagent", "");
     }
 
     public void setCoordinates(ItemStack stack, Int3 coords) {
