@@ -250,7 +250,6 @@ public class ClientProxy extends CommonProxy {
         Object ob = new ClientEventHandler();
         FMLCommonHandler.instance().bus().register(ob);
         MinecraftForge.EVENT_BUS.register(ob);
-        KeyBindings.init();
         MinecraftForge.EVENT_BUS.register(new ScrollHelper());
     }
 }
