@@ -169,9 +169,7 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
             }
 
             // Re-clicking the saved source cycles its reagents, never tries to self-link.
-            if (dimension == world.provider.dimensionId && coords.x() == x
-                    && coords.y() == y
-                    && coords.z() == z) {
+            if (dimension == world.provider.dimensionId && coords.x() == x && coords.y() == y && coords.z() == z) {
                 List<Reagent> reagentList = collectReagents(relay);
                 if (reagentList.size() <= 1) {
                     player.addChatComponentMessage(
@@ -199,21 +197,18 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
             if (!(pastTile instanceof TEReagentConduit pastRelay)) {
                 // Saved source is gone — clear it so the player can start over without a manual reset.
                 this.setHasSavedCoordinates(itemStack, false);
-                player.addChatComponentMessage(
-                        new ChatComponentTranslation("message.attunedcrystal.error.cannotfind"));
+                player.addChatComponentMessage(new ChatComponentTranslation("message.attunedcrystal.error.cannotfind"));
                 return itemStack;
             }
 
             Reagent reagent = this.getReagent(itemStack);
             if (reagent == null) {
-                player.addChatComponentMessage(
-                        new ChatComponentTranslation("message.attunedcrystal.error.noreagent"));
+                player.addChatComponentMessage(new ChatComponentTranslation("message.attunedcrystal.error.noreagent"));
                 return itemStack;
             }
 
             if (pastRelay.hasReagentDestination(reagent, x, y, z)) {
-                player.addChatComponentMessage(
-                        new ChatComponentTranslation("message.attunedcrystal.error.duplicate"));
+                player.addChatComponentMessage(new ChatComponentTranslation("message.attunedcrystal.error.duplicate"));
             } else if (pastRelay.addReagentDestinationViaActual(reagent, x, y, z)) {
                 int used = pastRelay.getTotalConnections();
                 int max = pastRelay.maxConnextions;
@@ -232,16 +227,14 @@ public class ItemAttunedCrystal extends Item implements IReagentManipulator {
 
         // No saved source — this click saves one and (when useful) copies its reagent.
         if (tile instanceof TEReagentConduit conduit && conduit.getTotalConnections() >= conduit.maxConnextions) {
-            player.addChatComponentMessage(
-                    new ChatComponentTranslation("message.attunedcrystal.error.sourcefull"));
+            player.addChatComponentMessage(new ChatComponentTranslation("message.attunedcrystal.error.sourcefull"));
             return itemStack;
         }
 
         List<Reagent> reagentList = collectReagents(relay);
         Reagent currentReagent = this.getReagent(itemStack);
         if (reagentList.isEmpty() && currentReagent == null) {
-            player.addChatComponentMessage(
-                    new ChatComponentTranslation("message.attunedcrystal.error.nothingtocopy"));
+            player.addChatComponentMessage(new ChatComponentTranslation("message.attunedcrystal.error.nothingtocopy"));
             return itemStack;
         }
 

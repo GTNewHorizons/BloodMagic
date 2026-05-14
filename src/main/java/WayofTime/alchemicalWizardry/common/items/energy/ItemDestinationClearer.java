@@ -96,8 +96,7 @@ public class ItemDestinationClearer extends Item implements IReagentManipulator 
                         Iterator<Int3> it = coords.iterator();
                         while (it.hasNext()) {
                             Int3 off = it.next();
-                            if (src.xCoord + off.x() == x && src.yCoord + off.y() == y
-                                    && src.zCoord + off.z() == z) {
+                            if (src.xCoord + off.x() == x && src.yCoord + off.y() == y && src.zCoord + off.z() == z) {
                                 it.remove();
                                 changed = true;
                                 totalRemoved++;
