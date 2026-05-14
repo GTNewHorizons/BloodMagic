@@ -65,6 +65,7 @@ import WayofTime.alchemicalWizardry.common.CommonProxy;
 import WayofTime.alchemicalWizardry.common.LifeBucketHandler;
 import WayofTime.alchemicalWizardry.common.LifeEssence;
 import WayofTime.alchemicalWizardry.common.ModLivingDropsEvent;
+import WayofTime.alchemicalWizardry.common.NewPacketHandler;
 import WayofTime.alchemicalWizardry.common.achievements.ModAchievements;
 import WayofTime.alchemicalWizardry.common.alchemy.CombinedPotionRegistry;
 import WayofTime.alchemicalWizardry.common.block.ArmourForge;
@@ -689,6 +690,7 @@ public class AlchemicalWizardry {
         HoldingPacketHandler.init();
         ClientToServerPacketHandler.init();
         ModAchievements.init();
+        NewPacketHandler.init();
     }
 
     /**
