@@ -96,6 +96,7 @@ public class IMCForNEI {
         sendInfoPage("AWWayofTime masterStone,blockAlchemicCalcinator", "nei.infopage.reagents.1");
         sendInfoPage("AWWayofTime masterStone,blockAlchemicCalcinator|<AWWayofTime:terrae>", "nei.infopage.reagents.2");
         sendInfoPage("AWWayofTime masterStone,blockAlchemicCalcinator,itemAttunedCrystal", "nei.infopage.reagents.3");
+        sendInfoPage("AWWayofTime masterStone,blockAlchemicCalcinator,itemAttunedCrystal", "nei.infopage.reagents.3b");
         sendInfoPage(
                 "AWWayofTime masterStone,blockAlchemicCalcinator,itemTankSegmenter,itemDestinationClearer",
                 "nei.infopage.reagents.4");
