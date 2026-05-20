@@ -40,7 +40,6 @@ public class ItemDestinationClearer extends Item implements IReagentManipulator 
     public void addInformation(ItemStack item, EntityPlayer player, List<String> tooltip, boolean adv) {
         tooltip.add(StatCollector.translateToLocal("tooltip.destclearer.desc1"));
         tooltip.add(StatCollector.translateToLocal("tooltip.destclearer.desc2"));
-        tooltip.add(StatCollector.translateToLocal("tooltip.destclearer.desc3"));
     }
 
     @Override
