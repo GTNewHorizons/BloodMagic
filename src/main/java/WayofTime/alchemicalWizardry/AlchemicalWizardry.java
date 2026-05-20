@@ -65,6 +65,7 @@ import WayofTime.alchemicalWizardry.common.CommonProxy;
 import WayofTime.alchemicalWizardry.common.LifeBucketHandler;
 import WayofTime.alchemicalWizardry.common.LifeEssence;
 import WayofTime.alchemicalWizardry.common.ModLivingDropsEvent;
+import WayofTime.alchemicalWizardry.common.NewPacketHandler;
 import WayofTime.alchemicalWizardry.common.achievements.ModAchievements;
 import WayofTime.alchemicalWizardry.common.alchemy.CombinedPotionRegistry;
 import WayofTime.alchemicalWizardry.common.block.ArmourForge;
@@ -486,6 +487,7 @@ public class AlchemicalWizardry {
     public static boolean isChiselLoaded;
     public static boolean isFMPLoaded;
     public static boolean isPneumaticCraftLoaded;
+    public static boolean isEndlessIdsLoaded;
 
     public static boolean wimpySettings;
     public static boolean respawnWithDebuff;
@@ -689,6 +691,7 @@ public class AlchemicalWizardry {
         HoldingPacketHandler.init();
         ClientToServerPacketHandler.init();
         ModAchievements.init();
+        NewPacketHandler.init();
     }
 
     /**
@@ -3246,6 +3249,7 @@ public class AlchemicalWizardry {
     public void postInit(FMLPostInitializationEvent event) {
         proxy.registerPostSideObjects();
         isGregTechLoaded = Loader.isModLoaded("gregtech");
+        isEndlessIdsLoaded = Loader.isModLoaded("endlessids");
         // TODO Thaumcraft Integration
         if (Loader.isModLoaded("Thaumcraft")) {
             isThaumcraftLoaded = true;

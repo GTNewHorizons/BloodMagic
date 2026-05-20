@@ -82,7 +82,6 @@ public class EntitySmallEarthGolem extends EntityDemon implements IRangedAttackM
     protected void entityInit() {
         super.entityInit();
         this.dataWatcher.addObject(18, this.getHealth());
-        this.setCombatTask();
     }
 
     protected void playStepSound(int par1, int par2, int par3, int par4) {

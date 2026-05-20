@@ -19,6 +19,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 
+import com.falsepattern.endlessids.mixin.helpers.ChunkBiomeHook;
+
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.ModBlocks;
 import WayofTime.alchemicalWizardry.api.rituals.IMasterRitualStone;
@@ -217,8 +219,10 @@ public class RitualEffectBiomeChanger extends RitualEffect {
             }
         }
 
+        boolean eidLoaded = AlchemicalWizardry.isEndlessIdsLoaded;
         for (Chunk chunk : chunkList) {
-            byte[] byteArray = chunk.getBiomeArray();
+            byte[] byteArray = eidLoaded ? null : chunk.getBiomeArray();
+            short[] shortArray = eidLoaded ? ((ChunkBiomeHook) chunk).getBiomeShortArray() : null;
             BitSet mask = new BitSet();
             boolean changed = false;
 
@@ -229,8 +233,13 @@ public class RitualEffectBiomeChanger extends RitualEffect {
                         int offsetX = (chunk.xPosition << 4 | cX) - (x - range);
                         if (0 <= offsetX && offsetX < 2 * range + 1) {
                             if (boolList[offsetX][offsetZ]) {
-                                mask.set(cZ << 4 | cX, true);
-                                byteArray[cZ << 4 | cX] = (byte) biomeID;
+                                int index = cZ << 4 | cX;
+                                mask.set(index, true);
+                                if (eidLoaded) {
+                                    shortArray[index] = (short) biomeID;
+                                } else {
+                                    byteArray[index] = (byte) biomeID;
+                                }
                                 changed = true;
                             }
                         }
@@ -239,10 +248,13 @@ public class RitualEffectBiomeChanger extends RitualEffect {
             }
 
             if (changed) {
-                chunk.setBiomeArray(byteArray);
+                if (eidLoaded) {
+                    ((ChunkBiomeHook) chunk).setBiomeShortArray(shortArray);
+                } else {
+                    chunk.setBiomeArray(byteArray);
+                }
                 NewPacketHandler.INSTANCE.sendToDimension(
-                        NewPacketHandler
-                                .getGaiaBiomeChangePacket(chunk.xPosition, chunk.zPosition, (byte) biomeID, mask),
+                        NewPacketHandler.getGaiaBiomeChangePacket(chunk.xPosition, chunk.zPosition, biomeID, mask),
                         world.provider.dimensionId);
             }
         }
