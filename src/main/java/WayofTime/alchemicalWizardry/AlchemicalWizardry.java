@@ -487,6 +487,7 @@ public class AlchemicalWizardry {
     public static boolean isChiselLoaded;
     public static boolean isFMPLoaded;
     public static boolean isPneumaticCraftLoaded;
+    public static boolean isEndlessIdsLoaded;
 
     public static boolean wimpySettings;
     public static boolean respawnWithDebuff;
@@ -3248,6 +3249,7 @@ public class AlchemicalWizardry {
     public void postInit(FMLPostInitializationEvent event) {
         proxy.registerPostSideObjects();
         isGregTechLoaded = Loader.isModLoaded("gregtech");
+        isEndlessIdsLoaded = Loader.isModLoaded("endlessids");
         // TODO Thaumcraft Integration
         if (Loader.isModLoaded("Thaumcraft")) {
             isThaumcraftLoaded = true;

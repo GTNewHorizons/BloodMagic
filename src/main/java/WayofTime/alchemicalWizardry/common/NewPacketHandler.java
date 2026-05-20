@@ -17,6 +17,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.falsepattern.endlessids.mixin.helpers.ChunkBiomeHook;
+
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.ColourAndCoords;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
@@ -283,13 +285,23 @@ public enum NewPacketHandler {
         protected void channelRead0(ChannelHandlerContext ctx, GaiaBiomeChangeMessage msg) {
             Chunk chunk = AlchemicalWizardry.proxy.getClientWorld().getChunkFromChunkCoords(msg.chunkX, msg.chunkZ);
             if (chunk != null) {
-                byte[] biomeArray = chunk.getBiomeArray();
-                for (int i = 0; i < 16 * 16; ++i) {
-                    if (msg.mask.get(i)) {
-                        biomeArray[i] = msg.biome;
+                if (AlchemicalWizardry.isEndlessIdsLoaded) {
+                    short[] biomeArray = ((ChunkBiomeHook) chunk).getBiomeShortArray();
+                    for (int i = 0; i < 16 * 16; ++i) {
+                        if (msg.mask.get(i)) {
+                            biomeArray[i] = (short) msg.biome;
+                        }
                     }
+                    ((ChunkBiomeHook) chunk).setBiomeShortArray(biomeArray);
+                } else {
+                    byte[] biomeArray = chunk.getBiomeArray();
+                    for (int i = 0; i < 16 * 16; ++i) {
+                        if (msg.mask.get(i)) {
+                            biomeArray[i] = (byte) msg.biome;
+                        }
+                    }
+                    chunk.setBiomeArray(biomeArray);
                 }
-                chunk.setBiomeArray(biomeArray);
             }
         }
     }
@@ -432,7 +444,7 @@ public enum NewPacketHandler {
 
         int chunkX;
         int chunkZ;
-        byte biome;
+        int biome;
         BitSet mask;
         // One bit per coordinate in a chunk, 16*16 bits = 32 bytes
         public static final int maskByteCount = 32;
@@ -629,7 +641,7 @@ public enum NewPacketHandler {
                     GaiaBiomeChangeMessage m = (GaiaBiomeChangeMessage) msg;
                     target.writeInt(m.chunkX);
                     target.writeInt(m.chunkZ);
-                    target.writeByte(m.biome);
+                    target.writeInt(m.biome);
                     byte[] arr = Arrays.copyOf(m.mask.toByteArray(), GaiaBiomeChangeMessage.maskByteCount);
                     target.writeBytes(arr);
                 }
@@ -812,7 +824,7 @@ public enum NewPacketHandler {
                     GaiaBiomeChangeMessage m = (GaiaBiomeChangeMessage) msg;
                     m.chunkX = dat.readInt();
                     m.chunkZ = dat.readInt();
-                    m.biome = dat.readByte();
+                    m.biome = dat.readInt();
 
                     byte[] buffer = new byte[GaiaBiomeChangeMessage.maskByteCount];
                     dat.readBytes(buffer);
@@ -989,7 +1001,7 @@ public enum NewPacketHandler {
         return INSTANCE.channels.get(Side.CLIENT).generatePacketFrom(msg);
     }
 
-    public static Packet getGaiaBiomeChangePacket(int x, int z, byte biome, BitSet mask) {
+    public static Packet getGaiaBiomeChangePacket(int x, int z, int biome, BitSet mask) {
         GaiaBiomeChangeMessage msg = new GaiaBiomeChangeMessage();
         msg.index = 15;
         msg.chunkX = x;
