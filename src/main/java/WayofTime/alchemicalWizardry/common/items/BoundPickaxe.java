@@ -111,7 +111,6 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
                     int z = posZ + k;
                     Block block = world.getBlock(x, y, z);
                     int meta = world.getBlockMetadata(x, y, z);
-                    if (checkPermissions(world, x, y, z, block, meta, player)) continue;
 
                     if (block == null || block.getBlockHardness(world, x, y, z) == -1
                             || !world.canMineBlock(player, x, y, z)) {
@@ -119,7 +118,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
                     }
 
                     // getStrVsBlock
-                    if (func_150893_a(item, block) <= 1f) {
+                    if (func_150893_a(item, block) <= 1f || checkPermissions(world, x, y, z, block, meta, player)) {
                         continue;
                     }
                     if (silkTouch && block.canSilkHarvest(world, player, x, y, z, meta)) {

@@ -62,9 +62,8 @@ public class DigAreaEffect implements IDigAreaEffect {
 
         float localHardness = block.getBlockHardness(world, x, y, z);
 
-        if (localHardness - this.getHardnessDifference() > blockHardness
-                || BoundPickaxe.checkPermissions(world, x, y, z, block, meta, player)
-                || localHardness < 0) {
+        if (localHardness < 0 || localHardness - this.getHardnessDifference() > blockHardness
+                || BoundPickaxe.checkPermissions(world, x, y, z, block, meta, player)) {
             return;
         }
 
