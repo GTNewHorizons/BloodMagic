@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -149,6 +150,11 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
 
     public static boolean checkPermissions(World world, int x, int y, int z, Block block, int meta,
             EntityPlayer player) {
+        if (player instanceof EntityPlayerMP mpPlayer) {
+            return ForgeHooks.onBlockBreakEvent(world, mpPlayer.theItemInWorldManager.getGameType(), mpPlayer, x, y, z)
+                    .isCanceled();
+        }
+
         final BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(x, y, z, world, block, meta, player);
         return MinecraftForge.EVENT_BUS.post(event);
     }
