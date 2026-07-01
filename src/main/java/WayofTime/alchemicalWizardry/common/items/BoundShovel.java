@@ -114,7 +114,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
                     }
 
                     // getStrVsBlock
-                    if (func_150893_a(item, block) <= 1f
+                    if ((!ForgeHooks.isToolEffective(item, block, meta) && func_150893_a(item, block) <= 1f)
                             || BoundPickaxe.checkPermissions(world, x, y, z, block, meta, player)) {
                         continue;
                     }

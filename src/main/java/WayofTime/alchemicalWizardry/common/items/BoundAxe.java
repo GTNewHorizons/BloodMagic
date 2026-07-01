@@ -110,7 +110,8 @@ public class BoundAxe extends ItemAxe implements IBindable {
                     }
 
                     // getStrVsBlock
-                    if ((func_150893_a(item, block) <= 1f && !(block instanceof BlockLeavesBase))
+                    if ((!ForgeHooks.isToolEffective(item, block, meta) && func_150893_a(item, block) <= 1f
+                            && !(block instanceof BlockLeavesBase))
                             || BoundPickaxe.checkPermissions(world, x, y, z, block, meta, player)) {
                         continue;
                     }
