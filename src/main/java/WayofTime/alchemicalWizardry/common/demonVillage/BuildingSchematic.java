@@ -14,8 +14,13 @@ import WayofTime.alchemicalWizardry.common.demonVillage.tileEntity.TEDemonPortal
 public class BuildingSchematic {
 
     public final String name;
-    public final int buildingType = DemonBuilding.BUILDING_HOUSE;
     public final List<BlockSet> blockList = new ArrayList<>();
+    // Set by GSON when reading structure schematics, do not remove
+    public int doorX = 0;
+    public int doorZ = 0;
+    public int doorY = 0;
+    public int buildingTier = 0;
+    public int buildingType = DemonBuilding.BUILDING_HOUSE;
 
     public BuildingSchematic() {
         this("");
@@ -58,6 +63,13 @@ public class BuildingSchematic {
         }
 
         return holder;
+    }
+
+    public Int3 getGridSpotOfDoor() {
+        int gridX = (int) ((doorX + 2 * Math.signum(doorX)) / 5);
+        int gridZ = (int) ((doorZ + 2 * Math.signum(doorZ)) / 5);
+
+        return new Int3(gridX, doorY, gridZ);
     }
 
     public List<Int3> getGriddedPositions(ForgeDirection dir) {
