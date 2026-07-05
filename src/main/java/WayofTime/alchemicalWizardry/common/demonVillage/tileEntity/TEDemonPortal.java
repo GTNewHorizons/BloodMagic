@@ -1277,7 +1277,7 @@ public class TEDemonPortal extends TileEntity {
 
     public static void loadBuildingList() {
         String folder = "config/BloodMagic/schematics";
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Int3.class, new Int3Adapter()).create();
 
         File file = new File(folder);
         File[] files = file.listFiles();

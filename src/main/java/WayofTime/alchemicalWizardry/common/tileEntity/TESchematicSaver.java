@@ -14,7 +14,9 @@ import com.google.gson.GsonBuilder;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.ModBlocks;
+import WayofTime.alchemicalWizardry.api.Int3;
 import WayofTime.alchemicalWizardry.common.demonVillage.BuildingSchematic;
+import WayofTime.alchemicalWizardry.common.demonVillage.tileEntity.Int3Adapter;
 
 public class TESchematicSaver extends TileEntity {
 
@@ -42,7 +44,7 @@ public class TESchematicSaver extends TileEntity {
                 }
             }
         }
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Int3.class, new Int3Adapter()).create();
         String json = gson.toJson(schematic);
         try (Writer writer = new FileWriter("config/BloodMagic/schematics/" + new Random().nextInt() + ".json")) {
             writer.write(json);
