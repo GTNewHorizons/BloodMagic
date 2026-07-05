@@ -120,7 +120,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
 
                     // getStrVsBlock
                     if ((!ForgeHooks.isToolEffective(item, block, meta) && func_150893_a(item, block) <= 1f)
-                            || checkPermissions(world, x, y, z, block, meta, player)) {
+                            || isBreakDenied(world, x, y, z, block, meta, player)) {
                         continue;
                     }
                     if (silkTouch && block.canSilkHarvest(world, player, x, y, z, meta)) {
@@ -149,9 +149,11 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
         return item;
     }
 
-    public static boolean checkPermissions(World world, int x, int y, int z, Block block, int meta,
-            EntityPlayer player) {
-        if (player instanceof EntityPlayerMP mpPlayer) {
+    /**
+     * Fires the block break event so protection mods can veto the break. Returns true if the break was denied.
+     */
+    public static boolean isBreakDenied(World world, int x, int y, int z, Block block, int meta, EntityPlayer player) {
+        if (player instanceof EntityPlayerMP mpPlayer && mpPlayer.playerNetServerHandler != null) {
             return ForgeHooks.onBlockBreakEvent(world, mpPlayer.theItemInWorldManager.getGameType(), mpPlayer, x, y, z)
                     .isCanceled();
         }
