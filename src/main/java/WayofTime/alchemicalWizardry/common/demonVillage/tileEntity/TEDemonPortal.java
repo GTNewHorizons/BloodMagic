@@ -945,23 +945,19 @@ public class TEDemonPortal extends TileEntity {
     }
 
     public void rightClickBlock(EntityPlayer player, int side) {
-        // if (worldObj.isRemote)
-        // {
-        // return;
-        // }
-        //
-        // this.initialize();
-        //
-        // if (ForgeDirection.getOrientation(side) == ForgeDirection.UP)
-        // {
-        // this.createRandomBuilding(DemonBuilding.BUILDING_HOUSE, 0);
-        // } else if (ForgeDirection.getOrientation(side) == ForgeDirection.DOWN)
-        // {
-        // this.createRandomBuilding(DemonBuilding.BUILDING_PORTAL, 0);
-        // } else
-        // {
-        // this.createRandomRoad();
-        // }
+        if (worldObj.isRemote || !player.capabilities.isCreativeMode) {
+            return;
+        }
+
+        this.initialize();
+
+        if (ForgeDirection.getOrientation(side) == ForgeDirection.UP) {
+            this.createRandomBuilding(DemonBuilding.BUILDING_HOUSE, 0);
+        } else if (ForgeDirection.getOrientation(side) == ForgeDirection.DOWN) {
+            this.createRandomBuilding(DemonBuilding.BUILDING_PORTAL, 0);
+        } else {
+            this.createRandomRoad();
+        }
     }
 
     public int createRandomBuilding(int type, int tier) {
@@ -1281,7 +1277,7 @@ public class TEDemonPortal extends TileEntity {
 
     public static void loadBuildingList() {
         String folder = "config/BloodMagic/schematics";
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Int3.class, new Int3Adapter()).create();
 
         File file = new File(folder);
         File[] files = file.listFiles();
