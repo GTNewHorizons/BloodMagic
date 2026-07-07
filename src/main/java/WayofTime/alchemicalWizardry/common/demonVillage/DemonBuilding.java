@@ -20,9 +20,9 @@ public class DemonBuilding {
     public DemonBuilding(BuildingSchematic schematic) {
         this.schematic = schematic;
         this.buildingType = schematic.buildingType;
-        this.buildingTier = 0;
+        this.buildingTier = schematic.buildingTier;
         this.area = this.createGSHForSchematic(schematic);
-        this.doorGridSpace = new Int3(0, 0, 0);
+        this.doorGridSpace = schematic.getGridSpotOfDoor();
     }
 
     public String getName() {
@@ -67,18 +67,10 @@ public class DemonBuilding {
         int z = doorSpace.z();
 
         switch (sideOfRoad) {
-            case SOUTH:
-                z++;
-                break;
-            case EAST:
-                x++;
-                break;
-            case WEST:
-                x--;
-                break;
-            default:
-                z--;
-                break;
+            case SOUTH -> z++;
+            case EAST -> x++;
+            case WEST -> x--;
+            default -> z--;
         }
 
         return new Int3(x, yLevel, z);
