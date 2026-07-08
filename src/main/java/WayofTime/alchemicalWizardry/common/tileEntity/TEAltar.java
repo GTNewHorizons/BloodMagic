@@ -94,6 +94,7 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         consumptionMultiplier = 0;
         efficiencyMultiplier = 0;
         capacityMultiplier = 1;
+        orbCapacityMultiplier = 1;
         isUpgraded = false;
         upgradeLevel = 0;
         isResultBlock = false;
