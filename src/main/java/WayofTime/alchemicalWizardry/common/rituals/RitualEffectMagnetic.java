@@ -206,7 +206,7 @@ public class RitualEffectMagnetic extends RitualEffect {
     public int getRadiusForReagents(boolean hasTerrae, boolean hasOrbisTerrae) {
         if (hasTerrae) {
             if (hasOrbisTerrae) {
-                return 31;
+                return 34;
             } else {
                 return 7;
             }
