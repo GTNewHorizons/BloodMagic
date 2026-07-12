@@ -960,7 +960,7 @@
       ]
     },
     {
-      "blockid": "minecraft:chest",
+      "blockid": "AWWayofTime:blockDemonChest",
       "metadata": [
         4,
         4,
@@ -972,18 +972,7 @@
           "xCoord": 5,
           "yCoord": 0,
           "zCoord": -1
-        }
-      ]
-    },
-    {
-      "blockid": "AWWayofTime:blockDemonChest",
-      "metadata": [
-        4,
-        4,
-        4,
-        4
-      ],
-      "positions": [
+        },
         {
           "xCoord": 5,
           "yCoord": 0,
