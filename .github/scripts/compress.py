@@ -11,7 +11,7 @@ args = parser.parse_args()
 ROOT = Path(__file__).resolve().parents[2]
 
 SOURCE_DIR = ROOT / "raw" / args.source
-OUTPUT_ZIP = ROOT / "src" / "main" / "resources" / "assets" / "alchemicalwizardry" / "schematics" / args.destination
+OUTPUT_ZIP = ROOT / "src" / "main" / "resources" / "assets" / "alchemicalwizardry" / args.destination
 
 
 def main():
