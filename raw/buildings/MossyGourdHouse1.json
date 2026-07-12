@@ -279,6 +279,11 @@
           "xCoord": 2,
           "yCoord": 0,
           "zCoord": 7
+        },
+        {
+          "xCoord": 0,
+          "yCoord": -1,
+          "zCoord": 6
         }
       ]
     },
