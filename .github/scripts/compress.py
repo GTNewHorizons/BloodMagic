@@ -6,13 +6,12 @@ import zipfile
 parser = argparse.ArgumentParser()
 parser.add_argument("source")
 parser.add_argument("destination")
-parser.add_argument("filename")
 args = parser.parse_args()
 
 ROOT = Path(__file__).resolve().parents[2]
 
 SOURCE_DIR = ROOT / "raw" / args.source
-OUTPUT_ZIP = ROOT / "src" / "main" / "resources" / "assets" / "alchemicalwizardry" / "schematics" / args.output / args.filename
+OUTPUT_ZIP = ROOT / "src" / "main" / "resources" / "assets" / "alchemicalwizardry" / "schematics" / args.destination
 
 
 def main():
