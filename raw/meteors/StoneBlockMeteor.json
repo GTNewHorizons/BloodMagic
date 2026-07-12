@@ -1,0 +1,10 @@
+{
+    "ores": [
+        "OREDICT:oreCoal:150",
+        "OREDICT:oreApatite:50",
+        "OREDICT:oreIron:50"
+    ],
+    "radius": 16,
+    "focusItem": "minecraft:stone",
+    "maxWeight": 1000
+}

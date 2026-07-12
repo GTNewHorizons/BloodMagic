@@ -1,0 +1,15 @@
+{
+    "ores": [
+        "OREDICT:oreIron:400",
+        "OREDICT:oreGold:30",
+        "OREDICT:oreCopper:200",
+        "OREDICT:oreTin:140",
+        "OREDICT:oreSilver:70",
+        "OREDICT:oreLead:80",
+        "OREDICT:oreLapis:60",
+        "OREDICT:oreRedstone:100"
+    ],
+    "radius": 7,
+    "focusItem": "minecraft:iron_block",
+    "maxWeight": 1000
+}
