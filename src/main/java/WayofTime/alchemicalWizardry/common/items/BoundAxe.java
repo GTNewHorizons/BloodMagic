@@ -110,8 +110,9 @@ public class BoundAxe extends ItemAxe implements IBindable {
                     }
 
                     // getStrVsBlock
-                    if ((func_150893_a(item, block) <= 1f && !(block instanceof BlockLeavesBase))
-                            || BoundPickaxe.checkPermissions(world, x, y, z, block, meta, player)) {
+                    if ((!ForgeHooks.isToolEffective(item, block, meta) && func_150893_a(item, block) <= 1f
+                            && !(block instanceof BlockLeavesBase))
+                            || BoundPickaxe.isBreakDenied(world, x, y, z, player)) {
                         continue;
                     }
                     if (silkTouch && block.canSilkHarvest(world, player, x, y, z, meta)) {

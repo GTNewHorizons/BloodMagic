@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -17,8 +18,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.BlockEvent;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -118,7 +117,8 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
                     }
 
                     // getStrVsBlock
-                    if (func_150893_a(item, block) <= 1f || checkPermissions(world, x, y, z, block, meta, player)) {
+                    if ((!ForgeHooks.isToolEffective(item, block, meta) && func_150893_a(item, block) <= 1f)
+                            || isBreakDenied(world, x, y, z, player)) {
                         continue;
                     }
                     if (silkTouch && block.canSilkHarvest(world, player, x, y, z, meta)) {
@@ -147,10 +147,16 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
         return item;
     }
 
-    public static boolean checkPermissions(World world, int x, int y, int z, Block block, int meta,
-            EntityPlayer player) {
-        final BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(x, y, z, world, block, meta, player);
-        return MinecraftForge.EVENT_BUS.post(event);
+    /**
+     * Fires the block break event so protection mods can veto the break. Returns true if the break was denied.
+     */
+    public static boolean isBreakDenied(World world, int x, int y, int z, EntityPlayer player) {
+        if (!(player instanceof EntityPlayerMP mpPlayer) || mpPlayer.playerNetServerHandler == null) {
+            return false;
+        }
+
+        return ForgeHooks.onBlockBreakEvent(world, mpPlayer.theItemInWorldManager.getGameType(), mpPlayer, x, y, z)
+                .isCanceled();
     }
 
     public static void dropMultisetStacks(Multiset<ItemType> dropMultiset, World world, double x, double y, double z) {
