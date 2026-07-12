@@ -18,8 +18,6 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.BlockEvent;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -120,7 +118,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
 
                     // getStrVsBlock
                     if ((!ForgeHooks.isToolEffective(item, block, meta) && func_150893_a(item, block) <= 1f)
-                            || isBreakDenied(world, x, y, z, block, meta, player)) {
+                            || isBreakDenied(world, x, y, z, player)) {
                         continue;
                     }
                     if (silkTouch && block.canSilkHarvest(world, player, x, y, z, meta)) {
@@ -152,14 +150,13 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
     /**
      * Fires the block break event so protection mods can veto the break. Returns true if the break was denied.
      */
-    public static boolean isBreakDenied(World world, int x, int y, int z, Block block, int meta, EntityPlayer player) {
-        if (player instanceof EntityPlayerMP mpPlayer && mpPlayer.playerNetServerHandler != null) {
-            return ForgeHooks.onBlockBreakEvent(world, mpPlayer.theItemInWorldManager.getGameType(), mpPlayer, x, y, z)
-                    .isCanceled();
+    public static boolean isBreakDenied(World world, int x, int y, int z, EntityPlayer player) {
+        if (!(player instanceof EntityPlayerMP mpPlayer) || mpPlayer.playerNetServerHandler == null) {
+            return false;
         }
 
-        final BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(x, y, z, world, block, meta, player);
-        return MinecraftForge.EVENT_BUS.post(event);
+        return ForgeHooks.onBlockBreakEvent(world, mpPlayer.theItemInWorldManager.getGameType(), mpPlayer, x, y, z)
+                .isCanceled();
     }
 
     public static void dropMultisetStacks(Multiset<ItemType> dropMultiset, World world, double x, double y, double z) {
