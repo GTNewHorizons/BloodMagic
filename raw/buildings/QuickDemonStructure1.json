@@ -425,6 +425,22 @@
       ]
     },
     {
+      "blockid": "minecraft:mossy_cobblestone",
+      "metadata": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "positions": [
+        {
+          "xCoord": 0,
+          "yCoord": 0,
+          "zCoord": 0
+        }
+      ]
+    },
+    {
       "blockid": "minecraft:redstone_wire",
       "metadata": [
         0,
@@ -504,22 +520,6 @@
           "xCoord": 2,
           "yCoord": 2,
           "zCoord": 2
-        }
-      ]
-    },
-    {
-      "blockid": "minecraft:mossy_cobblestone",
-      "metadata": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "positions": [
-        {
-          "xCoord": 0,
-          "yCoord": 0,
-          "zCoord": 0
         }
       ]
     },

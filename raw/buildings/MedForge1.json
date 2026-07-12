@@ -18,12 +18,12 @@
         {
           "xCoord": 3,
           "yCoord": 1,
-          "zCoord": 0
+          "zCoord": 1
         },
         {
           "xCoord": -3,
           "yCoord": 1,
-          "zCoord": 0
+          "zCoord": 1
         }
       ]
     },
