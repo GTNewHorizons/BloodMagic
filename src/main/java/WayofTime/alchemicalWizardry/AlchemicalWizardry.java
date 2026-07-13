@@ -64,7 +64,6 @@ import WayofTime.alchemicalWizardry.common.ClientToServerPacketHandler;
 import WayofTime.alchemicalWizardry.common.CommonProxy;
 import WayofTime.alchemicalWizardry.common.LifeBucketHandler;
 import WayofTime.alchemicalWizardry.common.LifeEssence;
-import WayofTime.alchemicalWizardry.common.ModLivingDropsEvent;
 import WayofTime.alchemicalWizardry.common.NewPacketHandler;
 import WayofTime.alchemicalWizardry.common.achievements.ModAchievements;
 import WayofTime.alchemicalWizardry.common.alchemy.CombinedPotionRegistry;
@@ -1554,7 +1553,6 @@ public class AlchemicalWizardry {
 
         blacklistAccelerators();
 
-        MinecraftForge.EVENT_BUS.register(new ModLivingDropsEvent());
         proxy.InitRendering();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
