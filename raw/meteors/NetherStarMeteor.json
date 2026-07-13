@@ -1,0 +1,14 @@
+{
+    "ores": [
+        "OREDICT:oreDiamond:150",
+        "OREDICT:oreEmerald:100",
+        "OREDICT:oreQuartz:250",
+        "OREDICT:oreSunstone:5",
+        "OREDICT:oreMoonstone:50",
+        "OREDICT:oreIridium:5",
+        "OREDICT:oreCertusQuartz:150"
+    ],
+    "radius": 3,
+    "focusItem": "minecraft:nether_star",
+    "maxWeight": 1000
+}

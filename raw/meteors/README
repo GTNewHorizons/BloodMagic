@@ -1,0 +1,117 @@
+ #####################################
+### Blood Magic Meteor Config Guide ###
+ #####################################
+
+"Meteor happens" - xQc
+
+This file and the other default meteor configs (StoneBlockMeteor.json, IronBlockMeteor.json, DiamondMeteor.json, and NetherStarMeteor.json) are generated when the folder config/BloodMagic/meteors/ is not present. Delete that folder if you want to regen these files with default values.
+
+If you are a player and your pack does not include certain ores in the default meteors (like cinnabar and amber from Thaumcraft in DiamondMeteor.json), feel free to remove those entries in the "ores" property for that meteor so that they don't send warnings that they can't be found to the log. Also feel free to delete this file.
+
+If you are a pack creator, the instructions on how to create your own custom meteors are below.
+
+ ######################################
+### Custom Meteor File Specification ###
+ ######################################
+----------------------------------------
+FileName.json: Name your file anything you like with the extension ".json" and place it in config/BloodMagic/meteors/.
+Choose something descriptive for the file name; the Focus Item is often a good choice, but it can be anything. IronIngot.json, RAINBOWS.json, and NewMeteor2026.json are all valid names, but meteor.txt is not, as it does not end in .json.
+
+Your file must contain a valid JSON object, and the properties explained below will alter the meteor's characteristics.
+If you don't know how to read/write JSON, look at the default files as a reference or check out https://www.w3schools.com/js/js_json_intro.asp or any other online tutorial.
+----------------------------------------
+"ores": Array of Meteor Component Strings
+
+The most complicated and most important thing to define for your meteor: the main blocks it places.
+
+These two formats (which can be mixed and matched in the same "ores" property) may be used to specify a Meteor Component (a block, its associated weight, and any required reagents):
+  modId:itemName:meta:weight(:reagent1, reagent2, ... optional) - Note: specifying meta is REQUIRED, even if 0
+  OREDICT:oreDictName:weight(:reagent1, reagent2, ... optional) - Note: OREDICT: at the front stays the same, only replace oreDictName
+
+For example, the following "ores" property will place iron and gold ore in a 2:1 ratio. It will also add end stone when either sanctus OR magicales is provided (resulting in a ratio of 2 iron : 1 gold : 1 end stone):
+"ores": [
+  "OREDICT:oreIron:200",
+  "OREDICT:oreGold:100",
+  "minecraft:end_stone:0:100:sanctus, magicales"
+]
+
+Reagents that you intend to only use for unlocking blocks in Meteor Component arrays do not need to have a file in config/BloodMagic/meteors/reagents/. Putting an empty one there anyway will not change any behavior.
+
+If the "ores" property is not present, is empty, or if it contains only blocks with reagents that are not provided (so the meteor would have no blocks to place), the block specified with S:defaultMeteorBlock in config/AWWayofTime.cfg will be used as a default. minecraft:stone is used as a fallback if the config is unset or if the specified block can't be found, such as minceraft:breadrock.
+
+Try using the command "/iih" ("item in hand") from GTNHLib or "/mt hand" from MineTweaker while holding an item to get its modId, itemName, and meta automatically put in your clipboard.
+----------------------------------------
+"filler": Array of Meteor Component Strings
+
+Just like the "ores" property, you can define custom blocks to be used as filler. Uses the same format to define Meteor Components, so you can set blocks in the filler list to have different relative weights or require specific reagents.
+
+ALL filler blocks in a meteor will be replaced if it is summoned with a reagent that is configured to replace filler (incendium, tenebrae, and crystallos with the default configs).
+
+Uses S:defaultMeteorBlock in config/AWWayofTime.cfg as the default filler block, just like the ores property.
+----------------------------------------
+"fillerChance": Floating Point Number from 0.0-100.0 inclusive
+
+Defines the chance (out of 100%) that any block placed will pick a block from the "filler" property instead of the "ores" one.
+A value of 50.0 means the meteor will be 50% filler and 50% ores, 75.5 means the meteor will be 75.5% filler and 24.5% ores, etc.
+Default value if not specified is 0.
+
+fillerChance of 100 means that the whole meteor will be filler. The "ores" list will not show up in NEI.
+fillerChance of 0 means that the whole meteor will be ore. The "filler" list will not show up in NEI.
+----------------------------------------
+"maxWeight": Positive Integer
+
+IGNORED when fillerChance is defined in the same meteor. It's recommended to use that property for new meteors instead of this one.
+
+An alternate way to specify the fillerChance which is similar (but NOT identical) to the old weight system.
+The formula used to turn maxWeight into fillerChance is 100 * (1 - (total ore list weight / maxWeight)).
+The result of this formula will always be clamped between 0.0-100.0 inclusive, just like if you set the fillerChance yourself.
+
+For example, this example "ores" property has a total list weight of 400:
+"ores": [
+  "minecraft:log:0:100",
+  "minecraft:log:1:100",
+  "minecraft:log:2:100",
+  "minecraft:log:3:100:virtus"
+]
+Setting maxWeight to 1000 for that meteor would result in a fillerChance of 60%.
+Setting maxWeight to 600 for that meteor would result in a fillerChance of 33.33%.
+
+This does NOT account for blocks over the max weight requiring (Orbis) Terrae like the old system. Specify that the blocks require the reagent in the Meteor Component string if you want that functionality.
+This does NOT account for blocks that are not present because they are missing reagents. The above example with a maxWeight of 1000 will have 60% filler whether or not you supply virtus.
+
+This DOES account for blocks that can't be found when reading the configs. It is used in the default meteor configs for that purpose. It is recommended to only use this if you expect something similar to happen with your meteors.
+----------------------------------------
+"radius": Positive Integer
+
+Sets the radius (in full blocks out from the center block) of your meteor.
+A meteor of radius 5 will have a full diameter of 11, including the center block.
+A meteor's radius is also used to calculate the strength of the explosion when it lands if that feature is enabled. The explosion strength is 4 * radius.
+
+Default value is 1 if the property is not set, which will create a very wimpy meteor.
+----------------------------------------
+"cost": Non-Negative Integer
+
+Sets the LP cost to summon this meteor.
+
+Uses I:defaultMeteorCost in config/AWWayofTime.cfg if this property is not set.
+The default value for that config is 1,000,000 LP.
+
+Remember that Mark of the Falling Tower takes 100k LP to activate by default. Keep in mind that players can activate the ritual and leave the sacrifice of the Focus Item until after more LP has been added to their Soul Networks.
+----------------------------------------
+"focusItem": String in format "modId:name(:meta optional)"
+
+The Focus Item is the block/item sacrificed to summon the meteor. Avoid configuring multiple meteors to use the same item, because only one will actually be able to be summoned in-game.
+Having different focus items with the same ID but different metadata works fine, such as having multiple meteors summoned with different colors of wool.
+Specifying Focus Items based on NBT is not currently possible.
+Specifying Focus Items based on oredicts is not currently possible.
+
+As an example, a meteor with this value for "focusItem" will require a birch log:
+"focusItem": "minecraft:log:2"
+
+The default value for meta is 0 if not provided. A meteor with this value for "focusItem" will require coal:
+"focusItem": "minecraft:coal"
+Charcoal (which is the same item ID with a metadata of 1) will NOT work.
+
+Setting meta to 32767 will allow any item with the same ID. For the following example, oak, birch, spruce, and jungle logs will all be valid items to summon this meteor (because they all have the same block ID):
+"focusItem": "minecraft:log:32767"
+----------------------------------------

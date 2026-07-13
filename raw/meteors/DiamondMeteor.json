@@ -1,0 +1,11 @@
+{
+    "ores": [
+        "OREDICT:oreDiamond:100",
+        "OREDICT:oreEmerald:75",
+        "OREDICT:oreCinnabar:200",
+        "OREDICT:oreAmber:200"
+    ],
+    "radius": 5,
+    "focusItem": "minecraft:diamond",
+    "maxWeight": 1000
+}
