@@ -3,8 +3,7 @@ name: Compress Demon City Buildings
 on:
   push:
     branches: [ master ]
-    paths:
-      - raw/buildings/*.json
+    paths: [ raw/buildings/*.json ]
   workflow_dispatch: { }
 
 jobs:
