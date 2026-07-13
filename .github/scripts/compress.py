@@ -23,10 +23,13 @@ def main():
 
     files = sorted(p for p in SOURCE_DIR.rglob("*") if p.is_file())
 
-    with zipfile.ZipFile(OUTPUT_ZIP, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
-        for file in sorted(SOURCE_DIR.rglob("*")):
-            if file.is_file():
-                zf.write(file, file.relative_to(SOURCE_DIR))
+    with zipfile.ZipFile(OUTPUT_ZIP, "w") as zf:
+        for file in files:
+            info = zipfile.ZipInfo(file.relative_to(SOURCE_DIR).as_posix(), (1980, 1, 1, 0, 0, 0))
+            info.create_system = 3
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o100644 << 16
+            zf.writestr(info, file.read_bytes(), compresslevel=9)
 
     print(f"Compressed {len(files)} file(s) into {OUTPUT_ZIP.relative_to(ROOT)}")
 
