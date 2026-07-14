@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -27,6 +28,7 @@ import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -35,14 +37,17 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.BloodMagicConfiguration;
+import WayofTime.alchemicalWizardry.ModItems;
 import WayofTime.alchemicalWizardry.api.BlockStack;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
 import WayofTime.alchemicalWizardry.api.event.TeleposeEvent;
+import WayofTime.alchemicalWizardry.api.items.interfaces.IBindable;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.api.spell.APISpellHelper;
 import WayofTime.alchemicalWizardry.common.achievements.ModAchievements;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.IHoardDemon;
 import WayofTime.alchemicalWizardry.common.entity.projectile.EnergyBlastProjectile;
+import WayofTime.alchemicalWizardry.common.items.EnergyItems;
 import WayofTime.alchemicalWizardry.common.items.EnergySword;
 import WayofTime.alchemicalWizardry.common.items.armour.BoundArmour;
 import WayofTime.alchemicalWizardry.common.items.armour.OmegaArmour;
@@ -150,6 +155,31 @@ public class AlchemicalWizardryEventHooks {
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onHurt(LivingHurtEvent event) {
+        if (!(event.source.getEntity() instanceof EntityPlayer player)) {
+            return;
+        }
+        ItemStack item = player.getCurrentEquippedItem();
+        if (item != null && item.getItem() instanceof EnergySword sword
+                && IBindable.checkAndSetItemOwner(item, player)
+                && EnergyItems.syphonBatteries(item, player, sword.drainCost())) {
+            event.entityLiving.addPotionEffect(new PotionEffect(Potion.weakness.id, 60, 2));
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityDrop(LivingDropsEvent event) {
+        if (!event.source.getDamageType().equals("player") || event.entityLiving instanceof EntityAnimal) {
+            return;
+        }
+        PotionEffect effect = event.entityLiving.getActivePotionEffect(Potion.weakness);
+
+        if (effect != null && effect.getAmplifier() >= 2 && Math.random() < 0.50d) {
+            event.entityLiving.dropItem(ModItems.weakBloodShard, 1);
         }
     }
 
