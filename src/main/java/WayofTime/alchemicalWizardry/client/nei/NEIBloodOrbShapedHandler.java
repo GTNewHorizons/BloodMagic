@@ -43,7 +43,7 @@ public class NEIBloodOrbShapedHandler extends ShapedRecipeHandler {
                         ArrayList<ItemStack> orbs = new ArrayList<>();
                         for (Item item : getBloodOrbs()) {
                             if (((IBloodOrb) item).getOrbLevel() >= i) {
-                                orbs.add(new ItemStack(item));
+                                orbs.add(new ItemStack(item, 0));
                             }
                         }
                         PositionedStack stack = new PositionedStack(orbs, 25 + x * 18, 6 + y * 18, false);
