@@ -159,7 +159,7 @@ public class ItemIncense extends Item implements IIncense {
                         new ItemStack(Items.redstone),
                         leavesStack,
                         leavesStack,
-                        new ItemStack(ModItems.weakBloodOrb)));
+                        1));
         GameRegistry.addRecipe(
                 new ShapelessBloodOrbRecipe(
                         new ItemStack(ModItems.itemIncense, 1, 2),
@@ -171,7 +171,7 @@ public class ItemIncense extends Item implements IIncense {
                         glowstoneStack,
                         stringStack,
                         stringStack,
-                        new ItemStack(ModItems.apprenticeBloodOrb)));
+                        2));
         GameRegistry.addRecipe(
                 new ShapelessBloodOrbRecipe(
                         new ItemStack(ModItems.itemIncense, 1, 3),
@@ -182,7 +182,7 @@ public class ItemIncense extends Item implements IIncense {
                         gunpowderStack,
                         fermentedEyeStack,
                         blankSlateStack,
-                        new ItemStack(ModItems.apprenticeBloodOrb)));
+                        2));
         GameRegistry.addRecipe(
                 new ShapelessBloodOrbRecipe(
                         new ItemStack(ModItems.itemIncense, 1, 4),
@@ -194,7 +194,7 @@ public class ItemIncense extends Item implements IIncense {
                         blazePowderStack,
                         fracturedBoneStack,
                         reinforcedSlateStack,
-                        new ItemStack(ModItems.magicianBloodOrb)));
+                        3));
     }
 
     public enum EnumIncense {
