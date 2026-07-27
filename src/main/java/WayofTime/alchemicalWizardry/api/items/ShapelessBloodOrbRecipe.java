@@ -34,25 +34,21 @@ public class ShapelessBloodOrbRecipe implements IRecipe {
     public ShapelessBloodOrbRecipe(ItemStack result, Object... recipe) {
         output = result.copy();
         for (Object in : recipe) {
-            if (in instanceof IBloodOrb orb) {
-                input.add(orb.getOrbLevel());
-            } else if (in instanceof ItemStack stack && stack.getItem() instanceof IBloodOrb orb) {
-                input.add(orb.getOrbLevel());
-            } else if (in instanceof ItemStack stack) {
-                input.add(stack.copy());
-            } else if (in instanceof Item item) {
-                input.add(new ItemStack(item));
-            } else if (in instanceof Block block) {
-                input.add(new ItemStack(block, 1, OreDictionary.WILDCARD_VALUE));
-            } else if (in instanceof String string) {
-                input.add(OreDictionary.getOres(string));
-            } else {
-                StringBuilder ret = new StringBuilder("Invalid shapeless ore recipe: ");
-                for (Object tmp : recipe) {
-                    ret.append(tmp).append(", ");
+            switch (in) {
+                case IBloodOrb orb -> input.add(orb.getOrbLevel());
+                case ItemStack stack when stack.getItem() instanceof IBloodOrb orb -> input.add(orb.getOrbLevel());
+                case ItemStack stack -> input.add(stack.copy());
+                case Item item -> input.add(new ItemStack(item));
+                case Block block -> input.add(new ItemStack(block, 1, OreDictionary.WILDCARD_VALUE));
+                case String string -> input.add(OreDictionary.getOres(string));
+                case null, default -> {
+                    StringBuilder ret = new StringBuilder("Invalid shapeless ore recipe: ");
+                    for (Object tmp : recipe) {
+                        ret.append(tmp).append(", ");
+                    }
+                    ret.append(output);
+                    throw new RuntimeException(ret.toString());
                 }
-                ret.append(output);
-                throw new RuntimeException(ret.toString());
             }
         }
     }
