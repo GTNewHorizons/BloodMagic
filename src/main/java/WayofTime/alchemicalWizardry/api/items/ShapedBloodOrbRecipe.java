@@ -91,6 +91,7 @@ public class ShapedBloodOrbRecipe implements IRecipe {
                 case ItemStack stack when stack.getItem() instanceof IBloodOrb orb ->
                         itemMap.put(chr, orb.getOrbLevel());
                 case ItemStack stack -> itemMap.put(chr, stack.copy());
+                case Integer i -> itemMap.put(chr, i);
                 case Item item -> itemMap.put(chr, new ItemStack(item));
                 case Block block -> itemMap.put(chr, new ItemStack(block, 1, OreDictionary.WILDCARD_VALUE));
                 case String string -> itemMap.put(chr, OreDictionary.getOres(string));

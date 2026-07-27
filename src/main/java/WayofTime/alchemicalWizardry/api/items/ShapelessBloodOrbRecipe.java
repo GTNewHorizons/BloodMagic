@@ -37,6 +37,7 @@ public class ShapelessBloodOrbRecipe implements IRecipe {
             switch (in) {
                 case IBloodOrb orb -> input.add(orb.getOrbLevel());
                 case ItemStack stack when stack.getItem() instanceof IBloodOrb orb -> input.add(orb.getOrbLevel());
+                case Integer i -> input.add(i);
                 case ItemStack stack -> input.add(stack.copy());
                 case Item item -> input.add(new ItemStack(item));
                 case Block block -> input.add(new ItemStack(block, 1, OreDictionary.WILDCARD_VALUE));
