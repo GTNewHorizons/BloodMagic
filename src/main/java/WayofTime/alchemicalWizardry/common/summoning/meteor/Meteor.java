@@ -231,7 +231,7 @@ public class Meteor {
         this.fillerChance = Math.max(0f, Math.min(100f * (1 - ((float) getTotalListWeight(ores) / maxWeight)), 100.0f));
     }
 
-    @Optional.Method(modid = "gregtech")
+    @Optional.Method(modid = "gregtech_nh")
     private static void setGTOresNaturalIfNeeded(World world, int x, int y, int z) {
         try (OreInfo<?> info = OreManager.getOreInfo(world, x, y, z)) {
             if (info == null) return;
