@@ -160,7 +160,7 @@ public class Meteor {
                 if (blockStack != null && blockStack.getItem() instanceof ItemBlock) {
                     ((ItemBlock) blockStack.getItem())
                             .placeBlockAt(blockStack, null, world, x, y, z, 0, 0, 0, 0, blockStack.getItemDamage());
-                    if (AlchemicalWizardry.isGregTechLoaded) setGTOresNaturalIfNeeded(world, x, y, z);
+                    if (AlchemicalWizardry.isGregTech5UnofficialNewHorizonsLoaded) setGTOresNaturalIfNeeded(world, x, y, z);
                     world.markBlockForUpdate(x, y, z);
                     break;
                 }
