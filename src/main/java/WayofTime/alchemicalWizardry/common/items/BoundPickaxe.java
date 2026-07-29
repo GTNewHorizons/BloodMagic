@@ -125,7 +125,8 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
                         dropMultiset.add(new ItemType(block, meta));
                     } else {
                         ArrayList<ItemStack> itemDropList;
-                        if (AlchemicalWizardry.isGregTech5UnofficialNewHorizonsLoaded && block instanceof GTBlockOre ore) {
+                        if (AlchemicalWizardry.isGregTech5UnofficialNewHorizonsLoaded
+                                && block instanceof GTBlockOre ore) {
                             itemDropList = ore.getDropsForPlayer(world, x, y, z, meta, fortuneLvl, player);
                         } else {
                             itemDropList = block.getDrops(world, x, y, z, meta, fortuneLvl);
