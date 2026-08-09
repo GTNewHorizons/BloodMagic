@@ -36,7 +36,7 @@ public class RitualEffectMagnetic extends RitualEffect {
     public static boolean isBlockOre(Block block, int meta) {
         // Special case for lit redstone ore
         if (block instanceof BlockOre || block instanceof BlockRedstoneOre
-                || (AlchemicalWizardry.isGregTechLoaded && block instanceof GTBlockOre)) {
+                || (AlchemicalWizardry.isGregTech5UnofficialNewHorizonsLoaded && block instanceof GTBlockOre)) {
             return true;
         }
 

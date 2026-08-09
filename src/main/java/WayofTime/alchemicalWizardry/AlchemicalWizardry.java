@@ -479,7 +479,7 @@ public class AlchemicalWizardry {
     public static int ritualWeakCostThunderstorm;
     public static int ritualWeakCostZombie;
 
-    public static boolean isGregTechLoaded;
+    public static boolean isGregTech5UnofficialNewHorizonsLoaded;
     public static boolean isThaumcraftLoaded;
     public static boolean isForestryLoaded;
     public static boolean isBotaniaLoaded;
@@ -3239,7 +3239,7 @@ public class AlchemicalWizardry {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.registerPostSideObjects();
-        isGregTechLoaded = Loader.isModLoaded("gregtech");
+        isGregTech5UnofficialNewHorizonsLoaded = Loader.isModLoaded("gregtech_nh");
         isEndlessIdsLoaded = Loader.isModLoaded("endlessids");
         // TODO Thaumcraft Integration
         if (Loader.isModLoaded("Thaumcraft")) {
