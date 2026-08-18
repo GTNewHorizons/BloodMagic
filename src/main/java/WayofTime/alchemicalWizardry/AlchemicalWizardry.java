@@ -3355,6 +3355,7 @@ public class AlchemicalWizardry {
 
         MeteorRegistry.loadConfig();
         MeteorReagentRegistry.loadConfig();
+        MeteorRegistry.logMaterialLibTally();
 
         this.initCompressionHandlers();
     }

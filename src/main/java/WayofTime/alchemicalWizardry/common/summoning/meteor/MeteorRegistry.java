@@ -17,10 +17,41 @@ import com.google.gson.JsonSyntaxException;
 
 import WayofTime.alchemicalWizardry.AlchemicalWizardry;
 import WayofTime.alchemicalWizardry.api.alchemy.energy.Reagent;
+import WayofTime.alchemicalWizardry.compat.materiallib.MaterialLibStacks;
+import cpw.mods.fml.common.Loader;
 
 public class MeteorRegistry {
 
     public static List<Meteor> meteorList = new ArrayList<>();
+
+    private static int materialLibResolved;
+    private static int materialLibInvalid;
+
+    /// The stack a `ml:<Material>:<shape>` entry names, or null when MaterialLib is absent or the entry resolves to
+    /// nothing. Every resolution is tallied for [#logMaterialLibTally].
+    static ItemStack resolveMaterialLibStack(String materialName, String shapeToken) {
+        ItemStack stack = Loader.isModLoaded("materiallib") ? MaterialLibStacks.getStack(materialName, shapeToken)
+                : null;
+        if (stack == null) {
+            materialLibInvalid++;
+        } else {
+            materialLibResolved++;
+        }
+        return stack;
+    }
+
+    /// Logs how many `ml:` entries the meteor and reagent configs resolved, then clears the tally. Call once both
+    /// have been loaded.
+    public static void logMaterialLibTally() {
+        if (materialLibResolved + materialLibInvalid > 0) {
+            AlchemicalWizardry.logger.info(
+                    "Blood Magic: resolved {} MaterialLib entries ({} invalid)",
+                    materialLibResolved,
+                    materialLibInvalid);
+        }
+        materialLibResolved = 0;
+        materialLibInvalid = 0;
+    }
 
     public static void loadConfig() {
         Gson gson = new GsonBuilder().setPrettyPrinting()
