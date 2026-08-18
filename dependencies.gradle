@@ -41,4 +41,6 @@ dependencies {
     compileOnly("curse.maven:guide-api-228832:2287185") {transitive = false }
     compileOnly("curse.maven:endlessids-665730:7585931") {transitive = false }
     compileOnly("com.github.GTNewHorizons:StructureLib:1.4.34:dev")
+
+    compileOnly("com.ruling_0:MaterialLib:0.9.0-mu:dev") {transitive = false }
 }
