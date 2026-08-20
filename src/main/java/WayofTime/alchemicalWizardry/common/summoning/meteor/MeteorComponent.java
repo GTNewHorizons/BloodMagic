@@ -55,8 +55,8 @@ public class MeteorComponent {
         this.reagent = reagent;
     }
 
-    /// The default meteor block named as `ml:<Material>:<shape>`, whose stack [#getBlock] resolves on first use: the
-    /// config it comes from is read at preInit, before MaterialLib resolves its shapes.
+    /// The default meteor block named as `ml:<Material>:<shape>`. Its stack is resolved on the first [#getBlock]
+    /// call -- the config is read at preInit, before MaterialLib resolves its shapes.
     private MeteorComponent(String materialName, String shapeToken) {
         this.itemStack = null;
         this.materialName = materialName;

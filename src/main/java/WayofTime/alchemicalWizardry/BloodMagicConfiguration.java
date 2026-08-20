@@ -114,7 +114,7 @@ public class BloodMagicConfiguration {
                 The block to use for filler in meteors if none is provided in the meteor's config file and that
                 meteor's fillerChance is greater than 0. Also used as a fallback for empty ore lists in meteor configs.
                 Specify the block with the format:
-                "modId:itemName:meta", or a MaterialLib block with the format "ml:material:shape".
+                "modId:itemName:meta", or "ml:material:shape" for a MaterialLib block.
                 Defaults to minecraft:stone:0 if no block is provided or the provided block cannot be found.""");
         MeteorComponent.setDefaultMeteorBlock();
         AlchemicalWizardry.allowedCrushedOresArray = config.get(

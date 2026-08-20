@@ -28,7 +28,7 @@ public class MeteorRegistry {
     private static int materialLibInvalid;
 
     /// The stack a `ml:<Material>:<shape>` entry names, or null when MaterialLib is absent or the entry resolves to
-    /// nothing. Every resolution is tallied for [#logMaterialLibTally].
+    /// nothing. Counts the outcome into the tally [#logMaterialLibTally] reports.
     static ItemStack resolveMaterialLibStack(String materialName, String shapeToken) {
         ItemStack stack = Loader.isModLoaded("materiallib") ? MaterialLibStacks.getStack(materialName, shapeToken)
                 : null;
@@ -40,14 +40,11 @@ public class MeteorRegistry {
         return stack;
     }
 
-    /// Logs how many `ml:` entries the meteor and reagent configs resolved, then clears the tally. Call once both
-    /// have been loaded.
+    /// Logs the `ml:` entry tally and clears it. Call once every config that can carry such entries is loaded.
     public static void logMaterialLibTally() {
         if (materialLibResolved + materialLibInvalid > 0) {
-            AlchemicalWizardry.logger.info(
-                    "Blood Magic: resolved {} MaterialLib entries ({} invalid)",
-                    materialLibResolved,
-                    materialLibInvalid);
+            AlchemicalWizardry.logger
+                    .info("Resolved {} MaterialLib entries ({} invalid)", materialLibResolved, materialLibInvalid);
         }
         materialLibResolved = 0;
         materialLibInvalid = 0;
