@@ -205,6 +205,8 @@ public class ItemIncense extends Item implements IIncense {
         GREEN(1500, 2400, 4.0f, 2000, 0, 1.0f, 0),
         PURPLE(2400, 3500, 5.0f, 2000, 1.0f, 0, 1.0f);
 
+        public static final EnumIncense[] VALUES = values();
+
         public final int minValue;
         public final int maxValue;
         public final float tickRate;
@@ -226,10 +228,10 @@ public class ItemIncense extends Item implements IIncense {
         }
 
         public static EnumIncense getEnumForIndex(int index) {
-            if (index > EnumIncense.values().length || index < 0) {
+            if (index > EnumIncense.VALUES.length || index < 0) {
                 return WOODASH;
             } else {
-                return EnumIncense.values()[index];
+                return EnumIncense.VALUES[index];
             }
         }
     }
