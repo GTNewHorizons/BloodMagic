@@ -86,25 +86,23 @@ public class ShapedBloodOrbRecipe implements IRecipe {
             Character chr = (Character) recipe[idx];
             Object in = recipe[idx + 1];
 
-            if (in instanceof IBloodOrb orb) {
-                itemMap.put(chr, orb.getOrbLevel());
-            } else if (in instanceof ItemStack stack && stack.getItem() instanceof IBloodOrb orb) {
-                itemMap.put(chr, orb.getOrbLevel());
-            } else if (in instanceof ItemStack stack) {
-                itemMap.put(chr, stack.copy());
-            } else if (in instanceof Item item) {
-                itemMap.put(chr, new ItemStack(item));
-            } else if (in instanceof Block block) {
-                itemMap.put(chr, new ItemStack(block, 1, OreDictionary.WILDCARD_VALUE));
-            } else if (in instanceof String string) {
-                itemMap.put(chr, OreDictionary.getOres(string));
-            } else {
-                StringBuilder ret = new StringBuilder("Invalid shaped ore recipe: ");
-                for (Object tmp : recipe) {
-                    ret.append(tmp).append(", ");
+            switch (in) {
+                case IBloodOrb orb -> itemMap.put(chr, orb.getOrbLevel());
+                case ItemStack stack when stack.getItem() instanceof IBloodOrb orb ->
+                        itemMap.put(chr, orb.getOrbLevel());
+                case ItemStack stack -> itemMap.put(chr, stack.copy());
+                case Integer i -> itemMap.put(chr, i);
+                case Item item -> itemMap.put(chr, new ItemStack(item));
+                case Block block -> itemMap.put(chr, new ItemStack(block, 1, OreDictionary.WILDCARD_VALUE));
+                case String string -> itemMap.put(chr, OreDictionary.getOres(string));
+                case null, default -> {
+                    StringBuilder ret = new StringBuilder("Invalid shaped ore recipe: ");
+                    for (Object tmp : recipe) {
+                        ret.append(tmp).append(", ");
+                    }
+                    ret.append(output);
+                    throw new RuntimeException(ret.toString());
                 }
-                ret.append(output);
-                throw new RuntimeException(ret.toString());
             }
         }
 
