@@ -1,10 +1,11 @@
 package WayofTime.alchemicalWizardry.api.alchemy;
 
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class AlchemyRecipe {
+
+    public static final int MAX_INPUT_SLOTS = 5;
 
     private final ItemStack output;
     private final ItemStack[] recipe;
@@ -19,87 +20,75 @@ public class AlchemyRecipe {
     }
 
     public boolean doesRecipeMatch(ItemStack[] items, int slottedBloodOrbLevel) {
+        return getSlotUsage(items, slottedBloodOrbLevel) != null;
+    }
+
+    /**
+     * Matches the recipe against the input slots and returns how many items have to be taken from each slot, or null if
+     * the recipe does not match. Duplicate ingredients may come from a single slot holding a large enough stack, and
+     * every non-empty slot has to be part of the recipe.
+     */
+    public int[] getSlotUsage(ItemStack[] items, int slottedBloodOrbLevel) {
         if (slottedBloodOrbLevel < bloodOrbLevel) {
-            return false;
+            return null;
         }
 
-        ItemStack[] recipe;
-
-        if (items.length < 5) {
-            return false;
+        if (items.length < MAX_INPUT_SLOTS) {
+            return null;
         }
 
-        if (this.recipe.length != 5) {
-            ItemStack[] newRecipe = new ItemStack[5];
+        int[] usage = new int[MAX_INPUT_SLOTS];
 
-            for (int i = 0; i < 5; i++) {
-                if (i + 1 > this.recipe.length) {
-                    newRecipe[i] = null;
-                } else {
-                    newRecipe[i] = this.recipe[i];
+        // ponytail: wildcard ingredients are assigned last so they cannot steal a slot an exact ingredient needs.
+        // A full assignment search would only be needed for ingredients overlapping in more complex ways.
+        for (int pass = 0; pass < 2; pass++) {
+            for (ItemStack ingredient : recipe) {
+                if (ingredient == null) {
+                    continue;
+                }
+
+                boolean isWildcard = ingredient.getItemDamage() == OreDictionary.WILDCARD_VALUE;
+
+                if (isWildcard != (pass == 1)) {
+                    continue;
+                }
+
+                if (!assignIngredient(items, usage, ingredient)) {
+                    return null;
                 }
             }
-
-            recipe = newRecipe;
-        } else {
-            recipe = this.recipe;
         }
 
-        boolean[] checkList = new boolean[5];
-
-        for (int i = 0; i < 5; i++) {
-            checkList[i] = false;
+        for (int i = 0; i < MAX_INPUT_SLOTS; i++) {
+            if (items[i] != null && usage[i] == 0) {
+                return null;
+            }
         }
 
-        for (int i = 0; i < 5; i++) {
-            ItemStack recipeItemStack = recipe[i];
+        return usage;
+    }
 
-            if (recipeItemStack == null) {
+    private static boolean assignIngredient(ItemStack[] items, int[] usage, ItemStack ingredient) {
+        for (int i = 0; i < MAX_INPUT_SLOTS; i++) {
+            ItemStack slotStack = items[i];
+
+            if (slotStack == null || slotStack.stackSize - usage[i] <= 0) {
                 continue;
             }
 
-            boolean test = false;
-
-            for (int j = 0; j < 5; j++) {
-                if (checkList[j]) {
-                    continue;
-                }
-
-                ItemStack checkedItemStack = items[j];
-
-                if (checkedItemStack == null) {
-                    continue;
-                }
-
-                boolean quickTest = false;
-
-                if (recipeItemStack.getItem() instanceof ItemBlock) {
-                    if (checkedItemStack.getItem() instanceof ItemBlock) {
-                        quickTest = true;
-                    }
-                } else if (!(checkedItemStack.getItem() instanceof ItemBlock)) {
-                    quickTest = true;
-                }
-
-                if (!quickTest) {
-                    continue;
-                }
-
-                if ((checkedItemStack.getItemDamage() == recipeItemStack.getItemDamage()
-                        || OreDictionary.WILDCARD_VALUE == recipeItemStack.getItemDamage())
-                        && checkedItemStack.getItem() == recipeItemStack.getItem()) {
-                    test = true;
-                    checkList[j] = true;
-                    break;
-                }
-            }
-
-            if (!test) {
-                return false;
+            if (matches(slotStack, ingredient)) {
+                usage[i]++;
+                return true;
             }
         }
 
-        return true;
+        return false;
+    }
+
+    private static boolean matches(ItemStack slotStack, ItemStack ingredient) {
+        return slotStack.getItem() == ingredient.getItem()
+                && (ingredient.getItemDamage() == OreDictionary.WILDCARD_VALUE
+                        || slotStack.getItemDamage() == ingredient.getItemDamage());
     }
 
     public ItemStack getResult() {

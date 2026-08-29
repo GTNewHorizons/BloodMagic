@@ -13,7 +13,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.oredict.OreDictionary;
 
 import WayofTime.alchemicalWizardry.ModItems;
 import WayofTime.alchemicalWizardry.api.alchemy.AlchemicalPotionCreationHandler;
@@ -582,11 +581,7 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
                     progress = 0;
                     this.setInventorySlotContents(6, getResultingItemStack());
 
-                    ItemStack[] composedRecipe = new ItemStack[5];
-
-                    System.arraycopy(inv, 1, composedRecipe, 0, 5);
-
-                    this.decrementSlots(this.getRecipeForItems(composedRecipe, inv[0]));
+                    this.consumeIngredients();
 
                     if (worldObj != null) {
                         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -623,11 +618,7 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
                                     result.stackSize += getStackInSlot(6).stackSize;
                                     this.setInventorySlotContents(6, result);
 
-                                    ItemStack[] composedRecipe = new ItemStack[5];
-
-                                    System.arraycopy(inv, 1, composedRecipe, 0, 5);
-
-                                    this.decrementSlots(this.getRecipeForItems(composedRecipe, inv[0]));
+                                    this.consumeIngredients();
 
                                     if (worldObj != null) {
                                         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -637,54 +628,40 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
         }
     }
 
-    public void decrementSlots(ItemStack[] recipe) {
-        boolean[] decrementedList = new boolean[] { false, false, false, false, false };
+    public void consumeIngredients() {
+        ItemStack[] composedRecipe = new ItemStack[AlchemyRecipe.MAX_INPUT_SLOTS];
 
-        for (int i = 0; i < (Math.min(recipe.length, 5)); i++) {
-            ItemStack decStack = recipe[i];
+        System.arraycopy(inv, 1, composedRecipe, 0, AlchemyRecipe.MAX_INPUT_SLOTS);
 
-            if (decStack == null) {
+        AlchemyRecipe recipe = AlchemyRecipeRegistry.findRecipe(composedRecipe, inv[0]);
+
+        if (recipe == null) {
+            return;
+        }
+
+        int[] usage = recipe.getSlotUsage(composedRecipe, ((IBloodOrb) inv[0].getItem()).getOrbLevel());
+
+        if (usage == null) {
+            return;
+        }
+
+        for (int i = 0; i < usage.length; i++) {
+            if (usage[i] <= 0) {
                 continue;
             }
 
-            for (int j = 0; j < 5; j++) {
-                ItemStack testStack = this.getStackInSlot(j + 1);
+            ItemStack slotStack = this.getStackInSlot(i + 1);
 
-                if (testStack != null
-                        && (testStack.isItemEqual(decStack) || (testStack.getItem() == decStack.getItem()
-                                && decStack.getItemDamage() == OreDictionary.WILDCARD_VALUE))
-                        && !(decrementedList[j])) {
-                    if (testStack.getItem() != null && testStack.getItem().hasContainerItem(testStack)) {
-                        this.inv[j + 1] = testStack.getItem().getContainerItem(testStack);
-                    } else {
-                        this.decrStackSize(j + 1, 1);
-                    }
+            if (slotStack == null) {
+                continue;
+            }
 
-                    decrementedList[j] = true;
-                    break;
-                }
+            if (slotStack.getItem().hasContainerItem(slotStack) && slotStack.stackSize == usage[i]) {
+                this.inv[i + 1] = slotStack.getItem().getContainerItem(slotStack);
+            } else {
+                this.decrStackSize(i + 1, usage[i]);
             }
         }
-    }
-
-    public ItemStack[] getRecipeForItems(ItemStack[] recipe, ItemStack bloodOrb) {
-        if (bloodOrb == null) {
-            return null;
-        }
-
-        if (!(bloodOrb.getItem() instanceof IBloodOrb)) {
-            return null;
-        }
-
-        int bloodOrbLevel = ((IBloodOrb) bloodOrb.getItem()).getOrbLevel();
-
-        for (AlchemyRecipe ar : AlchemyRecipeRegistry.recipes) {
-            if (ar.doesRecipeMatch(recipe, bloodOrbLevel)) {
-                return ar.getRecipe();
-            }
-        }
-
-        return null;
     }
 
     public int getSpeedIncrease() {
