@@ -485,10 +485,12 @@ public class AlchemicalWizardryEventHooks {
         if (event.entityLiving.isPotionActive(AlchemicalWizardry.customPotionDrowning)
                 && !event.entityLiving.isPotionActive(Potion.waterBreathing)) {
             int i = event.entityLiving.getActivePotionEffect(AlchemicalWizardry.customPotionDrowning).getAmplifier();
+            int amplifier = Math.max(1, (i + 1));
+            int interval = Math.max(1, (20 / amplifier));
 
-            if (event.entityLiving.worldObj.getWorldTime() % (20 / (i + 1)) == 0) {
+            if (event.entityLiving.worldObj.getWorldTime() % interval == 0) {
                 event.entityLiving.attackEntityFrom(DamageSource.drown, 2);
-                event.entityLiving.hurtResistantTime = Math.min(event.entityLiving.hurtResistantTime, 20 / (i + 1));
+                event.entityLiving.hurtResistantTime = Math.min(event.entityLiving.hurtResistantTime, interval);
             }
         }
 

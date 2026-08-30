@@ -773,11 +773,8 @@ public class AlchemicalWizardry {
         ItemStack reedStack = new ItemStack(Items.reeds);
         ItemStack blankSlateStack = new ItemStack(ModItems.blankSlate, 1, craftingConstant);
         ItemStack reinforcedSlateStack = new ItemStack(ModItems.reinforcedSlate, 1, craftingConstant);
-        ItemStack weakBloodOrbStack = new ItemStack(ModItems.weakBloodOrb, 1, craftingConstant);
         ItemStack imbuedSlateStack = new ItemStack(ModItems.imbuedSlate, 1, craftingConstant);
         ItemStack demonSlateStack = new ItemStack(ModItems.demonicSlate, 1, craftingConstant);
-        ItemStack apprenticeBloodOrbStack = new ItemStack(ModItems.apprenticeBloodOrb, 1, craftingConstant);
-        ItemStack magicianBloodOrbStack = new ItemStack(ModItems.magicianBloodOrb, 1, craftingConstant);
         ItemStack waterSigilStackCrafted = new ItemStack(ModItems.waterSigil);
         ItemStack lavaSigilStackCrafted = new ItemStack(ModItems.lavaSigil);
         ItemStack voidSigilStackCrafted = new ItemStack(ModItems.voidSigil);
@@ -824,7 +821,6 @@ public class AlchemicalWizardry {
         lavaCrystalStackCrafted.setItemDamage(lavaCrystalStackCrafted.getMaxDamage());
         miningSigilStackCrafted.setItemDamage(miningSigilStackCrafted.getMaxDamage());
         sigilOfElementalAffinityStackCrafted.setItemDamage(sigilOfElementalAffinityStackCrafted.getMaxDamage());
-        ItemStack archmageBloodOrbStack = new ItemStack(ModItems.archmageBloodOrb);
         ItemStack sanctusStack = new ItemStack(ModItems.sanctus);
         ItemStack aetherStack = new ItemStack(ModItems.aether);
         ItemStack terraeStack = new ItemStack(ModItems.terrae);
@@ -857,7 +853,7 @@ public class AlchemicalWizardry {
                         'l',
                         lavaBucketStack,
                         'b',
-                        weakBloodOrbStack,
+                        1,
                         'd',
                         diamondStack,
                         'o',
@@ -873,7 +869,7 @@ public class AlchemicalWizardry {
                         'b',
                         blankSlateStack,
                         'o',
-                        weakBloodOrbStack));
+                        1));
         GameRegistry.addRecipe(
                 lavaSigilStackCrafted,
                 "lml",
@@ -898,7 +894,7 @@ public class AlchemicalWizardry {
                         'r',
                         reinforcedSlateStack,
                         'o',
-                        apprenticeBloodOrbStack,
+                        2,
                         's',
                         stringStack));
         GameRegistry.addRecipe(
@@ -923,7 +919,7 @@ public class AlchemicalWizardry {
                         's',
                         stoneStack,
                         'o',
-                        weakBloodOrbStack,
+                        1,
                         'r',
                         blankSlateStack));
         GameRegistry.addRecipe(
@@ -948,7 +944,7 @@ public class AlchemicalWizardry {
                         's',
                         stoneStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         'b',
                         emptyBucketStack,
                         'r',
@@ -962,7 +958,7 @@ public class AlchemicalWizardry {
                         's',
                         stoneStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         'b',
                         waterBucketStack,
                         'r',
@@ -976,9 +972,9 @@ public class AlchemicalWizardry {
                         's',
                         stoneStack,
                         'o',
-                        new ItemStack(ModItems.masterBloodOrb),
+                        4,
                         'w',
-                        weakBloodOrbStack,
+                        1,
                         'r',
                         new ItemStack(ModItems.demonicSlate)));
         GameRegistry.addRecipe(
@@ -990,7 +986,7 @@ public class AlchemicalWizardry {
                         's',
                         obsidianStack,
                         'o',
-                        new ItemStack(ModItems.masterBloodOrb),
+                        4,
                         'r',
                         new ItemStack(ModItems.demonicSlate),
                         'b',
@@ -1010,7 +1006,7 @@ public class AlchemicalWizardry {
                         's',
                         reinforcedSlateStack,
                         'o',
-                        apprenticeBloodOrbStack));
+                        2));
         GameRegistry.addRecipe(
                 new ShapedBloodOrbRecipe(
                         miningSigilStackCrafted,
@@ -1018,7 +1014,7 @@ public class AlchemicalWizardry {
                         "hra",
                         "sos",
                         'o',
-                        apprenticeBloodOrbStack,
+                        2,
                         's',
                         stoneStack,
                         'p',
@@ -1040,7 +1036,7 @@ public class AlchemicalWizardry {
                         'g',
                         goldIngotStack,
                         'o',
-                        apprenticeBloodOrbStack,
+                        2,
                         'r',
                         reinforcedSlateStack));
         GameRegistry.addRecipe(
@@ -1054,7 +1050,7 @@ public class AlchemicalWizardry {
                         'g',
                         glowstoneDustStack,
                         'o',
-                        apprenticeBloodOrbStack,
+                        2,
                         'r',
                         reinforcedSlateStack));
         GameRegistry.addRecipe(
@@ -1068,7 +1064,7 @@ public class AlchemicalWizardry {
                         's',
                         blankSlateStack,
                         'o',
-                        weakBloodOrbStack));
+                        1));
         GameRegistry.addRecipe(
                 new ShapedBloodOrbRecipe(
                         seerSigilStackCrafted,
@@ -1080,7 +1076,7 @@ public class AlchemicalWizardry {
                         's',
                         divinationSigilStackCrafted,
                         'o',
-                        apprenticeBloodOrbStack,
+                        2,
                         'b',
                         new ItemStack(ModItems.bucketLife)));
         GameRegistry.addRecipe(
@@ -1092,7 +1088,7 @@ public class AlchemicalWizardry {
                         's',
                         obsidianStack,
                         'o',
-                        apprenticeBloodOrbStack,
+                        2,
                         'r',
                         reinforcedSlateStack));
         GameRegistry.addRecipe(
@@ -1104,7 +1100,7 @@ public class AlchemicalWizardry {
                         'b',
                         obsidianStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         'r',
                         ritualStoneStack));
         GameRegistry.addRecipe(
@@ -1118,7 +1114,7 @@ public class AlchemicalWizardry {
                         'b',
                         obsidianStack,
                         'o',
-                        weakBloodOrbStack));
+                        1));
         GameRegistry.addRecipe(
                 new ShapedBloodOrbRecipe(
                         sigilOfElementalAffinityStackCrafted,
@@ -1134,7 +1130,7 @@ public class AlchemicalWizardry {
                         'l',
                         lavaSigilStack,
                         'r',
-                        magicianBloodOrbStack,
+                        3,
                         's',
                         imbuedSlateStack));
         GameRegistry.addRecipe(
@@ -1150,7 +1146,7 @@ public class AlchemicalWizardry {
                         'r',
                         imbuedSlateStack,
                         'o',
-                        magicianBloodOrbStack));
+                        3));
         GameRegistry.addRecipe(
                 emptySocketStack,
                 "bgb",
@@ -1173,7 +1169,7 @@ public class AlchemicalWizardry {
                         's',
                         stoneStack,
                         'o',
-                        magicianBloodOrbStack));
+                        3));
         GameRegistry.addShapelessRecipe(largeBloodStoneBrickStackCrafted, weakBloodShardStack, stoneStack);
         GameRegistry.addRecipe(bloodStoneBrickStackCrafted, "bb", "bb", 'b', largeBloodStoneBrickStack);
         GameRegistry.addRecipe(
@@ -1187,7 +1183,7 @@ public class AlchemicalWizardry {
                         'r',
                         reedStack,
                         'o',
-                        apprenticeBloodOrbStack,
+                        2,
                         'e',
                         reinforcedSlateStack));
         GameRegistry.addRecipe(
@@ -1203,7 +1199,7 @@ public class AlchemicalWizardry {
                         'r',
                         bloodRuneStack,
                         'o',
-                        apprenticeBloodOrbStack));
+                        2));
         GameRegistry.addShapelessRecipe(
                 new ItemStack(Items.skull, 1, 2),
                 new ItemStack(Items.skull, 1, 1),
@@ -1232,7 +1228,7 @@ public class AlchemicalWizardry {
                         'r',
                         obsidianStack,
                         'o',
-                        weakBloodOrbStack));
+                        1));
         GameRegistry.addRecipe(
                 new ItemStack(ModBlocks.blockPedestal),
                 "ooo",
@@ -1272,7 +1268,7 @@ public class AlchemicalWizardry {
                         'r',
                         obsidianStack,
                         'o',
-                        new ItemStack(ModItems.masterBloodOrb)));
+                        4));
         GameRegistry.addRecipe(
                 new ShapedBloodOrbRecipe(
                         new ItemStack(ModItems.sigilOfWind),
@@ -1286,13 +1282,13 @@ public class AlchemicalWizardry {
                         'a',
                         new ItemStack(ModItems.airSigil),
                         'o',
-                        new ItemStack(ModItems.masterBloodOrb),
+                        4,
                         'r',
                         ModItems.demonicSlate));
         GameRegistry.addRecipe(
                 new ShapelessBloodOrbRecipe(
                         new ItemStack(ModItems.weakBloodShard, 5, 0),
-                        new ItemStack(ModItems.masterBloodOrb),
+                        4,
                         new ItemStack(ModItems.weakBloodShard),
                         imbuedSlateStack));
         GameRegistry.addRecipe(
@@ -1327,7 +1323,7 @@ public class AlchemicalWizardry {
                         's',
                         imbuedSlateStack,
                         'o',
-                        magicianBloodOrbStack));
+                        3));
         GameRegistry.addRecipe(
                 new ItemStack(ModItems.armourInhibitor),
                 " gg",
@@ -1378,7 +1374,7 @@ public class AlchemicalWizardry {
                         's',
                         new ItemStack(ModItems.imbuedSlate),
                         'o',
-                        magicianBloodOrbStack));
+                        3));
         GameRegistry.addRecipe(
                 new ShapedBloodOrbRecipe(
                         new ItemStack(ModItems.energyBazooka),
@@ -1386,7 +1382,7 @@ public class AlchemicalWizardry {
                         "cb ",
                         "d w",
                         'O',
-                        archmageBloodOrbStack,
+                        5,
                         'c',
                         crepitousStack,
                         'b',
@@ -1402,7 +1398,7 @@ public class AlchemicalWizardry {
                         "sss",
                         "bob",
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         'b',
                         glowstoneBlockStack,
                         't',
@@ -1471,9 +1467,6 @@ public class AlchemicalWizardry {
                 .setPotionName("bm.buff.demon_cloak");
         customPotionAmphibian = (new PotionAmphibian(customPotionAmphibianID, false, 0)).setIconIndex(0, 0)
                 .setPotionName("bm.buff.amphibian");
-
-        ItemStack masterBloodOrbStack = new ItemStack(ModItems.masterBloodOrb);
-        ItemStack transcendentBloodOrbStack = new ItemStack(ModItems.transcendentBloodOrb);
 
         // ModBlocks.blockLifeEssence.setUnlocalizedName("lifeEssenceBlock");
         FluidContainerRegistry.registerFluidContainer(
@@ -2134,7 +2127,7 @@ public class AlchemicalWizardry {
                         'm',
                         magicalesStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         'a',
                         new ItemStack(Items.arrow)));
         GameRegistry.addRecipe(
@@ -2150,7 +2143,7 @@ public class AlchemicalWizardry {
                         'b',
                         weakBloodShardStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         'n',
                         glowstoneDustStack));
         GameRegistry.addRecipe(
@@ -2166,7 +2159,7 @@ public class AlchemicalWizardry {
                         'b',
                         weakBloodShardStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         'n',
                         new ItemStack(Items.fire_charge)));
         GameRegistry.addRecipe(
@@ -2182,7 +2175,7 @@ public class AlchemicalWizardry {
                         'b',
                         weakBloodShardStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         'n',
                         new ItemStack(Blocks.obsidian)));
 
@@ -2222,7 +2215,7 @@ public class AlchemicalWizardry {
                         'c',
                         emptyCoreStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         'd',
                         diamondStack,
                         's',
@@ -2238,7 +2231,7 @@ public class AlchemicalWizardry {
                         'c',
                         emptyCoreStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         'd',
                         diamondStack,
                         's',
@@ -2254,7 +2247,7 @@ public class AlchemicalWizardry {
                         'c',
                         emptyCoreStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         'd',
                         diamondStack,
                         's',
@@ -2270,7 +2263,7 @@ public class AlchemicalWizardry {
                         'c',
                         emptyCoreStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         'd',
                         diamondStack,
                         's',
@@ -2301,7 +2294,7 @@ public class AlchemicalWizardry {
                         'e',
                         emptyCoreStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         's',
                         weakBloodShardStack,
                         'g',
@@ -2317,7 +2310,7 @@ public class AlchemicalWizardry {
                         'e',
                         emptyCoreStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         's',
                         weakBloodShardStack,
                         'g',
@@ -2333,7 +2326,7 @@ public class AlchemicalWizardry {
                         'e',
                         emptyCoreStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         's',
                         weakBloodShardStack,
                         'g',
@@ -2349,7 +2342,7 @@ public class AlchemicalWizardry {
                         'e',
                         emptyCoreStack,
                         'o',
-                        magicianBloodOrbStack,
+                        3,
                         's',
                         weakBloodShardStack,
                         'g',
@@ -2366,7 +2359,7 @@ public class AlchemicalWizardry {
                         'e',
                         emptyCoreStack,
                         'o',
-                        masterBloodOrbStack,
+                        4,
                         's',
                         weakBloodShardStack,
                         'g',
@@ -2382,7 +2375,7 @@ public class AlchemicalWizardry {
                         'e',
                         emptyCoreStack,
                         'o',
-                        masterBloodOrbStack,
+                        4,
                         's',
                         weakBloodShardStack,
                         'g',
@@ -2398,7 +2391,7 @@ public class AlchemicalWizardry {
                         'e',
                         emptyCoreStack,
                         'o',
-                        masterBloodOrbStack,
+                        4,
                         's',
                         weakBloodShardStack,
                         'g',
@@ -2413,7 +2406,7 @@ public class AlchemicalWizardry {
                         's',
                         etherealSlateStack,
                         'o',
-                        archmageBloodOrbStack,
+                        5,
                         'g',
                         new ItemStack(Items.golden_hoe),
                         'm',
@@ -2427,7 +2420,7 @@ public class AlchemicalWizardry {
                         's',
                         etherealSlateStack,
                         'o',
-                        archmageBloodOrbStack,
+                        5,
                         'r',
                         speedRuneStack,
                         'b',
@@ -2441,7 +2434,7 @@ public class AlchemicalWizardry {
                         "csc",
                         "obo",
                         'b',
-                        masterBloodOrbStack,
+                        4,
                         'p',
                         new ItemStack(Blocks.piston),
                         'c',
@@ -2464,7 +2457,7 @@ public class AlchemicalWizardry {
                         'a',
                         accelerationRuneStack,
                         'o',
-                        archmageBloodOrbStack));
+                        5));
 
         AlchemyRecipeRegistry.registerRecipe(
                 crackedRunicPlateStackCrafted,
@@ -2959,7 +2952,7 @@ public class AlchemicalWizardry {
                         't',
                         new ItemStack(ModBlocks.blockTeleposer),
                         'o',
-                        masterBloodOrbStack,
+                        4,
                         'l',
                         lavaBucketStack,
                         'w',
@@ -2975,7 +2968,7 @@ public class AlchemicalWizardry {
                         't',
                         weakBloodShardStack,
                         'o',
-                        masterBloodOrbStack,
+                        4,
                         'e',
                         new ItemStack(Items.ender_eye),
                         'p',
@@ -3057,7 +3050,7 @@ public class AlchemicalWizardry {
                         "grg",
                         "bob",
                         'o',
-                        transcendentBloodOrbStack,
+                        6,
                         'r',
                         bloodRuneStack,
                         '1',
@@ -3075,7 +3068,7 @@ public class AlchemicalWizardry {
                         "grg",
                         "bob",
                         'o',
-                        transcendentBloodOrbStack,
+                        6,
                         'r',
                         bloodRuneStack,
                         'g',
@@ -3093,7 +3086,7 @@ public class AlchemicalWizardry {
                         "grg",
                         "bob",
                         'o',
-                        transcendentBloodOrbStack,
+                        6,
                         'r',
                         bloodRuneStack,
                         'g',
