@@ -1,6 +1,5 @@
 package WayofTime.alchemicalWizardry.api.alchemy;
 
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -48,20 +47,6 @@ public class AlchemyRecipe {
                 ItemStack checkedItemStack = items[j];
 
                 if (checkedItemStack == null) {
-                    continue;
-                }
-
-                boolean quickTest = false;
-
-                if (recipeItemStack.getItem() instanceof ItemBlock) {
-                    if (checkedItemStack.getItem() instanceof ItemBlock) {
-                        quickTest = true;
-                    }
-                } else if (!(checkedItemStack.getItem() instanceof ItemBlock)) {
-                    quickTest = true;
-                }
-
-                if (!quickTest) {
                     continue;
                 }
 
