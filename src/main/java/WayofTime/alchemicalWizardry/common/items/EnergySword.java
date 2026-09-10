@@ -86,6 +86,11 @@ public class EnergySword extends ItemSword implements IBindable {
     }
 
     @Override
+    public void setDamage(ItemStack stack, int damage) {
+        // NO OP
+    }
+
+    @Override
     public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) {
         super.onItemRightClick(item, world, player);
 
@@ -106,7 +111,6 @@ public class EnergySword extends ItemSword implements IBindable {
         }
 
         checkPassiveDrain(item, world, player);
-        item.setItemDamage(0);
     }
 
     @Override
