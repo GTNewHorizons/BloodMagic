@@ -86,7 +86,6 @@ import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityM
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityMinorDemonGruntGuardianWind;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityMinorDemonGruntIce;
 import WayofTime.alchemicalWizardry.common.demonVillage.demonHoard.demon.EntityMinorDemonGruntWind;
-import WayofTime.alchemicalWizardry.common.demonVillage.loot.DemonVillageLootRegistry;
 import WayofTime.alchemicalWizardry.common.demonVillage.tileEntity.TEDemonChest;
 import WayofTime.alchemicalWizardry.common.demonVillage.tileEntity.TEDemonPortal;
 import WayofTime.alchemicalWizardry.common.entity.mob.EntityAirElemental;
@@ -3343,8 +3342,6 @@ public class AlchemicalWizardry {
         BloodMagicConfiguration.loadBlacklist();
         BloodMagicConfiguration.blacklistRituals();
         BloodMagicConfiguration.loadCustomLPValues();
-
-        DemonVillageLootRegistry.init();
 
         MeteorRegistry.loadConfig();
         MeteorReagentRegistry.loadConfig();
