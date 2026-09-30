@@ -29,7 +29,7 @@ public class SpellWateryGrave extends HomSpell {
 
     @Override
     public ItemStack onOffensiveRangedRightClick(ItemStack item, World world, EntityPlayer player) {
-        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
             return item;
         }
 
@@ -44,7 +44,7 @@ public class SpellWateryGrave extends HomSpell {
 
     @Override
     public ItemStack onOffensiveMeleeRightClick(ItemStack item, World world, EntityPlayer player) {
-        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
             return item;
         }
 
@@ -75,7 +75,7 @@ public class SpellWateryGrave extends HomSpell {
 
     @Override
     public ItemStack onDefensiveRightClick(ItemStack item, World world, EntityPlayer player) {
-        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
             return item;
         }
 
@@ -129,7 +129,7 @@ public class SpellWateryGrave extends HomSpell {
 
     @Override
     public ItemStack onEnvironmentalRightClick(ItemStack item, World world, EntityPlayer player) {
-        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
             return item;
         }
 
