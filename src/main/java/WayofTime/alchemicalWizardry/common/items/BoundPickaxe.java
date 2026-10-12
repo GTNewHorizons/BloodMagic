@@ -28,7 +28,6 @@ import WayofTime.alchemicalWizardry.common.ItemType;
 import WayofTime.alchemicalWizardry.common.spell.complex.effect.SpellHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import gregtech.common.blocks.GTBlockOre;
 
 public class BoundPickaxe extends ItemPickaxe implements IBindable {
 
@@ -124,13 +123,7 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
                     if (silkTouch && block.canSilkHarvest(world, player, x, y, z, meta)) {
                         dropMultiset.add(new ItemType(block, meta));
                     } else {
-                        ArrayList<ItemStack> itemDropList;
-                        if (AlchemicalWizardry.isGregTech5UnofficialNewHorizonsLoaded
-                                && block instanceof GTBlockOre ore) {
-                            itemDropList = ore.getDropsForPlayer(world, x, y, z, meta, fortuneLvl, player);
-                        } else {
-                            itemDropList = block.getDrops(world, x, y, z, meta, fortuneLvl);
-                        }
+                        ArrayList<ItemStack> itemDropList = block.getDrops(world, x, y, z, meta, fortuneLvl);
 
                         if (itemDropList != null) {
                             for (ItemStack stack : itemDropList)
