@@ -72,29 +72,38 @@ public class SpectralBlock extends BlockContainer {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int idk, float what,
-            float these, float are) {
-        if (player.isSneaking()) {
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float subX,
+            float subY, float subZ) {
+        if (player.isSneaking() || world.isRemote) {
             return false;
         }
 
         ItemStack playerItem = player.getCurrentEquippedItem();
 
         if (playerItem != null) {
-            if (playerItem.getItem() instanceof ItemBlock) {
-                world.setBlock(
-                        x,
-                        y,
-                        z,
-                        ((ItemBlock) (playerItem.getItem())).field_150939_a,
-                        playerItem.getItemDamage(),
-                        3);
+            if (playerItem.getItem() instanceof ItemBlock itemBlock) {
+                if (world.canMineBlock(player, x, y, z) && player.canPlayerEdit(x, y, z, side, playerItem)) {
+                    world.setBlockToAir(x, y, z);
 
-                if (!player.capabilities.isCreativeMode) {
-                    playerItem.stackSize--;
+                    boolean placed = itemBlock.placeBlockAt(
+                            playerItem,
+                            player,
+                            world,
+                            x,
+                            y,
+                            z,
+                            side,
+                            subX,
+                            subY,
+                            subZ,
+                            playerItem.getItem().getMetadata(playerItem.getItemDamage()));
+
+                    if (placed && !player.capabilities.isCreativeMode) {
+                        playerItem.stackSize--;
+                    }
+
+                    return placed;
                 }
-
-                return true;
             } else {
                 return false;
             }
