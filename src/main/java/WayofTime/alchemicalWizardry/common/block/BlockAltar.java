@@ -132,7 +132,10 @@ public class BlockAltar extends BlockContainer {
             tileEntity.setInventorySlotContents(0, newItem);
             tileEntity.startCycle();
         } else if (tileEntity.getStackInSlot(0) != null && stack == null) {
+            if (world.isRemote) return true;
+
             player.inventory.addItemStackToInventory(tileEntity.getStackInSlot(0));
+            player.inventoryContainer.detectAndSendChanges();
             tileEntity.setInventorySlotContents(0, null);
             tileEntity.setActive();
         }
