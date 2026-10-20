@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -718,19 +717,8 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         return NewPacketHandler.getPacket(this);
     }
 
-    public void handlePacketData(int[] intData, int[] fluidData, int capacity) {
-        if (intData == null) {
-            return;
-        }
-
-        if (intData.length == 3) {
-            if (intData[2] != 0) {
-                ItemStack is = new ItemStack(Item.getItemById(intData[0]), intData[2], intData[1]);
-                inv[0] = is;
-            } else {
-                inv[0] = null;
-            }
-        }
+    public void handlePacketData(ItemStack itemStack, int[] fluidData, int capacity) {
+        inv[0] = itemStack == null ? null : itemStack.copy();
 
         FluidStack flMain = new FluidStack(fluidData[0], fluidData[1]);
         FluidStack flIn = new FluidStack(fluidData[2], fluidData[3]);
@@ -741,25 +729,6 @@ public class TEAltar extends TEInventory implements IFluidTank, IFluidHandler, I
         this.setOutputFluid(flOut);
 
         this.capacity = capacity;
-    }
-
-    public int[] buildIntDataList() {
-        int[] sortList = new int[3]; // 1 * 3
-        int pos = 0;
-
-        for (ItemStack is : inv) {
-            if (is != null) {
-                sortList[pos++] = Item.getIdFromItem(is.getItem());
-                sortList[pos++] = is.getItemDamage();
-                sortList[pos++] = is.stackSize;
-            } else {
-                sortList[pos++] = 0;
-                sortList[pos++] = 0;
-                sortList[pos++] = 0;
-            }
-        }
-
-        return sortList;
     }
 
     @Override
