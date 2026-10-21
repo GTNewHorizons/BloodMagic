@@ -6,9 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
 import net.minecraft.world.IBlockAccess;
@@ -72,43 +69,7 @@ public class SpectralBlock extends BlockContainer {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float subX,
-            float subY, float subZ) {
-        if (player.isSneaking() || world.isRemote) {
-            return false;
-        }
-
-        ItemStack playerItem = player.getCurrentEquippedItem();
-
-        if (playerItem != null) {
-            if (playerItem.getItem() instanceof ItemBlock itemBlock) {
-                if (world.canMineBlock(player, x, y, z) && player.canPlayerEdit(x, y, z, side, playerItem)) {
-                    world.setBlockToAir(x, y, z);
-
-                    boolean placed = itemBlock.placeBlockAt(
-                            playerItem,
-                            player,
-                            world,
-                            x,
-                            y,
-                            z,
-                            side,
-                            subX,
-                            subY,
-                            subZ,
-                            playerItem.getItem().getMetadata(playerItem.getItemDamage()));
-
-                    if (placed && !player.capabilities.isCreativeMode) {
-                        playerItem.stackSize--;
-                    }
-
-                    return placed;
-                }
-            } else {
-                return false;
-            }
-        }
-
+    public boolean isReplaceable(IBlockAccess world, int x, int y, int z) {
         return true;
     }
 
