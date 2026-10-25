@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -34,6 +35,7 @@ import WayofTime.alchemicalWizardry.common.tileEntity.TESocket;
 import WayofTime.alchemicalWizardry.common.tileEntity.TETeleposer;
 import WayofTime.alchemicalWizardry.common.tileEntity.TEWritingTable;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
@@ -106,7 +108,7 @@ public enum NewPacketHandler {
             World world = AlchemicalWizardry.proxy.getClientWorld();
             TileEntity te = world.getTileEntity(msg.x, msg.y, msg.z);
             if (te instanceof TEAltar altar) {
-                altar.handlePacketData(msg.items, msg.fluids, msg.capacity);
+                altar.handlePacketData(msg.itemStack, msg.fluids, msg.capacity);
             }
         }
     }
@@ -317,7 +319,7 @@ public enum NewPacketHandler {
         int y;
         int z;
 
-        int[] items;
+        ItemStack itemStack;
         int[] fluids;
         int capacity;
     }
@@ -482,11 +484,7 @@ public enum NewPacketHandler {
                     target.writeInt(m.y);
                     target.writeInt(m.z);
 
-                    target.writeBoolean(m.items != null);
-                    if (m.items != null) {
-                        int[] items = m.items;
-                        Arrays.stream(items).forEach(target::writeInt);
-                    }
+                    ByteBufUtils.writeItemStack(target, m.itemStack);
 
                     target.writeBoolean(m.fluids != null);
                     if (m.fluids != null) {
@@ -658,13 +656,8 @@ public enum NewPacketHandler {
                     m.x = dat.readInt();
                     m.y = dat.readInt();
                     m.z = dat.readInt();
-                    boolean hasStacks = dat.readBoolean();
 
-                    m.items = new int[TEAltar.sizeInv * 3];
-                    if (hasStacks) {
-                        m.items = new int[TEAltar.sizeInv * 3];
-                        IntStream.range(0, m.items.length).forEach(i -> m.items[i] = dat.readInt());
-                    }
+                    m.itemStack = ByteBufUtils.readItemStack(dat);
 
                     boolean hasFluids = dat.readBoolean();
                     m.fluids = new int[6];
@@ -841,7 +834,7 @@ public enum NewPacketHandler {
         msg.x = tileAltar.xCoord;
         msg.y = tileAltar.yCoord;
         msg.z = tileAltar.zCoord;
-        msg.items = tileAltar.buildIntDataList();
+        msg.itemStack = tileAltar.getStackInSlot(0);
         msg.fluids = tileAltar.buildFluidList();
         msg.capacity = tileAltar.getCapacity();
 
