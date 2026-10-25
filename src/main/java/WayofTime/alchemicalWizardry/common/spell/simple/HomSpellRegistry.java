@@ -3,7 +3,6 @@ package WayofTime.alchemicalWizardry.common.spell.simple;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 public class HomSpellRegistry {
@@ -22,7 +21,7 @@ public class HomSpellRegistry {
         for (HomSpellComponent hsc : spellList) {
             ItemStack item = hsc.item();
 
-            if (item != null && item.getItem() instanceof ItemBlock && testItem.getItem() == item.getItem()) {
+            if (item != null && testItem.getItem() == item.getItem()) {
                 return hsc.spell();
             }
         }

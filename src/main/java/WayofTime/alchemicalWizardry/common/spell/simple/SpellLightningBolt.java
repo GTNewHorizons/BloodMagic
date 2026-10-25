@@ -23,7 +23,7 @@ public class SpellLightningBolt extends HomSpell {
 
     @Override
     public ItemStack onOffensiveRangedRightClick(ItemStack item, World world, EntityPlayer player) {
-        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
             return item;
         }
 
@@ -43,7 +43,7 @@ public class SpellLightningBolt extends HomSpell {
     @Override
     public ItemStack onOffensiveMeleeRightClick(ItemStack item, World world, EntityPlayer player) {
         // TODO Make it work better...?
-        if (IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
+        if (!IBindable.checkAndSetItemOwner(item, player) || player.isSneaking()) {
             return item;
         }
 
