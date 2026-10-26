@@ -183,7 +183,6 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
         }
 
         checkPassiveDrain(item, world, player);
-        item.setItemDamage(0);
     }
 
     /**
@@ -251,5 +250,10 @@ public class BoundPickaxe extends ItemPickaxe implements IBindable {
     @Override
     public int rightClickCost() {
         return rightClickCost;
+    }
+
+    @Override
+    public void setDamage(ItemStack stack, int damage) {
+        // NO OP
     }
 }

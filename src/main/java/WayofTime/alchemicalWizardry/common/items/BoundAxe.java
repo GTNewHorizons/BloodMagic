@@ -143,7 +143,6 @@ public class BoundAxe extends ItemAxe implements IBindable {
         }
 
         checkPassiveDrain(item, world, player);
-        item.setItemDamage(0);
     }
 
     /**
@@ -216,5 +215,10 @@ public class BoundAxe extends ItemAxe implements IBindable {
     @Override
     public int rightClickCost() {
         return rightClickCost;
+    }
+
+    @Override
+    public void setDamage(ItemStack stack, int damage) {
+        // NO OP
     }
 }

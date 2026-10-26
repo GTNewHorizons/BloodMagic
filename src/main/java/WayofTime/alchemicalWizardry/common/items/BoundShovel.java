@@ -11,7 +11,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
@@ -145,13 +144,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
             return;
         }
 
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-        }
-
         checkPassiveDrain(item, world, player);
-
-        item.setItemDamage(0);
     }
 
     /**
@@ -225,5 +218,10 @@ public class BoundShovel extends ItemSpade implements IBindable {
     @Override
     public int rightClickCost() {
         return rightClickCost;
+    }
+
+    @Override
+    public void setDamage(ItemStack stack, int damage) {
+        // NO OP
     }
 }
