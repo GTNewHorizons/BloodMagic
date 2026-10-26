@@ -540,14 +540,22 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
                 }
             }
         } else {
-            if (!isRecipeValid()) {
+            ItemStack[] composedRecipe = new ItemStack[5];
+
+            System.arraycopy(inv, 1, composedRecipe, 0, 5);
+
+            AlchemyRecipe recipe = AlchemyRecipeRegistry.findRecipe(composedRecipe, inv[0]);
+
+            if (recipe == null) {
                 progress = 0;
                 return;
             }
 
+            ItemStack result = recipe.getResult();
+
             if (progress <= 0) {
                 progress = 0;
-                amountUsed = this.getAmountNeeded(getStackInSlot(0));
+                amountUsed = recipe.getAmountNeeded();
 
                 if (worldObj != null) {
                     worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -580,60 +588,50 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
 
                 if (progress >= progressNeeded) {
                     progress = 0;
-                    this.setInventorySlotContents(6, getResultingItemStack());
+                    this.setInventorySlotContents(6, result.copy());
 
-                    ItemStack[] composedRecipe = new ItemStack[5];
-
-                    System.arraycopy(inv, 1, composedRecipe, 0, 5);
-
-                    this.decrementSlots(this.getRecipeForItems(composedRecipe, inv[0]));
+                    this.decrementSlots(recipe.getRecipe());
 
                     if (worldObj != null) {
                         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                     }
                 }
-            } else if (getStackInSlot(6).getItem() == getResultingItemStack().getItem()
-                    && getResultingItemStack().stackSize
-                            <= (getStackInSlot(6).getMaxStackSize() - getStackInSlot(6).stackSize)) {
-                                if (worldTime % 4 == 0) {
-                                    SpellHelper.sendIndexedParticleToAllAround(
-                                            worldObj,
-                                            xCoord,
-                                            yCoord,
-                                            zCoord,
-                                            20,
-                                            worldObj.provider.dimensionId,
-                                            1,
-                                            xCoord,
-                                            yCoord,
-                                            zCoord);
-                                }
+            } else if (getStackInSlot(6).getItem() == result.getItem()
+                    && result.stackSize <= (getStackInSlot(6).getMaxStackSize() - getStackInSlot(6).stackSize)) {
+                        if (worldTime % 4 == 0) {
+                            SpellHelper.sendIndexedParticleToAllAround(
+                                    worldObj,
+                                    xCoord,
+                                    yCoord,
+                                    zCoord,
+                                    20,
+                                    worldObj.provider.dimensionId,
+                                    1,
+                                    xCoord,
+                                    yCoord,
+                                    zCoord);
+                        }
 
-                                if (!SoulNetworkHandler.syphonFromNetworkWhileInContainer(
-                                        getStackInSlot(0),
-                                        amountUsed * acceleration)) {
-                                    return;
-                                }
+                        if (!SoulNetworkHandler
+                                .syphonFromNetworkWhileInContainer(getStackInSlot(0), amountUsed * acceleration)) {
+                            return;
+                        }
 
-                                progress += acceleration;
+                        progress += acceleration;
 
-                                if (progress >= progressNeeded) {
-                                    progress = 0;
-                                    ItemStack result = getResultingItemStack().copy();
-                                    result.stackSize += getStackInSlot(6).stackSize;
-                                    this.setInventorySlotContents(6, result);
+                        if (progress >= progressNeeded) {
+                            progress = 0;
+                            ItemStack mergedResult = result.copy();
+                            mergedResult.stackSize += getStackInSlot(6).stackSize;
+                            this.setInventorySlotContents(6, mergedResult);
 
-                                    ItemStack[] composedRecipe = new ItemStack[5];
+                            this.decrementSlots(recipe.getRecipe());
 
-                                    System.arraycopy(inv, 1, composedRecipe, 0, 5);
-
-                                    this.decrementSlots(this.getRecipeForItems(composedRecipe, inv[0]));
-
-                                    if (worldObj != null) {
-                                        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-                                    }
-                                }
+                            if (worldObj != null) {
+                                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                             }
+                        }
+                    }
         }
     }
 
@@ -665,26 +663,6 @@ public class TEWritingTable extends TEInventory implements ISidedInventory, IBlo
                 }
             }
         }
-    }
-
-    public ItemStack[] getRecipeForItems(ItemStack[] recipe, ItemStack bloodOrb) {
-        if (bloodOrb == null) {
-            return null;
-        }
-
-        if (!(bloodOrb.getItem() instanceof IBloodOrb)) {
-            return null;
-        }
-
-        int bloodOrbLevel = ((IBloodOrb) bloodOrb.getItem()).getOrbLevel();
-
-        for (AlchemyRecipe ar : AlchemyRecipeRegistry.recipes) {
-            if (ar.doesRecipeMatch(recipe, bloodOrbLevel)) {
-                return ar.getRecipe();
-            }
-        }
-
-        return null;
     }
 
     public int getSpeedIncrease() {
