@@ -11,7 +11,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
@@ -46,6 +45,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         setEnergyUsed(5);
         setHarvestLevel("shovel", 7);
+        setMaxDamage(0);
     }
 
     public void setEnergyUsed(int i) {
@@ -145,13 +145,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
             return;
         }
 
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-        }
-
         checkPassiveDrain(item, world, player);
-
-        item.setItemDamage(0);
     }
 
     /**
