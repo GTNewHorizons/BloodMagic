@@ -1,10 +1,11 @@
 package WayofTime.alchemicalWizardry.api.alchemy;
 
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class AlchemyRecipe {
+
+    private static final int MAX_INPUT_SLOTS = 5;
 
     private final ItemStack output;
     private final ItemStack[] recipe;
@@ -23,35 +24,13 @@ public class AlchemyRecipe {
             return false;
         }
 
-        ItemStack[] recipe;
-
-        if (items.length < 5) {
+        if (items.length < MAX_INPUT_SLOTS) {
             return false;
         }
 
-        if (this.recipe.length != 5) {
-            ItemStack[] newRecipe = new ItemStack[5];
+        boolean[] checkList = new boolean[MAX_INPUT_SLOTS];
 
-            for (int i = 0; i < 5; i++) {
-                if (i + 1 > this.recipe.length) {
-                    newRecipe[i] = null;
-                } else {
-                    newRecipe[i] = this.recipe[i];
-                }
-            }
-
-            recipe = newRecipe;
-        } else {
-            recipe = this.recipe;
-        }
-
-        boolean[] checkList = new boolean[5];
-
-        for (int i = 0; i < 5; i++) {
-            checkList[i] = false;
-        }
-
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < Math.min(recipe.length, MAX_INPUT_SLOTS); i++) {
             ItemStack recipeItemStack = recipe[i];
 
             if (recipeItemStack == null) {
@@ -60,7 +39,7 @@ public class AlchemyRecipe {
 
             boolean test = false;
 
-            for (int j = 0; j < 5; j++) {
+            for (int j = 0; j < MAX_INPUT_SLOTS; j++) {
                 if (checkList[j]) {
                     continue;
                 }
@@ -68,20 +47,6 @@ public class AlchemyRecipe {
                 ItemStack checkedItemStack = items[j];
 
                 if (checkedItemStack == null) {
-                    continue;
-                }
-
-                boolean quickTest = false;
-
-                if (recipeItemStack.getItem() instanceof ItemBlock) {
-                    if (checkedItemStack.getItem() instanceof ItemBlock) {
-                        quickTest = true;
-                    }
-                } else if (!(checkedItemStack.getItem() instanceof ItemBlock)) {
-                    quickTest = true;
-                }
-
-                if (!quickTest) {
                     continue;
                 }
 

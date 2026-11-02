@@ -15,7 +15,7 @@ public class AlchemyRecipeRegistry {
         recipes.add(new AlchemyRecipe(output, amountNeeded, recipe, bloodOrbLevel));
     }
 
-    public static ItemStack getResult(ItemStack[] recipe, ItemStack bloodOrb) {
+    public static AlchemyRecipe findRecipe(ItemStack[] recipe, ItemStack bloodOrb) {
         if (bloodOrb == null) {
             return null;
         }
@@ -28,31 +28,23 @@ public class AlchemyRecipeRegistry {
 
         for (AlchemyRecipe ar : recipes) {
             if (ar.doesRecipeMatch(recipe, bloodOrbLevel)) {
-                return (ar.getResult());
+                return ar;
             }
         }
 
         return null;
     }
 
+    public static ItemStack getResult(ItemStack[] recipe, ItemStack bloodOrb) {
+        AlchemyRecipe ar = findRecipe(recipe, bloodOrb);
+
+        return ar == null ? null : ar.getResult();
+    }
+
     public static int getAmountNeeded(ItemStack[] recipe, ItemStack bloodOrb) {
-        if (bloodOrb == null) {
-            return 0;
-        }
+        AlchemyRecipe ar = findRecipe(recipe, bloodOrb);
 
-        if (!(bloodOrb.getItem() instanceof IBloodOrb)) {
-            return 0;
-        }
-
-        int bloodOrbLevel = ((IBloodOrb) bloodOrb.getItem()).getOrbLevel();
-
-        for (AlchemyRecipe ar : recipes) {
-            if (ar.doesRecipeMatch(recipe, bloodOrbLevel)) {
-                return (ar.getAmountNeeded());
-            }
-        }
-
-        return 0;
+        return ar == null ? 0 : ar.getAmountNeeded();
     }
 
     public static ItemStack[] getRecipeForItemStack(ItemStack itemStack) {
