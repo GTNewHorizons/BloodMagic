@@ -22,6 +22,19 @@ class ItemStackAdapter extends TypeAdapter<ItemStack> {
                     .warn("Unable to read item stack \"{}\". Valid format is \"modid:name(:meta optional)\"", str);
             return null;
         }
+        if (input[0].equals("ml")) {
+            if (input.length != 3) {
+                AlchemicalWizardry.logger.warn(
+                        "Unable to read item stack \"{}\". Valid MaterialLib format is \"ml:material:shape\"",
+                        str);
+                return null;
+            }
+            ItemStack resolved = MeteorRegistry.resolveMaterialLibStack(input[1], input[2]);
+            if (resolved == null) {
+                AlchemicalWizardry.logger.warn("Unable to find item stack \"{}\".", str);
+            }
+            return resolved;
+        }
         ItemStack itemStack = GameRegistry.findItemStack(input[0], input[1], 1);
         if (itemStack == null) {
             AlchemicalWizardry.logger.warn("Unable to find item stack \"{}\".", str);
