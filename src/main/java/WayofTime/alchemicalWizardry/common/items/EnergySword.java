@@ -34,7 +34,7 @@ public class EnergySword extends ItemSword implements IBindable {
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         setEnergyUsed(50);
         setFull3D();
-        setMaxDamage(100);
+        setMaxDamage(0);
     }
 
     public void setEnergyUsed(int i) {
@@ -106,7 +106,6 @@ public class EnergySword extends ItemSword implements IBindable {
         }
 
         checkPassiveDrain(item, world, player);
-        item.setItemDamage(0);
     }
 
     @Override
