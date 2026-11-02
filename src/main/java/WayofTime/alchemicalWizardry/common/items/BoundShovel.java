@@ -45,6 +45,7 @@ public class BoundShovel extends ItemSpade implements IBindable {
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         setEnergyUsed(5);
         setHarvestLevel("shovel", 7);
+        setMaxDamage(0);
     }
 
     public void setEnergyUsed(int i) {
@@ -218,10 +219,5 @@ public class BoundShovel extends ItemSpade implements IBindable {
     @Override
     public int rightClickCost() {
         return rightClickCost;
-    }
-
-    @Override
-    public void setDamage(ItemStack stack, int damage) {
-        // NO OP
     }
 }

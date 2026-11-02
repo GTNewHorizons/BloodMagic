@@ -46,6 +46,7 @@ public class BoundAxe extends ItemAxe implements IBindable {
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         setEnergyUsed(5);
         this.setHarvestLevel("axe", 7);
+        setMaxDamage(0);
     }
 
     public void setEnergyUsed(int i) {
@@ -215,10 +216,5 @@ public class BoundAxe extends ItemAxe implements IBindable {
     @Override
     public int rightClickCost() {
         return rightClickCost;
-    }
-
-    @Override
-    public void setDamage(ItemStack stack, int damage) {
-        // NO OP
     }
 }
