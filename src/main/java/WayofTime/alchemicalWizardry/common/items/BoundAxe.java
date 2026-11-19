@@ -46,6 +46,7 @@ public class BoundAxe extends ItemAxe implements IBindable {
         setCreativeTab(AlchemicalWizardry.tabBloodMagic);
         setEnergyUsed(5);
         this.setHarvestLevel("axe", 7);
+        setMaxDamage(0);
     }
 
     public void setEnergyUsed(int i) {
@@ -143,7 +144,6 @@ public class BoundAxe extends ItemAxe implements IBindable {
         }
 
         checkPassiveDrain(item, world, player);
-        item.setItemDamage(0);
     }
 
     /**
