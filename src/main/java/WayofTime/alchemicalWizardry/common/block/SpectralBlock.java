@@ -6,9 +6,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Facing;
 import net.minecraft.world.IBlockAccess;
@@ -72,34 +69,7 @@ public class SpectralBlock extends BlockContainer {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int idk, float what,
-            float these, float are) {
-        if (player.isSneaking()) {
-            return false;
-        }
-
-        ItemStack playerItem = player.getCurrentEquippedItem();
-
-        if (playerItem != null) {
-            if (playerItem.getItem() instanceof ItemBlock) {
-                world.setBlock(
-                        x,
-                        y,
-                        z,
-                        ((ItemBlock) (playerItem.getItem())).field_150939_a,
-                        playerItem.getItemDamage(),
-                        3);
-
-                if (!player.capabilities.isCreativeMode) {
-                    playerItem.stackSize--;
-                }
-
-                return true;
-            } else {
-                return false;
-            }
-        }
-
+    public boolean isReplaceable(IBlockAccess world, int x, int y, int z) {
         return true;
     }
 
