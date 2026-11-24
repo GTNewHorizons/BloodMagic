@@ -122,7 +122,7 @@ public class NEIBindingRitualHandler extends TemplateRecipeHandler {
 
     @Override
     public String getRecipeName() {
-        return "Binding Ritual";
+        return StatCollector.translateToLocal("nei.recipe.bindingritual.category");
     }
 
     @Override

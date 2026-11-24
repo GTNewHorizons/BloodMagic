@@ -216,6 +216,6 @@ public class NEICalcinatorHandler extends TemplateRecipeHandler {
 
     @Override
     public String getRecipeName() {
-        return "Alchemic Calcinator";
+        return StatCollector.translateToLocal("nei.recipe.calcinator.category");
     }
 }
