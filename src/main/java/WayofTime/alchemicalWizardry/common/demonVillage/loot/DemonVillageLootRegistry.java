@@ -13,8 +13,13 @@ import WayofTime.alchemicalWizardry.ModItems;
 public class DemonVillageLootRegistry {
 
     public static ArrayList<WeightedRandomChestContent> list1 = new ArrayList<>();
+    private static boolean built = false;
 
-    public static void init() {
+    /// Copies the dungeon and desert-pyramid loot on first use rather than while loading, so the copy carries every
+    /// change other mods make to those tables during loading.
+    private static void build() {
+        if (built) return;
+        built = true;
         String[] tier1Strings = new String[] { ChestGenHooks.DUNGEON_CHEST, ChestGenHooks.PYRAMID_DESERT_CHEST };
         for (String str : tier1Strings) {
             WeightedRandomChestContent[] contents = ChestGenHooks.getItems(str, new Random());
@@ -30,6 +35,7 @@ public class DemonVillageLootRegistry {
     }
 
     public static void populateChest(IInventory tile, int tier) {
+        build();
         WeightedRandomChestContent
                 .generateChestContents(new Random(), toArray(list1), tile, tile.getSizeInventory() / 3);
     }

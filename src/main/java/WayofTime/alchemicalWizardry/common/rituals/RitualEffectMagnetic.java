@@ -23,7 +23,6 @@ import WayofTime.alchemicalWizardry.api.rituals.RitualEffect;
 import WayofTime.alchemicalWizardry.api.soulNetwork.SoulNetworkHandler;
 import WayofTime.alchemicalWizardry.common.ItemType;
 import WayofTime.alchemicalWizardry.common.block.BlockTeleposer;
-import gregtech.common.blocks.GTBlockOre;
 
 public class RitualEffectMagnetic extends RitualEffect {
 
@@ -35,8 +34,7 @@ public class RitualEffectMagnetic extends RitualEffect {
 
     public static boolean isBlockOre(Block block, int meta) {
         // Special case for lit redstone ore
-        if (block instanceof BlockOre || block instanceof BlockRedstoneOre
-                || (AlchemicalWizardry.isGregTech5UnofficialNewHorizonsLoaded && block instanceof GTBlockOre)) {
+        if (block instanceof BlockOre || block instanceof BlockRedstoneOre) {
             return true;
         }
 

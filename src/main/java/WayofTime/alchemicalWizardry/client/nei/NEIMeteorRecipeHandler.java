@@ -214,12 +214,6 @@ public class NEIMeteorRecipeHandler extends TemplateRecipeHandler {
             return true;
         }
 
-        // Ignore GregTech ore variants (like basalt ore)
-        if (compared.getUnlocalizedName().startsWith("gt.blockores")
-                && compareTo.getUnlocalizedName().startsWith("gt.blockores")) {
-            return compared.getItemDamage() % 1000 == compareTo.getItemDamage() % 1000;
-        }
-
         // Check oredicts for ores. Checks for direct matches (oreIron with oreIron) as well as IC2/GT crushed ores
         // (crushedGold with oreGold), EFR raw ores (rawCopper with oreCopper (although those all seem to have oreX
         // anyways)), and GT:NH raw ores (rawOreDiamond with oreDiamond).
